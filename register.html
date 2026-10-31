@@ -5,219 +5,92 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register | We Funded Trader</title>
-
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
     body {
-      background: #071426;
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      min-height: 100vh; background: #071426; color: white;
+      display: flex; align-items: center; justify-content: center; padding: 20px;
     }
-
     .container {
-      width: 100%;
-      max-width: 430px;
-      background: #10233d;
-      padding: 35px 28px;
-      border-radius: 16px;
-      border: 1px solid #1c426b;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+      width: 100%; max-width: 430px; background: #10233d;
+      padding: 32px 26px; border-radius: 16px; border: 1px solid #1c426b;
     }
-
-    .logo {
-      text-align: center;
-      color: #39a9ff;
-      font-size: 27px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #a9b9cc;
-      font-size: 14px;
-      margin-bottom: 25px;
-    }
-
-    label {
-      display: block;
-      margin: 15px 0 8px;
-      font-size: 14px;
-    }
-
+    .logo { text-align: center; color: #39a9ff; font-size: 25px; font-weight: bold; margin-bottom: 20px; }
+    h2 { text-align: center; margin-bottom: 10px; }
+    .subtitle { text-align: center; color: #a9b9cc; font-size: 14px; margin-bottom: 24px; }
+    label { display: block; margin: 15px 0 8px; font-size: 14px; }
     input {
-      width: 100%;
-      padding: 13px;
-      border-radius: 8px;
-      border: 1px solid #315477;
-      background: #071a30;
-      color: white;
-      outline: none;
-      font-size: 15px;
+      width: 100%; padding: 13px; border-radius: 8px;
+      border: 1px solid #315477; background: #071a30; color: white; outline: none;
     }
-
-    input:focus {
-      border-color: #2196f3;
-    }
-
+    input:focus { border-color: #2196f3; }
     button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 23px;
-      border: none;
-      border-radius: 8px;
-      background: #168cff;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+      width: 100%; padding: 14px; margin-top: 22px; border: 0;
+      border-radius: 8px; background: #168cff; color: white;
+      font-size: 16px; font-weight: bold; cursor: pointer;
     }
-
-    button:hover {
-      background: #0874dc;
-    }
-
-    .login {
-      text-align: center;
-      margin-top: 22px;
-      color: #b5c4d6;
-      font-size: 14px;
-    }
-
-    a {
-      color: #39a9ff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .message {
-      margin-top: 15px;
-      text-align: center;
-      font-size: 14px;
-      color: #ff7777;
-    }
-
-    .back {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      color: #a9b9cc;
-      font-size: 13px;
-    }
+    .message { text-align: center; margin-top: 14px; font-size: 14px; }
+    .login { text-align: center; margin-top: 22px; color: #b5c4d6; font-size: 14px; }
+    a { color: #39a9ff; text-decoration: none; font-weight: bold; }
+    .back { display: block; text-align: center; margin-top: 20px; color: #a9b9cc; font-size: 13px; }
   </style>
 </head>
-
 <body>
-
   <div class="container">
-
     <div class="logo">WE FUNDED TRADER</div>
-
     <h2>Create Your Account</h2>
-
-    <p class="subtitle">
-      Join us and start your trading journey.
-    </p>
+    <p class="subtitle">Join us and start your trading journey.</p>
 
     <form id="registerForm">
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" placeholder="Enter your full name" required>
 
-      <label>Full Name</label>
-      <input
-        type="text"
-        id="fullname"
-        placeholder="Enter your full name"
-        required
-      >
+      <label for="email">Email Address</label>
+      <input type="email" id="email" placeholder="Enter your email" required>
 
-      <label>Email Address</label>
-      <input
-        type="email"
-        id="email"
-        placeholder="Enter your email"
-        required
-      >
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Create a password" minlength="6" required>
 
-      <label>Password</label>
-      <input
-        type="password"
-        id="password"
-        placeholder="Create a password"
-        minlength="6"
-        required
-      >
-
-      <label>Confirm Password</label>
-      <input
-        type="password"
-        id="confirmPassword"
-        placeholder="Confirm your password"
-        minlength="6"
-        required
-      >
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" placeholder="Confirm your password" minlength="6" required>
 
       <button type="submit">Create Account</button>
-
       <p class="message" id="message"></p>
-
     </form>
 
-    <p class="login">
-      Already have an account?
-      <a href="Login.html">Log In</a>
-    </p>
-
-    <a class="back" href="index.html">
-      ← Back to Home
-    </a>
-
+    <p class="login">Already have an account? <a href="Login.html">Log In</a></p>
+    <a class="back" href="index.html">← Back to Home</a>
   </div>
 
   <script>
-    document.getElementById("registerForm")
-      .addEventListener("submit", function(e) {
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+      e.preventDefault();
 
-        e.preventDefault();
+      const name = document.getElementById("fullname").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const message = document.getElementById("message");
 
-        const password =
-          document.getElementById("password").value;
+      if (password !== confirmPassword) {
+        message.style.color = "#ff7777";
+        message.textContent = "Passwords do not match!";
+        return;
+      }
 
-        const confirmPassword =
-          document.getElementById("confirmPassword").value;
+      // Demo only: stores the name and email in this browser.
+      // Never store real passwords in localStorage.
+      localStorage.setItem("wft_demo_name", name);
+      localStorage.setItem("wft_demo_email", email);
 
-        const message =
-          document.getElementById("message");
+      message.style.color = "#42d392";
+      message.textContent = "Demo registration successful! Redirecting to login...";
 
-        if (password !== confirmPassword) {
-          message.textContent = "Passwords do not match!";
-          return;
-        }
-
-        message.style.color = "#42d392";
-        message.textContent =
-          "Demo registration successful! Please log in.";
-
-        setTimeout(function() {
-          window.location.href = "Login.html";
-        }, 1500);
-
-      });
+      setTimeout(function() {
+        window.location.href = "Login.html";
+      }, 1200);
+    });
   </script>
-
 </body>
-        </html>
-        
+  </html>
+  
