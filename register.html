@@ -1,54 +1,223 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Create Account | We Funded Trader</title>
-<style>
-:root{--bg:#071426;--panel:#0d2038;--blue:#258cff;--light:#dceaff;--muted:#91a8c5;--line:#1d3b5d}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0%,#12345c 0,transparent 35%),var(--bg);color:var(--light);font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;padding:24px}
-.wrap{width:100%;max-width:480px}.brand{font-size:22px;font-weight:800;letter-spacing:.4px;margin-bottom:22px}.brand span{color:var(--blue)}
-.card{background:rgba(13,32,56,.96);border:1px solid var(--line);border-radius:20px;padding:30px;box-shadow:0 18px 60px #0005}
-h1{font-size:29px;margin:0 0 8px}.sub{color:var(--muted);line-height:1.5;margin:0 0 24px}
-label{display:block;font-size:13px;font-weight:700;margin:15px 0 7px;color:#c7dcf7}
-input{width:100%;padding:14px 13px;border-radius:10px;border:1px solid #29496c;background:#08182b;color:white;font-size:15px;outline:none}
-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #258cff22}
-button{width:100%;border:0;border-radius:10px;background:linear-gradient(90deg,#1677e8,#36a2ff);color:white;font-size:16px;font-weight:800;padding:15px;margin-top:22px}
-.note{font-size:12px;line-height:1.5;color:var(--muted);margin-top:18px}.back{display:inline-block;color:#9bcaff;text-decoration:none;margin-top:20px}
-.msg{display:none;margin-top:14px;padding:12px;border-radius:9px;background:#123b36;color:#9df1d4;font-size:13px;line-height:1.5}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | We Funded Trader</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #071426;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 430px;
+      background: #10233d;
+      padding: 35px 28px;
+      border-radius: 16px;
+      border: 1px solid #1c426b;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+    }
+
+    .logo {
+      text-align: center;
+      color: #39a9ff;
+      font-size: 27px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #a9b9cc;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 8px;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border-radius: 8px;
+      border: 1px solid #315477;
+      background: #071a30;
+      color: white;
+      outline: none;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: #2196f3;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 23px;
+      border: none;
+      border-radius: 8px;
+      background: #168cff;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0874dc;
+    }
+
+    .login {
+      text-align: center;
+      margin-top: 22px;
+      color: #b5c4d6;
+      font-size: 14px;
+    }
+
+    a {
+      color: #39a9ff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #ff7777;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #a9b9cc;
+      font-size: 13px;
+    }
+  </style>
 </head>
+
 <body>
-  <p style="text-align:center; margin-top:20px;">
-  Already have an account?
-  <a href="Login.html" style="color:#2196f3;">Log In</a>
-  </p>
-<div class="wrap">
-  <div class="brand">WE <span>FUNDED</span> TRADER</div>
-  <main class="card">
-    <h1>Create your account</h1>
-    <p class="sub">Join We Funded Trader and get ready to take your trading to the next level.</p>
-    <form id="signup">
-      <label for="name">Full name</label><input id="name" name="name" autocomplete="name" placeholder="Your full name" required>
-      <label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
-      <label for="password">Password</label><input id="password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required>
-      <label for="confirm">Confirm password</label><input id="confirm" name="confirm" type="password" minlength="8" autocomplete="new-password" placeholder="Repeat your password" required>
+
+  <div class="container">
+
+    <div class="logo">WE FUNDED TRADER</div>
+
+    <h2>Create Your Account</h2>
+
+    <p class="subtitle">
+      Join us and start your trading journey.
+    </p>
+
+    <form id="registerForm">
+
+      <label>Full Name</label>
+      <input
+        type="text"
+        id="fullname"
+        placeholder="Enter your full name"
+        required
+      >
+
+      <label>Email Address</label>
+      <input
+        type="email"
+        id="email"
+        placeholder="Enter your email"
+        required
+      >
+
+      <label>Password</label>
+      <input
+        type="password"
+        id="password"
+        placeholder="Create a password"
+        minlength="6"
+        required
+      >
+
+      <label>Confirm Password</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        placeholder="Confirm your password"
+        minlength="6"
+        required
+      >
+
       <button type="submit">Create Account</button>
-      <div class="msg" id="msg" role="status"></div>
+
+      <p class="message" id="message"></p>
+
     </form>
-    <p class="note">Demo registration page only. This form does not create or store real accounts yet. Secure account registration, password storage, email verification and KYC require a backend before launch.</p>
-    <a class="back" href="./index.html">← Back to website</a>
-  </main>
-</div>
-<script>
-document.getElementById('signup').addEventListener('submit',function(e){
- e.preventDefault();
- const p=document.getElementById('password').value, c=document.getElementById('confirm').value;
- const m=document.getElementById('msg');
- m.style.display='block';
- if(p!==c){m.textContent='Passwords do not match. Please check and try again.';m.style.background='#4a2028';m.style.color='#ffc2c8';return;}
- m.textContent='The design is working. Real account creation will be enabled after secure backend setup.';
-});
-</script>
+
+    <p class="login">
+      Already have an account?
+      <a href="Login.html">Log In</a>
+    </p>
+
+    <a class="back" href="index.html">
+      ← Back to Home
+    </a>
+
+  </div>
+
+  <script>
+    document.getElementById("registerForm")
+      .addEventListener("submit", function(e) {
+
+        e.preventDefault();
+
+        const password =
+          document.getElementById("password").value;
+
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+
+        const message =
+          document.getElementById("message");
+
+        if (password !== confirmPassword) {
+          message.textContent = "Passwords do not match!";
+          return;
+        }
+
+        message.style.color = "#42d392";
+        message.textContent =
+          "Demo registration successful! Please log in.";
+
+        setTimeout(function() {
+          window.location.href = "Login.html";
+        }, 1500);
+
+      });
+  </script>
+
 </body>
-</html>
+        </html>
+        
