@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trader Dashboard | We Funded Trader</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#07111f;color:#f4f7fc;line-height:1.6}
+a{text-decoration:none;color:inherit}
+.container{width:min(1150px,94%);margin:auto}
+header{background:#0d1b2d;border-bottom:1px solid #24354c;padding:17px 0}
+nav{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-size:20px;font-weight:800}
+.logo span{color:#2583ff}
+nav a{color:#a9b7ca;font-size:14px}
+main{padding:30px 0 60px}
+.welcome{margin-bottom:25px}
+.welcome h1{font-size:27px}
+.welcome p{color:#a9b7ca;font-size:14px}
+.account-select{background:#101f33;border:1px solid #263b55;color:white;padding:12px;border-radius:8px;width:100%;margin:15px 0}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.card{background:#101f33;border:1px solid #263b55;padding:20px;border-radius:12px}
+.card small{color:#a9b7ca}
+.card h2{font-size:25px;margin-top:8px}
+.blue{color:#65b4ff}
+.green{color:#35d39a}
+.red{color:#ff7272}
+.section{margin-top:30px}
+.section h2{font-size:20px;margin-bottom:15px}
+.progress-box{background:#101f33;border:1px solid #263b55;border-radius:12px;padding:22px;margin-bottom:15px}
+.progress-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}
+.bar{height:11px;background:#263b55;border-radius:20px;overflow:hidden}
+.fill{height:100%;background:#2583ff;width:0%}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.rule{background:#101f33;border:1px solid #263b55;padding:18px;border-radius:10px}
+.rule h3{font-size:15px;color:#65b4ff;margin-bottom:5px}
+.rule p{font-size:13px;color:#a9b7ca}
+.table-wrap{overflow-x:auto;background:#101f33;border:1px solid #263b55;border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:500px}
+th,td{text-align:left;padding:14px;border-bottom:1px solid #263b55;font-size:13px}
+th{color:#65b4ff}
+.empty{text-align:center;color:#a9b7ca;padding:25px}
+.notice{margin-top:20px;background:#172a42;border:1px solid #315276;padding:15px;border-radius:10px;color:#c4d6ed;font-size:13px}
+footer{text-align:center;padding:25px;color:#8192a8;border-top:1px solid #24354c;font-size:12px}
+@media(max-width:800px){.cards{grid-template-columns:repeat(2,1fr)}.rules{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.cards,.rules{grid-template-columns:1fr 1fr}.card{padding:14px}.card h2{font-size:20px}.welcome h1{font-size:23px}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="container">
+<nav>
+<a class="logo" href="index.html">WE <span>FUNDED</span> TRADER</a>
+<a href="index.html">← Homepage</a>
+</nav>
+</div>
+</header>
+
+<main class="container">
+
+<div class="welcome">
+<h1>Trader Dashboard</h1>
+<p>Welcome to your We Funded Trader account overview.</p>
+</div>
+
+<label for="account">Select Account</label>
+<select id="account" class="account-select">
+<option value="2500">$2,500 — 1-Step Challenge</option>
+<option value="5000">$5,000 — 1-Step Challenge</option>
+<option value="10000">$10,000 — 1-Step Challenge</option>
+<option value="25000">$25,000 — 1-Step Challenge</option>
+<option value="50000">$50,000 — 1-Step Challenge</option>
+<option value="100000">$100,000 — 1-Step Challenge</option>
+<option value="instant">$10,000 — Instant Funding (Demo)</option>
+</select>
+
+<div class="cards">
+<div class="card">
+<small>Account Balance</small>
+<h2 id="balance">$2,500.00</h2>
+</div>
+<div class="card">
+<small>Current Equity</small>
+<h2 id="equity">$2,500.00</h2>
+</div>
+<div class="card">
+<small>Total Profit / Loss</small>
+<h2 class="green" id="profit">$0.00</h2>
+</div>
+<div class="card">
+<small>Account Status</small>
+<h2 class="blue" id="status">Demo</h2>
+</div>
+</div>
+
+<section class="section">
+<h2>Challenge Progress</h2>
+<div class="progress-box">
+<div class="progress-top">
+<strong>Profit Target</strong>
+<strong id="targetText">10%</strong>
+</div>
+<div class="bar"><div class="fill" id="targetBar"></div></div>
+<p id="targetAmount" style="color:#a9b7ca;margin-top:8px;font-size:13px">Target: $250</p>
+</div>
+
+<div class="cards">
+<div class="card">
+<small>Daily Drawdown Limit</small>
+<h2 class="red" id="dailyLimit">3%</h2>
+</div>
+<div class="card">
+<small>Maximum Drawdown</small>
+<h2 class="red" id="maxLimit">5%</h2>
+</div>
+<div class="card">
+<small>Profitable Days Required</small>
+<h2>5 Days</h2>
+</div>
+<div class="card">
+<small>Minimum Daily Profit</small>
+<h2 class="blue">0.5%</h2>
+</div>
+</div>
+</section>
+
+<section class="section">
+<h2>Our Trading Rules</h2>
+<div class="rules">
+<div class="rule">
+<h3>10% Profit Target</h3>
+<p>Reach 10% profit to pass the 1-Step evaluation.</p>
+</div>
+<div class="rule">
+<h3>3% Daily Drawdown</h3>
+<p>Static daily drawdown limit for 1-Step Challenge.</p>
+</div>
+<div class="rule">
+<h3>5% Maximum Drawdown</h3>
+<p>Maximum overall loss limit for the evaluation.</p>
+</div>
+<div class="rule">
+<h3>5 Profitable Days</h3>
+<p>At least five profitable trading days are required.</p>
+</div>
+<div class="rule">
+<h3>0.5% Daily Profit</h3>
+<p>Minimum profit required for a qualifying profitable day.</p>
+</div>
+<div class="rule">
+<h3>Instant Funding</h3>
+<p>No daily drawdown. Maximum drawdown is 5%, measured on closed positions only.</p>
+</div>
+</div>
+</section>
+
+<section class="section">
+<h2>My Trading Accounts</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Account</th><th>Type</th><th>Status</th><th>Balance</th></tr></thead>
+<tbody id="accountTable">
+<tr><td>$2,500</td><td>1-Step</td><td class="blue">Demo</td><td>$2,500</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="section">
+<h2>Payout History</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td colspan="4" class="empty">No payout records yet.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<div class="notice">
+<strong>Important:</strong> This is a visual dashboard demo. Account balances, equity, drawdown, profit progress and payouts are not connected to a real trading platform or database. Actual account monitoring requires a secure backend and verified trading data.
+</div>
+
+</main>
+
+<footer>© 2026 We Funded Trader. All rights reserved.</footer>
+
+<script>
+const account=document.getElementById("account");
+
+function updateDashboard(){
+ const value=account.value;
+ const instant=value==="instant";
+ const amount=instant?10000:Number(value);
+ document.getElementById("balance").textContent="$"+amount.toLocaleString("en-US")+".00";
+ document.getElementById("equity").textContent="$"+amount.toLocaleString("en-US")+".00";
+ document.getElementById("profit").textContent="$0.00";
+ document.getElementById("status").textContent="Demo";
+ document.getElementById("dailyLimit").textContent=instant?"None":"3%";
+ document.getElementById("maxLimit").textContent="5%";
+ document.getElementById("targetText").textContent=instant?"N/A":"10%";
+ document.getElementById("targetAmount").textContent=instant?"Instant Funding — No evaluation target":"Target: $"+(amount*.10).toLocaleString("en-US");
+ document.getElementById("targetBar").style.width="0%";
+ document.getElementById("accountTable").innerHTML=
+ `<tr><td>$${amount.toLocaleString("en-US")}</td><td>${instant?"Instant Funding":"1-Step"}</td><td class="blue">Demo</td><td>$${amount.toLocaleString("en-US")}</td></tr>`;
+}
+account.addEventListener("change",updateDashboard);
+updateDashboard();
+</script>
+
+</body>
+</html>
