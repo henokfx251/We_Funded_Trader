@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account | We Funded Trader</title>
+<style>
+:root{--bg:#071426;--panel:#0d2038;--blue:#258cff;--light:#dceaff;--muted:#91a8c5;--line:#1d3b5d}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0%,#12345c 0,transparent 35%),var(--bg);color:var(--light);font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;padding:24px}
+.wrap{width:100%;max-width:480px}.brand{font-size:22px;font-weight:800;letter-spacing:.4px;margin-bottom:22px}.brand span{color:var(--blue)}
+.card{background:rgba(13,32,56,.96);border:1px solid var(--line);border-radius:20px;padding:30px;box-shadow:0 18px 60px #0005}
+h1{font-size:29px;margin:0 0 8px}.sub{color:var(--muted);line-height:1.5;margin:0 0 24px}
+label{display:block;font-size:13px;font-weight:700;margin:15px 0 7px;color:#c7dcf7}
+input{width:100%;padding:14px 13px;border-radius:10px;border:1px solid #29496c;background:#08182b;color:white;font-size:15px;outline:none}
+input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #258cff22}
+button{width:100%;border:0;border-radius:10px;background:linear-gradient(90deg,#1677e8,#36a2ff);color:white;font-size:16px;font-weight:800;padding:15px;margin-top:22px}
+.note{font-size:12px;line-height:1.5;color:var(--muted);margin-top:18px}.back{display:inline-block;color:#9bcaff;text-decoration:none;margin-top:20px}
+.msg{display:none;margin-top:14px;padding:12px;border-radius:9px;background:#123b36;color:#9df1d4;font-size:13px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">WE <span>FUNDED</span> TRADER</div>
+  <main class="card">
+    <h1>Create your account</h1>
+    <p class="sub">Join We Funded Trader and get ready to take your trading to the next level.</p>
+    <form id="signup">
+      <label for="name">Full name</label><input id="name" name="name" autocomplete="name" placeholder="Your full name" required>
+      <label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+      <label for="password">Password</label><input id="password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required>
+      <label for="confirm">Confirm password</label><input id="confirm" name="confirm" type="password" minlength="8" autocomplete="new-password" placeholder="Repeat your password" required>
+      <button type="submit">Create Account</button>
+      <div class="msg" id="msg" role="status"></div>
+    </form>
+    <p class="note">Demo registration page only. This form does not create or store real accounts yet. Secure account registration, password storage, email verification and KYC require a backend before launch.</p>
+    <a class="back" href="./index.html">← Back to website</a>
+  </main>
+</div>
+<script>
+document.getElementById('signup').addEventListener('submit',function(e){
+ e.preventDefault();
+ const p=document.getElementById('password').value, c=document.getElementById('confirm').value;
+ const m=document.getElementById('msg');
+ m.style.display='block';
+ if(p!==c){m.textContent='Passwords do not match. Please check and try again.';m.style.background='#4a2028';m.style.color='#ffc2c8';return;}
+ m.textContent='The design is working. Real account creation will be enabled after secure backend setup.';
+});
+</script>
+</body>
+</html>
