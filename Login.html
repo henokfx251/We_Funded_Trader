@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | We Funded Trader</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Arial,sans-serif;
+  background:#07111f;
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+.login-box{
+  width:100%;
+  max-width:420px;
+  background:#101f33;
+  border:1px solid #263b55;
+  border-radius:16px;
+  padding:35px 28px;
+}
+.logo{
+  text-align:center;
+  font-size:24px;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+.logo span{color:#2583ff}
+h2{text-align:center;margin:20px 0 8px}
+.subtitle{
+  color:#a9b7ca;
+  text-align:center;
+  font-size:14px;
+  margin-bottom:25px;
+}
+label{display:block;margin:15px 0 7px;font-size:14px}
+input{
+  width:100%;
+  padding:14px;
+  background:#07111f;
+  border:1px solid #30445e;
+  border-radius:8px;
+  color:white;
+  outline:none;
+}
+input:focus{border-color:#2583ff}
+button{
+  width:100%;
+  margin-top:22px;
+  padding:14px;
+  border:0;
+  border-radius:8px;
+  background:#2583ff;
+  color:white;
+  font-weight:bold;
+  font-size:16px;
+}
+.links{
+  text-align:center;
+  margin-top:22px;
+  color:#a9b7ca;
+  font-size:14px;
+  line-height:2;
+}
+a{color:#65b4ff;text-decoration:none}
+.back{
+  display:block;
+  text-align:center;
+  margin-top:20px;
+  color:#a9b7ca;
+  font-size:13px;
+}
+</style>
+</head>
+<body>
+
+<div class="login-box">
+  <div class="logo">WE <span>FUNDED</span> TRADER</div>
+
+  <h2>Welcome Back</h2>
+  <p class="subtitle">Login to your trading dashboard</p>
+
+  <form onsubmit="event.preventDefault(); alert('Login system is not connected yet.');">
+    <label>Email Address</label>
+    <input type="email" placeholder="Enter your email" required>
+
+    <label>Password</label>
+    <input type="password" placeholder="Enter your password" required>
+
+    <button type="submit">Log In</button>
+  </form>
+
+  <div class="links">
+    Don't have an account?
+    <a href="register.html">Sign Up</a>
+  </div>
+
+  <a class="back" href="index.html">← Back to Homepage</a>
+</div>
+
+</body>
+</html>
