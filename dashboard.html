@@ -4,213 +4,244 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trader Dashboard | We Funded Trader</title>
+<title>Dashboard | We Funded Trader</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#07111f;color:#f4f7fc;line-height:1.6}
-a{text-decoration:none;color:inherit}
-.container{width:min(1150px,94%);margin:auto}
-header{background:#0d1b2d;border-bottom:1px solid #24354c;padding:17px 0}
-nav{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.logo{font-size:20px;font-weight:800}
-.logo span{color:#2583ff}
-nav a{color:#a9b7ca;font-size:14px}
-main{padding:30px 0 60px}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#071426;color:#fff;min-height:100vh}
+header{background:#10233d;border-bottom:1px solid #1d3b5d;padding:17px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.logo{font-size:21px;font-weight:bold;color:#39a9ff}
+.header-right{display:flex;align-items:center;gap:12px}
+.header-right span{color:#c1d2e5;font-size:13px}
+button,select{cursor:pointer}
+.logout{background:#17395e;border:1px solid #315477;color:#fff;padding:10px 15px;border-radius:8px}
+main{max-width:1200px;margin:auto;padding:30px 5%}
 .welcome{margin-bottom:25px}
-.welcome h1{font-size:27px}
-.welcome p{color:#a9b7ca;font-size:14px}
-.account-select{background:#101f33;border:1px solid #263b55;color:white;padding:12px;border-radius:8px;width:100%;margin:15px 0}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
-.card{background:#101f33;border:1px solid #263b55;padding:20px;border-radius:12px}
-.card small{color:#a9b7ca}
-.card h2{font-size:25px;margin-top:8px}
-.blue{color:#65b4ff}
-.green{color:#35d39a}
-.red{color:#ff7272}
-.section{margin-top:30px}
-.section h2{font-size:20px;margin-bottom:15px}
-.progress-box{background:#101f33;border:1px solid #263b55;border-radius:12px;padding:22px;margin-bottom:15px}
-.progress-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}
-.bar{height:11px;background:#263b55;border-radius:20px;overflow:hidden}
-.fill{height:100%;background:#2583ff;width:0%}
-.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
-.rule{background:#101f33;border:1px solid #263b55;padding:18px;border-radius:10px}
-.rule h3{font-size:15px;color:#65b4ff;margin-bottom:5px}
-.rule p{font-size:13px;color:#a9b7ca}
-.table-wrap{overflow-x:auto;background:#101f33;border:1px solid #263b55;border-radius:12px}
-table{width:100%;border-collapse:collapse;min-width:500px}
-th,td{text-align:left;padding:14px;border-bottom:1px solid #263b55;font-size:13px}
-th{color:#65b4ff}
-.empty{text-align:center;color:#a9b7ca;padding:25px}
-.notice{margin-top:20px;background:#172a42;border:1px solid #315276;padding:15px;border-radius:10px;color:#c4d6ed;font-size:13px}
-footer{text-align:center;padding:25px;color:#8192a8;border-top:1px solid #24354c;font-size:12px}
-@media(max-width:800px){.cards{grid-template-columns:repeat(2,1fr)}.rules{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:480px){.cards,.rules{grid-template-columns:1fr 1fr}.card{padding:14px}.card h2{font-size:20px}.welcome h1{font-size:23px}}
+.welcome h1{font-size:27px;margin-bottom:8px}
+.muted{color:#9db0c6;font-size:14px}
+.demo{display:inline-block;background:#49391b;color:#ffd77a;padding:6px 10px;border-radius:6px;font-size:11px;margin-top:10px}
+.profile{background:#10233d;border:1px solid #1d3b5d;border-radius:12px;padding:18px;margin-bottom:25px}
+.profile h3{margin-bottom:13px;color:#39a9ff}
+.profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.profile-grid div{background:#091a2e;padding:12px;border-radius:8px;overflow-wrap:anywhere}
+.small{font-size:12px;color:#91a8c1;margin-bottom:6px}
+.profile-value{font-size:14px}
+.section-title{font-size:19px;margin:25px 0 15px}
+.selector{background:#10233d;border:1px solid #1d3b5d;padding:18px;border-radius:12px;margin-bottom:20px}
+label{display:block;color:#b6c9dd;font-size:13px;margin-bottom:9px}
+select{width:100%;max-width:350px;padding:12px;background:#071a30;color:white;border:1px solid #315477;border-radius:8px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{background:#10233d;border:1px solid #1d3b5d;border-radius:12px;padding:18px;min-width:0}
+.card p{font-size:13px;color:#9db0c6;margin-bottom:12px}
+.card h2{font-size:23px;overflow-wrap:anywhere}
+.blue{color:#39a9ff}
+.green{color:#42d392}
+.red{color:#ff7777}
+.progress-wrap{background:#10233d;border:1px solid #1d3b5d;padding:20px;border-radius:12px}
+.progress-info{display:flex;justify-content:space-between;gap:10px;margin:12px 0;font-size:13px;color:#b9cce0}
+.progress-bg{height:12px;background:#071a30;border-radius:20px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:#168cff;border-radius:20px;transition:width .3s}
+.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.rule{background:#10233d;border:1px solid #1d3b5d;padding:15px;border-radius:10px}
+.rule strong{display:block;color:#39a9ff;font-size:18px;margin-bottom:6px}
+.rule span{color:#a9b9cc;font-size:13px}
+.table-wrap{overflow-x:auto;background:#10233d;border:1px solid #1d3b5d;border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:480px}
+th,td{text-align:left;padding:15px;border-bottom:1px solid #1d3b5d;font-size:13px}
+th{color:#39a9ff;background:#0c1d32}
+td{color:#c6d5e5}
+.status{color:#ffd77a}
+footer{text-align:center;padding:30px;color:#728ba6;font-size:12px}
+@media(max-width:750px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){main{padding:22px 4%}.welcome h1{font-size:22px}.cards{gap:9px}.card{padding:13px}.card h2{font-size:19px}.profile-grid,.rules{grid-template-columns:1fr}.logo{font-size:18px}}
 </style>
 </head>
 <body>
 
 <header>
-<div class="container">
-<nav>
-<a class="logo" href="index.html">WE <span>FUNDED</span> TRADER</a>
-<a href="index.html">← Homepage</a>
-</nav>
-</div>
+  <div class="logo">WE FUNDED TRADER</div>
+  <div class="header-right">
+    <span id="headerName">Trader</span>
+    <button class="logout" onclick="logout()">Logout ↗</button>
+  </div>
 </header>
 
-<main class="container">
+<main>
 
-<div class="welcome">
-<h1>Trader Dashboard</h1>
-<p>Welcome to your We Funded Trader account overview.</p>
-</div>
+  <section class="welcome">
+    <h1>Welcome, <span id="welcomeName" class="blue">Trader</span> 👋</h1>
+    <p class="muted">Your trading journey starts here.</p>
+    <span class="demo">DEMO DASHBOARD — NOT LIVE TRADING DATA</span>
+  </section>
 
-<label for="account">Select Account</label>
-<select id="account" class="account-select">
-<option value="2500">$2,500 — 1-Step Challenge</option>
-<option value="5000">$5,000 — 1-Step Challenge</option>
-<option value="10000">$10,000 — 1-Step Challenge</option>
-<option value="25000">$25,000 — 1-Step Challenge</option>
-<option value="50000">$50,000 — 1-Step Challenge</option>
-<option value="100000">$100,000 — 1-Step Challenge</option>
-<option value="instant">$10,000 — Instant Funding (Demo)</option>
-</select>
+  <section class="profile">
+    <h3>My Profile</h3>
+    <div class="profile-grid">
+      <div>
+        <p class="small">Full Name</p>
+        <p class="profile-value" id="profileName">Trader</p>
+      </div>
+      <div>
+        <p class="small">Email Address</p>
+        <p class="profile-value" id="profileEmail">Not provided</p>
+      </div>
+    </div>
+  </section>
 
-<div class="cards">
-<div class="card">
-<small>Account Balance</small>
-<h2 id="balance">$2,500.00</h2>
-</div>
-<div class="card">
-<small>Current Equity</small>
-<h2 id="equity">$2,500.00</h2>
-</div>
-<div class="card">
-<small>Total Profit / Loss</small>
-<h2 class="green" id="profit">$0.00</h2>
-</div>
-<div class="card">
-<small>Account Status</small>
-<h2 class="blue" id="status">Demo</h2>
-</div>
-</div>
+  <h2 class="section-title">My Trading Account</h2>
 
-<section class="section">
-<h2>Challenge Progress</h2>
-<div class="progress-box">
-<div class="progress-top">
-<strong>Profit Target</strong>
-<strong id="targetText">10%</strong>
-</div>
-<div class="bar"><div class="fill" id="targetBar"></div></div>
-<p id="targetAmount" style="color:#a9b7ca;margin-top:8px;font-size:13px">Target: $250</p>
-</div>
+  <section class="selector">
+    <label for="accountSelect">Select Your Demo Account</label>
+    <select id="accountSelect" onchange="updateAccount()">
+      <option value="2500">1-Step Challenge — $2,500</option>
+      <option value="5000">1-Step Challenge — $5,000</option>
+      <option value="10000" selected>1-Step Challenge — $10,000</option>
+      <option value="25000">1-Step Challenge — $25,000</option>
+      <option value="50000">1-Step Challenge — $50,000</option>
+      <option value="100000">1-Step Challenge — $100,000</option>
+      <option value="10000-instant">Instant Funding Demo — $10,000</option>
+    </select>
+  </section>
 
-<div class="cards">
-<div class="card">
-<small>Daily Drawdown Limit</small>
-<h2 class="red" id="dailyLimit">3%</h2>
-</div>
-<div class="card">
-<small>Maximum Drawdown</small>
-<h2 class="red" id="maxLimit">5%</h2>
-</div>
-<div class="card">
-<small>Profitable Days Required</small>
-<h2>5 Days</h2>
-</div>
-<div class="card">
-<small>Minimum Daily Profit</small>
-<h2 class="blue">0.5%</h2>
-</div>
-</div>
-</section>
+  <section class="cards">
+    <div class="card">
+      <p>Account Balance</p>
+      <h2 id="balance">$10,000.00</h2>
+    </div>
+    <div class="card">
+      <p>Equity</p>
+      <h2 id="equity">$10,000.00</h2>
+    </div>
+    <div class="card">
+      <p>Profit / Loss</p>
+      <h2 class="green" id="profit">$0.00</h2>
+    </div>
+    <div class="card">
+      <p>Account Status</p>
+      <h2 class="blue" style="font-size:19px" id="status">Demo</h2>
+    </div>
+  </section>
 
-<section class="section">
-<h2>Our Trading Rules</h2>
-<div class="rules">
-<div class="rule">
-<h3>10% Profit Target</h3>
-<p>Reach 10% profit to pass the 1-Step evaluation.</p>
-</div>
-<div class="rule">
-<h3>3% Daily Drawdown</h3>
-<p>Static daily drawdown limit for 1-Step Challenge.</p>
-</div>
-<div class="rule">
-<h3>5% Maximum Drawdown</h3>
-<p>Maximum overall loss limit for the evaluation.</p>
-</div>
-<div class="rule">
-<h3>5 Profitable Days</h3>
-<p>At least five profitable trading days are required.</p>
-</div>
-<div class="rule">
-<h3>0.5% Daily Profit</h3>
-<p>Minimum profit required for a qualifying profitable day.</p>
-</div>
-<div class="rule">
-<h3>Instant Funding</h3>
-<p>No daily drawdown. Maximum drawdown is 5%, measured on closed positions only.</p>
-</div>
-</div>
-</section>
+  <h2 class="section-title">Challenge Progress</h2>
+  <section class="progress-wrap">
+    <div class="progress-info">
+      <span>Profit Target</span>
+      <strong id="targetText">10% ($1,000)</strong>
+    </div>
+    <div class="progress-bg">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="progress-info">
+      <span>Current Progress</span>
+      <strong id="progressText">0%</strong>
+    </div>
+    <p class="muted" id="progressNote">Demo progress. No real trading activity.</p>
+  </section>
 
-<section class="section">
-<h2>My Trading Accounts</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Account</th><th>Type</th><th>Status</th><th>Balance</th></tr></thead>
-<tbody id="accountTable">
-<tr><td>$2,500</td><td>1-Step</td><td class="blue">Demo</td><td>$2,500</td></tr>
-</tbody>
-</table>
-</div>
-</section>
+  <h2 class="section-title">Trading Rules</h2>
+  <section class="rules" id="rules">
+    <div class="rule"><strong>10%</strong><span>Profit Target</span></div>
+    <div class="rule"><strong>3%</strong><span>Daily Drawdown — Static</span></div>
+    <div class="rule"><strong>5%</strong><span>Maximum Drawdown</span></div>
+    <div class="rule"><strong>5 Days</strong><span>Minimum Profitable Days</span></div>
+    <div class="rule"><strong>0.5%</strong><span>Minimum Profit Per Day</span></div>
+  </section>
 
-<section class="section">
-<h2>Payout History</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead>
-<tbody>
-<tr><td colspan="4" class="empty">No payout records yet.</td></tr>
-</tbody>
-</table>
-</div>
-</section>
+  <h2 class="section-title">My Trading Accounts</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Account</th><th>Type</th><th>Status</th><th>Balance</th></tr>
+      </thead>
+      <tbody id="accountTable">
+        <tr><td>$10,000</td><td>1-Step</td><td class="status">Demo</td><td>$10,000</td></tr>
+      </tbody>
+    </table>
+  </div>
 
-<div class="notice">
-<strong>Important:</strong> This is a visual dashboard demo. Account balances, equity, drawdown, profit progress and payouts are not connected to a real trading platform or database. Actual account monitoring requires a secure backend and verified trading data.
-</div>
+  <h2 class="section-title">Payout History</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Amount</th><th>Method</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>—</td><td>—</td><td>—</td><td class="status">No payout records</td></tr>
+      </tbody>
+    </table>
+  </div>
 
 </main>
 
-<footer>© 2026 We Funded Trader. All rights reserved.</footer>
+<footer>
+  © 2026 We Funded Trader. All Rights Reserved.
+  <br><br>
+  This is a demonstration website. No real funds or trading accounts are connected.
+</footer>
 
 <script>
-const account=document.getElementById("account");
+const savedName = localStorage.getItem("wft_demo_name") || "Trader";
+const savedEmail = localStorage.getItem("wft_demo_email") || "Not provided";
 
-function updateDashboard(){
- const value=account.value;
- const instant=value==="instant";
- const amount=instant?10000:Number(value);
- document.getElementById("balance").textContent="$"+amount.toLocaleString("en-US")+".00";
- document.getElementById("equity").textContent="$"+amount.toLocaleString("en-US")+".00";
- document.getElementById("profit").textContent="$0.00";
- document.getElementById("status").textContent="Demo";
- document.getElementById("dailyLimit").textContent=instant?"None":"3%";
- document.getElementById("maxLimit").textContent="5%";
- document.getElementById("targetText").textContent=instant?"N/A":"10%";
- document.getElementById("targetAmount").textContent=instant?"Instant Funding — No evaluation target":"Target: $"+(amount*.10).toLocaleString("en-US");
- document.getElementById("targetBar").style.width="0%";
- document.getElementById("accountTable").innerHTML=
- `<tr><td>$${amount.toLocaleString("en-US")}</td><td>${instant?"Instant Funding":"1-Step"}</td><td class="blue">Demo</td><td>$${amount.toLocaleString("en-US")}</td></tr>`;
+document.getElementById("headerName").textContent = savedName;
+document.getElementById("welcomeName").textContent = savedName;
+document.getElementById("profileName").textContent = savedName;
+document.getElementById("profileEmail").textContent = savedEmail;
+
+function updateAccount() {
+  const selected = document.getElementById("accountSelect").value;
+  const instant = selected === "10000-instant";
+  const size = instant ? 10000 : Number(selected);
+
+  document.getElementById("balance").textContent =
+    "$" + size.toLocaleString("en-US") + ".00";
+  document.getElementById("equity").textContent =
+    "$" + size.toLocaleString("en-US") + ".00";
+  document.getElementById("profit").textContent = "$0.00";
+  document.getElementById("status").textContent = "Demo";
+  document.getElementById("progressBar").style.width = "0%";
+  document.getElementById("progressText").textContent = "0%";
+
+  if (instant) {
+    document.getElementById("targetText").textContent = "No evaluation target";
+    document.getElementById("progressNote").textContent =
+      "Instant Funding demo account.";
+    document.getElementById("rules").innerHTML = `
+      <div class="rule"><strong>0%</strong><span>Daily Drawdown</span></div>
+      <div class="rule"><strong>5%</strong><span>Maximum Drawdown</span></div>
+      <div class="rule"><strong>Closed Positions</strong><span>Drawdown measurement</span></div>
+    `;
+  } else {
+    const target = size * 0.10;
+    document.getElementById("targetText").textContent =
+      "10% ($" + target.toLocaleString("en-US") + ")";
+    document.getElementById("progressNote").textContent =
+      "Demo progress. No real trading activity.";
+    document.getElementById("rules").innerHTML = `
+      <div class="rule"><strong>10%</strong><span>Profit Target</span></div>
+      <div class="rule"><strong>3%</strong><span>Daily Drawdown — Static</span></div>
+      <div class="rule"><strong>5%</strong><span>Maximum Drawdown</span></div>
+      <div class="rule"><strong>5 Days</strong><span>Minimum Profitable Days</span></div>
+      <div class="rule"><strong>0.5%</strong><span>Minimum Profit Per Day</span></div>
+    `;
+  }
+
+  document.getElementById("accountTable").innerHTML = `
+    <tr>
+      <td>$${size.toLocaleString("en-US")}</td>
+      <td>${instant ? "Instant Funding" : "1-Step"}</td>
+      <td class="status">Demo</td>
+      <td>$${size.toLocaleString("en-US")}</td>
+    </tr>
+  `;
 }
-account.addEventListener("change",updateDashboard);
-updateDashboard();
+
+function logout() {
+  window.location.href = "Login.html";
+}
+
+updateAccount();
 </script>
 
 </body>
-</html>
+       </html>
+                                                                                
