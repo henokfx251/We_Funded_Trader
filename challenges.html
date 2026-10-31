@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Challenges | We Funded Trader</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07111f;color:#fff;font-family:Arial,sans-serif}
+header{padding:20px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1c3048}
+.logo{font-size:21px;font-weight:800;color:#36a3ff}
+nav a{color:#c5d5e8;text-decoration:none;margin-left:15px;font-size:14px}
+main{max-width:1100px;margin:35px auto;padding:0 18px}
+h1{text-align:center;font-size:34px;margin-bottom:8px}
+.sub{text-align:center;color:#9eb1c8;margin-bottom:30px}
+.tabs{display:flex;justify-content:center;gap:10px;margin-bottom:25px;flex-wrap:wrap}
+.tab{background:#14263c;color:#c5d5e8;border:1px solid #29425f;padding:12px 20px;border-radius:9px;cursor:pointer}
+.tab.active{background:#087de0;color:white;border-color:#087de0}
+.panel{background:#0d1c2e;border:1px solid #203a56;border-radius:15px;padding:22px;margin-bottom:25px}
+label{display:block;color:#b9cce0;margin-bottom:9px;font-size:14px}
+select,input{width:100%;padding:14px;background:#071525;border:1px solid #29425f;border-radius:8px;color:white;font-size:16px;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}
+.stat{background:#10243a;padding:16px;border-radius:10px}
+.stat small{color:#9eb1c8}
+.stat strong{display:block;font-size:23px;margin-top:8px}
+.price{text-align:center;font-size:34px;font-weight:bold;color:#39a6ff;margin:15px}
+button{background:#087de0;color:white;border:0;border-radius:9px;padding:14px 20px;font-weight:bold;font-size:15px;cursor:pointer}
+button:hover{background:#0068c5}
+.apply{display:flex;gap:8px}
+.apply input{margin:0}
+.apply button{white-space:nowrap}
+.note{color:#9eb1c8;font-size:13px;line-height:1.6}
+.message{font-size:14px;margin-top:10px}
+footer{text-align:center;color:#71869e;padding:30px}
+@media(max-width:600px){header{display:block;text-align:center}nav{margin-top:15px}nav a{margin:0 7px}h1{font-size:27px}.apply{display:block}.apply button{width:100%;margin-top:10px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">WE FUNDED TRADER</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="challenges.html">Challenges</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="Login.html">Login</a>
+  </nav>
+</header>
+
+<main>
+<h1>Choose Your Challenge</h1>
+<p class="sub">Select your account size and start your trading journey.</p>
+
+<div class="tabs">
+  <button class="tab active" id="evaluationTab" onclick="setType('evaluation')">1-Step Evaluation</button>
+  <button class="tab" id="instantTab" onclick="setType('instant')">Instant Funding</button>
+</div>
+
+<section class="panel">
+  <label for="accountSize">Select Account Size</label>
+  <select id="accountSize" onchange="updatePrice()">
+    <option value="2500"> $2,500 Account</option>
+    <option value="5000">$5,000 Account</option>
+    <option value="10000">$10,000 Account</option>
+    <option value="25000">$25,000 Account</option>
+    <option value="50000">$50,000 Account</option>
+    <option value="100000">$100,000 Account</option>
+  </select>
+
+  <div class="grid">
+    <div class="stat"><small>Profit Target</small><strong id="target">10%</strong></div>
+    <div class="stat"><small>Daily Drawdown</small><strong id="daily">3%</strong></div>
+    <div class="stat"><small>Maximum Drawdown</small><strong>5%</strong></div>
+    <div class="stat"><small>Minimum Profitable Days</small><strong>5 Days</strong></div>
+  </div>
+</section>
+
+<section class="panel">
+  <label>Coupon Code</label>
+  <div class="apply">
+    <input id="coupon" type="text" placeholder="Enter coupon code">
+    <button onclick="applyCoupon()">Apply Coupon</button>
+  </div>
+  <div class="message" id="couponMessage"></div>
+  <div class="price" id="price">$10.00</div>
+  <p class="note" style="text-align:center">Displayed price is for the selected account. Coupon discounts are calculated before checkout.</p>
+  <button style="width:100%" onclick="checkout()">Continue</button>
+  <p class="message" id="checkoutMessage"></p>
+</section>
+
+<section class="panel">
+<h3>Challenge Rules</h3>
+<p class="note" id="rules">
+1-Step Evaluation: 10% profit target, 3% static daily drawdown, 5% maximum drawdown, at least 5 profitable days, and minimum 0.5% profit per profitable day.
+</p>
+</section>
+</main>
+
+<footer>© 2026 We Funded Trader. All rights reserved.</footer>
+
+<script>
+let accountType = "evaluation";
+let discount = 0;
+
+const prices = {
+  2500: 10,
+  5000: 20,
+  10000: 40,
+  25000: 100,
+  50000: 200,
+  100000: 400
+};
+
+function setType(type) {
+  accountType = type;
+  discount = 0;
+  document.getElementById("coupon").value = "";
+  document.getElementById("couponMessage").textContent = "";
+  document.getElementById("evaluationTab").classList.toggle("active", type === "evaluation");
+  document.getElementById("instantTab").classList.toggle("active", type === "instant");
+
+  if (type === "evaluation") {
+    document.getElementById("target").textContent = "10%";
+    document.getElementById("daily").textContent = "3%";
+    document.getElementById("rules").textContent =
+      "1-Step Evaluation: 10% profit target, 3% static daily drawdown, 5% maximum drawdown, at least 5 profitable days, and minimum 0.5% profit per profitable day.";
+  } else {
+    document.getElementById("target").textContent = "No Evaluation";
+    document.getElementById("daily").textContent = "None";
+    document.getElementById("rules").textContent =
+      "Instant Funding: No evaluation phase and no daily drawdown. Maximum drawdown is 5%, measured on closed positions only.";
+  }
+  updatePrice();
+}
+
+function updatePrice() {
+  discount = 0;
+  document.getElementById("couponMessage").textContent = "";
+  const size = document.getElementById("accountSize").value;
+  const basePrice = prices[size];
+  document.getElementById("price").textContent = "$" + basePrice.toFixed(2);
+}
+
+function applyCoupon() {
+  const code = document.getElementById("coupon").value.trim().toUpperCase();
+  const size = document.getElementById("accountSize").value;
+  const basePrice = prices[size];
+  const message = document.getElementById("couponMessage");
+
+  if (code === "WFT10") {
+    discount = 10;
+  } else if (code === "WFT20") {
+    discount = 20;
+  } else {
+    discount = 0;
+    message.style.color = "#ff7777";
+    message.textContent = "Invalid coupon code.";
+    updatePrice();
+    return;
+  }
+
+  const finalPrice = basePrice * (1 - discount / 100);
+  document.getElementById("price").textContent = "$" + finalPrice.toFixed(2);
+  message.style.color = "#4cdb9a";
+  message.textContent = discount + "% discount applied successfully!";
+}
+
+function checkout() {
+  document.getElementById("checkoutMessage").style.color = "#ffcc70";
+  document.getElementById("checkoutMessage").textContent =
+    "Checkout is not connected yet. No payment has been taken.";
+}
+</script>
+</body>
+</html>
