@@ -1,570 +1,431 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="We Funded Trader - Your trading journey starts here.">
-  <title>We Funded Trader | Get Funded</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="We Funded Trader - Your trading journey starts here.">
+<title>We Funded Trader | Get Funded</title>
 
-    :root {
-      --bg: #07111f;
-      --panel: #101f33;
-      --blue: #2583ff;
-      --light-blue: #65b4ff;
-      --text: #f4f7fc;
-      --muted: #a9b7ca;
-      --border: rgba(255,255,255,.1);
-    }
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07111f;
+  --panel:#101f33;
+  --blue:#2583ff;
+  --light-blue:#65b4ff;
+  --text:#f4f7fc;
+  --muted:#a9b7ca;
+  --border:rgba(255,255,255,.1);
+}
+body{
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+}
+a{text-decoration:none;color:inherit}
+.container{width:min(1120px,92%);margin:auto}
 
-    body {
-      font-family: Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
+header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:rgba(7,17,31,.96);
+  border-bottom:1px solid var(--border);
+}
+nav{
+  min-height:76px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+.logo{font-size:21px;font-weight:800;color:white}
+.logo span{color:var(--blue)}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:25px;
+  color:var(--muted);
+  font-size:14px;
+}
+.nav-links a:hover{color:white}
+.nav-actions{display:flex;align-items:center;gap:10px}
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
+.btn{
+  display:inline-block;
+  padding:11px 19px;
+  border-radius:8px;
+  font-weight:700;
+  font-size:14px;
+  border:1px solid transparent;
+  cursor:pointer;
+}
+.btn-primary{background:var(--blue);color:white}
+.btn-primary:hover{background:#086be8}
+.btn-outline{border-color:var(--border);color:white}
 
-    .container {
-      width: min(1120px, 92%);
-      margin: auto;
-    }
+.hero{
+  padding:95px 0 85px;
+  text-align:center;
+  background:radial-gradient(circle at 50% 0%,rgba(37,131,255,.2),transparent 55%);
+}
+.tag{
+  display:inline-block;
+  color:var(--light-blue);
+  border:1px solid rgba(37,131,255,.4);
+  background:rgba(37,131,255,.1);
+  border-radius:30px;
+  padding:7px 15px;
+  font-size:13px;
+  margin-bottom:22px;
+}
+h1{
+  font-size:clamp(38px,7vw,66px);
+  line-height:1.1;
+  max-width:850px;
+  margin:auto;
+}
+h1 span{color:var(--light-blue)}
+.hero p{
+  color:var(--muted);
+  max-width:650px;
+  margin:22px auto 30px;
+  font-size:17px;
+}
+.hero-buttons{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(7,17,31,.95);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-    }
+.section{padding:75px 0}
+.section-heading{text-align:center;margin-bottom:38px}
+.section-heading h2{font-size:34px;margin-bottom:10px}
+.section-heading p{color:var(--muted)}
 
-    nav {
-      min-height: 76px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:25px;
+}
+.card h3{font-size:21px;margin-bottom:8px}
+.price{
+  font-size:35px;
+  font-weight:800;
+  color:var(--light-blue);
+  margin:15px 0;
+}
+.card p{color:var(--muted);font-size:14px}
+.card ul{list-style:none;margin:20px 0}
+.card li{
+  padding:7px 0;
+  color:#d4deeb;
+  font-size:14px;
+  border-bottom:1px solid var(--border);
+}
+.card .btn{width:100%;text-align:center}
+.highlight{
+  border-color:var(--blue);
+  box-shadow:0 0 25px rgba(37,131,255,.12);
+}
 
-    .logo {
-      font-size: 21px;
-      font-weight: 800;
-      color: white;
-    }
+.rules-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+.rule{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:24px;
+  border-radius:12px;
+}
+.rule h3{color:var(--light-blue);margin-bottom:8px}
+.rule p{color:var(--muted);font-size:14px}
 
-    .logo span {
-      color: var(--blue);
-    }
+.steps{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+.step{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:22px;
+}
+.step-number{
+  color:var(--blue);
+  font-size:25px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+.step p{color:var(--muted);font-size:14px}
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 25px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+.cta{
+  text-align:center;
+  background:linear-gradient(135deg,#102b4b,#0b1b30);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:55px 20px;
+}
+.cta h2{font-size:32px;margin-bottom:12px}
+.cta p{color:var(--muted);margin-bottom:24px}
 
-    .nav-links a:hover {
-      color: white;
-    }
+footer{
+  border-top:1px solid var(--border);
+  padding:28px 0;
+  color:var(--muted);
+  font-size:13px;
+  text-align:center;
+}
 
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 11px 19px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 14px;
-      border: 1px solid transparent;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      background: var(--blue);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: #086be8;
-    }
-
-    .btn-outline {
-      border-color: var(--border);
-      color: white;
-    }
-
-    .hero {
-      padding: 95px 0 85px;
-      text-align: center;
-      background:
-        radial-gradient(circle at 50% 0%, rgba(37,131,255,.2), transparent 55%);
-    }
-
-    .tag {
-      display: inline-block;
-      color: var(--light-blue);
-      border: 1px solid rgba(37,131,255,.4);
-      background: rgba(37,131,255,.1);
-      border-radius: 30px;
-      padding: 7px 15px;
-      font-size: 13px;
-      margin-bottom: 22px;
-    }
-
-    h1 {
-      font-size: clamp(38px, 7vw, 66px);
-      line-height: 1.1;
-      max-width: 850px;
-      margin: auto;
-    }
-
-    h1 span {
-      color: var(--light-blue);
-    }
-
-    .hero p {
-      color: var(--muted);
-      max-width: 650px;
-      margin: 22px auto 30px;
-      font-size: 17px;
-    }
-
-    .hero-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .section {
-      padding: 75px 0;
-    }
-
-    .section-heading {
-      text-align: center;
-      margin-bottom: 38px;
-    }
-
-    .section-heading h2 {
-      font-size: 34px;
-      margin-bottom: 10px;
-    }
-
-    .section-heading p {
-      color: var(--muted);
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      padding: 25px;
-    }
-
-    .card h3 {
-      font-size: 21px;
-      margin-bottom: 8px;
-    }
-
-    .price {
-      font-size: 35px;
-      font-weight: 800;
-      color: var(--light-blue);
-      margin: 15px 0;
-    }
-
-    .card p {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .card ul {
-      list-style: none;
-      margin: 20px 0;
-    }
-
-    .card li {
-      padding: 7px 0;
-      color: #d4deeb;
-      font-size: 14px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .card .btn {
-      width: 100%;
-      text-align: center;
-    }
-
-    .highlight {
-      border-color: var(--blue);
-      box-shadow: 0 0 25px rgba(37,131,255,.12);
-    }
-
-    .rules-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .rule {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      padding: 24px;
-      border-radius: 12px;
-    }
-
-    .rule h3 {
-      color: var(--light-blue);
-      margin-bottom: 8px;
-    }
-
-    .rule p {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 15px;
-    }
-
-    .step {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 22px;
-    }
-
-    .step-number {
-      color: var(--blue);
-      font-size: 25px;
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-
-    .step p {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .cta {
-      text-align: center;
-      background: linear-gradient(135deg, #102b4b, #0b1b30);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 55px 20px;
-    }
-
-    .cta h2 {
-      font-size: 32px;
-      margin-bottom: 12px;
-    }
-
-    .cta p {
-      color: var(--muted);
-      margin-bottom: 24px;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 28px 0;
-      color: var(--muted);
-      font-size: 13px;
-      text-align: center;
-    }
-
-    @media (max-width: 800px) {
-      .nav-links {
-        display: none;
-      }
-
-      .cards,
-      .rules-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .steps {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 520px) {
-      .logo {
-        font-size: 17px;
-      }
-
-      .nav-actions .btn {
-        padding: 9px 11px;
-        font-size: 12px;
-      }
-
-      .cards,
-      .rules-grid,
-      .steps {
-        grid-template-columns: 1fr;
-      }
-
-      .hero {
-        padding: 70px 0;
-      }
-
-      .section {
-        padding: 55px 0;
-      }
-    }
-  </style>
+@media(max-width:800px){
+  .nav-links{display:none}
+  .cards,.rules-grid{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:520px){
+  .logo{font-size:16px}
+  .nav-actions .btn{padding:9px 10px;font-size:12px}
+  .cards,.rules-grid,.steps{grid-template-columns:1fr}
+  .hero{padding:70px 0}
+  .section{padding:55px 0}
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <div class="container">
-    <nav>
-      <a class="logo" href="index.html">WE <span>FUNDED</span> TRADER</a>
+<div class="container">
+<nav>
+  <a class="logo" href="index.html">WE <span>FUNDED</span> TRADER</a>
 
-      <div class="nav-links">
-        <a href="#challenges">Challenges</a>
-        <a href="#rules">Rules</a>
-        <a href="#payouts">Payouts</a>
-        <a href="#how">How It Works</a>
-      </div>
-
-      <div class="nav-actions">
-        <a class="btn btn-outline" href="register.html">Log in</a>
-        <a class="btn btn-primary" href="register.html">Sign Up ↗</a>
-      </div>
-    </nav>
+  <div class="nav-links">
+    <a href="#challenges">Challenges</a>
+    <a href="#rules">Rules</a>
+    <a href="#payouts">Payouts</a>
+    <a href="#how">How It Works</a>
   </div>
+
+  <div class="nav-actions">
+    <a class="btn btn-outline" href="Login.html">Log in</a>
+    <a class="btn btn-primary" href="register.html">Sign Up ↗</a>
+  </div>
+</nav>
+</div>
 </header>
 
 <main>
 
-  <section class="hero">
-    <div class="container">
-      <div class="tag">YOUR TRADING JOURNEY STARTS HERE</div>
-      <h1>Trade Your Strategy.<br><span>Get Funded.</span></h1>
-      <p>
-        Prove your trading skills, pass our evaluation, and access a funded
-        trading account with We Funded Trader.
-      </p>
-      <div class="hero-buttons">
-        <a class="btn btn-primary" href="#challenges">Explore Challenges ↗</a>
-        <a class="btn btn-outline" href="Login.html">Log in</a>
+<section class="hero">
+<div class="container">
+  <div class="tag">YOUR TRADING JOURNEY STARTS HERE</div>
+  <h1>Trade Your Strategy.<br><span>Get Funded.</span></h1>
+  <p>
+    Prove your trading skills, pass our evaluation, and access a funded
+    trading account with We Funded Trader.
+  </p>
+  <div class="hero-buttons">
+    <a class="btn btn-primary" href="#challenges">Explore Challenges ↗</a>
+    <a class="btn btn-outline" href="register.html">Create Account</a>
+  </div>
+</div>
+</section>
+
+<section class="section" id="challenges">
+<div class="container">
+  <div class="section-heading">
+    <h2>Choose Your Challenge</h2>
+    <p>Find the account size that matches your trading goals.</p>
+  </div>
+
+  <div class="cards">
+
+    <div class="card">
+      <h3>$2,500 Account</h3>
+      <p>1-Step Evaluation</p>
+      <div class="price">$10</div>
+      <ul>
+        <li>Profit Target: 10%</li>
+        <li>Daily Drawdown: 3%</li>
+        <li>Maximum Drawdown: 5%</li>
+        <li>Minimum Profitable Days: 5</li>
+      </ul>
+      <a class="btn btn-primary" href="register.html">Get Started</a>
     </div>
-  </section>
 
-  <section class="section" id="challenges">
-    <div class="container">
-      <div class="section-heading">
-        <h2>Choose Your Challenge</h2>
-        <p>Find the account size that matches your trading goals.</p>
-      </div>
-
-      <div class="cards">
-
-        <div class="card">
-          <h3>$2,500 Account</h3>
-          <p>1-Step Evaluation</p>
-          <div class="price">$10</div>
-          <ul>
-            <li>Profit Target: 10%</li>
-            <li>Daily Drawdown: 3%</li>
-            <li>Maximum Drawdown: 5%</li>
-            <li>Minimum Profitable Days: 5</li>
-          </ul>
-          <a class="btn btn-primary" href="register.html">Get Started</a>
-        </div>
-
-        <div class="card highlight">
-          <h3>$5,000 Account</h3>
-          <p>1-Step Evaluation</p>
-          <div class="price">$20</div>
-          <ul>
-            <li>Profit Target: 10%</li>
-            <li>Daily Drawdown: 3%</li>
-            <li>Maximum Drawdown: 5%</li>
-            <li>Minimum Profitable Days: 5</li>
-          </ul>
-          <a class="btn btn-primary" href="register.html">Get Started</a>
-        </div>
-
-        <div class="card">
-          <h3>$10,000 Account</h3>
-          <p>1-Step Evaluation</p>
-          <div class="price">$40</div>
-          <ul>
-            <li>Profit Target: 10%</li>
-            <li>Daily Drawdown: 3%</li>
-            <li>Maximum Drawdown: 5%</li>
-            <li>Minimum Profitable Days: 5</li>
-          </ul>
-          <a class="btn btn-primary" href="register.html">Get Started</a>
-        </div>
-
-        <div class="card">
-          <h3>$25,000 Account</h3>
-          <p>1-Step Evaluation</p>
-          <div class="price">$100</div>
-          <ul>
-            <li>Profit Target: 10%</li>
-            <li>Daily Drawdown: 3%</li>
-            <li>Maximum Drawdown: 5%</li>
-            <li>Minimum Profitable Days: 5</li>
-          </ul>
-          <a class="btn btn-primary" href="register.html">Get Started</a>
-        </div>
-
-        <div class="card">
-          <h3>$50,000 Account</h3>
-          <p>1-Step Evaluation</p>
-          <div class="price">$200</div>
-          <ul>
-            <li>Profit Target: 10%</li>
-            <li>Daily Drawdown: 3%</li>
-            <li>Maximum Drawdown: 5%</li>
-            <li>Minimum Profitable Days: 5</li>
-          </ul>
-          <a class="btn btn-primary" href="register.html">Get Started</a>
-        </div>
-
-        <div class="card">
-          <h3>$100,000 Account</h3>
-          <p>1-Step Evaluation</p>
-          <div class="price">$400</div>
-          <ul>
-            <li>Profit Target: 10%</li>
-            <li>Daily Drawdown: 3%</li>
-            <li>Maximum Drawdown: 5%</li>
-            <li>Minimum Profitable Days: 5</li>
-          </ul>
-          <a class="btn btn-primary" href="register.html">Get Started</a>
-        </div>
-
-      </div>
+    <div class="card highlight">
+      <h3>$5,000 Account</h3>
+      <p>1-Step Evaluation</p>
+      <div class="price">$20</div>
+      <ul>
+        <li>Profit Target: 10%</li>
+        <li>Daily Drawdown: 3%</li>
+        <li>Maximum Drawdown: 5%</li>
+        <li>Minimum Profitable Days: 5</li>
+      </ul>
+      <a class="btn btn-primary" href="register.html">Get Started</a>
     </div>
-  </section>
 
-  <section class="section" id="rules">
-    <div class="container">
-      <div class="section-heading">
-        <h2>Trading Rules</h2>
-        <p>Simple and transparent rules for disciplined traders.</p>
-      </div>
-
-      <div class="rules-grid">
-        <div class="rule">
-          <h3>10% Profit Target</h3>
-          <p>Reach the required 10% profit target to pass the 1-Step evaluation.</p>
-        </div>
-
-        <div class="rule">
-          <h3>3% Daily Drawdown</h3>
-          <p>The evaluation account has a 3% static daily drawdown limit.</p>
-        </div>
-
-        <div class="rule">
-          <h3>5% Maximum Drawdown</h3>
-          <p>The maximum overall drawdown for the evaluation is 5%.</p>
-        </div>
-
-        <div class="rule">
-          <h3>5 Profitable Days</h3>
-          <p>You need at least five profitable trading days to complete the evaluation.</p>
-        </div>
-
-        <div class="rule">
-          <h3>0.5% Daily Profit</h3>
-          <p>A profitable day must reach at least 0.5% profit.</p>
-        </div>
-
-        <div class="rule">
-          <h3>Instant Funding</h3>
-          <p>No daily drawdown. Maximum drawdown is 5%, measured on closed positions only.</p>
-        </div>
-      </div>
+    <div class="card">
+      <h3>$10,000 Account</h3>
+      <p>1-Step Evaluation</p>
+      <div class="price">$40</div>
+      <ul>
+        <li>Profit Target: 10%</li>
+        <li>Daily Drawdown: 3%</li>
+        <li>Maximum Drawdown: 5%</li>
+        <li>Minimum Profitable Days: 5</li>
+      </ul>
+      <a class="btn btn-primary" href="register.html">Get Started</a>
     </div>
-  </section>
 
-  <section class="section" id="payouts">
-    <div class="container">
-      <div class="section-heading">
-        <h2>Get Rewarded for Your Trading</h2>
-        <p>Trade responsibly and work toward your payout goals.</p>
-      </div>
-
-      <div class="cta">
-        <h2>Your Trading Skills Deserve an Opportunity</h2>
-        <p>Start your journey with We Funded Trader today.</p>
-        <a class="btn btn-primary" href="register.html">Join Now ↗</a>
-      </div>
+    <div class="card">
+      <h3>$25,000 Account</h3>
+      <p>1-Step Evaluation</p>
+      <div class="price">$100</div>
+      <ul>
+        <li>Profit Target: 10%</li>
+        <li>Daily Drawdown: 3%</li>
+        <li>Maximum Drawdown: 5%</li>
+        <li>Minimum Profitable Days: 5</li>
+      </ul>
+      <a class="btn btn-primary" href="register.html">Get Started</a>
     </div>
-  </section>
 
-  <section class="section" id="how">
-    <div class="container">
-      <div class="section-heading">
-        <h2>How It Works</h2>
-        <p>Four simple steps to begin your funded trading journey.</p>
-      </div>
-
-      <div class="steps">
-        <div class="step">
-          <div class="step-number">01</div>
-          <h3>Create Account</h3>
-          <p>Register for your We Funded Trader account.</p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">02</div>
-          <h3>Choose Challenge</h3>
-          <p>Select your preferred account size and challenge.</p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">03</div>
-          <h3>Pass Evaluation</h3>
-          <p>Follow the trading rules and reach your profit target.</p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">04</div>
-          <h3>Get Funded</h3>
-          <p>Complete the process and begin your funded trading journey.</p>
-        </div>
-      </div>
+    <div class="card">
+      <h3>$50,000 Account</h3>
+      <p>1-Step Evaluation</p>
+      <div class="price">$200</div>
+      <ul>
+        <li>Profit Target: 10%</li>
+        <li>Daily Drawdown: 3%</li>
+        <li>Maximum Drawdown: 5%</li>
+        <li>Minimum Profitable Days: 5</li>
+      </ul>
+      <a class="btn btn-primary" href="register.html">Get Started</a>
     </div>
-  </section>
+
+    <div class="card">
+      <h3>$100,000 Account</h3>
+      <p>1-Step Evaluation</p>
+      <div class="price">$400</div>
+      <ul>
+        <li>Profit Target: 10%</li>
+        <li>Daily Drawdown: 3%</li>
+        <li>Maximum Drawdown: 5%</li>
+        <li>Minimum Profitable Days: 5</li>
+      </ul>
+      <a class="btn btn-primary" href="register.html">Get Started</a>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<section class="section" id="rules">
+<div class="container">
+  <div class="section-heading">
+    <h2>Trading Rules</h2>
+    <p>Simple and transparent rules for disciplined traders.</p>
+  </div>
+
+  <div class="rules-grid">
+    <div class="rule">
+      <h3>10% Profit Target</h3>
+      <p>Reach the required 10% profit target to pass the 1-Step evaluation.</p>
+    </div>
+    <div class="rule">
+      <h3>3% Daily Drawdown</h3>
+      <p>The evaluation account has a 3% static daily drawdown limit.</p>
+    </div>
+    <div class="rule">
+      <h3>5% Maximum Drawdown</h3>
+      <p>The maximum overall drawdown for the evaluation is 5%.</p>
+    </div>
+    <div class="rule">
+      <h3>5 Profitable Days</h3>
+      <p>You need at least five profitable trading days to complete the evaluation.</p>
+    </div>
+    <div class="rule">
+      <h3>0.5% Daily Profit</h3>
+      <p>A profitable day must reach at least 0.5% profit.</p>
+    </div>
+    <div class="rule">
+      <h3>Instant Funding</h3>
+      <p>No daily drawdown. Maximum drawdown is 5%, measured on closed positions only.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="payouts">
+<div class="container">
+  <div class="section-heading">
+    <h2>Get Rewarded for Your Trading</h2>
+    <p>Trade responsibly and work toward your payout goals.</p>
+  </div>
+
+  <div class="cta">
+    <h2>Your Trading Skills Deserve an Opportunity</h2>
+    <p>Start your journey with We Funded Trader today.</p>
+    <a class="btn btn-primary" href="register.html">Join Now ↗</a>
+  </div>
+</div>
+</section>
+
+<section class="section" id="how">
+<div class="container">
+  <div class="section-heading">
+    <h2>How It Works</h2>
+    <p>Four simple steps to begin your funded trading journey.</p>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-number">01</div>
+      <h3>Create Account</h3>
+      <p>Register for your We Funded Trader account.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">02</div>
+      <h3>Choose Challenge</h3>
+      <p>Select your preferred account size and challenge.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">03</div>
+      <h3>Pass Evaluation</h3>
+      <p>Follow the trading rules and reach your profit target.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">04</div>
+      <h3>Get Funded</h3>
+      <p>Complete the process and begin your funded trading journey.</p>
+    </div>
+  </div>
+</div>
+</section>
 
 </main>
 
 <footer>
-  <div class="container">
-    <p>© 2026 We Funded Trader. All rights reserved.</p>
-    <p>Trading involves risk. Trade responsibly.</p>
-  </div>
+<div class="container">
+  <p>© 2026 We Funded Trader. All rights reserved.</p>
+  <p>Trading involves risk. Trade responsibly.</p>
+</div>
 </footer>
 
 </body>
   </html>
+  
