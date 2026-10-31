@@ -63,33 +63,57 @@
   </div>
 
   <script>
-    document.getElementById("registerForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+    <script type="module">
+import { supabase } from "./supabase.js";
 
-      const name = document.getElementById("fullname").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-      const message = document.getElementById("message");
+const form = document.getElementById("registerForm");
+const message = document.getElementById("message");
 
-      if (password !== confirmPassword) {
-        message.style.color = "#ff7777";
-        message.textContent = "Passwords do not match!";
-        return;
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("fullname").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (password !== confirmPassword) {
+    message.style.color = "#ff7777";
+    message.textContent = "Passwords do not match!";
+    return;
+  }
+
+  if (password.length < 8) {
+    message.style.color = "#ff7777";
+    message.textContent = "Password must be at least 8 characters.";
+    return;
+  }
+
+  message.style.color = "#ffffff";
+  message.textContent = "Creating your account...";
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: name
       }
+    }
+  });
 
-      // Demo only: stores the name and email in this browser.
-      // Never store real passwords in localStorage.
-      localStorage.setItem("wft_demo_name", name);
-      localStorage.setItem("wft_demo_email", email);
+  if (error) {
+    message.style.color = "#ff7777";
+    message.textContent = error.message;
+    return;
+  }
 
-      message.style.color = "#42d392";
-      message.textContent = "Demo registration successful! Redirecting to login...";
-
-      setTimeout(function() {
-        window.location.href = "Login.html";
-      }, 1200);
-    });
+  message.style.color = "#42d392";
+  message.textContent =
+    "Registration successful! Please check your email to verify your account.";
+  form.reset();
+});
+</script>
   </script>
 </body>
   </html>
