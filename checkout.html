@@ -233,6 +233,7 @@ button.addEventListener("click", async () => {
   }
 });
 
+
 submitPaymentButton.addEventListener("click", async () => {
   const network = document.getElementById("network").value;
   const txid = document.getElementById("txid").value.trim();
@@ -248,15 +249,17 @@ submitPaymentButton.addEventListener("click", async () => {
   }
 
   const validBep20 = /^0x[a-fA-F0-9]{64}$/.test(txid);
-const validTrc20 = /^[a-fA-F0-9]{64}$/.test(txid);
+  const validTrc20 = /^[a-fA-F0-9]{64}$/.test(txid);
 
-if (
-  (network === "BEP20" && !validBep20) ||
-  (network === "TRC20" && !validTrc20)
-) {
-  showPaymentMessage("Invalid TXID format for the selected network.", "error");
-  return;
-  }
+  if (
+    (network === "BEP20" && !validBep20) ||
+    (network === "TRC20" && !validTrc20)
+  ) {
+    showPaymentMessage(
+      "Invalid TXID format for the selected network.",
+      "error"
+    );
+    return;
   }
 
   submitPaymentButton.disabled = true;
