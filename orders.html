@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Orders | We Funded Trader</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:20px;background:#07111f;color:white;font-family:Arial,sans-serif}
+.wrap{max-width:850px;margin:30px auto}
+h1{color:#39a5ff}
+.subtitle{color:#a9bbcf;line-height:1.6}
+.card{background:#101f33;border:1px solid #263950;border-radius:13px;padding:20px;margin:15px 0;overflow-wrap:anywhere}
+.order{border-bottom:1px solid #263950;padding:18px 0}
+.order:last-child{border:0}
+.row{display:flex;justify-content:space-between;gap:12px;margin:9px 0}
+.label{color:#a9bbcf}
+.status{color:#ffc66d;font-weight:bold}
+button{padding:12px 18px;background:#1689ee;color:white;border:0;border-radius:8px;font-weight:bold;margin:8px 5px 8px 0}
+a{color:#39a5ff}
+.small{font-size:12px;color:#a9bbcf;line-height:1.6}
+#message{color:#a9bbcf;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>My Orders</h1>
+<p class="subtitle">View your challenge purchases and order status.</p>
+
+<div class="card">
+<button id="refreshBtn">Refresh Orders</button>
+<button id="logoutBtn">Log Out</button>
+<p id="message">Loading your orders...</p>
+<div id="orders"></div>
+</div>
+
+<p><a href="dashboard.html">← Back to Dashboard</a></p>
+<p class="small">
+Pending means the order has been created but payment has not
+been confirmed. Payment processing and trading account activation
+are not connected yet.
+</p>
+</div>
+
+<script type="module">
+import { createClient } from
+"https://esm.sh/@supabase/supabase-js@2";
+
+const supabase = createClient(
+  "https://vxcwfirfgxrxafbirnwu.supabase.co",
+  "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv"
+);
+
+const message = document.getElementById("message");
+const ordersDiv = document.getElementById("orders");
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  })[char]);
+}
+
+function money(value) {
+  return "$" + Number(value).toFixed(2);
+}
+
+async function loadOrders() {
+  message.textContent = "Loading orders...";
+  ordersDiv.innerHTML = "";
+
+  const { data: userData, error: authError } =
+    await supabase.auth.getUser();
+
+  if (authError || !userData.user) {
+    message.textContent = "Please log in to view your orders.";
+    setTimeout(() => {
+      window.location.href = "Login.html";
+    }, 1500);
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("orders")
+    .select("id,account_size,account_type,base_price,coupon_code,discount_percent,final_price,status,created_at")
+    .eq("user_id", userData.user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    message.textContent =
+      "Could not load orders. Please check database permissions.";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    message.textContent = "You have no orders yet.";
+    return;
+  }
+
+  message.textContent = "You have " + data.length + " order(s).";
+
+  ordersDiv.innerHTML = data.map(order => `
+    <div class="order">
+      <div class="row">
+        <strong>${escapeHTML(order.account_size.toLocaleString())} Account</strong>
+        <span class="status">${escapeHTML(order.status.toUpperCase())}</span>
+      </div>
+      <div class="row">
+        <span class="label">Order ID</span>
+        <span>${escapeHTML(order.id)}</span>
+      </div>
+      <div class="row">
+        <span class="label">Type</span>
+        <strong>${escapeHTML(order.account_type)}</strong>
+      </div>
+      <div class="row">
+        <span class="label">Base Price</span>
+        <span>${money(order.base_price)}</span>
+      </div>
+      <div class="row">
+        <span class="label">Discount</span>
+        <span>${escapeHTML(order.discount_percent)}%</span>
+      </div>
+      <div class="row">
+        <span class="label">Final Price</span>
+        <strong>${money(order.final_price)}</strong>
+      </div>
+      <div class="row">
+        <span class="label">Date</span>
+        <span>${escapeHTML(new Date(order.created_at).toLocaleString())}</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+document.getElementById("refreshBtn")
+  .addEventListener("click", loadOrders);
+
+document.getElementById("logoutBtn")
+  .addEventListener("click", async () => {
+    await supabase.auth.signOut();
+    window.location.href = "Login.html";
+  });
+
+loadOrders();
+</script>
+</body>
+</html>
