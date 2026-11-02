@@ -247,9 +247,16 @@ submitPaymentButton.addEventListener("click", async () => {
     return;
   }
 
-  if (!txid || txid.length < 20) {
-    showPaymentMessage("Please enter a valid transaction hash.", "error");
-    return;
+  const validBep20 = /^0x[a-fA-F0-9]{64}$/.test(txid);
+const validTrc20 = /^[a-fA-F0-9]{64}$/.test(txid);
+
+if (
+  (network === "BEP20" && !validBep20) ||
+  (network === "TRC20" && !validTrc20)
+) {
+  showPaymentMessage("Invalid TXID format for the selected network.", "error");
+  return;
+  }
   }
 
   submitPaymentButton.disabled = true;
