@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WFT Admin Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07111f;color:#fff;font-family:Arial,sans-serif}
+header{background:#101f35;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{font-size:21px;color:#48a5ff;margin:0}
+button{background:#1685ee;color:white;border:0;padding:11px 16px;border-radius:7px;cursor:pointer}
+main{padding:25px 5%;max-width:1200px;margin:auto}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:20px 0}
+.card{background:#11243b;padding:20px;border-radius:12px;border:1px solid #203b5c}
+.card p{color:#a9bdd3;margin:0 0 12px}
+.card h2{margin:0;color:#55adff}
+.panel{background:#11243b;padding:18px;border-radius:12px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:750px}
+th,td{text-align:left;padding:13px;border-bottom:1px solid #29415c;font-size:13px}
+th{color:#55adff}
+.status{padding:5px 9px;border-radius:6px;background:#35445a}
+.message{padding:15px;color:#b9c9dc}
+.error{color:#ff7373}
+</style>
+</head>
+<body>
+
+<header>
+<h1>WE FUNDED TRADER | ADMIN</h1>
+<button id="logout">Logout</button>
+</header>
+
+<main>
+<h2>Admin Dashboard</h2>
+<p id="message" class="message">Checking admin access...</p>
+
+<div id="content" style="display:none">
+<div class="cards">
+<div class="card"><p>Total Orders</p><h2 id="total">0</h2></div>
+<div class="card"><p>Pending Orders</p><h2 id="pending">0</h2></div>
+<div class="card"><p>Paid Orders</p><h2 id="paid">0</h2></div>
+<div class="card"><p>Total Order Value</p><h2 id="value">$0.00</h2></div>
+</div>
+
+<div class="panel">
+<h3>All Customer Orders</h3>
+<table>
+<thead>
+<tr>
+<th>Order ID</th>
+<th>Customer ID</th>
+<th>Account</th>
+<th>Type</th>
+<th>Base Price</th>
+<th>Discount</th>
+<th>Final Price</th>
+<th>Status</th>
+<th>Date</th>
+</tr>
+</thead>
+<tbody id="orders"></tbody>
+</table>
+</div>
+</div>
+</main>
+
+<script>
+const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const message = document.getElementById("message");
+
+function showError(text){
+ message.textContent = text;
+ message.className = "message error";
+}
+
+async function loadAdmin(){
+ const {data:{session},error:sessionError} = await db.auth.getSession();
+
+ if(sessionError || !session){
+  window.location.href = "Login.html";
+  return;
+ }
+
+ const user = session.user;
+
+ const {data:admin,error:adminError} = await db
+  .from("admin_users")
+  .select("user_id")
+  .eq("user_id",user.id)
+  .maybeSingle();
+
+ if(adminError){
+  showError("Admin verification failed: " + adminError.message);
+  return;
+ }
+
+ if(!admin){
+  showError("Access denied. This account is not an admin.");
+  return;
+ }
+
+ message.textContent = "Admin access verified. Loading orders...";
+
+ const {data:orders,error:ordersError} = await db
+  .from("orders")
+  .select("*")
+  .order("created_at",{ascending:false});
+
+ if(ordersError){
+  showError("Could not load orders: " + ordersError.message);
+  return;
+ }
+
+ document.getElementById("content").style.display = "block";
+ message.textContent = "Admin access verified.";
+
+ const total = orders.length;
+ const pending = orders.filter(o=>o.status==="pending").length;
+ const paid = orders.filter(o=>o.status==="paid").length;
+ const value = orders.reduce((sum,o)=>sum+Number(o.final_price||0),0);
+
+ document.getElementById("total").textContent = total;
+ document.getElementById("pending").textContent = pending;
+ document.getElementById("paid").textContent = paid;
+ document.getElementById("value").textContent = "$"+value.toFixed(2);
+
+ const tbody = document.getElementById("orders");
+ tbody.innerHTML = "";
+
+ if(total===0){
+  tbody.innerHTML = '<tr><td colspan="9">No orders found.</td></tr>';
+  return;
+ }
+
+ orders.forEach(o=>{
+  const tr = document.createElement("tr");
+
+  const values = [
+   String(o.id||"").slice(0,8),
+   String(o.user_id||"").slice(0,8),
+   "$"+Number(o.account_size).toLocaleString(),
+   o.account_type,
+   "$"+Number(o.base_price).toFixed(2),
+   Number(o.discount_percent||0)+"%",
+   "$"+Number(o.final_price).toFixed(2),
+   o.status,
+   o.created_at ? new Date(o.created_at).toLocaleDateString() : "-"
+  ];
+
+  values.forEach((value,index)=>{
+   const td = document.createElement("td");
+   td.textContent = value;
+   if(index===7) td.className="status";
+   tr.appendChild(td);
+  });
+
+  tbody.appendChild(tr);
+ });
+}
+
+document.getElementById("logout").addEventListener("click",async()=>{
+ await db.auth.signOut();
+ window.location.href="Login.html";
+});
+
+loadAdmin();
+</script>
+</body>
+  </html>
