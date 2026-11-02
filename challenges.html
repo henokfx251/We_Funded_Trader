@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,10 +164,18 @@ function applyCoupon() {
   message.textContent = discount + "% discount applied successfully!";
 }
 
+
 function checkout() {
-  document.getElementById("checkoutMessage").style.color = "#ffcc70";
-  document.getElementById("checkoutMessage").textContent =
-    "Checkout is not connected yet. No payment has been taken.";
+  const size = document.getElementById("accountSize").value;
+  const coupon = document.getElementById("coupon").value.trim().toUpperCase();
+
+  const params = new URLSearchParams({
+    size: size,
+    type: accountType,
+    coupon: coupon
+  });
+
+  window.location.href = "checkout.html?" + params.toString();
 }
 </script>
 </body>
