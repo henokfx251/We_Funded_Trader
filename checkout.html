@@ -4,317 +4,201 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secure Checkout | We Funded Trader</title>
-
+<title>Checkout | We Funded Trader</title>
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;padding:22px;
-  background:#07111f;color:#fff;
-  font-family:Arial,sans-serif;
-}
-.wrap{
-  max-width:540px;margin:35px auto;
-  background:#101f33;padding:28px;
-  border:1px solid #263e5c;border-radius:16px;
-}
-.brand{color:#39a5ff;font-weight:bold;font-size:14px}
-h1{font-size:27px;margin:12px 0}
-.subtitle{color:#a9bbcf;font-size:14px;line-height:1.6}
-.item{
-  display:flex;justify-content:space-between;
-  gap:12px;padding:15px 0;
-  border-bottom:1px solid #263950;
-}
-.item span{color:#b5c5d8}
-.item strong{text-align:right;overflow-wrap:anywhere}
-.total{font-size:21px;color:#39a5ff;font-weight:bold}
-button{
-  width:100%;padding:15px;margin-top:22px;
-  border:0;border-radius:9px;
-  background:#1689ee;color:white;
-  font-size:16px;font-weight:bold;
-}
+body{margin:0;background:#07111f;color:white;font-family:Arial,sans-serif;padding:20px}
+.container{max-width:520px;margin:35px auto;background:#102139;padding:25px;border-radius:15px}
+h1{color:#42a5ff;text-align:center}
+p{color:#b8c8dc}
+.item{display:flex;justify-content:space-between;margin:17px 0;gap:12px}
+input{width:100%;padding:13px;border-radius:7px;border:1px solid #38516e;background:#07111f;color:white;margin:10px 0}
+button{width:100%;padding:14px;background:#1685ee;color:white;border:0;border-radius:8px;font-weight:bold;margin-top:15px}
 button:disabled{opacity:.5}
-.note{font-size:13px;color:#a9bbcf;line-height:1.7}
-#message{margin-top:18px;overflow-wrap:anywhere}
-a{color:#39a5ff}
-.success{color:#54df9b}
+#message{margin-top:15px;word-break:break-word}
+.success{color:#55dc91}
 .error{color:#ff7777}
+a{color:#55adff}
 </style>
 </head>
-
 <body>
-<div class="wrap">
+<div class="container">
+<h1>WE FUNDED TRADER</h1>
+<h2>Checkout</h2>
+<p>Review your challenge order.</p>
 
-<div class="brand">WE FUNDED TRADER</div>
-<h1>Secure Checkout</h1>
-<p class="subtitle">
-Review your selected trading account before creating your order.
-</p>
+<div class="item"><span>Account Size</span><strong id="size">Loading...</strong></div>
+<div class="item"><span>Challenge Type</span><strong id="type">Loading...</strong></div>
+<div class="item"><span>Base Price</span><strong id="base">Loading...</strong></div>
 
-<div class="item">
-<span>Account Size</span>
-<strong id="size">Loading...</strong>
-</div>
+<label for="coupon">Coupon Code</label>
+<input id="coupon" placeholder="Enter coupon code">
 
-<div class="item">
-<span>Challenge Type</span>
-<strong id="type">Loading...</strong>
-</div>
+<div class="item"><span>Discount</span><strong id="discount">$0.00</strong></div>
+<div class="item"><strong>Final Price</strong><strong id="final">$0.00</strong></div>
 
-<div class="item">
-<span>Base Price</span>
-<strong id="base">Loading...</strong>
-</div>
-
-<div class="item">
-<span>Coupon Discount</span>
-<strong id="discount">Loading...</strong>
-</div>
-
-<div class="item total">
-<span>Total</span>
-<strong id="total">Loading...</strong>
-</div>
-
-<button id="orderBtn" disabled>Create Order</button>
-
-<div id="message" class="note">
-Connecting to your account...
-</div>
-
-<hr style="border-color:#263950;margin:24px 0">
-
-<p class="note">
-Your order will initially have Pending status.
-Payment processing and MT5 account provisioning are not
-connected yet. Do not send money until an official payment
-system is available.
-</p>
-
-<p><a href="challenges.html">← Back to Challenges</a></p>
-
+<button id="orderButton" disabled>Place Order</button>
+<div id="message"></div>
+<p><a href="challenges.html">Back to Challenges</a></p>
+<p><a href="orders.html">My Orders</a></p>
 </div>
 
 <script type="module">
-import { createClient } from
-"https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SUPABASE_URL =
-"https://vxcwfirfgxrxafbirnwu.supabase.co";
+const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
 
-const SUPABASE_KEY =
-"sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const supabase = createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-const params = new URLSearchParams(
-  window.location.search
-);
-
+const params = new URLSearchParams(window.location.search);
 const size = Number(params.get("size"));
-const type = params.get("type");
-const coupon = (params.get("coupon") || "")
-  .trim().toUpperCase();
+const type = (params.get("type") || "").toLowerCase();
+const couponInput = document.getElementById("coupon");
+const button = document.getElementById("orderButton");
+const message = document.getElementById("message");
 
-const $ = id => document.getElementById(id);
+let basePrice = 0;
+let discountPercent = 0;
+let finalPrice = 0;
 
-const money = value =>
-  "$" + Number(value).toFixed(2);
-
-const button = $("orderBtn");
-const message = $("message");
-
-let checkoutReady = false;
-
-function showMessage(text, className = "note") {
+function showMessage(text, className="") {
   message.textContent = text;
   message.className = className;
 }
 
-async function loadCheckout() {
-  button.disabled = true;
-  checkoutReady = false;
+function calculatePrice() {
+  const code = couponInput.value.trim().toUpperCase();
 
+  discountPercent = 0;
+  if (code === "WFT10") discountPercent = 10;
+  if (code === "WFT20") discountPercent = 20;
+
+  const discountAmount = basePrice * discountPercent / 100;
+  finalPrice = basePrice - discountAmount;
+
+  document.getElementById("discount").textContent =
+    "$" + discountAmount.toFixed(2);
+
+  document.getElementById("final").textContent =
+    "$" + finalPrice.toFixed(2);
+}
+
+async function initialize() {
   try {
-    // Check URL information
-    if (
-      ![2500,5000,10000,25000,50000,100000].includes(size) ||
-      !["evaluation","instant"].includes(type)
-    ) {
-      showMessage(
-        "Invalid checkout details. Please return to Challenges.",
-        "error"
-      );
+    const { data: { session }, error } = await db.auth.getSession();
+
+    if (error || !session) {
+      window.location.href = "Login.html";
       return;
     }
 
-    // Check logged-in user
-    const { data: sessionData, error: sessionError } =
-      await supabase.auth.getSession();
-
-    if (sessionError || !sessionData.session) {
-      showMessage(
-        "Please log in before creating an order.",
-        "error"
-      );
-      return;
+    if (![2500,5000,10000,25000,50000,100000].includes(size)) {
+      throw new Error("Invalid account size.");
     }
 
-    // Load authoritative price from database
-    const { data: price, error: priceError } =
-      await supabase
-        .from("challenge_prices")
-        .select(
-          "base_price,evaluation_enabled,instant_enabled"
-        )
-        .eq("account_size", size)
-        .single();
-
-    if (priceError || !price) {
-      console.error("Price error:", priceError);
-      showMessage(
-        "Could not load prices. Check database permissions.",
-        "error"
-      );
-      return;
+    if (!["evaluation","instant"].includes(type)) {
+      throw new Error("Invalid challenge type.");
     }
 
-    if (
-      (type === "evaluation" && !price.evaluation_enabled) ||
-      (type === "instant" && !price.instant_enabled)
-    ) {
-      showMessage(
-        "This account type is currently unavailable.",
-        "error"
-      );
-      return;
+    document.getElementById("size").textContent =
+      "$" + size.toLocaleString();
+
+    document.getElementById("type").textContent =
+      type === "evaluation" ? "1-Step Evaluation" : "Instant Funding";
+
+    const { data: price, error: priceError } = await db
+      .from("challenge_prices")
+      .select("base_price,evaluation_enabled,instant_enabled")
+      .eq("account_size", size)
+      .single();
+
+    if (priceError) throw priceError;
+    if (!price) throw new Error("Challenge price not found.");
+
+    if (type === "evaluation" && !price.evaluation_enabled) {
+      throw new Error("Evaluation is currently unavailable.");
     }
 
-    // Validate coupon for display
-    const coupons = {
-      WFT10: 10,
-      WFT20: 20
-    };
-
-    const discountRate = coupon
-      ? coupons[coupon]
-      : 0;
-
-    if (coupon && discountRate === undefined) {
-      showMessage("Invalid coupon code.", "error");
-      return;
+    if (type === "instant" && !price.instant_enabled) {
+      throw new Error("Instant Funding is currently unavailable.");
     }
 
-    const base = Number(price.base_price);
-    const discountAmount =
-      base * (discountRate || 0) / 100;
-    const finalPrice = base - discountAmount;
+    basePrice = Number(price.base_price);
 
-    $("size").textContent =
-      "$" + size.toLocaleString("en-US");
+    if (!Number.isFinite(basePrice) || basePrice < 0) {
+      throw new Error("Invalid challenge price.");
+    }
 
-    $("type").textContent =
-      type === "evaluation"
-        ? "1-Step Evaluation"
-        : "Instant Funding";
+    document.getElementById("base").textContent =
+      "$" + basePrice.toFixed(2);
 
-    $("base").textContent = money(base);
+    couponInput.value = (params.get("coupon") || "").toUpperCase();
+    calculatePrice();
 
-    $("discount").textContent =
-      money(discountAmount) +
-      " (" + (discountRate || 0) + "%)";
-
-    $("total").textContent = money(finalPrice);
-
-    checkoutReady = true;
     button.disabled = false;
-
-    showMessage(
-      "Account and price loaded successfully. You can create your order.",
-      "success"
-    );
+    showMessage("Ready to place your order.");
 
   } catch (error) {
-    console.error("Checkout error:", error);
-
-    showMessage(
-      "Connection error. Please refresh and try again.",
-      "error"
-    );
+    showMessage(error.message || "Checkout loading failed.", "error");
   }
 }
 
-// Create order securely through Edge Function
+couponInput.addEventListener("input", calculatePrice);
+
 button.addEventListener("click", async () => {
-  if (!checkoutReady) return;
-
   button.disabled = true;
-  button.textContent = "Creating Order...";
-
-  showMessage("Please wait while your order is created.");
+  button.textContent = "Processing...";
+  showMessage("Creating your order...");
 
   try {
-    const { data, error } =
-      await supabase.functions.invoke(
-        "create-order",
-        {
-          body: {
-            size,
-            type,
-            coupon
-          }
-        }
-      );
+    const { data: { session }, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError || !session) {
+      throw new Error("Please log in again.");
+    }
+
+    const couponCode = couponInput.value.trim().toUpperCase();
+
+    const { data, error } = await db.functions.invoke("smart-handler", {
+      body: {
+        account_size: size,
+        account_type: type,
+        coupon_code: couponCode
+      }
+    });
 
     if (error) {
-      console.error("Function error:", error);
-      throw new Error(
-        error.message || "Order request failed"
-      );
+      throw new Error(error.message || "Edge Function request failed.");
     }
 
-    if (!data || !data.success || !data.order) {
-      throw new Error(
-        data?.error || "Order could not be created"
-      );
+    if (!data || data.error) {
+      throw new Error(data?.error || "Order creation failed.");
     }
-
-    const order = data.order;
-
-    button.textContent = "Order Created";
 
     showMessage(
       "Order created successfully! Order ID: " +
-      order.id +
-      " | Status: " +
-      order.status.toUpperCase() +
-      " | Amount: " +
-      money(order.final_price) +
-      ". Payment is not connected yet. Do not send money.",
+      (data.order?.id || data.order_id || "Created") +
+      ". Status: Pending.",
       "success"
     );
 
+    button.textContent = "Order Created";
+
+    setTimeout(() => {
+      window.location.href = "orders.html";
+    }, 2500);
+
   } catch (error) {
-    console.error("Order creation error:", error);
-
-    showMessage(
-      "Order failed: " +
-      (error.message || "Please try again."),
-      "error"
-    );
-
+    showMessage("Order failed: " + error.message, "error");
     button.disabled = false;
-    button.textContent = "Create Order";
+    button.textContent = "Try Again";
   }
 });
 
-loadCheckout();
+initialize();
 </script>
-
 </body>
-</html>
+  </html>
+  
