@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout | We Funded Trader</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07111f;color:#fff;font-family:Arial,sans-serif}
+header{padding:20px 6%;border-bottom:1px solid #20344d}
+.logo{color:#36a3ff;font-size:21px;font-weight:bold}
+main{max-width:650px;margin:35px auto;padding:0 18px}
+.panel{background:#0d1c2e;border:1px solid #203a56;border-radius:14px;padding:23px}
+h1{margin-top:0}
+p{color:#aebfd3;line-height:1.6}
+.row{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #20344d}
+.row strong{color:#fff}
+.total{font-size:23px;color:#39a6ff;font-weight:bold}
+button{width:100%;padding:15px;background:#087de0;color:white;border:0;border-radius:9px;font-size:16px;font-weight:bold;margin-top:18px}
+button:disabled{opacity:.6}
+.message{margin-top:15px;font-size:14px}
+a{color:#43aaff}
+.small{font-size:12px;color:#8ea4bc}
+</style>
+</head>
+<body>
+<header><div class="logo">WE FUNDED TRADER</div></header>
+<main>
+<section class="panel">
+<h1>Checkout</h1>
+<p>Review your selected trading challenge before continuing.</p>
+
+<div class="row"><span>Account Size</span><strong id="size">Loading...</strong></div>
+<div class="row"><span>Challenge Type</span><strong id="type">Loading...</strong></div>
+<div class="row"><span>Base Price</span><strong id="base">Loading...</strong></div>
+<div class="row"><span>Coupon Discount</span><strong id="discount">Loading...</strong></div>
+<div class="row"><span>Final Price</span><strong class="total" id="total">Loading...</strong></div>
+
+<p id="status" class="message">Checking your selection...</p>
+<button id="continue" disabled>Continue</button>
+<p class="small">
+No payment will be taken on this page. Checkout and payment processing are not connected yet.
+</p>
+<p><a href="challenges.html">← Back to Challenges</a></p>
+</section>
+</main>
+
+<script>
+const prices = {
+  2500:10,
+  5000:20,
+  10000:40,
+  25000:100,
+  50000:200,
+  100000:400
+};
+
+const params = new URLSearchParams(window.location.search);
+const size = Number(params.get("size"));
+const type = params.get("type");
+const coupon = (params.get("coupon") || "").trim().toUpperCase();
+
+const status = document.getElementById("status");
+const button = document.getElementById("continue");
+
+function money(value){
+  return "$" + value.toFixed(2);
+}
+
+function showError(message){
+  status.style.color = "#ff8585";
+  status.textContent = message;
+  button.disabled = true;
+}
+
+if(!prices[size] || !["evaluation","instant"].includes(type)){
+  showError("Challenge selection is missing or invalid. Please return to the Challenges page and select again.");
+  document.getElementById("size").textContent = "Not selected";
+  document.getElementById("type").textContent = "Not selected";
+  document.getElementById("base").textContent = "—";
+  document.getElementById("discount").textContent = "—";
+  document.getElementById("total").textContent = "—";
+}else{
+  const base = prices[size];
+  const discountRate = coupon === "WFT10" ? 10 : coupon === "WFT20" ? 20 : 0;
+  const finalPrice = base * (1 - discountRate / 100);
+
+  document.getElementById("size").textContent = "$" + size.toLocaleString("en-US");
+  document.getElementById("type").textContent =
+    type === "evaluation" ? "1-Step Evaluation" : "Instant Funding";
+  document.getElementById("base").textContent = money(base);
+  document.getElementById("discount").textContent =
+    discountRate + "% (" + money(base * discountRate / 100) + ")";
+  document.getElementById("total").textContent = money(finalPrice);
+
+  status.style.color = "#ffcc70";
+  status.textContent = "Selection loaded. Secure order creation and payment are not connected yet.";
+  button.disabled = true;
+}
+</script>
+</body>
+                   </html>
+  
