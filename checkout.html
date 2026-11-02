@@ -10,15 +10,18 @@
 body{margin:0;background:#07111f;color:white;font-family:Arial,sans-serif;padding:20px}
 .container{max-width:520px;margin:35px auto;background:#102139;padding:25px;border-radius:15px}
 h1{color:#42a5ff;text-align:center}
-p{color:#b8c8dc}
+p{color:#b8c8dc;line-height:1.5}
 .item{display:flex;justify-content:space-between;margin:17px 0;gap:12px}
-input{width:100%;padding:13px;border-radius:7px;border:1px solid #38516e;background:#07111f;color:white;margin:10px 0}
+input,select{width:100%;padding:13px;border-radius:7px;border:1px solid #38516e;background:#07111f;color:white;margin:10px 0}
 button{width:100%;padding:14px;background:#1685ee;color:white;border:0;border-radius:8px;font-weight:bold;margin-top:15px}
 button:disabled{opacity:.5}
-#message{margin-top:15px;word-break:break-word}
+#message,#paymentMessage{margin-top:15px;word-break:break-word}
 .success{color:#55dc91}
 .error{color:#ff7777}
 a{color:#55adff}
+.payment-box{border-top:1px solid #38516e;margin-top:25px;padding-top:20px}
+.small{font-size:13px;color:#9fb3cc}
+.hidden{display:none}
 </style>
 </head>
 <body>
@@ -39,6 +42,27 @@ a{color:#55adff}
 
 <button id="orderButton" disabled>Place Order</button>
 <div id="message"></div>
+
+<div id="paymentSection" class="payment-box hidden">
+<h2>Submit Your Payment</h2>
+<p>Choose the network you used to send USDT, then enter your transaction hash (TXID).</p>
+
+<label for="network">Payment Network</label>
+<select id="network">
+<option value="">Select Network</option>
+<option value="BEP20">USDT BEP20 (BSC)</option>
+<option value="TRC20">USDT TRC20 (TRON)</option>
+</select>
+
+<label for="txid">Transaction ID (TXID)</label>
+<input id="txid" placeholder="Paste your transaction hash">
+
+<p class="small">Make sure the TXID belongs to the selected network. Your payment will remain pending until the Admin verifies it.</p>
+
+<button id="submitPayment">Submit Payment Details</button>
+<div id="paymentMessage"></div>
+</div>
+
 <p><a href="challenges.html">Back to Challenges</a></p>
 <p><a href="orders.html">My Orders</a></p>
 </div>
@@ -54,28 +78,36 @@ const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 const params = new URLSearchParams(window.location.search);
 const size = Number(params.get("size"));
 const type = (params.get("type") || "").toLowerCase();
+
 const couponInput = document.getElementById("coupon");
 const button = document.getElementById("orderButton");
 const message = document.getElementById("message");
+const paymentSection = document.getElementById("paymentSection");
+const paymentMessage = document.getElementById("paymentMessage");
+const submitPaymentButton = document.getElementById("submitPayment");
 
 let basePrice = 0;
-let discountPercent = 0;
-let finalPrice = 0;
+let currentOrderId = null;
 
 function showMessage(text, className="") {
   message.textContent = text;
   message.className = className;
 }
 
+function showPaymentMessage(text, className="") {
+  paymentMessage.textContent = text;
+  paymentMessage.className = className;
+}
+
 function calculatePrice() {
   const code = couponInput.value.trim().toUpperCase();
+  let discountPercent = 0;
 
-  discountPercent = 0;
   if (code === "WFT10") discountPercent = 10;
   if (code === "WFT20") discountPercent = 20;
 
   const discountAmount = basePrice * discountPercent / 100;
-  finalPrice = basePrice - discountAmount;
+  const finalPrice = basePrice - discountAmount;
 
   document.getElementById("discount").textContent =
     "$" + discountAmount.toFixed(2);
@@ -177,23 +209,92 @@ button.addEventListener("click", async () => {
       throw new Error(data?.error || "Order creation failed.");
     }
 
+    currentOrderId = data.order?.id || data.order_id;
+
+    if (!currentOrderId) {
+      throw new Error("Order was created but its ID was not returned. Check My Orders.");
+    }
+
     showMessage(
       "Order created successfully! Order ID: " +
-      (data.order?.id || data.order_id || "Created") +
-      ". Status: Pending.",
+      currentOrderId + ". Status: Pending.",
       "success"
     );
 
     button.textContent = "Order Created";
+    paymentSection.classList.remove("hidden");
 
-    setTimeout(() => {
-      window.location.href = "orders.html";
-    }, 2500);
+    paymentSection.scrollIntoView({behavior:"smooth"});
 
   } catch (error) {
     showMessage("Order failed: " + error.message, "error");
     button.disabled = false;
     button.textContent = "Try Again";
+  }
+});
+
+submitPaymentButton.addEventListener("click", async () => {
+  const network = document.getElementById("network").value;
+  const txid = document.getElementById("txid").value.trim();
+
+  if (!currentOrderId) {
+    showPaymentMessage("Please create an order first.", "error");
+    return;
+  }
+
+  if (!network) {
+    showPaymentMessage("Please select a payment network.", "error");
+    return;
+  }
+
+  if (!txid || txid.length < 20) {
+    showPaymentMessage("Please enter a valid transaction hash.", "error");
+    return;
+  }
+
+  submitPaymentButton.disabled = true;
+  submitPaymentButton.textContent = "Submitting...";
+  showPaymentMessage("Submitting payment details...");
+
+  try {
+    const { data: { session }, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError || !session) {
+      throw new Error("Please log in again.");
+    }
+
+    const { data, error } = await db
+      .from("orders")
+      .update({
+        payment_network: network,
+        transaction_hash: txid,
+        payment_submitted_at: new Date().toISOString()
+      })
+      .eq("id", currentOrderId)
+      .eq("user_id", session.user.id)
+      .select("id")
+      .single();
+
+    if (error) throw error;
+    if (!data) throw new Error("Payment details were not saved.");
+
+    showPaymentMessage(
+      "Payment details submitted. Your order is awaiting Admin verification.",
+      "success"
+    );
+
+    submitPaymentButton.textContent = "Submitted";
+    document.getElementById("network").disabled = true;
+    document.getElementById("txid").disabled = true;
+
+  } catch (error) {
+    showPaymentMessage(
+      "Payment submission failed: " + error.message,
+      "error"
+    );
+    submitPaymentButton.disabled = false;
+    submitPaymentButton.textContent = "Try Again";
   }
 });
 
