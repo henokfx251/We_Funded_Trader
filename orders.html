@@ -4,150 +4,221 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07111f">
 <title>My Orders | We Funded Trader</title>
 <style>
+:root{
+  --bg:#07111f;--panel:#101e31;--line:#263a53;
+  --text:#f4f7fb;--muted:#91a3b9;--blue:#368bff;
+  --green:#20c997;--yellow:#ffc66d;--red:#ff6577;
+}
 *{box-sizing:border-box}
-body{margin:0;padding:20px;background:#07111f;color:white;font-family:Arial,sans-serif}
-.wrap{max-width:850px;margin:30px auto}
-h1{color:#39a5ff}
-.subtitle{color:#a9bbcf;line-height:1.6}
-.card{background:#101f33;border:1px solid #263950;border-radius:13px;padding:20px;margin:15px 0;overflow-wrap:anywhere}
-.order{border-bottom:1px solid #263950;padding:18px 0}
+body{margin:0;padding:20px;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+.wrap{max-width:950px;margin:25px auto}
+h1{margin:0 0 8px;color:#39a5ff}
+.subtitle{color:var(--muted);line-height:1.6}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:20px;margin:15px 0;overflow-wrap:anywhere}
+.order{border-bottom:1px solid var(--line);padding:20px 0}
 .order:last-child{border:0}
-.row{display:flex;justify-content:space-between;gap:12px;margin:9px 0}
-.label{color:#a9bbcf}
-.status{color:#ffc66d;font-weight:bold}
-button{padding:12px 18px;background:#1689ee;color:white;border:0;border-radius:8px;font-weight:bold;margin:8px 5px 8px 0}
+.row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:10px 0;font-size:13px}
+.label{color:var(--muted);flex-shrink:0}
+.row span:last-child,.row strong:last-child{text-align:right;overflow-wrap:anywhere}
+.status{display:inline-block;border-radius:30px;padding:6px 11px;background:#42351c;color:var(--yellow);font-size:11px;font-weight:bold}
+.status.paid{background:#173d35;color:#55e0b3}
+.status.rejected,.status.cancelled{background:#42212b;color:#ff9ba8}
+button,.btn{display:inline-block;padding:11px 16px;background:var(--blue);color:white;border:0;border-radius:8px;font-weight:bold;margin:5px 5px 5px 0;cursor:pointer;text-decoration:none;font-size:13px}
+.secondary{background:#20344d;border:1px solid var(--line)}
 a{color:#39a5ff}
-.small{font-size:12px;color:#a9bbcf;line-height:1.6}
-#message{color:#a9bbcf;line-height:1.6}
+.small{font-size:12px;color:var(--muted);line-height:1.7}
+#message{color:var(--muted);line-height:1.6;font-size:13px}
+.txid{font-size:12px;word-break:break-all;max-width:65%}
+.payment{margin-top:15px;padding:13px;background:#0b192b;border:1px solid var(--line);border-radius:9px}
+.payment-title{font-size:13px;font-weight:bold;margin-bottom:10px}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.links a{font-size:12px}
+@media(max-width:550px){
+ body{padding:12px}
+ .wrap{margin:12px auto}
+ .card{padding:14px}
+ .row{gap:8px}
+ .txid{max-width:60%}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-<h1>My Orders</h1>
-<p class="subtitle">View your challenge purchases and order status.</p>
+  <h1>My Orders</h1>
+  <p class="subtitle">View your challenge purchases, payment details and order status.</p>
 
-<div class="card">
-<button id="refreshBtn">Refresh Orders</button>
-<button id="logoutBtn">Log Out</button>
-<p id="message">Loading your orders...</p>
-<div id="orders"></div>
-</div>
+  <div class="card">
+    <button id="refreshBtn">Refresh Orders</button>
+    <button class="secondary" id="logoutBtn">Log Out</button>
+    <p id="message">Loading your orders...</p>
+    <div id="orders"></div>
+  </div>
 
-<p><a href="dashboard.html">← Back to Dashboard</a></p>
-<p class="small">
-Pending means the order has been created but payment has not
-been confirmed. Payment processing and trading account activation
-are not connected yet.
-</p>
+  <p><a href="dashboard.html">← Back to Dashboard</a></p>
+  <p><a href="challenges.html">Explore Challenges →</a></p>
+
+  <p class="small">
+    Pending means your order is awaiting payment review.
+    Paid means the payment has been approved by the administrator.
+    Trading account activation is a separate step.
+  </p>
 </div>
 
 <script type="module">
-import { createClient } from
-"https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const supabase = createClient(
   "https://vxcwfirfgxrxafbirnwu.supabase.co",
   "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv"
 );
 
-const message = document.getElementById("message");
-const ordersDiv = document.getElementById("orders");
+const $ = id => document.getElementById(id);
 
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#039;"
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g,char=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
   })[char]);
 }
 
-function money(value) {
-  return "$" + Number(value).toFixed(2);
+function money(value){
+  const n=Number(value);
+  return Number.isFinite(n) ? "$"+n.toFixed(2) : "—";
 }
 
-async function loadOrders() {
-  message.textContent = "Loading orders...";
-  ordersDiv.innerHTML = "";
+function explorerURL(network,txid){
+  if(!txid) return "";
+  if(network==="BEP20") return "https://bscscan.com/tx/"+encodeURIComponent(txid);
+  if(network==="TRC20") return "https://tronscan.org/#/transaction/"+encodeURIComponent(txid);
+  return "";
+}
 
-  const { data: userData, error: authError } =
-    await supabase.auth.getUser();
+function statusClass(status){
+  const s=String(status||"pending").toLowerCase();
+  return ["paid","rejected","cancelled"].includes(s)?s:"pending";
+}
 
-  if (authError || !userData.user) {
-    message.textContent = "Please log in to view your orders.";
-    setTimeout(() => {
-      window.location.href = "Login.html";
-    }, 1500);
-    return;
-  }
+async function loadOrders(){
+  $("refreshBtn").disabled=true;
+  $("message").textContent="Loading orders...";
+  $("orders").innerHTML="";
 
-  const { data, error } = await supabase
-    .from("orders")
-    .select("id,account_size,account_type,base_price,coupon_code,discount_percent,final_price,status,created_at")
-    .eq("user_id", userData.user.id)
-    .order("created_at", { ascending: false });
+  try{
+    const {data:userData,error:authError}=await supabase.auth.getUser();
 
-  if (error) {
+    if(authError||!userData.user){
+      $("message").textContent="Please log in to view your orders.";
+      setTimeout(()=>window.location.replace("Login.html"),1200);
+      return;
+    }
+
+    const {data,error}=await supabase
+      .from("orders")
+      .select("id,account_size,account_type,base_price,coupon_code,discount_percent,final_price,status,created_at,payment_network,transaction_hash,payment_submitted_at")
+      .eq("user_id",userData.user.id)
+      .order("created_at",{ascending:false});
+
+    if(error) throw error;
+
+    if(!data||data.length===0){
+      $("message").textContent="You have no orders yet.";
+      return;
+    }
+
+    $("message").textContent="You have "+data.length+" order(s).";
+
+    $("orders").innerHTML=data.map(order=>{
+      const txid=order.transaction_hash;
+      const network=order.payment_network;
+      const explorer=explorerURL(network,txid);
+      const status=String(order.status||"pending").toLowerCase();
+      const date=order.created_at
+        ?new Date(order.created_at).toLocaleString():"—";
+
+      return `
+      <div class="order">
+        <div class="row">
+          <strong>${escapeHTML(Number(order.account_size).toLocaleString())} Account</strong>
+          <span class="status ${statusClass(status)}">${escapeHTML(status.toUpperCase())}</span>
+        </div>
+
+        <div class="row">
+          <span class="label">Order ID</span>
+          <span>${escapeHTML(order.id)}</span>
+        </div>
+        <div class="row">
+          <span class="label">Challenge Type</span>
+          <strong>${escapeHTML(order.account_type)}</strong>
+        </div>
+        <div class="row">
+          <span class="label">Base Price</span>
+          <span>${money(order.base_price)}</span>
+        </div>
+        <div class="row">
+          <span class="label">Coupon</span>
+          <span>${escapeHTML(order.coupon_code||"None")}</span>
+        </div>
+        <div class="row">
+          <span class="label">Discount</span>
+          <span>${escapeHTML(order.discount_percent)}%</span>
+        </div>
+        <div class="row">
+          <span class="label">Final Price</span>
+          <strong>${money(order.final_price)}</strong>
+        </div>
+        <div class="row">
+          <span class="label">Order Date</span>
+          <span>${escapeHTML(date)}</span>
+        </div>
+
+        <div class="payment">
+          <div class="payment-title">Payment Information</div>
+          <div class="row">
+            <span class="label">Network</span>
+            <strong>${escapeHTML(network||"Not submitted")}</strong>
+          </div>
+          <div class="row">
+            <span class="label">Transaction ID</span>
+            <span class="txid">${txid?escapeHTML(txid):"Not submitted"}</span>
+          </div>
+          ${order.payment_submitted_at?`
+          <div class="row">
+            <span class="label">Submitted At</span>
+            <span>${escapeHTML(new Date(order.payment_submitted_at).toLocaleString())}</span>
+          </div>`:""}
+          ${explorer?`
+          <div class="links">
+            <a href="${escapeHTML(explorer)}" target="_blank" rel="noopener noreferrer">Verify Transaction on Explorer ↗</a>
+          </div>`:""}
+        </div>
+      </div>`;
+    }).join("");
+
+  }catch(error){
     console.error(error);
-    message.textContent =
-      "Could not load orders. Please check database permissions.";
-    return;
+    $("message").textContent="Could not load orders: "+error.message;
+  }finally{
+    $("refreshBtn").disabled=false;
   }
-
-  if (!data || data.length === 0) {
-    message.textContent = "You have no orders yet.";
-    return;
-  }
-
-  message.textContent = "You have " + data.length + " order(s).";
-
-  ordersDiv.innerHTML = data.map(order => `
-    <div class="order">
-      <div class="row">
-        <strong>${escapeHTML(order.account_size.toLocaleString())} Account</strong>
-        <span class="status">${escapeHTML(order.status.toUpperCase())}</span>
-      </div>
-      <div class="row">
-        <span class="label">Order ID</span>
-        <span>${escapeHTML(order.id)}</span>
-      </div>
-      <div class="row">
-        <span class="label">Type</span>
-        <strong>${escapeHTML(order.account_type)}</strong>
-      </div>
-      <div class="row">
-        <span class="label">Base Price</span>
-        <span>${money(order.base_price)}</span>
-      </div>
-      <div class="row">
-        <span class="label">Discount</span>
-        <span>${escapeHTML(order.discount_percent)}%</span>
-      </div>
-      <div class="row">
-        <span class="label">Final Price</span>
-        <strong>${money(order.final_price)}</strong>
-      </div>
-      <div class="row">
-        <span class="label">Date</span>
-        <span>${escapeHTML(new Date(order.created_at).toLocaleString())}</span>
-      </div>
-    </div>
-  `).join("");
 }
 
-document.getElementById("refreshBtn")
-  .addEventListener("click", loadOrders);
+$("refreshBtn").addEventListener("click",loadOrders);
 
-document.getElementById("logoutBtn")
-  .addEventListener("click", async () => {
-    await supabase.auth.signOut();
-    window.location.href = "Login.html";
-  });
+$("logoutBtn").addEventListener("click",async()=>{
+  $("logoutBtn").disabled=true;
+  const {error}=await supabase.auth.signOut();
+  if(error){
+    $("message").textContent="Logout failed: "+error.message;
+    $("logoutBtn").disabled=false;
+    return;
+  }
+  window.location.replace("Login.html");
+});
 
 loadOrders();
 </script>
 </body>
-</html>
+  </html>
+  
