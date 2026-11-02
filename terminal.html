@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WFT Trading Terminal</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;background:#07111f;color:#fff;
+  font-family:Arial,sans-serif
+}
+header{
+  background:#102139;padding:17px 20px;
+  display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:10px;
+  border-bottom:1px solid #29415e
+}
+.logo{color:#42a5ff;font-weight:bold;font-size:20px}
+.status{color:#f5c451;font-size:12px}
+.container{max-width:1200px;margin:auto;padding:18px}
+.cards{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:12px;margin-bottom:18px
+}
+.card{
+  background:#102139;padding:16px;
+  border-radius:10px;border:1px solid #263d59
+}
+.label{color:#9fb3cc;font-size:12px}
+.value{font-size:22px;font-weight:bold;margin-top:8px}
+.panel{
+  background:#102139;border:1px solid #263d59;
+  border-radius:12px;padding:16px;margin-bottom:18px
+}
+h2{font-size:18px;margin-top:0}
+#chart{height:430px;width:100%}
+.trade-grid{
+  display:grid;grid-template-columns:1.4fr 1fr;
+  gap:18px
+}
+input,select{
+  width:100%;padding:12px;margin:8px 0 14px;
+  background:#07111f;color:white;
+  border:1px solid #38516e;border-radius:7px
+}
+label{font-size:13px;color:#b8c8dc}
+.buttons{display:flex;gap:10px}
+button{
+  flex:1;padding:13px;border:0;border-radius:7px;
+  color:white;font-weight:bold;cursor:pointer
+}
+.buy{background:#0b9c65}
+.sell{background:#d74747}
+.message{font-size:13px;margin-top:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{
+  padding:12px 8px;text-align:left;
+  border-bottom:1px solid #29415e
+}
+th{color:#9fb3cc}
+.small{font-size:12px;color:#9fb3cc;line-height:1.6}
+@media(max-width:750px){
+  .cards{grid-template-columns:1fr}
+  .trade-grid{grid-template-columns:1fr}
+  #chart{height:350px}
+  .container{padding:10px}
+  table{font-size:11px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">WE FUNDED TRADER</div>
+  <div class="status">DEMO TERMINAL · NOT LIVE EXECUTION</div>
+</header>
+
+<div class="container">
+
+  <div class="cards">
+    <div class="card">
+      <div class="label">Demo Balance</div>
+      <div class="value" id="balance">$100,000.00</div>
+    </div>
+    <div class="card">
+      <div class="label">Open Positions</div>
+      <div class="value" id="openCount">0</div>
+    </div>
+    <div class="card">
+      <div class="label">Account Status</div>
+      <div class="value" style="color:#55dc91">Demo</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>XAUUSD · Gold Chart</h2>
+    <div id="tradingview_chart"></div>
+  </div>
+
+  <div class="trade-grid">
+
+    <div class="panel">
+      <h2>New Order</h2>
+
+      <label>Symbol</label>
+      <select id="symbol">
+        <option value="XAUUSD">XAUUSD - Gold</option>
+      </select>
+
+      <label>Order Type</label>
+      <select id="orderType">
+        <option value="Market">Market (Demo)</option>
+      </select>
+
+      <label>Entry Price (enter price from chart)</label>
+      <input id="entry" type="number" step="0.01"
+        placeholder="Example: 4000.00">
+
+      <label>Lot Size</label>
+      <input id="lots" type="number" min="0.01"
+        max="10" step="0.01" value="0.01">
+
+      <label>Stop Loss</label>
+      <input id="sl" type="number" step="0.01"
+        placeholder="Optional">
+
+      <label>Take Profit</label>
+      <input id="tp" type="number" step="0.01"
+        placeholder="Optional">
+
+      <div class="buttons">
+        <button class="buy" onclick="placeTrade('BUY')">
+          BUY
+        </button>
+        <button class="sell" onclick="placeTrade('SELL')">
+          SELL
+        </button>
+      </div>
+
+      <div id="message" class="message"></div>
+      <p class="small">
+        Demo orders only. No real money is traded and no broker
+        receives these orders.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h2>Trading Rules</h2>
+      <p class="small">
+        • Demo starting balance: $100,000<br>
+        • Maximum lot size: 10.00<br>
+        • Symbol: XAUUSD<br>
+        • Orders are stored in this browser only.<br>
+        • SL and TP are recorded, not executed.
+      </p>
+      <button style="background:#38516e"
+        onclick="resetDemo()">
+        Reset Demo Account
+      </button>
+    </div>
+
+  </div>
+
+  <div class="panel">
+    <h2>Open Positions</h2>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Ticket</th>
+            <th>Type</th>
+            <th>Lots</th>
+            <th>Entry</th>
+            <th>SL</th>
+            <th>TP</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="positions"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Trade History</h2>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Ticket</th>
+            <th>Symbol</th>
+            <th>Type</th>
+            <th>Lots</th>
+            <th>Entry</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="history"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://s3.tradingview.com/tv.js"></script>
+
+<script>
+new TradingView.widget({
+  autosize: true,
+  symbol: "OANDA:XAUUSD",
+  interval: "15",
+  timezone: "Africa/Addis_Ababa",
+  theme: "dark",
+  style: "1",
+  locale: "en",
+  enable_publishing: false,
+  allow_symbol_change: true,
+  hide_side_toolbar: false,
+  container_id: "tradingview_chart"
+});
+
+let balance = Number(localStorage.getItem("wft_demo_balance"));
+if (!Number.isFinite(balance)) balance = 100000;
+
+let trades = JSON.parse(
+  localStorage.getItem("wft_demo_trades") || "[]"
+);
+
+function saveData(){
+  localStorage.setItem("wft_demo_balance", balance);
+  localStorage.setItem("wft_demo_trades", JSON.stringify(trades));
+}
+
+function render(){
+  document.getElementById("balance").textContent =
+    "$" + balance.toLocaleString("en-US", {
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    });
+
+  const open = trades.filter(t => t.status === "OPEN");
+
+  document.getElementById("openCount").textContent =
+    open.length;
+
+  document.getElementById("positions").innerHTML =
+    open.map(t => `
+      <tr>
+        <td>${t.id}</td>
+        <td>${t.side}</td>
+        <td>${t.lots}</td>
+        <td>${t.entry.toFixed(2)}</td>
+        <td>${t.sl || "-"}</td>
+        <td>${t.tp || "-"}</td>
+        <td>
+          <button style="background:#d74747;padding:7px"
+            onclick="closeTrade(${t.id})">
+            Close
+          </button>
+        </td>
+      </tr>
+    `).join("");
+
+  document.getElementById("history").innerHTML =
+    trades.map(t => `
+      <tr>
+        <td>${t.id}</td>
+        <td>${t.symbol}</td>
+        <td>${t.side}</td>
+        <td>${t.lots}</td>
+        <td>${t.entry.toFixed(2)}</td>
+        <td>${t.status}</td>
+      </tr>
+    `).join("");
+}
+
+function placeTrade(side){
+  const entry = Number(document.getElementById("entry").value);
+  const lots = Number(document.getElementById("lots").value);
+  const sl = Number(document.getElementById("sl").value) || null;
+  const tp = Number(document.getElementById("tp").value) || null;
+
+  const message = document.getElementById("message");
+
+  if (!Number.isFinite(entry) || entry <= 0){
+    message.textContent = "Enter a valid entry price.";
+    message.style.color = "#ff7777";
+    return;
+  }
+
+  if (!Number.isFinite(lots) || lots < 0.01 || lots > 10){
+    message.textContent = "Lot size must be between 0.01 and 10.";
+    message.style.color = "#ff7777";
+    return;
+  }
+
+  const trade = {
+    id: Date.now(),
+    symbol: "XAUUSD",
+    side,
+    lots,
+    entry,
+    sl,
+    tp,
+    status: "OPEN",
+    created: new Date().toISOString()
+  };
+
+  trades.unshift(trade);
+  saveData();
+  render();
+
+  message.textContent =
+    side + " demo order created successfully.";
+  message.style.color = "#55dc91";
+}
+
+function closeTrade(id){
+  const trade = trades.find(t => t.id === id);
+  if (!trade || trade.status !== "OPEN") return;
+
+  trade.status = "CLOSED";
+  trade.closed = new Date().toISOString();
+
+  saveData();
+  render();
+}
+
+function resetDemo(){
+  if (!confirm("Reset all demo trades and balance?")) return;
+
+  balance = 100000;
+  trades = [];
+  saveData();
+  render();
+
+  document.getElementById("message").textContent =
+    "Demo account reset.";
+}
+
+render();
+</script>
+
+</body>
+</html>
