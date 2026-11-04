@@ -10,835 +10,492 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#07111f;color:#fff;font-family:Arial,sans-serif}
-header{background:#101f35;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-h1{font-size:21px;color:#48a5ff;margin:0}
-h2,h3{margin-top:12px}
-button{background:#1685ee;color:white;border:0;padding:10px 13px;border-radius:7px;cursor:pointer;font-weight:bold}
+header{background:#101e30;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid #263b52}
+h1{font-size:21px;margin:0;color:#43d9a3}
+h2{font-size:18px;margin:0 0 15px}
+main{max-width:1200px;margin:25px auto;padding:0 15px}
+.panel{background:#101e30;border:1px solid #263b52;border-radius:12px;padding:18px;margin-bottom:20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:#101e30;padding:18px;border:1px solid #263b52;border-radius:10px}
+.stat small{color:#9db0c5}
+.stat strong{display:block;font-size:25px;margin-top:8px;color:#43d9a3}
+input,select{width:100%;padding:12px;margin:6px 0 13px;background:#07111f;color:#fff;border:1px solid #344b64;border-radius:7px}
+button{border:0;border-radius:7px;padding:10px 14px;font-weight:bold;cursor:pointer;margin:3px}
+.primary{background:#16a879;color:#fff}
+.danger{background:#d94343;color:#fff}
+.secondary{background:#344b64;color:#fff}
 button:disabled{opacity:.5;cursor:not-allowed}
-.reject{background:#c83c50}
-.assign{background:#168b68}
-.secondary{background:#52657d}
-main{padding:25px 5%;max-width:1600px;margin:auto}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px;margin:20px 0}
-.card{background:#11243b;padding:20px;border-radius:12px;border:1px solid #203b5c}
-.card p{color:#a9bdd3;margin:0 0 12px}
-.card h2{margin:0;color:#55adff}
-.panel{background:#11243b;padding:18px;border-radius:12px;overflow-x:auto;margin-top:20px}
-table{width:100%;border-collapse:collapse;min-width:1100px}
-th,td{text-align:left;padding:12px;border-bottom:1px solid #29415c;font-size:13px;vertical-align:middle}
-th{color:#55adff}
-input,select,textarea{width:100%;background:#08182a;color:white;border:1px solid #36516e;padding:11px;border-radius:7px;margin:5px 0 12px}
-textarea{min-height:75px;resize:vertical}
-label{font-size:12px;color:#a9bdd3}
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.form-grid>div{min-width:0}
-.status{padding:5px 9px;border-radius:6px;background:#35445a;display:inline-block}
-.message{padding:15px;color:#b9c9dc}
-.error{color:#ff7373}
-.success{color:#55dc91}
-.txid{max-width:210px;overflow-wrap:anywhere;color:#c6d9ef}
-.actions{display:flex;gap:7px;flex-wrap:wrap}
-a{color:#55adff}
-.small{font-size:11px;color:#a9bdd3}
-.top-actions{display:flex;gap:8px;flex-wrap:wrap}
-.section-title{color:#55adff}
-.account-input{min-width:100px;max-width:150px}
-.rule{background:#08182a;border:1px solid #29415c;padding:14px;border-radius:9px;margin:10px 0}
-.rule strong{color:#55adff}
-@media(max-width:600px){
- main{padding:16px 12px}
- header{padding:15px 12px}
- h1{font-size:17px}
- .panel{padding:12px}
-}
+table{width:100%;border-collapse:collapse;min-width:850px}
+th,td{padding:12px 10px;border-bottom:1px solid #263b52;text-align:left;font-size:13px}
+th{color:#43d9a3}
+.table-wrap{overflow-x:auto}
+.muted{color:#9db0c5;font-size:13px}
+.status{padding:5px 8px;border-radius:5px;background:#263b52;display:inline-block}
+#message{padding:12px;border-radius:7px;margin-bottom:15px;display:none;overflow-wrap:anywhere}
+.success{display:block!important;background:#123e32;color:#8df3c8}
+.error{display:block!important;background:#481e27;color:#ffb3bd}
+.info{display:block!important;background:#18334e;color:#b8dcff}
+.hidden{display:none!important}
+.actions{white-space:nowrap}
+a{color:#62b6ff}
+label{font-size:13px;color:#b7c8d9}
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>WE FUNDED TRADER | ADMIN</h1>
-<div class="top-actions">
-<button id="refresh">Refresh</button>
-<button id="logout" class="reject">Logout</button>
-</div>
+  <h1>WE FUNDED TRADER — ADMIN</h1>
+  <button class="danger" onclick="logout()">Logout</button>
 </header>
 
 <main>
-<h2>Admin Dashboard</h2>
-<p id="message" class="message">Checking admin access...</p>
+  <div id="message"></div>
 
-<div id="content" style="display:none">
+  <section id="loading" class="panel">
+    Checking admin access...
+  </section>
 
-<!-- STATISTICS -->
-<div class="cards">
-<div class="card"><p>Total Orders</p><h2 id="total">0</h2></div>
-<div class="card"><p>Pending Orders</p><h2 id="pending">0</h2></div>
-<div class="card"><p>Paid Orders</p><h2 id="paid">0</h2></div>
-<div class="card"><p>Rejected Orders</p><h2 id="rejected">0</h2></div>
-<div class="card"><p>Assigned Accounts</p><h2 id="assigned">0</h2></div>
-<div class="card"><p>Trading Accounts</p><h2 id="accountCount">0</h2></div>
-<div class="card"><p>Total Order Value</p><h2 id="value">$0.00</h2></div>
-</div>
+  <section id="dashboard" class="hidden">
 
-<!-- CHALLENGE RULES -->
-<div class="panel">
-<h3 class="section-title">WFT Challenge Rules Reference</h3>
+    <div class="stats">
+      <div class="stat">
+        <small>Total Orders</small>
+        <strong id="totalOrders">0</strong>
+      </div>
+      <div class="stat">
+        <small>Pending Orders</small>
+        <strong id="pendingOrders">0</strong>
+      </div>
+      <div class="stat">
+        <small>Paid Orders</small>
+        <strong id="paidOrders">0</strong>
+      </div>
+      <div class="stat">
+        <small>Trading Accounts</small>
+        <strong id="totalAccounts">0</strong>
+      </div>
+    </div>
 
-<div class="rule">
-<strong>1-Step Challenge</strong>
-<p>Profit Target: 10%</p>
-<p>Daily Drawdown: 3% Static</p>
-<p>Maximum Drawdown: 5%</p>
-<p>Minimum Profitable Day: 0.5%</p>
-<p>Required Profitable Days: 5</p>
-</div>
+    <section class="panel">
+      <h2>Orders Management</h2>
+      <button class="secondary" onclick="loadOrders()">Refresh Orders</button>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Account</th>
+              <th>Type</th>
+              <th>Price</th>
+              <th>Network</th>
+              <th>Transaction Hash</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTable">
+            <tr><td colspan="8">Loading orders...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-<div class="rule">
-<strong>Instant Account</strong>
-<p>Daily Drawdown: None</p>
-<p>Maximum Drawdown: 5%</p>
-<p>Drawdown calculation: Closed positions only</p>
-</div>
+    <section class="panel">
+      <h2>Create Trading Account</h2>
+      <p class="muted">Use this form only after verifying the customer's order and payment.</p>
 
-<div class="rule">
-<strong>2-Step Challenge</strong>
-<p>Rules not configured yet. Do not assign or advertise unconfirmed rules.</p>
-</div>
+      <label>Customer User ID</label>
+      <input id="newUserId" placeholder="Supabase user UUID">
 
-<p class="small">
-These are reference rules only. Automatic drawdown monitoring requires a verified trading-platform data connection.
-</p>
-</div>
+      <label>Order ID (optional)</label>
+      <input id="newOrderId" placeholder="Order UUID">
 
-<!-- CREATE ACCOUNT -->
-<div class="panel">
-<h3 class="section-title">Create Trading Account</h3>
-<p class="small">
-Create a trading account and assign it to a customer.
-Enter the customer's authenticated Supabase User ID.
-</p>
+      <label>Account Size</label>
+      <select id="newAccountSize">
+        <option value="2500">$2,500</option>
+        <option value="5000">$5,000</option>
+        <option value="10000">$10,000</option>
+        <option value="25000">$25,000</option>
+        <option value="50000">$50,000</option>
+        <option value="100000">$100,000</option>
+      </select>
 
-<form id="createAccountForm">
-<div class="form-grid">
+      <label>Account Type</label>
+      <select id="newAccountType">
+        <option value="1-step">1-Step</option>
+        <option value="2-step">2-Step</option>
+        <option value="instant">Instant</option>
+      </select>
 
-<div>
-<label>Customer User ID *</label>
-<input id="new_user_id" required placeholder="Customer UUID">
-</div>
+      <label>Trading Platform</label>
+      <select id="newPlatform">
+        <option value="MT5">MT5</option>
+        <option value="MT4">MT4</option>
+        <option value="cTrader">cTrader</option>
+      </select>
 
-<div>
-<label>Account Name</label>
-<input id="new_account_name" placeholder="Example: WFT 10K Challenge">
-</div>
+      <label>MT Login</label>
+      <input id="newMtLogin" placeholder="Trading account login">
 
-<div>
-<label>Platform</label>
-<select id="new_platform">
-<option value="MT5">MT5</option>
-<option value="MT4">MT4</option>
-</select>
-</div>
+      <label>MT Server</label>
+      <input id="newMtServer" placeholder="Broker server">
 
-<div>
-<label>Account Type</label>
-<select id="new_account_type">
-<option value="Challenge">Challenge</option>
-<option value="Funded">Funded</option>
-<option value="Instant">Instant</option>
-<option value="Evaluation">Evaluation</option>
-</select>
-</div>
+      <button class="primary" onclick="createTradingAccount()">Create Account</button>
+    </section>
 
-<div>
-<label>Phase</label>
-<select id="new_phase">
-<option value="Phase 1">Phase 1</option>
-<option value="Phase 2">Phase 2</option>
-<option value="Verification">Verification</option>
-<option value="Funded">Funded</option>
-<option value="Instant">Instant</option>
-</select>
-</div>
+    <section class="panel">
+      <h2>Trading Accounts</h2>
+      <button class="secondary" onclick="loadTradingAccounts()">Refresh Accounts</button>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Account ID</th>
+              <th>User ID</th>
+              <th>Account</th>
+              <th>Type</th>
+              <th>Balance</th>
+              <th>Status</th>
+              <th>MT Login</th>
+              <th>Platform</th>
+            </tr>
+          </thead>
+          <tbody id="accountsTable">
+            <tr><td colspan="8">Loading accounts...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-<div>
-<label>MT Login</label>
-<input id="new_mt_login" placeholder="MT5 account login">
-</div>
-
-<div>
-<label>MT Server</label>
-<input id="new_mt_server" placeholder="Broker server">
-</div>
-
-<div>
-<label>Initial Balance ($) *</label>
-<input id="new_initial_balance" type="number" min="0" step="0.01" required value="10000">
-</div>
-
-<div>
-<label>Current Balance ($)</label>
-<input id="new_balance" type="number" min="0" step="0.01" value="10000">
-</div>
-
-<div>
-<label>Equity ($)</label>
-<input id="new_equity" type="number" min="0" step="0.01" value="10000">
-</div>
-
-<div>
-<label>Profit ($)</label>
-<input id="new_profit" type="number" step="0.01" value="0">
-</div>
-
-<div>
-<label>Status</label>
-<select id="new_status">
-<option value="pending">Pending</option>
-<option value="active">Active</option>
-<option value="passed">Passed</option>
-<option value="breached">Breached</option>
-<option value="disabled">Disabled</option>
-</select>
-</div>
-
-<div>
-<label>Start Date</label>
-<input id="new_start_date" type="date">
-</div>
-
-</div>
-
-<label>Admin Notes</label>
-<textarea id="new_admin_notes" placeholder="Internal admin notes"></textarea>
-
-<button id="createButton" type="submit">Create Trading Account</button>
-</form>
-</div>
-
-<!-- TRADING ACCOUNTS -->
-<div class="panel">
-<h3 class="section-title">Trading Accounts Management</h3>
-<p class="small">
-View accounts, update MT credentials, balance, equity, profit and status.
-</p>
-
-<table>
-<thead>
-<tr>
-<th>Account ID</th>
-<th>Customer ID</th>
-<th>Account Name</th>
-<th>Platform</th>
-<th>Type</th>
-<th>MT Login</th>
-<th>MT Server</th>
-<th>Initial Balance</th>
-<th>Balance</th>
-<th>Equity</th>
-<th>Profit</th>
-<th>Status</th>
-<th>Admin Action</th>
-</tr>
-</thead>
-<tbody id="accounts"></tbody>
-</table>
-</div>
-
-<!-- ORDERS -->
-<div class="panel">
-<h3 class="section-title">All Customer Orders & Payments</h3>
-
-<table>
-<thead>
-<tr>
-<th>Order ID</th>
-<th>Customer ID</th>
-<th>Account</th>
-<th>Type</th>
-<th>Final Price</th>
-<th>Network</th>
-<th>Transaction Hash</th>
-<th>Status</th>
-<th>Account ID</th>
-<th>Date</th>
-<th>Admin Action</th>
-</tr>
-</thead>
-<tbody id="orders"></tbody>
-</table>
-</div>
-
-<p class="small">
-Before approving, manually verify the transaction on the correct blockchain:
-USDT token, BEP20 network, recipient wallet, amount and confirmations.
-Never approve a transaction based only on a submitted hash.
-</p>
-
-</div>
+  </section>
 </main>
 
 <script>
-const SUPABASE_URL =
-"https://vxcwfirfgxrxafbirnwu.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
 
 const db = window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
-
-const message = document.getElementById("message");
 
 let currentSession = null;
-let loading = false;
 
-function showMessage(text,type="message"){
-message.textContent=text;
-message.className="message "+type;
+function showMessage(message, type="info") {
+  const box = document.getElementById("message");
+  box.textContent = message;
+  box.className = type;
 }
 
-function makeCell(row,text,className=""){
-const td=document.createElement("td");
-td.textContent=text ?? "-";
-if(className) td.className=className;
-row.appendChild(td);
-return td;
+function hideMessage() {
+  const box = document.getElementById("message");
+  box.textContent = "";
+  box.className = "";
 }
 
-function explorerUrl(network,txid){
-if(network==="BEP20"){
-return "https://bscscan.com/tx/"+encodeURIComponent(txid);
-}
-if(network==="TRC20"){
-return "https://tronscan.org/#/transaction/"+encodeURIComponent(txid);
-}
-return null;
+function money(value) {
+  return "$" + Number(value || 0).toLocaleString("en-US");
 }
 
-// BEP20 transaction hash validation
-function isValidBep20Hash(hash){
-return /^0x[a-fA-F0-9]{64}$/.test(hash) &&
-!/^[0x]+$/.test(hash);
+function shortId(value) {
+  return value ? String(value).slice(0, 8) + "..." : "—";
 }
 
-function addInput(row,value,type="text",className="account-input"){
-const input=document.createElement("input");
-input.type=type;
-input.value=value ?? "";
-input.className=className;
-if(type==="number") input.step="0.01";
-row.appendChild(input);
-return input;
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[char]));
 }
 
-function addSelect(row,value,options){
-const select=document.createElement("select");
-select.className="account-input";
+function isValidBep20Hash(hash) {
+  return /^0x[a-fA-F0-9]{64}$/.test(String(hash || "").trim());
+}
 
-options.forEach(item=>{
-const option=document.createElement("option");
-option.value=item;
-option.textContent=item;
-select.appendChild(option);
+async function loadAdmin() {
+  document.getElementById("loading").classList.remove("hidden");
+  document.getElementById("dashboard").classList.add("hidden");
+  showMessage("Checking Supabase session...", "info");
+
+  try {
+    const { data, error } = await db.auth.getSession();
+
+    if (error) throw error;
+
+    currentSession = data.session;
+
+    if (!currentSession) {
+      showMessage("No active login session. Please login again.", "error");
+      return;
+    }
+
+    showMessage("Checking admin permission...", "info");
+
+    const { data: admin, error: adminError } = await db
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", currentSession.user.id)
+      .maybeSingle();
+
+    if (adminError) throw adminError;
+
+    if (!admin) {
+      showMessage(
+        "Access denied. Your logged-in user is not listed in admin_users. User ID: " +
+        currentSession.user.id,
+        "error"
+      );
+      return;
+    }
+
+    document.getElementById("loading").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+
+    showMessage("Admin access verified. Loading dashboard...", "success");
+
+    await Promise.all([
+      loadOrders(),
+      loadTradingAccounts()
+    ]);
+
+  } catch (error) {
+    showMessage("Admin error: " + error.message, "error");
+    console.error("Admin dashboard error:", error);
+  }
+}
+
+async function loadOrders() {
+  const tbody = document.getElementById("ordersTable");
+  tbody.innerHTML = '<tr><td colspan="8">Loading orders...</td></tr>';
+
+  try {
+    const { data, error } = await db
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    const orders = data || [];
+
+    document.getElementById("totalOrders").textContent = orders.length;
+    document.getElementById("pendingOrders").textContent =
+      orders.filter(o => String(o.status).toLowerCase() === "pending").length;
+    document.getElementById("paidOrders").textContent =
+      orders.filter(o => String(o.status).toLowerCase() === "paid").length;
+
+    if (!orders.length) {
+      tbody.innerHTML = '<tr><td colspan="8">No orders found.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = orders.map(order => {
+      const hash = order.transaction_hash || "";
+      const network = order.payment_network || "—";
+      const isBep20 = String(network).toUpperCase().includes("BEP20");
+      const validHash = isValidBep20Hash(hash);
+      const status = String(order.status || "pending").toLowerCase();
+
+      const hashHTML = hash
+        ? `<span title="${escapeHTML(hash)}">${escapeHTML(shortId(hash))}</span>`
+        : "Not submitted";
+
+      let actions = "";
+
+      if (status === "pending") {
+        actions = `
+          <button class="primary"
+            onclick="updateOrder('${order.id}','paid')"
+            ${(!isBep20 || !validHash) ? "disabled" : ""}>
+            Approve
+          </button>
+          <button class="danger"
+            onclick="updateOrder('${order.id}','rejected')">
+            Reject
+          </button>`;
+      } else {
+        actions = `<span class="status">${escapeHTML(status)}</span>`;
+      }
+
+      return `
+        <tr>
+          <td title="${escapeHTML(order.id)}">${escapeHTML(shortId(order.id))}</td>
+          <td title="${escapeHTML(order.user_id)}">${escapeHTML(shortId(order.user_id))}</td>
+          <td>${escapeHTML(order.account_size || "—")}</td>
+          <td>${escapeHTML(order.account_type || "—")}</td>
+          <td>${money(order.final_price)}</td>
+          <td>${escapeHTML(network)}</td>
+          <td>${hashHTML}</td>
+          <td><span class="status">${escapeHTML(status)}</span></td>
+          <td class="actions">${actions}</td>
+        </tr>`;
+    }).join("");
+
+  } catch (error) {
+    tbody.innerHTML =
+      `<tr><td colspan="8">Error: ${escapeHTML(error.message)}</td></tr>`;
+    showMessage("Orders loading error: " + error.message, "error");
+    console.error(error);
+  }
+}
+
+async function updateOrder(orderId, status) {
+  if (!currentSession) {
+    showMessage("Please login again.", "error");
+    return;
+  }
+
+  const confirmation = status === "paid"
+    ? "Have you independently verified the BEP20 payment on the blockchain?"
+    : "Are you sure you want to reject this order?";
+
+  if (!confirm(confirmation)) return;
+
+  try {
+    showMessage("Updating order...", "info");
+
+    const { data, error } = await db.functions.invoke(
+      "admin-update-order",
+      {
+        body: {
+          order_id: orderId,
+          status: status
+        }
+      }
+    );
+
+    if (error) throw error;
+
+    showMessage("Order update request completed.", "success");
+    await loadOrders();
+
+  } catch (error) {
+    showMessage("Order update failed: " + error.message, "error");
+    console.error(error);
+  }
+}
+
+async function loadTradingAccounts() {
+  const tbody = document.getElementById("accountsTable");
+  tbody.innerHTML = '<tr><td colspan="8">Loading accounts...</td></tr>';
+
+  try {
+    const { data, error } = await db
+      .from("trading_accounts")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    const accounts = data || [];
+    document.getElementById("totalAccounts").textContent = accounts.length;
+
+    if (!accounts.length) {
+      tbody.innerHTML = '<tr><td colspan="8">No trading accounts found.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = accounts.map(account => `
+      <tr>
+        <td title="${escapeHTML(account.id)}">${escapeHTML(shortId(account.id))}</td>
+        <td title="${escapeHTML(account.user_id)}">${escapeHTML(shortId(account.user_id))}</td>
+        <td>${escapeHTML(account.account_size || "—")}</td>
+        <td>${escapeHTML(account.account_type || "—")}</td>
+        <td>${money(account.balance)}</td>
+        <td>${escapeHTML(account.status || "—")}</td>
+        <td>${escapeHTML(account.mt_login || "—")}</td>
+        <td>${escapeHTML(account.platform || "—")}</td>
+      </tr>
+    `).join("");
+
+  } catch (error) {
+    tbody.innerHTML =
+      `<tr><td colspan="8">Error: ${escapeHTML(error.message)}</td></tr>`;
+    showMessage("Trading accounts error: " + error.message, "error");
+    console.error(error);
+  }
+}
+
+async function createTradingAccount() {
+  const userId = document.getElementById("newUserId").value.trim();
+  const orderId = document.getElementById("newOrderId").value.trim();
+  const accountSize = Number(document.getElementById("newAccountSize").value);
+  const accountType = document.getElementById("newAccountType").value;
+  const platform = document.getElementById("newPlatform").value;
+  const mtLogin = document.getElementById("newMtLogin").value.trim();
+  const mtServer = document.getElementById("newMtServer").value.trim();
+
+  if (!userId) {
+    showMessage("Enter the customer's Supabase User ID.", "error");
+    return;
+  }
+
+  if (!mtLogin || !mtServer) {
+    showMessage("Enter both MT Login and MT Server.", "error");
+    return;
+  }
+
+  if (!confirm("Create this trading account? Verify the customer's order first.")) {
+    return;
+  }
+
+  try {
+    showMessage("Creating trading account...", "info");
+
+    const { data, error } = await db.functions.invoke(
+      "admin-create-trading-account",
+      {
+        body: {
+          user_id: userId,
+          order_id: orderId || null,
+          account_size: accountSize,
+          account_type: accountType,
+          platform: platform,
+          mt_login: mtLogin,
+          mt_server: mtServer
+        }
+      }
+    );
+
+    if (error) throw error;
+
+    showMessage("Create account request completed.", "success");
+
+    document.getElementById("newUserId").value = "";
+    document.getElementById("newOrderId").value = "";
+    document.getElementById("newMtLogin").value = "";
+    document.getElementById("newMtServer").value = "";
+
+    await loadTradingAccounts();
+
+  } catch (error) {
+    showMessage("Account creation failed: " + error.message, "error");
+    console.error(error);
+  }
+}
+
+async function logout() {
+  const { error } = await db.auth.signOut();
+
+  if (error) {
+    showMessage("Logout error: " + error.message, "error");
+    return;
+  }
+
+  window.location.href = "Login.html";
+}
+
+db.auth.onAuthStateChange((event, session) => {
+  currentSession = session;
 });
 
-select.value=value || options[0];
-row.appendChild(select);
-return select;
-}
-
-// APPROVE / REJECT
-async function reviewOrder(orderId,decision,button){
-
-const action=decision==="paid"?"approve":"reject";
-
-if(decision==="paid"){
-const {data:order,error}=await db
-.from("orders")
-.select("id,status,transaction_hash,payment_network")
-.eq("id",orderId)
-.maybeSingle();
-
-if(error || !order){
-showMessage("Could not verify order before approval.","error");
-return;
-}
-
-if(order.status!=="pending"){
-showMessage("This order is no longer pending.","error");
-return;
-}
-
-if(order.payment_network!=="BEP20"){
-showMessage("Only BEP20 orders can be approved through this dashboard.","error");
-return;
-}
-
-if(!isValidBep20Hash(order.transaction_hash||"")){
-showMessage("Invalid or missing BEP20 transaction hash.","error");
-return;
-}
-}
-
-const confirmed=window.confirm(
-"Are you sure you want to "+action+
-" this order? Manually verify the transaction first."
-);
-
-if(!confirmed) return;
-
-button.disabled=true;
-button.textContent="Processing...";
-
-try{
-const {data,error}=await db.functions.invoke(
-"admin-update-order",
-{
-body:{
-order_id:orderId,
-decision:decision
-}
-}
-);
-
-if(error) throw new Error(error.message);
-if(!data || !data.success){
-throw new Error(data?.error||"Review failed.");
-}
-
-showMessage("Order "+decision+" successfully.","success");
-await loadOrders();
-
-}catch(error){
-showMessage("Could not update order: "+error.message,"error");
-button.disabled=false;
-button.textContent=decision==="paid"?"Approve":"Reject";
-}
-}
-
-// ASSIGN ACCOUNT
-async function assignAccount(orderId,button){
-
-const confirmed=window.confirm(
-"Create a trading account record for this paid order?"
-);
-
-if(!confirmed) return;
-
-button.disabled=true;
-button.textContent="Assigning...";
-
-try{
-const {data,error}=await db.functions.invoke(
-"admin-assign-account",
-{
-body:{order_id:orderId}
-}
-);
-
-if(error) throw new Error(error.message);
-
-if(!data || !data.success){
-throw new Error(data?.error||"Account assignment failed.");
-}
-
-showMessage(
-data.already_assigned
-? "This order already has an assigned account."
-: "Trading account record created successfully.",
-"success"
-);
-
-await loadOrders();
-await loadTradingAccounts();
-
-}catch(error){
-showMessage("Could not assign account: "+error.message,"error");
-button.disabled=false;
-button.textContent="Assign Account";
-}
-}
-
-// CREATE TRADING ACCOUNT
-document.getElementById("createAccountForm")
-.addEventListener("submit",async function(event){
-
-event.preventDefault();
-
-const button=document.getElementById("createButton");
-button.disabled=true;
-button.textContent="Creating...";
-
-try{
-
-const payload={
-user_id:document.getElementById("new_user_id").value.trim(),
-account_name:document.getElementById("new_account_name").value.trim(),
-platform:document.getElementById("new_platform").value,
-account_type:document.getElementById("new_account_type").value,
-phase:document.getElementById("new_phase").value,
-mt_login:document.getElementById("new_mt_login").value.trim(),
-mt_server:document.getElementById("new_mt_server").value.trim(),
-initial_balance:Number(document.getElementById("new_initial_balance").value),
-balance:Number(document.getElementById("new_balance").value),
-equity:Number(document.getElementById("new_equity").value),
-profit:Number(document.getElementById("new_profit").value),
-status:document.getElementById("new_status").value,
-start_date:document.getElementById("new_start_date").value || null,
-admin_notes:document.getElementById("new_admin_notes").value.trim()
-};
-
-if(!payload.user_id) throw new Error("Customer User ID is required.");
-
-const numericFields=[
-payload.initial_balance,
-payload.balance,
-payload.equity,
-payload.profit
-];
-
-if(numericFields.some(n=>!Number.isFinite(n))){
-throw new Error("Enter valid account numbers.");
-}
-
-if(payload.initial_balance<=0){
-throw new Error("Initial balance must be greater than zero.");
-}
-
-if(payload.balance<0 || payload.equity<0){
-throw new Error("Balance and equity cannot be negative.");
-}
-
-const {data,error}=await db.functions.invoke(
-"admin-create-trading-account",
-{body:payload}
-);
-
-if(error) throw new Error(error.message);
-
-if(!data || !data.success){
-throw new Error(data?.error||"Account creation failed.");
-}
-
-showMessage("Trading account created successfully!","success");
-
-this.reset();
-
-document.getElementById("new_initial_balance").value="10000";
-document.getElementById("new_balance").value="10000";
-document.getElementById("new_equity").value="10000";
-document.getElementById("new_profit").value="0";
-
-await loadTradingAccounts();
-
-}catch(error){
-showMessage("Create account failed: "+error.message,"error");
-}
-
-button.disabled=false;
-button.textContent="Create Trading Account";
-});
-
-// LOAD TRADING ACCOUNTS
-async function loadTradingAccounts(){
-
-const tbody=document.getElementById("accounts");
-tbody.replaceChildren();
-
-const {data:accounts,error}=await db
-.from("trading_accounts")
-.select("*")
-.order("created_at",{ascending:false});
-
-if(error){
-showMessage("Could not load trading accounts: "+error.message,"error");
-return;
-}
-
-document.getElementById("accountCount").textContent=
-(accounts||[]).length;
-
-if(!accounts || accounts.length===0){
-const tr=document.createElement("tr");
-makeCell(tr,"No trading accounts found.");
-tbody.appendChild(tr);
-return;
-}
-
-accounts.forEach(account=>{
-
-const tr=document.createElement("tr");
-
-makeCell(tr,String(account.id||"").slice(0,8));
-makeCell(tr,String(account.user_id||""));
-makeCell(tr,account.account_name||"-");
-makeCell(tr,account.platform||"-");
-makeCell(tr,account.account_type||"-");
-
-const login=addInput(tr,account.mt_login);
-const server=addInput(tr,account.mt_server);
-const initial=addInput(tr,account.initial_balance,"number");
-const balance=addInput(tr,account.balance,"number");
-const equity=addInput(tr,account.equity,"number");
-const profit=addInput(tr,account.profit,"number");
-
-const status=addSelect(
-tr,
-account.status,
-["pending","active","passed","breached","disabled"]
-);
-
-const actionCell=document.createElement("td");
-const save=document.createElement("button");
-save.textContent="Save Changes";
-save.className="assign";
-
-save.addEventListener("click",async()=>{
-
-const values={
-mt_login:login.value.trim(),
-mt_server:server.value.trim(),
-initial_balance:Number(initial.value),
-balance:Number(balance.value),
-equity:Number(equity.value),
-profit:Number(profit.value),
-status:status.value
-};
-
-if(Object.values(values).some(v=>
-typeof v==="number" && !Number.isFinite(v)
-)){
-showMessage("Enter valid numeric values.","error");
-return;
-}
-
-if(values.initial_balance<=0 ||
-values.balance<0 ||
-values.equity<0){
-showMessage("Invalid balance or equity values.","error");
-return;
-}
-
-save.disabled=true;
-save.textContent="Saving...";
-
-try{
-
-const {error:updateError}=await db
-.from("trading_accounts")
-.update(values)
-.eq("id",account.id);
-
-if(updateError) throw updateError;
-
-showMessage("Trading account updated successfully.","success");
-
-await loadTradingAccounts();
-
-}catch(error){
-showMessage("Account update failed: "+error.message,"error");
-save.disabled=false;
-save.textContent="Save Changes";
-}
-
-});
-
-actionCell.appendChild(save);
-tr.appendChild(actionCell);
-tbody.appendChild(tr);
-
-});
-}
-
-// LOAD ORDERS
-async function loadOrders(){
-
-showMessage("Loading orders...");
-
-const {data:orders,error}=await db
-.from("orders")
-.select("*")
-.order("created_at",{ascending:false});
-
-if(error){
-showMessage("Could not load orders: "+error.message,"error");
-return;
-}
-
-const {data:accounts,error:accountsError}=await db
-.from("trading_accounts")
-.select("id,order_id");
-
-if(accountsError){
-showMessage("Could not load trading accounts: "+accountsError.message,"error");
-return;
-}
-
-const accountMap=new Map();
-
-(accounts||[]).forEach(account=>{
-if(account.order_id){
-accountMap.set(account.order_id,account.id);
-}
-});
-
-document.getElementById("total").textContent=orders.length;
-
-document.getElementById("pending").textContent=
-orders.filter(o=>o.status==="pending").length;
-
-document.getElementById("paid").textContent=
-orders.filter(o=>o.status==="paid").length;
-
-document.getElementById("rejected").textContent=
-orders.filter(o=>o.status==="rejected").length;
-
-document.getElementById("assigned").textContent=
-accountMap.size;
-
-const totalValue=orders.reduce(
-(sum,o)=>sum+Number(o.final_price||0),0
-);
-
-document.getElementById("value").textContent=
-"$"+totalValue.toFixed(2);
-
-const tbody=document.getElementById("orders");
-tbody.replaceChildren();
-
-if(orders.length===0){
-const tr=document.createElement("tr");
-makeCell(tr,"No orders found.");
-tbody.appendChild(tr);
-showMessage("Admin access verified. No orders found.","success");
-return;
-}
-
-orders.forEach(o=>{
-
-const tr=document.createElement("tr");
-
-makeCell(tr,String(o.id||"").slice(0,8));
-makeCell(tr,String(o.user_id||"").slice(0,8));
-
-makeCell(
-tr,
-"$"+Number(o.account_size||0).toLocaleString()
-);
-
-makeCell(tr,o.account_type||"-");
-
-makeCell(
-tr,
-"$"+Number(o.final_price||0).toFixed(2)
-);
-
-makeCell(tr,o.payment_network||"Not submitted");
-
-const txCell=makeCell(
-tr,
-o.transaction_hash||"Not submitted",
-"txid"
-);
-
-if(o.transaction_hash && o.payment_network){
-
-const url=explorerUrl(
-o.payment_network,
-o.transaction_hash
-);
-
-if(url){
-const link=document.createElement("a");
-link.href=url;
-link.target="_blank";
-link.rel="noopener noreferrer";
-link.textContent="Open in Explorer";
-
-txCell.appendChild(document.createElement("br"));
-txCell.appendChild(link);
-}
-}
-
-makeCell(tr,o.status||"-","status");
-
-const accountId=accountMap.get(o.id);
-
-makeCell(
-tr,
-accountId?String(accountId).slice(0,8):"Not assigned"
-);
-
-makeCell(
-tr,
-o.created_at?new Date(o.created_at).toLocaleString():"-"
-);
-
-const actionCell=document.createElement("td");
-const actions=document.createElement("div");
-actions.className="actions";
-
-if(o.status==="pending"){
-
-const canApprove=
-o.payment_network==="BEP20" &&
-isValidBep20Hash(o.transaction_hash||"");
-
-if(canApprove){
-
-const approve=document.createElement("button");
-approve.textContent="Approve";
-
-approve.addEventListener(
-"click",
-()=>reviewOrder(o.id,"paid",approve)
-);
-
-actions.appendChild(approve);
-
-}else{
-
-const waiting=document.createElement("span");
-waiting.className="small";
-waiting.textContent="Invalid / missing BEP20 TXID";
-actions.appendChild(waiting);
-
-}
-
-const reject=document.createElement("button");
-reject.textContent="Reject";
-reject.className="reject";
-
-reject.addEventListener(
-"click",
-()=>reviewOrder(o.id,"rejected",reject)
-);
-
-actions.appendChild(reject);
-
-}else if(o.status==="paid" && accountId){
-
-actions.textContent="Account Assigned";
-
-}else if(o.status==="paid"){
-
-const assign=document.createElement("button");
-assign.textContent="Assign Account";
-assign.className="assign";
-
-assign.addEventListener(
-"click",
-()=>assignAccount(o.id,assign)
-);
-
-actions.appendChild(assign);
-
-}else{
-
-actions.textContent="Reviewed";
-}
-
-actionCell.appendChild(actions)
+loadAdmin();
+</script>
+
+</body>
+ </html>
+ 
