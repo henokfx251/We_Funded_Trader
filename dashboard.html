@@ -6,10 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Customer Dashboard | WE FUNDED TRADER</title>
 <style>
-:root{--bg:#07111f;--panel:#101e31;--line:#243952;--blue:#2694ff;--gold:#e8b95b;--text:#f4f7fc;--muted:#91a4bb;--green:#35d49a;--red:#ff6b75}
+:root{--bg:#07111f;--panel:#101e31;--line:#243952;--blue:#2694ff;--gold:#e8b95b;--text:#f4f7fc;--muted:#91a4bb;--green:#35d49a}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
-button,input{font:inherit}button{cursor:pointer}
+button,input{font:inherit}
+button{cursor:pointer}
 .sidebar{position:fixed;top:0;bottom:0;left:0;width:255px;background:#0a1728;border-right:1px solid var(--line);padding:22px 15px;z-index:30;overflow-y:auto;transition:.25s;display:flex;flex-direction:column}
 .brand{padding:8px 12px 24px;border-bottom:1px solid var(--line)}
 .brand h2{font-size:19px;margin:0}.brand span{color:var(--blue)}
@@ -65,6 +66,7 @@ th{color:#8298b2}td{color:#dbe5f1}
 .footer{text-align:center;color:#5f7690;font-size:10px;padding:25px}
 .mobile-overlay{display:none}
 .toast{position:fixed;bottom:20px;right:20px;background:#173b35;color:#6be6b7;padding:13px 18px;border-radius:9px;display:none;z-index:99}
+button:disabled{opacity:.6;cursor:not-allowed}
 @media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){
 .sidebar{transform:translateX(-100%)}
@@ -89,26 +91,22 @@ th{color:#8298b2}td{color:#dbe5f1}
   <h2>WE FUNDED <span>TRADER</span></h2>
   <p>TRADING EXCELLENCE</p>
  </div>
-
  <div class="nav-label">MAIN MENU</div>
  <button class="nav-btn active" data-page="overview"><span class="nav-icon">▦</span>Overview</button>
  <button class="nav-btn" data-page="challenge"><span class="nav-icon">◈</span>Challenge</button>
  <button class="nav-btn" data-page="accounts"><span class="nav-icon">▣</span>My Accounts</button>
  <button class="nav-btn" data-page="orders"><span class="nav-icon">▤</span>My Orders</button>
  <button class="nav-btn" data-page="terminal"><span class="nav-icon">⌁</span>Trading Terminal</button>
-
  <div class="nav-label">SERVICES</div>
  <button class="nav-btn" data-page="kyc"><span class="nav-icon">◇</span>KYC Verification</button>
  <button class="nav-btn" data-page="certificate"><span class="nav-icon">✧</span>Certificate</button>
  <button class="nav-btn" data-page="payout"><span class="nav-icon">$</span>Payout</button>
-
  <div class="nav-label">MORE</div>
  <button class="nav-btn" data-page="affiliate"><span class="nav-icon">♧</span>Affiliate</button>
  <button class="nav-btn" data-page="support"><span class="nav-icon">✉</span>Support</button>
  <button class="nav-btn" data-page="settings"><span class="nav-icon">⚙</span>Settings</button>
-
  <div class="sidebar-bottom">
-  <button class="nav-btn" id="logoutBtn"><span class="nav-icon">⇥</span>Logout</button>
+  <button class="nav-btn" id="logoutBtn" type="button"><span class="nav-icon">⇥</span><span id="logoutText">Logout</span></button>
  </div>
 </aside>
 
@@ -125,28 +123,19 @@ th{color:#8298b2}td{color:#dbe5f1}
 </header>
 
 <div class="content">
-
 <section class="page active" id="page-overview">
  <div class="welcome">
-  <div>
-   <h1>Welcome back, <span class="blue" id="welcomeName">Trader</span></h1>
-   <p>Here is your trading performance overview.</p>
-  </div>
+  <div><h1>Welcome back, <span class="blue" id="welcomeName">Trader</span></h1><p>Here is your trading performance overview.</p></div>
   <span class="muted" id="todayDate"></span>
  </div>
-
  <div class="grid stats">
   <div class="card"><div class="stat-name">Total Balance</div><div class="stat-value" id="totalBalance">$0.00</div><div class="stat-sub">Across your trading accounts</div></div>
   <div class="card"><div class="stat-name">Total Equity</div><div class="stat-value blue" id="totalEquity">$0.00</div><div class="stat-sub">Reported account equity</div></div>
   <div class="card"><div class="stat-name">Total Profit</div><div class="stat-value green" id="totalProfit">$0.00</div><div class="stat-sub">Reported trading profit</div></div>
   <div class="card"><div class="stat-name">Trading Accounts</div><div class="stat-value gold" id="accountCount">0</div><div class="stat-sub">Your assigned accounts</div></div>
  </div>
-
  <div class="grid two-col">
-  <div class="card">
-   <div class="section-head"><h3>My Trading Accounts</h3><span class="muted" id="accountSummary">0 accounts</span></div>
-   <div id="overviewAccounts"><div class="empty">Loading accounts...</div></div>
-  </div>
+  <div class="card"><div class="section-head"><h3>My Trading Accounts</h3><span class="muted" id="accountSummary">0 accounts</span></div><div id="overviewAccounts"><div class="empty">Loading accounts...</div></div></div>
   <div class="card">
    <h3>Account Summary</h3>
    <div class="account-details">
@@ -159,11 +148,7 @@ th{color:#8298b2}td{color:#dbe5f1}
    <button class="action-btn" onclick="showPage('accounts')">View My Accounts</button>
   </div>
  </div>
-
- <div class="card">
-  <div class="section-head"><h3>Recent Orders</h3><button class="action-btn secondary" onclick="showPage('orders')">View All</button></div>
-  <div id="recentOrders"><div class="empty">Loading orders...</div></div>
- </div>
+ <div class="card"><div class="section-head"><h3>Recent Orders</h3><button class="action-btn secondary" onclick="showPage('orders')">View All</button></div><div id="recentOrders"><div class="empty">Loading orders...</div></div></div>
 </section>
 
 <section class="page" id="page-challenge">
@@ -186,12 +171,9 @@ th{color:#8298b2}td{color:#dbe5f1}
 <section class="page" id="page-terminal">
  <div class="page-heading"><h1>Trading Terminal</h1><p>Your MetaTrader account connection details.</p></div>
  <div id="terminalAccounts"><div class="empty">Loading...</div></div>
- <div class="info-card">
-  <h3>MetaTrader Access</h3>
-  <p>Use the MT4 or MT5 platform selected for your account. Your login credentials and server must be provided by Admin after account setup.</p>
-  <a class="action-btn" href="https://www.metatrader5.com/" target="_blank" rel="noopener">Open MetaTrader 5</a>
-  <a class="action-btn secondary" href="https://www.metatrader4.com/" target="_blank" rel="noopener">Open MetaTrader 4</a>
- </div>
+ <div class="info-card"><h3>MetaTrader Access</h3><p>Use the MT4 or MT5 platform selected for your account. Your login credentials and server must be provided by Admin after account setup.</p>
+ <a class="action-btn" href="https://www.metatrader5.com/" target="_blank" rel="noopener">Open MetaTrader 5</a>
+ <a class="action-btn secondary" href="https://www.metatrader4.com/" target="_blank" rel="noopener">Open MetaTrader 4</a></div>
 </section>
 
 <section class="page" id="page-kyc">
@@ -221,13 +203,11 @@ th{color:#8298b2}td{color:#dbe5f1}
 
 <section class="page" id="page-settings">
  <div class="page-heading"><h1>Account Settings</h1><p>Manage your login and profile information.</p></div>
- <div class="info-card">
-  <h3>Profile Information</h3>
+ <div class="info-card"><h3>Profile Information</h3>
   <div class="field"><label>Email Address</label><input id="profileEmail" readonly></div>
   <div class="field"><label>User ID</label><input id="profileId" readonly></div>
  </div>
- <div class="info-card">
-  <h3>Change Password</h3>
+ <div class="info-card"><h3>Change Password</h3>
   <div class="field"><label>New Password</label><input type="password" id="newPassword" placeholder="Enter new password" minlength="6"></div>
   <button class="action-btn" id="changePasswordBtn">Update Password</button>
   <div id="settingsMessage" class="notice" style="display:none"></div>
@@ -237,10 +217,8 @@ th{color:#8298b2}td{color:#dbe5f1}
 <div class="footer">© 2026 WE FUNDED TRADER. All Rights Reserved.</div>
 </div>
 </main>
-
 <div class="toast" id="toast"></div>
 
-<!-- Navigation runs independently from Supabase -->
 <script>
 (function(){
  const sidebar=document.getElementById("sidebar");
@@ -259,27 +237,20 @@ th{color:#8298b2}td{color:#dbe5f1}
   document.querySelectorAll(".nav-btn[data-page]").forEach(b=>b.classList.remove("active"));
   page.classList.add("active");
   const btn=document.querySelector('.nav-btn[data-page="'+name+'"]');
-  if(btn){
-   btn.classList.add("active");
-   title.textContent=btn.textContent.trim();
-  }
+  if(btn){btn.classList.add("active");title.textContent=btn.textContent.trim();}
   sidebar.classList.remove("open");
   overlay.classList.remove("show");
   window.scrollTo({top:0,behavior:"smooth"});
  };
 
  document.querySelectorAll(".nav-btn[data-page]").forEach(btn=>{
-  btn.addEventListener("click",function(){
-   window.showPage(this.getAttribute("data-page"));
-  });
+  btn.addEventListener("click",()=>window.showPage(btn.dataset.page));
  });
-
  document.getElementById("menuBtn").addEventListener("click",window.toggleMenu);
  overlay.addEventListener("click",window.toggleMenu);
 })();
 </script>
 
-<!-- Supabase connection -->
 <script type="module">
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -296,20 +267,17 @@ const badge=v=>'<span class="status '+safe(String(v||"").toLowerCase())+'">'+saf
 function toast(message){
  $("toast").textContent=message;
  $("toast").style.display="block";
- setTimeout(()=>$("toast").style.display="none",2800);
+ setTimeout(()=>$("toast").style.display="none",3500);
 }
 
 function accountCard(a){
  const name=a.account_name||(a.account_type==="evaluation"?"1-Step Evaluation":"Instant Funding");
- const balance=Number(a.balance)||0;
- const equity=Number(a.equity)||0;
- const profit=Number(a.profit)||0;
  return `<div class="account-card">
   <div class="account-head"><div><strong>${safe(name)}</strong><p class="muted">${safe(a.platform||"Platform not assigned")} · ${safe(a.account_size||"")}</p></div>${badge(a.status)}</div>
-  <div class="account-balance">${money(balance)}</div>
+  <div class="account-balance">${money(a.balance)}</div>
   <div class="account-details">
-   <div><div class="detail-label">Equity</div><div class="detail-value">${money(equity)}</div></div>
-   <div><div class="detail-label">Profit</div><div class="detail-value green">${money(profit)}</div></div>
+   <div><div class="detail-label">Equity</div><div class="detail-value">${money(a.equity)}</div></div>
+   <div><div class="detail-label">Profit</div><div class="detail-value green">${money(a.profit)}</div></div>
    <div><div class="detail-label">MT Login</div><div class="detail-value">${safe(a.mt_login||"Not assigned")}</div></div>
    <div><div class="detail-label">MT Server</div><div class="detail-value">${safe(a.mt_server||"Not assigned")}</div></div>
    <div><div class="detail-label">Phase</div><div class="detail-value">${safe(a.phase||"—")}</div></div>
@@ -328,10 +296,8 @@ function orderTable(rows){
 async function loadDashboard(){
  const {data:{session},error:sessionError}=await db.auth.getSession();
  if(sessionError)throw sessionError;
- if(!session){
-  location.href="Login.html";
-  return;
- }
+ if(!session){location.replace("Login.html");return;}
+
  currentUser=session.user;
  $("profileEmail").value=currentUser.email||"";
  $("profileId").value=currentUser.id;
@@ -349,5 +315,8 @@ async function loadDashboard(){
  orders=orderResult.data||[];
  accounts=accountResult.data||[];
 
- const balance=accounts.reduce((s,a)=>s+(Number(a.balance)||0),0);
- const equity=accounts.reduce((s,a)=>s+(Nu
+ $("totalBalance").textContent=money(accounts.reduce((s,a)=>s+(Number(a.balance)||0),0));
+ $("totalEquity").textContent=money(accounts.reduce((s,a)=>s+(Number(a.equity)||0),0));
+ $("totalProfit").textContent=money(accounts.reduce((s,a)=>s+(Number(a.profit)||0),0));
+ $("accountCount").textContent=accounts.length;
+ 
