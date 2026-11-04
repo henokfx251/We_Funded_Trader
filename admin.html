@@ -662,67 +662,45 @@ async function createTradingAccount(){
 }
 
 // TRADING ACCOUNTS
-async function loadTradingAccounts(){
- const tbody=$("accountsTable");
- tbody.innerHTML='<tr><td colspan="11">Loading accounts...</td></tr>';
+async function updateOrder(orderId,newStatus){
+ if(!db)return showMessage("Database is not connected.","error");
+
+ if(newStatus==="paid"){
+  if(!confirm("Have you independently verified the BEP20 transaction, token, amount and destination wallet?"))return;
+ }
+
+ if(!confirm("Change order status to "+newStatus.toUpperCase()+"?"))return;
 
  try{
-  const {data,error}=await db.from("trading_accounts")
-   .select("*")
-   .order("created_at",{ascending:false});
+  const {data,error}=await db.functions.invoke("admin-update-order",{
+   body:{
+    order_id:orderId,
+    status:newStatus
+   }
+  });
 
-  if(error)throw error;
+  if(error){
+   let details=error.message;
 
-  const accounts=data||[];
-  $("totalAccounts").textContent=accounts.length;
+   if(error.context){
+    try{
+     const responseBody=await error.context.json();
+     details=JSON.stringify(responseBody);
+    }catch(e){
+     details=error.message;
+    }
+   }
 
-  if(!accounts.length){
-   tbody.innerHTML='<tr><td colspan="11">No trading accounts found.</td></tr>';
-   return;
+   throw new Error(details);
   }
 
-  tbody.innerHTML=accounts.map(account=>`
-   <tr>
-    <td title="${escapeHTML(account.id)}">${escapeHTML(shortId(account.id))}</td>
-    <td title="${escapeHTML(account.user_id)}">${escapeHTML(shortId(account.user_id))}</td>
-    <td>${money(account.account_size)}</td>
-    <td>${escapeHTML(account.account_type||"—")}</td>
-    <td>${money(account.balance)}</td>
-    <td>${money(account.equity)}</td>
-    <td>${money(account.profit)}</td>
-    <td><span class="status">${escapeHTML(account.status||"—")}</span></td>
-    <td>${escapeHTML(account.mt_login||"—")}</td>
-    <td>${escapeHTML(account.platform||"—")}</td>
-    <td>${escapeHTML(account.phase||"—")}</td>
-   </tr>
-  `).join("");
+  if(data&&data.error)throw new Error(data.error);
+
+  showMessage("Order updated successfully.","success");
+  await refreshAll();
 
  }catch(error){
-  console.error(error);
-  tbody.innerHTML=`<tr><td colspan="11" class="bad">${escapeHTML(error.message||"Could not load accounts.")}</td></tr>`;
+  console.error("ORDER UPDATE ERROR:",error);
+  showMessage("Order update failed: "+error.message,"error");
  }
-}
-
-// START DASHBOARD
-document.addEventListener("DOMContentLoaded",function(){
- loadAdmin();
-});
-</script>
-</body>
-</html>
-      <b>Created:</b> ${displayDate(order.created_at)}<br>
-<b>Account Size:</b> ${money(order.account_size)}<br>
-<b>Account Type:</b> ${escapeHTML(order.account_type)}<br>
-<b>Platform:</b> ${escapeHTML(order.platform || "—")}<br>
-<b>Base Price:</b> ${money(order.base_price)}<br>
-<b>Discount:</b> ${Number(order.discount_percent || 0)}%<br>
-<b>Final Price:</b> ${money(order.final_price)}<br>
-<b>Payment Network:</b> ${escapeHTML(order.payment_network || "—")}<br>
-<b>Transaction Hash:</b> ${escapeHTML(hash || "Not submitted")}<br>
-<b>Status:</b> ${escapeHTML(status)}
-</div></details></td>
-<td>
-  <button onclick="updateOrder('${escapeHTML(order.id)}','paid')">Approve</button>
-  <button onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
-</td>
-</tr>`;
+ }
