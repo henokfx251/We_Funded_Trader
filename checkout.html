@@ -14,7 +14,7 @@ p{color:#b8c8dc;line-height:1.5}
 .item{display:flex;justify-content:space-between;margin:17px 0;gap:12px}
 input,select{width:100%;padding:13px;border-radius:7px;border:1px solid #38516e;background:#07111f;color:white;margin:10px 0}
 button{width:100%;padding:14px;background:#1685ee;color:white;border:0;border-radius:8px;font-weight:bold;margin-top:15px;cursor:pointer}
-button:disabled{opacity:.5}
+button:disabled{opacity:.5;cursor:not-allowed}
 #message,#paymentMessage{margin-top:15px;word-break:break-word}
 .success{color:#55dc91}
 .error{color:#ff7777}
@@ -25,6 +25,7 @@ a{color:#55adff}
 </style>
 </head>
 <body>
+
 <div class="container">
 <h1>WE FUNDED TRADER</h1>
 <h2>Checkout</h2>
@@ -36,7 +37,7 @@ a{color:#55adff}
 <label for="platform">Trading Platform</label>
 <select id="platform">
 <option value="MT5">MT5 — Standard Price</option>
-<option value="MT4">MT4 — 10% Discount Available</option>
+<option value="MT4">MT4 — 10% Discount with Coupon</option>
 <option value="OTHER" disabled>Other Platform — Coming Soon</option>
 </select>
 
@@ -80,9 +81,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 const params = new URLSearchParams(location.search);
+
 const size = Number(params.get("size"));
 const type = (params.get("type") || "").toLowerCase();
 
@@ -96,6 +98,7 @@ const submitPaymentButton = document.getElementById("submitPayment");
 
 let basePrice = 0;
 let currentOrderId = null;
+let orderCreated = false;
 
 function showMessage(text, cls="") {
   message.textContent = text;
@@ -107,38 +110,46 @@ function showPaymentMessage(text, cls="") {
   paymentMessage.className = cls;
 }
 
+function getDiscountPercent() {
+  const code = couponInput.value.trim().toUpperCase();
+  const platform = platformInput.value;
+
+  if (code === "") return 0;
+  if (code === "WFT10") return 10;
+  if (code === "WFT20") return 20;
+
+  if (code === "MT4WFT10" && platform === "MT4") return 10;
+
+  return 0;
+}
+
 function calculatePrice() {
   const code = couponInput.value.trim().toUpperCase();
   const platform = platformInput.value;
-  let discountPercent = 0;
 
-  if (code === "WFT10") discountPercent = 10;
-  else if (code === "WFT20") discountPercent = 20;
-  else if (code === "MT4WFT10" && platform === "MT4") discountPercent = 10;
-  else if (code === "MT4WFT10" && platform !== "MT4") discountPercent = 0;
-
-  // MT4 receives its automatic 10% discount.
-  if (platform === "MT4") {
-    discountPercent = Math.max(discountPercent, 10);
-  }
+  let discountPercent = getDiscountPercent();
 
   const discountAmount = basePrice * discountPercent / 100;
   const finalPrice = basePrice - discountAmount;
 
   document.getElementById("discount").textContent =
     "$" + discountAmount.toFixed(2);
+
   document.getElementById("final").textContent =
     "$" + finalPrice.toFixed(2);
 
   const note = document.getElementById("discountNote");
+
   if (code === "MT4WFT10" && platform !== "MT4") {
-    note.textContent = "MT4WFT10 is available for MT4 only.";
+    note.textContent = "MT4WFT10 is valid for MT4 only.";
+  } else if (code && discountPercent === 0) {
+    note.textContent = "Invalid coupon code.";
+  } else if (discountPercent > 0) {
+    note.textContent = discountPercent + "% coupon discount applied.";
   } else if (platform === "MT4") {
-    note.textContent = "MT4 10% discount applied.";
+    note.textContent = "Enter MT4WFT10 to receive your 10% discount.";
   } else {
-    note.textContent = discountPercent
-      ? discountPercent + "% coupon discount applied."
-      : "";
+    note.textContent = "No discount applied.";
   }
 }
 
@@ -165,28 +176,42 @@ async function initialize() {
     document.getElementById("type").textContent =
       type === "evaluation" ? "1-Step Evaluation" : "Instant Funding";
 
+    // Read platform selected on Challenges page.
+    const selectedPlatform = params.get("platform");
+
+    platformInput.value =
+      selectedPlatform === "MT4" ? "MT4" : "MT5";
+
     const { data: price, error: priceError } = await db
       .from("challenge_prices")
       .select("base_price,evaluation_enabled,instant_enabled")
       .eq("account_size", size)
       .single();
 
-    if (priceError || !price) throw new Error("Challenge price not found.");
+    if (priceError || !price) {
+      throw new Error("Challenge price not found.");
+    }
 
-    if (type === "evaluation" && !price.evaluation_enabled)
+    if (type === "evaluation" && !price.evaluation_enabled) {
       throw new Error("1-Step Evaluation is unavailable.");
+    }
 
-    if (type === "instant" && !price.instant_enabled)
+    if (type === "instant" && !price.instant_enabled) {
       throw new Error("Instant Funding is unavailable.");
+    }
 
     basePrice = Number(price.base_price);
-    if (!Number.isFinite(basePrice) || basePrice <= 0)
+
+    if (!Number.isFinite(basePrice) || basePrice <= 0) {
       throw new Error("Invalid challenge price.");
+    }
 
     document.getElementById("base").textContent =
       "$" + basePrice.toFixed(2);
 
-    couponInput.value = (params.get("coupon") || "").toUpperCase();
+    couponInput.value =
+      (params.get("coupon") || "").toUpperCase();
+
     calculatePrice();
 
     button.disabled = false;
@@ -201,6 +226,8 @@ couponInput.addEventListener("input", calculatePrice);
 platformInput.addEventListener("change", calculatePrice);
 
 button.addEventListener("click", async () => {
+  if (orderCreated) return;
+
   button.disabled = true;
   button.textContent = "Processing...";
   showMessage("Creating your order...");
@@ -209,17 +236,24 @@ button.addEventListener("click", async () => {
     const { data: { session }, error: sessionError } =
       await db.auth.getSession();
 
-    if (sessionError || !session)
+    if (sessionError || !session) {
       throw new Error("Please log in again.");
+    }
 
     const platform = platformInput.value;
     const couponCode = couponInput.value.trim().toUpperCase();
 
-    if (!["MT4","MT5"].includes(platform))
+    if (!["MT4","MT5"].includes(platform)) {
       throw new Error("Please select MT4 or MT5.");
+    }
 
-    if (couponCode === "MT4WFT10" && platform !== "MT4")
+    if (couponCode && !["WFT10","WFT20","MT4WFT10"].includes(couponCode)) {
+      throw new Error("Invalid coupon code.");
+    }
+
+    if (couponCode === "MT4WFT10" && platform !== "MT4") {
       throw new Error("MT4WFT10 is valid for MT4 only.");
+    }
 
     const { data, error } = await db.functions.invoke("smart-handler", {
       body: {
@@ -230,15 +264,25 @@ button.addEventListener("click", async () => {
       }
     });
 
-    if (error) throw new Error(error.message || "Request failed.");
-    if (!data || data.error) throw new Error(data?.error || "Order failed.");
+    if (error) {
+      throw new Error(error.message || "Request failed.");
+    }
+
+    if (!data || data.error) {
+      throw new Error(data?.error || "Order failed.");
+    }
 
     currentOrderId = data.order?.id || data.order_id;
-    if (!currentOrderId) throw new Error("Order ID was not returned.");
+
+    if (!currentOrderId) {
+      throw new Error("Order ID was not returned.");
+    }
+
+    orderCreated = true;
 
     showMessage(
-      "Order created successfully! Order ID: " + currentOrderId +
-      ". Status: Pending.",
+      "Order created successfully! Order ID: " +
+      currentOrderId + ". Status: Pending.",
       "success"
     );
 
@@ -273,8 +317,9 @@ submitPaymentButton.addEventListener("click", async () => {
     const { data: { session }, error: sessionError } =
       await db.auth.getSession();
 
-    if (sessionError || !session)
+    if (sessionError || !session) {
       throw new Error("Please log in again.");
+    }
 
     const { data, error } = await db
       .from("orders")
@@ -302,7 +347,11 @@ submitPaymentButton.addEventListener("click", async () => {
     document.getElementById("txid").disabled = true;
 
   } catch (error) {
-    showPaymentMessage("Payment submission failed: " + error.message, "error");
+    showPaymentMessage(
+      "Payment submission failed: " + error.message,
+      "error"
+    );
+
     submitPaymentButton.disabled = false;
     submitPaymentButton.textContent = "Try Again";
   }
