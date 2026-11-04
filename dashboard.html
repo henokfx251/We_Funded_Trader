@@ -877,7 +877,7 @@ async function loadOrders(){
   .from("orders")
   .select("*")
   .eq("user_id",currentUser.id)
-  .order("created_at",{ascending:false});
+.order("submitted_at", { ascending: false });
 
  if(error) throw error;
 
@@ -896,7 +896,7 @@ async function loadAccounts(){
   .from("trading_accounts")
   .select("*")
   .eq("user_id",currentUser.id)
-  .order("created_at",{ascending:false});
+  .order("created_at",{ascending:false})
 
  if(error) throw error;
 
