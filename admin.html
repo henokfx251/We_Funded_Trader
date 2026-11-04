@@ -1,277 +1,596 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WFT | Admin Dashboard</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#080f1e;--panel:#101b30;--panel2:#14223b;
-  --blue:#2878ff;--gold:#e5b94d;--text:#edf3ff;
-  --muted:#91a1bb;--border:#263653;--red:#f05b67;
-  --green:#26c88a;
+  --bg:#080d18;
+  --panel:#101a2b;
+  --panel2:#142139;
+  --border:#263650;
+  --text:#f4f7ff;
+  --muted:#91a1ba;
+  --blue:#287bff;
+  --gold:#e9b949;
+  --green:#20c997;
+  --red:#ff5b6b;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);
-font-family:Inter,Arial,sans-serif}
-button,input,select{font:inherit}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,Arial,sans-serif;
+}
+button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 .hidden{display:none!important}
-.layout{display:flex;min-height:100vh}
-.sidebar{width:250px;background:#0c1729;border-right:1px solid var(--border);
-padding:24px 15px;position:fixed;inset:0 auto 0 0;overflow-y:auto}
-.brand{font-size:21px;font-weight:800;color:white;margin:8px 10px 30px}
-.brand span{color:var(--gold)}
-.nav-label{font-size:10px;color:var(--muted);letter-spacing:2px;
-margin:24px 12px 10px}
-.nav-item{display:flex;align-items:center;gap:12px;width:100%;
-border:0;background:transparent;color:#aebbd0;padding:13px 14px;
-border-radius:10px;text-align:left;margin:4px 0;font-weight:600}
-.nav-item:hover,.nav-item.active{background:#192d4c;color:white}
-.nav-item.active{border-left:3px solid var(--gold)}
-.main{margin-left:250px;width:calc(100% - 250px);padding:28px}
-.topbar{display:flex;justify-content:space-between;align-items:center;
-gap:15px;margin-bottom:28px}
-.topbar h2{margin:0;font-size:21px}
-.muted{color:var(--muted);font-size:13px}
-.page-header{display:flex;justify-content:space-between;align-items:center;
-gap:15px;margin-bottom:22px}
-.page-header h1{font-size:25px;margin:0 0 7px}
-.page-header p{color:var(--muted);margin:0;font-size:13px}
-.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-gap:15px;margin-bottom:22px}
-.stat-card,.panel,.table-container{background:var(--panel);
-border:1px solid var(--border);border-radius:14px;padding:20px}
-.stat-card span{font-size:12px;color:var(--muted)}
-.stat-card h2{font-size:27px;margin:12px 0 0;color:var(--gold)}
-.table-container{padding:0;overflow:hidden;margin-bottom:22px}
-.table-header{padding:18px 20px;display:flex;justify-content:space-between;
-align-items:center;gap:12px;border-bottom:1px solid var(--border)}
-.table-header h2{font-size:16px;margin:0}
-.table-scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:850px}
-th,td{padding:14px 13px;border-bottom:1px solid var(--border);
-text-align:left;font-size:12px;vertical-align:middle}
-th{color:var(--muted);font-weight:600;background:#111e33}
-td{color:#dce6f7}
-.status{display:inline-block;padding:5px 9px;border-radius:20px;
-background:#263650;color:#dce6f7;font-size:11px}
-.primary,.secondary,.danger{border:0;border-radius:8px;padding:10px 14px;
-font-size:12px;font-weight:700}
-.primary{background:var(--blue);color:white}
-.secondary{background:#263650;color:white}
-.danger{background:#512832;color:#ffb5bc}
-.primary:disabled{opacity:.45;cursor:not-allowed}
-.small-btn{padding:7px 9px;margin:2px;font-size:11px}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}
-.field input,.field select{width:100%;background:#0b1628;color:white;
-border:1px solid var(--border);border-radius:8px;padding:12px;outline:none}
-.field input:focus,.field select:focus{border-color:var(--blue)}
-.panel h2{font-size:17px;margin:0 0 18px}
-.details-box{padding:12px;background:#0b1628;border-radius:8px;
-line-height:1.9;min-width:220px;overflow-wrap:anywhere}
-.hash{max-width:170px;overflow-wrap:anywhere}
-.message{padding:12px 16px;border-radius:9px;margin-bottom:18px;
-font-size:13px;display:none}
-.message.success{display:block;background:#123c32;color:#8df0c5}
-.message.error{display:block;background:#48232c;color:#ffb5bc}
-#loading,#denied{padding:70px 20px;text-align:center}
-#denied{color:#ff9ca5}
-.mobile-menu{display:none}
-@media(max-width:900px){
- .sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px)}
- .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#loading,#denied{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:25px;
 }
-@media(max-width:650px){
- .sidebar{position:relative;width:100%;height:auto;display:none}
- .sidebar.open{display:block;position:fixed;z-index:10;inset:0 auto 0 0}
- .layout{display:block}.main{margin:0;width:100%;padding:17px}
- .mobile-menu{display:inline-block}.stats-grid{grid-template-columns:1fr 1fr}
- .page-header{align-items:flex-start;flex-direction:column}
- .form-grid{grid-template-columns:1fr}
+.brand{
+  font-size:25px;font-weight:800;letter-spacing:1px;
+  color:var(--gold);margin-bottom:12px;
+}
+.loading-text{color:var(--muted);font-size:14px}
+.spinner{
+  width:35px;height:35px;border:3px solid #263650;
+  border-top-color:var(--blue);border-radius:50%;
+  animation:spin .8s linear infinite;margin:20px auto;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+#deniedText{color:#ff8792;max-width:500px;line-height:1.6}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:245px;background:#0c1423;border-right:1px solid var(--border);
+  padding:24px 15px;position:fixed;inset:0 auto 0 0;
+  overflow-y:auto;z-index:20;transition:transform .25s;
+}
+.logo{padding:5px 12px 27px;font-size:21px;font-weight:800;color:var(--gold)}
+.logo small{display:block;font-size:10px;color:var(--muted);letter-spacing:3px;margin-top:5px}
+.nav-label{
+  padding:12px;color:#71829e;font-size:10px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;
+}
+.nav-btn{
+  width:100%;display:flex;align-items:center;gap:12px;
+  background:transparent;border:0;color:#aebbd0;
+  padding:13px 14px;border-radius:9px;text-align:left;
+  margin:3px 0;font-size:13px;font-weight:600;
+}
+.nav-btn:hover,.nav-btn.active{background:#172b49;color:white}
+.nav-btn.active{border-left:3px solid var(--gold)}
+.nav-icon{width:20px;text-align:center;color:var(--gold)}
+.sidebar-bottom{margin-top:35px;border-top:1px solid var(--border);padding-top:15px}
+.main{margin-left:245px;width:calc(100% - 245px);min-width:0}
+.topbar{
+  height:75px;padding:0 28px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:#0b1321;position:sticky;top:0;z-index:10;
+}
+.top-left{display:flex;align-items:center;gap:14px}
+.topbar h2{font-size:17px;margin:0}
+.top-meta{color:var(--muted);font-size:12px}
+.menu-toggle{
+  display:none;background:var(--panel2);border:1px solid var(--border);
+  color:white;padding:8px 11px;border-radius:8px;
+}
+.admin-pill{
+  color:var(--green);font-size:11px;border:1px solid #1e765f;
+  background:#102d2a;padding:7px 11px;border-radius:30px;
+}
+.content{padding:28px;max-width:1600px;margin:auto}
+.page{display:none}
+.page.active{display:block}
+.page-heading{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:15px;margin-bottom:22px;flex-wrap:wrap;
+}
+.page-heading h1{font-size:23px;margin:0 0 7px}
+.page-heading p{margin:0;color:var(--muted);font-size:12px}
+.stats{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:15px;margin-bottom:22px;
+}
+.stat-card,.panel{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:13px;padding:19px;
+}
+.stat-card .stat-label{font-size:12px;color:var(--muted)}
+.stat-card .stat-value{font-size:25px;font-weight:800;margin-top:12px}
+.stat-card .stat-icon{float:right;color:var(--gold);font-size:20px}
+.panel{margin-bottom:20px;overflow:hidden}
+.panel-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin-bottom:16px;flex-wrap:wrap;
+}
+.panel-head h3{font-size:14px;margin:0}
+.btn{
+  border:0;border-radius:8px;padding:10px 15px;
+  font-size:12px;font-weight:700;color:white;background:var(--blue);
+}
+.btn:hover{filter:brightness(1.12)}
+.btn.gold{background:var(--gold);color:#171717}
+.btn.green{background:#159b76}
+.btn.red{background:#c83f50}
+.btn.gray{background:#34445e}
+.btn.small{padding:7px 10px;font-size:11px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.table-wrap{width:100%;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th{
+  text-align:left;color:#8192ad;font-size:10px;
+  letter-spacing:.6px;text-transform:uppercase;
+  padding:12px 10px;border-bottom:1px solid var(--border);
+}
+td{
+  padding:13px 10px;border-bottom:1px solid #1e2b40;
+  font-size:12px;color:#dce5f5;vertical-align:middle;
+}
+tr:last-child td{border-bottom:0}
+.empty{text-align:center;color:var(--muted);padding:28px}
+.status{
+  display:inline-block;padding:5px 9px;border-radius:20px;
+  font-size:10px;font-weight:700;background:#27354b;color:#c4d1e5;
+}
+.status.pending{background:#3b3018;color:#f1c96c}
+.status.approved,.status.paid,.status.active{background:#12392f;color:#50dfb0}
+.status.rejected,.status.failed,.status.breached{background:#421f2b;color:#ff8792}
+.status.funded{background:#172f50;color:#80b7ff}
+.form-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;
+}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1/-1}
+.field label{font-size:11px;color:#aab9ce;font-weight:600}
+.field input,.field select,.field textarea{
+  width:100%;background:#0a1322;border:1px solid var(--border);
+  border-radius:8px;padding:12px;color:white;outline:none;font-size:12px;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue)}
+.field select option{background:#101a2b}
+.form-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.notice{
+  border:1px solid #665328;background:#2b2518;color:#e9c76f;
+  border-radius:9px;padding:12px 14px;font-size:11px;line-height:1.6;
+  margin-bottom:17px;
+}
+.message{
+  padding:12px 14px;border-radius:8px;margin-bottom:15px;
+  font-size:12px;display:none;line-height:1.5;
+}
+.message.show{display:block}
+.message.success{background:#12392f;color:#69e4b8}
+.message.error{background:#421f2b;color:#ff9aa4}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap}
+.toolbar input,.toolbar select{
+  background:#0a1322;border:1px solid var(--border);
+  color:white;border-radius:8px;padding:9px 11px;font-size:11px;
+}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.footer-note{color:#65758e;font-size:10px;text-align:center;padding:20px}
+#toast{
+  position:fixed;right:20px;bottom:20px;z-index:100;
+  background:#17263d;border:1px solid var(--border);
+  color:white;padding:13px 17px;border-radius:9px;
+  max-width:350px;font-size:12px;display:none;
+}
+#toast.show{display:block}
+@media(max-width:1050px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;width:100%}
+  .menu-toggle{display:block}
+  .content{padding:18px 13px}
+  .topbar{padding:0 14px}
+  .two-col{grid-template-columns:1fr}
+}
+@media(max-width:450px){
+  .stats{grid-template-columns:1fr 1fr;gap:9px}
+  .stat-card{padding:13px}
+  .stat-card .stat-value{font-size:19px}
+  .page-heading h1{font-size:20px}
+  .form-grid{grid-template-columns:1fr}
+  .field.full{grid-column:auto}
 }
 </style>
 </head>
 
 <body>
+
 <div id="loading">
-  <h2>WE FUNDED TRADER</h2>
-  <p id="loadingText">Checking admin access...</p>
+  <div class="brand">WE FUNDED TRADER</div>
+  <div class="spinner"></div>
+  <div id="loadingText" class="loading-text">Starting Admin Dashboard...</div>
 </div>
 
 <div id="denied" class="hidden">
-  <h2>Admin Access Denied</h2>
-  <p id="deniedText"></p>
-  <button class="primary" onclick="location.href='Login.html'">Login</button>
+  <div class="brand">WE FUNDED TRADER</div>
+  <h2>Admin Access Unavailable</h2>
+  <p id="deniedText">Unable to verify admin access.</p>
+  <button class="btn" onclick="location.reload()">Try Again</button>
 </div>
 
 <div id="app" class="hidden">
-<div class="layout">
+  <div class="layout">
 
-<aside class="sidebar" id="sidebar">
-  <div class="brand">WE FUNDED <span>TRADER</span></div>
-  <div class="nav-label">ADMIN MENU</div>
-  <button class="nav-item active" onclick="goPage('overview',this)">▦ Overview</button>
-  <button class="nav-item" onclick="goPage('orders',this)">▤ Orders</button>
-  <button class="nav-item" onclick="goPage('kyc',this)">▣ KYC Review</button>
-  <button class="nav-item" onclick="goPage('create',this)">＋ Create Account</button>
-  <button class="nav-item" onclick="goPage('accounts',this)">▤ Trading Accounts</button>
-  <button class="nav-item" onclick="goPage('payouts',this)">💸 Payout Management</button>
-  <div class="nav-label">ACCOUNT</div>
-  <button class="nav-item" onclick="logout()">↪ Logout</button>
-</aside>
+    <aside class="sidebar" id="sidebar">
+      <div class="logo">WE FUNDED TRADER<small>ADMIN CONTROL CENTER</small></div>
 
-<main class="main">
-  <div class="topbar">
-    <div>
-      <button class="secondary mobile-menu" onclick="toggleSidebar()">☰</button>
-      <h2>Admin Dashboard</h2>
-      <div class="muted">WE FUNDED TRADER Control Center</div>
-    </div>
-    <button class="secondary" onclick="refreshAll()">↻ Refresh</button>
-  </div>
+      <div class="nav-label">Main Menu</div>
+      <button class="nav-btn active" data-page="overview" onclick="goPage('overview',this)">
+        <span class="nav-icon">◈</span> Overview
+      </button>
+      <button class="nav-btn" data-page="orders" onclick="goPage('orders',this)">
+        <span class="nav-icon">▤</span> Orders
+      </button>
+      <button class="nav-btn" data-page="kyc" onclick="goPage('kyc',this)">
+        <span class="nav-icon">▣</span> KYC Review
+      </button>
+      <button class="nav-btn" data-page="create" onclick="goPage('create',this)">
+        <span class="nav-icon">＋</span> Create Account
+      </button>
+      <button class="nav-btn" data-page="accounts" onclick="goPage('accounts',this)">
+        <span class="nav-icon">▥</span> Trading Accounts
+      </button>
+      <button class="nav-btn" data-page="payouts" onclick="goPage('payouts',this)">
+        <span class="nav-icon">＄</span> Payout Management
+      </button>
 
-  <div id="message" class="message"></div>
-
-  <section id="page-overview" class="page">
-    <div class="page-header"><div><h1>Overview</h1>
-    <p>Platform activity and account summary.</p></div></div>
-    <div class="stats-grid">
-      <div class="stat-card"><span>Total Orders</span><h2 id="totalOrders">0</h2></div>
-      <div class="stat-card"><span>Pending Orders</span><h2 id="pendingOrders">0</h2></div>
-      <div class="stat-card"><span>Paid Orders</span><h2 id="paidOrders">0</h2></div>
-      <div class="stat-card"><span>Trading Accounts</span><h2 id="totalAccounts">0</h2></div>
-      <div class="stat-card"><span>Pending KYC</span><h2 id="pendingKyc">0</h2></div>
-      <div class="stat-card"><span>Pending Payouts</span><h2 id="payoutPending">0</h2></div>
-      <div class="stat-card"><span>Approved Payouts</span><h2 id="payoutApproved">0</h2></div>
-      <div class="stat-card"><span>Total Paid Payouts</span><h2 id="payoutTotalPaid">$0.00</h2></div>
-    </div>
-  </section>
-
-  <section id="page-orders" class="page hidden">
-    <div class="page-header"><div><h1>Orders</h1><p>Review customer payments.</p></div>
-    <button class="primary" onclick="loadOrders()">Refresh</button></div>
-    <div class="table-container"><div class="table-scroll"><table>
-      <thead><tr><th>Order</th><th>Customer</th><th>Size</th><th>Type</th>
-      <th>Platform</th><th>Coupon</th><th>Discount</th><th>Base</th>
-      <th>Final</th><th>Network</th><th>Transaction</th><th>Check</th>
-      <th>Status</th><th>Details</th><th>Actions</th></tr></thead>
-      <tbody id="ordersTable"></tbody>
-    </table></div></div>
-  </section>
-
-  <section id="page-kyc" class="page hidden">
-    <div class="page-header"><div><h1>KYC Review</h1><p>Review identity submissions.</p></div>
-    <button class="primary" onclick="loadKYC()">Refresh</button></div>
-    <div class="table-container"><div class="table-scroll"><table>
-      <thead><tr><th>User</th><th>Name</th><th>Country</th><th>Document</th>
-      <th>Submitted</th><th>Files</th><th>Status</th><th>Note</th><th>Actions</th></tr></thead>
-      <tbody id="kycTable"></tbody>
-    </table></div></div>
-  </section>
-
-  <section id="page-create" class="page hidden">
-    <div class="page-header"><div><h1>Create Trading Account</h1>
-    <p>Assign a trading account to a paid order.</p></div></div>
-    <div class="panel">
-      <div class="form-grid">
-        <div class="field"><label>Customer User ID</label><input id="newUserId"></div>
-        <div class="field"><label>Order ID</label><input id="newOrderId"></div>
-        <div class="field"><label>Account Size</label>
-          <select id="newAccountSize">
-            <option value="2500">$2,500</option><option value="5000">$5,000</option>
-            <option value="10000">$10,000</option><option value="25000">$25,000</option>
-            <option value="50000">$50,000</option><option value="100000">$100,000</option>
-          </select>
-        </div>
-        <div class="field"><label>Account Type</label>
-          <select id="newAccountType"><option value="evaluation">1-Step Evaluation</option>
-          <option value="instant">Instant Funding</option></select>
-        </div>
-        <div class="field"><label>Platform</label>
-          <select id="newPlatform"><option>MT5</option><option>MT4</option></select>
-        </div>
-        <div class="field"><label>MT Login</label><input id="newMtLogin"></div>
-        <div class="field"><label>MT Server</label><input id="newMtServer"></div>
+      <div class="sidebar-bottom">
+        <button class="nav-btn" onclick="refreshAll()">
+          <span class="nav-icon">↻</span> Refresh Data
+        </button>
+        <button class="nav-btn" onclick="logout()">
+          <span class="nav-icon">⇥</span> Logout
+        </button>
       </div>
-      <br><button class="primary" id="createAccountBtn" onclick="createTradingAccount()">Create Account</button>
-    </div>
-  </section>
+    </aside>
 
-  <section id="page-accounts" class="page hidden">
-    <div class="page-header"><div><h1>Trading Accounts</h1>
-    <p>All created trading accounts.</p></div>
-    <button class="primary" onclick="loadTradingAccounts()">Refresh</button></div>
-    <div class="table-container"><div class="table-scroll"><table>
-      <thead><tr><th>Account</th><th>User</th><th>Size</th><th>Type</th>
-      <th>Balance</th><th>Equity</th><th>Profit</th><th>Status</th>
-      <th>MT Login</th><th>Platform</th><th>Phase</th></tr></thead>
-      <tbody id="accountsTable"></tbody>
-    </table></div></div>
-  </section>
+    <main class="main">
+      <header class="topbar">
+        <div class="top-left">
+          <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+          <div>
+            <h2 id="topTitle">Overview</h2>
+            <div class="top-meta">WE FUNDED TRADER • ADMIN</div>
+          </div>
+        </div>
+        <div class="admin-pill">● ADMIN VERIFIED</div>
+      </header>
 
-  <section id="page-payouts" class="page hidden">
-    <div class="page-header"><div><h1>Payout Management</h1>
-    <p>Review trader payout requests · 80% Trader / 20% WFT</p></div>
-    <button class="primary" onclick="loadPayouts()">Refresh Payouts</button></div>
-    <div class="stats-grid">
-      <div class="stat-card"><span>Pending</span><h2 id="payoutPendingCard">0</h2></div>
-      <div class="stat-card"><span>Approved</span><h2 id="payoutApprovedCard">0</h2></div>
-      <div class="stat-card"><span>Paid</span><h2 id="payoutPaid">0</h2></div>
-      <div class="stat-card"><span>Total Paid</span><h2 id="payoutTotalPaidCard">$0.00</h2></div>
-    </div>
-    <div class="table-container"><div class="table-scroll"><table>
-      <thead><tr><th>Request</th><th>Customer</th><th>Account</th>
-      <th>Profit</th><th>Trader 80%</th><th>Company 20%</th>
-      <th>Amount</th><th>Network</th><th>Wallet</th><th>Requested</th>
-      <th>Status</th><th>Actions</th></tr></thead>
-      <tbody id="payoutsTable"></tbody>
-    </table></div></div>
-  </section>
-</main>
+      <div class="content">
+        <div id="globalMessage" class="message"></div>
+        
+        <!-- OVERVIEW -->
+        <section class="page active" id="page-overview">
+          <div class="page-heading">
+            <div>
+              <h1>Dashboard Overview</h1>
+              <p>Monitor your prop firm operations.</p>
+            </div>
+            <button class="btn gold" onclick="refreshAll()">↻ Refresh</button>
+          </div>
+
+          <div class="stats">
+            <div class="stat-card">
+              <span class="stat-icon">▤</span>
+              <div class="stat-label">Total Orders</div>
+              <div class="stat-value" id="totalOrders">0</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">◷</span>
+              <div class="stat-label">Pending Orders</div>
+              <div class="stat-value" id="pendingOrders">0</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">✓</span>
+              <div class="stat-label">Paid Orders</div>
+              <div class="stat-value" id="paidOrders">0</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">▥</span>
+              <div class="stat-label">Trading Accounts</div>
+              <div class="stat-value" id="totalAccounts">0</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">▣</span>
+              <div class="stat-label">Pending KYC</div>
+              <div class="stat-value" id="pendingKyc">0</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">＄</span>
+              <div class="stat-label">Pending Payouts</div>
+              <div class="stat-value" id="pendingPayouts">0</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">＄</span>
+              <div class="stat-label">Payout Requests</div>
+              <div class="stat-value" id="totalPayouts">0</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">◈</span>
+              <div class="stat-label">Active Accounts</div>
+              <div class="stat-value" id="activeAccounts">0</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Recent Orders</h3>
+              <button class="btn small gray" onclick="goPage('orders')">View All</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr>
+                  <th>Order ID</th><th>User</th><th>Amount</th><th>Status</th><th>Date</th>
+                </tr></thead>
+                <tbody id="recentOrdersTable">
+                  <tr><td colspan="5" class="empty">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ORDERS -->
+        <section class="page" id="page-orders">
+          <div class="page-heading">
+            <div><h1>Orders Management</h1><p>Review and update customer orders.</p></div>
+            <button class="btn" onclick="loadOrders()">Refresh Orders</button>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h3>All Orders</h3>
+              <div class="toolbar">
+                <input id="orderSearch" placeholder="Search order / user..." oninput="renderOrders()">
+                <select id="orderFilter" onchange="renderOrders()">
+                  <option value="">All statuses</option>
+                  <option value="pending">Pending</option>
+                  <option value="paid">Paid</option>
+                  <option value="completed">Completed</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr>
+                  <th>Order</th><th>User ID</th><th>Type</th><th>Amount</th>
+                  <th>Status</th><th>Date</th><th>Action</th>
+                </tr></thead>
+                <tbody id="ordersTable">
+                  <tr><td colspan="7" class="empty">Loading orders...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- KYC -->
+        <section class="page" id="page-kyc">
+          <div class="page-heading">
+            <div><h1>KYC Verification</h1><p>Review customer identity submissions.</p></div>
+            <button class="btn" onclick="loadKYC()">Refresh KYC</button>
+          </div>
+          <div class="notice">
+            Verify the identity documents carefully before approving a submission.
+            KYC documents are stored in the private kyc-documents bucket.
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>KYC Submissions</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr>
+                  <th>User ID</th><th>Status</th><th>Submitted</th>
+                  <th>Documents</th><th>Review</th>
+                </tr></thead>
+                <tbody id="kycTable">
+                  <tr><td colspan="5" class="empty">Loading KYC...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- CREATE ACCOUNT -->
+        <section class="page" id="page-create">
+          <div class="page-heading">
+            <div><h1>Create Trading Account</h1><p>Assign a trading account to a customer.</p></div>
+          </div>
+          <div class="notice">
+            This form uses the existing admin-create-trading-account Edge Function.
+            Confirm the customer and order details before submitting.
+          </div>
+          <div class="panel">
+            <div id="createMessage" class="message"></div>
+            <form id="createAccountForm" onsubmit="createTradingAccount(event)">
+              <div class="form-grid">
+                <div class="field full">
+                  <label>Customer User ID</label>
+                  <input id="newUserId" required placeholder="Supabase Auth User UUID">
+                </div>
+                <div class="field full">
+                  <label>Order ID</label>
+                  <input id="newOrderId" required placeholder="Customer order UUID">
+                </div>
+                <div class="field">
+                  <label>Account Size</label>
+                  <select id="newAccountSize" required>
+                    <option value="">Select account size</option>
+                    <option value="2500">$2,500</option>
+                    <option value="5000">$5,000</option>
+                    <option value="10000">$10,000</option>
+                    <option value="25000">$25,000</option>
+                    <option value="50000">$50,000</option>
+                    <option value="100000">$100,000</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Account Type</label>
+                  <select id="newAccountType" required>
+                    <option value="">Select type</option>
+                    <option value="evaluation">1-Step Evaluation</option>
+                    <option value="instant">Instant Funding</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Platform</label>
+                  <select id="newPlatform" required>
+                    <option value="">Select platform</option>
+                    <option value="MT4">MT4</option>
+                    <option value="MT5">MT5</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>MT Login</label>
+                  <input id="newMtLogin" required placeholder="Trading account login">
+                </div>
+                <div class="field full">
+                  <label>MT Server</label>
+                  <input id="newMtServer" required placeholder="Broker server name">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn gold" type="submit" id="createAccountBtn">Create Trading Account</button>
+                <button class="btn gray" type="reset">Clear Form</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ACCOUNTS -->
+        <section class="page" id="page-accounts">
+          <div class="page-heading">
+            <div><h1>Trading Accounts</h1><p>View customer trading accounts.</p></div>
+            <button class="btn" onclick="loadTradingAccounts()">Refresh Accounts</button>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h3>All Trading Accounts</h3>
+              <input id="accountSearch" placeholder="Search account / user..." oninput="renderAccounts()">
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr>
+                  <th>User ID</th><th>Login</th><th>Size</th><th>Type</th>
+                  <th>Phase</th><th>Platform</th><th>Status</th><th>Profit</th>
+                </tr></thead>
+                <tbody id="accountsTable">
+                  <tr><td colspan="8" class="empty">Loading accounts...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAYOUTS -->
+        <section class="page" id="page-payouts">
+          <div class="page-heading">
+            <div><h1>Payout Management</h1><p>Review trader payout requests.</p></div>
+            <button class="btn" onclick="loadPayouts()">Refresh Payouts</button>
+          </div>
+
+          <div class="notice">
+            Trader share: 80% • Company share: 20% • Minimum request: $50.
+            Payout processing: 1–3 business days. Supported networks: USDT TRC20 and BEP20.
+            Mark a payout as Paid only after the real transfer has been sent.
+          </div>
+
+          <div class="stats">
+            <div class="stat-card">
+              <div class="stat-label">Total Requests</div>
+              <div class="stat-value" id="payoutStatTotal">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Pending</div>
+              <div class="stat-value" id="payoutStatPending">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Approved</div>
+              <div class="stat-value" id="payoutStatApproved">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Paid</div>
+              <div class="stat-value" id="payoutStatPaid">0</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Trader Payout Requests</h3>
+              <select id="payoutFilter" onchange="renderPayouts()">
+                <option value="">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+                <option value="paid">Paid</option>
+              </select>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr>
+                  <th>Request</th><th>User</th><th>Account</th><th>Profit</th>
+                  <th>Trader Share</th><th>Company Share</th><th>Network</th>
+                  <th>Wallet</th><th>Status</th><th>Action</th>
+                </tr></thead>
+                <tbody id="payoutTable">
+                  <tr><td colspan="10" class="empty">Loading payouts...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <div class="footer-note">WE FUNDED TRADER • ADMIN CONTROL CENTER</div>
+      </div>
+    </main>
+  </div>
 </div>
-   </div>
-   <script>
-"use strict";
 
-// =====================================
-// WFT SUPABASE CONFIGURATION
-// =====================================
+<div id="toast"></div>
+
+<script>
+
+
+/* =========================================
+   WE FUNDED TRADER - ADMIN JAVASCRIPT
+========================================= */
 
 const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
 const KYC_BUCKET = "kyc-documents";
 
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+let db = null;
+let currentAdmin = null;
+let ordersData = [];
+let kycData = [];
+let accountsData = [];
+let payoutsData = [];
 
-let currentSession = null;
-let busy = false;
-
-// =====================================
-// HELPERS
-// =====================================
+/* ---------- HELPERS ---------- */
 
 const $ = id => document.getElementById(id);
 
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
   })[char]);
-}
-
-function shortId(value) {
-  return String(value || "").slice(0, 8);
 }
 
 function money(value) {
@@ -281,667 +600,729 @@ function money(value) {
   });
 }
 
+function shortId(value) {
+  return value ? String(value).slice(0, 8) + "..." : "—";
+}
+
 function displayDate(value) {
   if (!value) return "—";
   const date = new Date(value);
-  return isNaN(date) ? "—" : date.toLocaleString();
+  return isNaN(date.getTime()) ? "—" : date.toLocaleString();
 }
 
-function validHash(hash) {
-  return /^0x[a-fA-F0-9]{64}$/.test(String(hash || "").trim());
+function statusClass(value) {
+  const status = String(value || "").toLowerCase();
+  if (["approved", "paid", "active", "completed"].includes(status)) return "approved";
+  if (["rejected", "failed", "breached"].includes(status)) return "rejected";
+  if (status === "funded") return "funded";
+  return "pending";
 }
 
-function showMessage(message, type = "success") {
-  const el = $("message");
-  el.textContent = message;
-  el.className = "message " + type;
-  el.style.display = "block";
-
-  setTimeout(() => {
-    el.style.display = "none";
-  }, 6000);
+function statusHTML(value) {
+  const safe = escapeHTML(value || "Unknown");
+  return `<span class="status ${statusClass(value)}">${safe}</span>`;
 }
 
-function timeout(promise, label) {
+function showToast(message, isError = false) {
+  const toast = $("toast");
+  toast.textContent = message;
+  toast.style.borderColor = isError ? "#ff5b6b" : "#20c997";
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 4500);
+}
+
+function showMessage(id, message, type = "success") {
+  const element = $(id);
+  if (!element) return;
+  element.textContent = message;
+  element.className = `message show ${type}`;
+}
+
+function setLoadingText(message) {
+  if ($("loadingText")) $("loadingText").textContent = message;
+}
+
+function withTimeout(promise, ms = 15000) {
   return Promise.race([
     promise,
     new Promise((_, reject) =>
-      setTimeout(() => reject(new Error(label + " timed out.")), 15000)
+      setTimeout(() => reject(new Error("Request timed out. Please refresh and try again.")), ms)
     )
   ]);
 }
 
-// =====================================
-// NAVIGATION
-// =====================================
+/* ---------- NAVIGATION ---------- */
 
-function goPage(name, button) {
-  document.querySelectorAll(".page").forEach(page => {
-    page.classList.add("hidden");
-  });
+function goPage(page, button) {
+  document.querySelectorAll(".page").forEach(item => item.classList.remove("active"));
 
-  const target = $("page-" + name);
+  const target = $("page-" + page);
+  if (target) target.classList.add("active");
 
-  if (target) target.classList.remove("hidden");
-
-  document.querySelectorAll(".nav-item").forEach(item => {
+  document.querySelectorAll(".nav-btn[data-page]").forEach(item => {
     item.classList.remove("active");
   });
 
-  if (button) {
-    button.classList.add("active");
-  } else {
-    document.querySelectorAll(".nav-item").forEach(item => {
-      if (item.getAttribute("onclick")?.includes("'" + name + "'")) {
-        item.classList.add("active");
-      }
-    });
+  const activeButton = button ||
+    document.querySelector(`.nav-btn[data-page="${page}"]`);
+
+  if (activeButton) activeButton.classList.add("active");
+
+  const titles = {
+    overview: "Overview",
+    orders: "Orders Management",
+    kyc: "KYC Review",
+    create: "Create Trading Account",
+    accounts: "Trading Accounts",
+    payouts: "Payout Management"
+  };
+
+  $("topTitle").textContent = titles[page] || "Admin Dashboard";
+
+  if (window.innerWidth <= 760) {
+    $("sidebar").classList.remove("open");
   }
 
-  if (name === "payouts") loadPayouts();
-  if (name === "orders") loadOrders();
-  if (name === "kyc") loadKYC();
-  if (name === "accounts") loadTradingAccounts();
-
-  $("sidebar").classList.remove("open");
+  if (page === "orders") loadOrders();
+  if (page === "kyc") loadKYC();
+  if (page === "accounts") loadTradingAccounts();
+  if (page === "payouts") loadPayouts();
 }
 
 function toggleSidebar() {
   $("sidebar").classList.toggle("open");
 }
 
-// =====================================
-// ADMIN AUTHENTICATION
-// =====================================
+/* ---------- ADMIN AUTHENTICATION ---------- */
 
 async function loadAdmin() {
-  try {
-    $("loadingText").textContent = "Checking Supabase session...";
+  setLoadingText("Checking Supabase session...");
 
-    const { data, error } = await timeout(
-      db.auth.getSession(),
-      "Supabase session check"
-    );
+  const { data: sessionData, error: sessionError } =
+    await withTimeout(db.auth.getSession());
 
-    if (error) throw error;
+  if (sessionError) throw sessionError;
 
-    currentSession = data.session;
+  const session = sessionData.session;
 
-    if (!currentSession) {
-      throw new Error("No active session. Please login again.");
-    }
-
-    $("loadingText").textContent = "Checking admin permission...";
-
-    const result = await timeout(
-      db.from("admin_users")
-        .select("user_id")
-        .eq("user_id", currentSession.user.id)
-        .maybeSingle(),
-      "Admin permission check"
-    );
-
-    if (result.error) throw result.error;
-
-    if (!result.data) {
-      throw new Error("This user is not registered in admin_users.");
-    }
-
-    $("loading").classList.add("hidden");
-    $("app").classList.remove("hidden");
-
-    showMessage("Admin access verified.", "success");
-
-    await refreshAll();
-
-  } catch (error) {
-    console.error("ADMIN LOAD ERROR:", error);
-
-    $("loading").classList.add("hidden");
-    $("denied").classList.remove("hidden");
-    $("deniedText").textContent = error.message || String(error);
+  if (!session || !session.user) {
+    throw new Error("No active session. Please log in with your admin account.");
   }
+
+  currentAdmin = session.user;
+
+  setLoadingText("Verifying administrator permissions...");
+
+  const { data: adminRecord, error: adminError } = await withTimeout(
+    db.from("admin_users")
+      .select("*")
+      .eq("user_id", currentAdmin.id)
+      .maybeSingle()
+  );
+
+  if (adminError) {
+    throw new Error("Admin verification failed: " + adminError.message);
+  }
+
+  if (!adminRecord) {
+    throw new Error("Your account is not registered in admin_users.");
+  }
+
+  $("loading").classList.add("hidden");
+  $("denied").classList.add("hidden");
+  $("app").classList.remove("hidden");
+
+  await refreshAll();
 }
 
 async function logout() {
-  try {
-    await db.auth.signOut({ scope: "local" });
-  } catch (error) {
-    console.error("Logout error:", error);
-  } finally {
-    window.location.replace("Login.html");
+  if (!confirm("Are you sure you want to logout?")) return;
+
+  const { error } = await db.auth.signOut();
+
+  if (error) {
+    showToast(error.message, true);
+    return;
   }
+
+  location.href = "Login.html";
 }
 
-// =====================================
-// REFRESH ALL
-// =====================================
+/* ---------- OVERVIEW / REFRESH ---------- */
 
 async function refreshAll() {
-  await Promise.allSettled([
+  if (!db) return;
+
+  showToast("Refreshing dashboard data...");
+
+  const results = await Promise.allSettled([
     loadOrders(),
-    loadTradingAccounts(),
     loadKYC(),
+    loadTradingAccounts(),
     loadPayouts()
   ]);
+
+  const failed = results.filter(result => result.status === "rejected");
+
+  if (failed.length) {
+    console.error("Some dashboard sections failed:", failed);
+    showToast("Some sections could not load. Check the section for errors.", true);
+  } else {
+    showToast("Dashboard refresh completed.");
+  }
 }
 
-// =====================================
-// ORDERS
-// =====================================
-
-function paymentCheck(order) {
-  const hash = String(order.transaction_hash || "").trim();
-  const network = String(order.payment_network || "").toUpperCase();
-
-  if (!hash) return '<span class="status">Not submitted</span>';
-
-  if (!network.includes("BEP20") && !network.includes("BSC")) {
-    return '<span class="status">Check network</span>';
-  }
-
-  if (!validHash(hash)) {
-    return '<span class="status">Invalid hash</span>';
-  }
-
-  return '<span class="status">Verify on blockchain</span>';
-}
+/* ---------- ORDERS ---------- */
 
 async function loadOrders() {
-  const tb = $("ordersTable");
-  tb.innerHTML = '<tr><td colspan="15">Loading orders...</td></tr>';
+  const tbody = $("ordersTable");
+  if (tbody) tbody.innerHTML = `<tr><td colspan="7" class="empty">Loading orders...</td></tr>`;
 
-  try {
-    const { data, error } = await db
-      .from("orders")
-      .select("*")
-      .order("created_at", { ascending: false });
+  const { data, error } = await db
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-    if (error) throw error;
-
-    const rows = data || [];
-
-    $("totalOrders").textContent = rows.length;
-    $("pendingOrders").textContent =
-      rows.filter(x => x.status === "pending").length;
-    $("paidOrders").textContent =
-      rows.filter(x => x.status === "paid").length;
-
-    if (!rows.length) {
-      tb.innerHTML = '<tr><td colspan="15">No orders found.</td></tr>';
-      return;
-    }
-
-    tb.innerHTML = rows.map(order => {
-      const status = String(order.status || "pending").toLowerCase();
-      const hash = String(order.transaction_hash || "");
-      const network = String(order.payment_network || "").toUpperCase();
-
-      const canApprove =
-        validHash(hash) &&
-        (network.includes("BEP20") || network.includes("BSC"));
-
-      const actions = status === "pending" ? `
-        <button class="primary small-btn"
-          ${canApprove ? "" : "disabled"}
-          onclick="updateOrder('${escapeHTML(order.id)}','paid')">
-          Approve
-        </button>
-        <button class="danger small-btn"
-          onclick="updateOrder('${escapeHTML(order.id)}','rejected')">
-          Reject
-        </button>
-      ` : `<span class="status">${escapeHTML(status)}</span>`;
-
-      return `
-        <tr>
-          <td title="${escapeHTML(order.id)}">${escapeHTML(shortId(order.id))}</td>
-          <td>${escapeHTML(shortId(order.user_id))}</td>
-          <td>${money(order.account_size)}</td>
-          <td>${escapeHTML(order.account_type)}</td>
-          <td>${escapeHTML(order.platform || "—")}</td>
-          <td>${escapeHTML(order.coupon_code || "—")}</td>
-          <td>${Number(order.discount_percent || 0)}%</td>
-          <td>${money(order.base_price)}</td>
-          <td>${money(order.final_price)}</td>
-          <td>${escapeHTML(order.payment_network || "—")}</td>
-          <td class="hash">${escapeHTML(hash || "Not submitted")}</td>
-          <td>${paymentCheck(order)}</td>
-          <td><span class="status">${escapeHTML(status)}</span></td>
-          <td>
-            <details>
-              <summary>View Details</summary>
-              <div class="details-box">
-                <b>Order:</b> ${escapeHTML(order.id)}<br>
-                <b>Customer:</b> ${escapeHTML(order.user_id)}<br>
-                <b>Receipt:</b> ${escapeHTML(order.receipt_path || "None")}<br>
-                <b>Payment submitted:</b> ${displayDate(order.payment_submitted_at)}<br>
-                <b>Created:</b> ${displayDate(order.created_at)}
-              </div>
-            </details>
-          </td>
-          <td>${actions}</td>
-        </tr>
-      `;
-    }).join("");
-
-  } catch (error) {
-    console.error("LOAD ORDERS:", error);
-    tb.innerHTML = `<tr><td colspan="15">${escapeHTML(error.message)}</td></tr>`;
+  if (error) {
+    if (tbody) tbody.innerHTML =
+      `<tr><td colspan="7" class="empty">Orders error: ${escapeHTML(error.message)}</td></tr>`;
+    throw error;
   }
+
+  ordersData = data || [];
+  renderOrders();
+  updateOverviewStats();
 }
 
-async function updateOrder(id, status) {
-  if (busy) return;
+function renderOrders() {
+  const tbody = $("ordersTable");
+  if (!tbody) return;
 
-  if (status === "paid" && !confirm(
-    "Have you independently verified the transaction on the blockchain, including token, amount and destination wallet?"
-  )) return;
+  const search = ($("orderSearch")?.value || "").toLowerCase();
+  const filter = ($("orderFilter")?.value || "").toLowerCase();
 
-  if (!confirm("Change order status to " + status.toUpperCase() + "?")) return;
+  const filtered = ordersData.filter(order => {
+    const text = [
+      order.id, order.user_id, order.account_type, order.status
+    ].join(" ").toLowerCase();
 
-  busy = true;
+    return text.includes(search) &&
+      (!filter || String(order.status).toLowerCase() === filter);
+  });
 
-  try {
-    const { data, error } = await db.functions.invoke(
-      "admin-update-order",
-      {
-        body: { order_id: id, status: status }
-      }
-    );
-
-    if (error) throw error;
-    if (data?.error) throw new Error(data.error);
-
-    showMessage("Order updated successfully.", "success");
-    await refreshAll();
-
-  } catch (error) {
-    console.error("ORDER UPDATE:", error);
-    showMessage("Order update failed: " + error.message, "error");
-  } finally {
-    busy = false;
-  }
-}
-
-// =====================================
-// KYC MANAGEMENT
-// =====================================
-
-async function loadKYC() {
-  const tb = $("kycTable");
-  tb.innerHTML = '<tr><td colspan="9">Loading KYC...</td></tr>';
-
-  try {
-    const { data, error } = await db
-      .from("kyc_submissions")
-      .select("*")
-      .order("submitted_at", { ascending: false });
-
-    if (error) throw error;
-
-    const rows = data || [];
-
-    $("pendingKyc").textContent =
-      rows.filter(x => x.status === "pending").length;
-
-    if (!rows.length) {
-      tb.innerHTML = '<tr><td colspan="9">No KYC submissions found.</td></tr>';
-      return;
-    }
-
-    tb.innerHTML = rows.map(item => `
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="empty">No orders found.</td></tr>`;
+  } else {
+    tbody.innerHTML = filtered.map(order => `
       <tr>
-        <td>${escapeHTML(shortId(item.user_id))}</td>
-        <td>${escapeHTML(item.full_name)}</td>
-        <td>${escapeHTML(item.country)}</td>
-        <td>${escapeHTML(item.document_type)}</td>
-        <td>${displayDate(item.submitted_at)}</td>
+        <td>${escapeHTML(shortId(order.id))}</td>
+        <td>${escapeHTML(shortId(order.user_id))}</td>
+        <td>${escapeHTML(order.account_type || order.challenge_type || "—")}</td>
+        <td>${money(order.amount ?? order.price)}</td>
+        <td>${statusHTML(order.status)}</td>
+        <td>${escapeHTML(displayDate(order.created_at))}</td>
         <td>
-          ${item.front_file ? `<button class="secondary small-btn" onclick="openKycFile('${escapeHTML(item.front_file)}')">Front</button>` : ""}
-          ${item.back_file ? `<button class="secondary small-btn" onclick="openKycFile('${escapeHTML(item.back_file)}')">Back</button>` : ""}
-          ${item.selfie_file ? `<button class="secondary small-btn" onclick="openKycFile('${escapeHTML(item.selfie_file)}')">Selfie</button>` : ""}
-        </td>
-        <td><span class="status">${escapeHTML(item.status || "pending")}</span></td>
-        <td>${escapeHTML(item.admin_note || "—")}</td>
-        <td>
-          ${item.status === "pending" ? `
-            <button class="primary small-btn" onclick="reviewKYC('${escapeHTML(item.id)}','approved')">Approve</button>
-            <button class="danger small-btn" onclick="reviewKYC('${escapeHTML(item.id)}','rejected')">Reject</button>
-          ` : "Reviewed"}
+          <button class="btn small green"
+            onclick="updateOrder('${escapeHTML(order.id)}','paid')">Paid</button>
+          <button class="btn small red"
+            onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
         </td>
       </tr>
     `).join("");
-
-  } catch (error) {
-    console.error("LOAD KYC:", error);
-    tb.innerHTML = `<tr><td colspan="9">KYC Error: ${escapeHTML(error.message)}</td></tr>`;
   }
+
+  const recent = $("recentOrdersTable");
+  if (recent) {
+    recent.innerHTML = ordersData.slice(0, 5).map(order => `
+      <tr>
+        <td>${escapeHTML(shortId(order.id))}</td>
+        <td>${escapeHTML(shortId(order.user_id))}</td>
+        <td>${money(order.amount ?? order.price)}</td>
+        <td>${statusHTML(order.status)}</td>
+        <td>${escapeHTML(displayDate(order.created_at))}</td>
+      </tr>
+    `).join("") || `<tr><td colspan="5" class="empty">No orders yet.</td></tr>`;
+  }
+
+  updateOverviewStats();
+}
+
+async function updateOrder(orderId, action) {
+  if (!["paid", "rejected"].includes(action)) return;
+
+  const message = action === "paid"
+    ? "Confirm that payment has actually been received?"
+    : "Reject this order?";
+
+  if (!confirm(message)) return;
+
+  const { data, error } = await db.functions.invoke("admin-update-order", {
+    body: {
+      order_id: orderId,
+      status: action,
+      action: action
+    }
+  });
+
+  if (error) {
+    showToast("Order update failed: " + error.message, true);
+    return;
+  }
+
+  if (data?.error) {
+    showToast(data.error, true);
+    return;
+  }
+
+  showToast("Order updated.");
+  await loadOrders();
+}
+
+/* ---------- KYC ---------- */
+
+async function loadKYC() {
+  const tbody = $("kycTable");
+  if (tbody) tbody.innerHTML =
+    `<tr><td colspan="5" class="empty">Loading KYC...</td></tr>`;
+
+  const { data, error } = await db
+    .from("kyc_submissions")
+    .select("*")
+    .order("submitted_at", { ascending: false });
+
+  if (error) {
+    if (tbody) tbody.innerHTML =
+      `<tr><td colspan="5" class="empty">KYC error: ${escapeHTML(error.message)}</td></tr>`;
+    throw error;
+  }
+
+  kycData = data || [];
+  renderKYC();
+  updateOverviewStats();
+}
+
+function renderKYC() {
+  const tbody = $("kycTable");
+  if (!tbody) return;
+
+  if (!kycData.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="empty">No KYC submissions found.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = kycData.map(item => `
+    <tr>
+      <td>${escapeHTML(shortId(item.user_id))}</td>
+      <td>${statusHTML(item.status)}</td>
+      <td>${escapeHTML(displayDate(item.submitted_at))}</td>
+      <td>
+        <button class="btn small gray"
+          onclick="openKycFile('${escapeHTML(item.front_file || "")}')">Front</button>
+        <button class="btn small gray"
+          onclick="openKycFile('${escapeHTML(item.back_file || "")}')">Back</button>
+        <button class="btn small gray"
+          onclick="openKycFile('${escapeHTML(item.selfie_file || "")}')">Selfie</button>
+      </td>
+      <td>
+        <button class="btn small green"
+          onclick="reviewKYC('${escapeHTML(item.id)}','approved')">Approve</button>
+        <button class="btn small red"
+          onclick="reviewKYC('${escapeHTML(item.id)}','rejected')">Reject</button>
+      </td>
+    </tr>
+  `).join("");
 }
 
 async function openKycFile(path) {
-  try {
-    const { data, error } = await db.storage
-      .from(KYC_BUCKET)
-      .createSignedUrl(path, 300);
-
-    if (error) throw error;
-    if (!data?.signedUrl) throw new Error("Could not create secure file link.");
-
-    window.open(data.signedUrl, "_blank", "noopener");
-
-  } catch (error) {
-    showMessage("Document error: " + error.message, "error");
-  }
-}
-
-async function reviewKYC(id, status) {
-  const note = prompt("Admin note (optional):", "");
-  if (note === null) return;
-
-  if (!confirm("Set KYC status to " + status.toUpperCase() + "?")) return;
-
-  try {
-    const { data: admin, error: adminError } = await db
-      .from("admin_users")
-      .select("user_id")
-      .eq("user_id", currentSession.user.id)
-      .maybeSingle();
-
-    if (adminError) throw adminError;
-    if (!admin) throw new Error("Admin authorization failed.");
-
-    const { data, error } = await db
-      .from("kyc_submissions")
-      .update({
-        status: status,
-        admin_note: note.trim() || null,
-        reviewed_at: new Date().toISOString()
-      })
-      .eq("id", id)
-      .eq("status", "pending")
-      .select("id");
-
-    if (error) throw error;
-    if (!data?.length) throw new Error("KYC record was not updated.");
-
-    showMessage("KYC review updated.", "success");
-    await loadKYC();
-
-  } catch (error) {
-    console.error("KYC REVIEW:", error);
-    showMessage("KYC review failed: " + error.message, "error");
-  }
-}
-
-// =====================================
-// CREATE TRADING ACCOUNT
-// =====================================
-
-async function createTradingAccount() {
-  const userId = $("newUserId").value.trim();
-  const orderId = $("newOrderId").value.trim();
-  const mtLogin = $("newMtLogin").value.trim();
-  const mtServer = $("newMtServer").value.trim();
-
-  if (!userId || !orderId || !mtLogin || !mtServer) {
-    showMessage("Complete all fields first.", "error");
+  if (!path) {
+    showToast("This document file is missing.", true);
     return;
   }
 
-  if (!confirm("Confirm that this order is paid and MetaTrader credentials are correct?")) return;
+  const { data, error } = await db.storage
+    .from(KYC_BUCKET)
+    .createSignedUrl(path, 300);
 
-  const btn = $("createAccountBtn");
-  btn.disabled = true;
-  btn.textContent = "Creating...";
+  if (error) {
+    showToast("Cannot open KYC document: " + error.message, true);
+    return;
+  }
+
+  window.open(data.signedUrl, "_blank", "noopener");
+}
+
+async function reviewKYC(id, decision) {
+  if (!["approved", "rejected"].includes(decision)) return;
+
+  const note = prompt(
+    decision === "approved"
+      ? "Optional admin note:"
+      : "Reason for rejection:"
+  );
+
+  if (note === null) return;
+
+  if (decision === "rejected" && !note.trim()) {
+    showToast("Please enter a rejection reason.", true);
+    return;
+  }
+
+  if (!confirm("Confirm KYC " + decision + "?")) return;
+
+  /*
+    This update expects the kyc_submissions table to have:
+    status, admin_note, reviewed_at.
+    If your table uses different column names, the error will be shown.
+  */
+
+  const { error } = await db
+    .from("kyc_submissions")
+    .update({
+      status: decision,
+      admin_note: note.trim() || null,
+      reviewed_at: new Date().toISOString()
+    })
+    .eq("id", id);
+
+  if (error) {
+    showToast("KYC review failed: " + error.message, true);
+    return;
+  }
+
+  showToast("KYC " + decision + ".");
+  await loadKYC();
+}
+
+/* ---------- CREATE TRADING ACCOUNT ---------- */
+
+async function createTradingAccount(event) {
+  event.preventDefault();
+
+  const button = $("createAccountBtn");
+  button.disabled = true;
+  button.textContent = "Creating...";
 
   try {
+    const payload = {
+      user_id: $("newUserId").value.trim(),
+      order_id: $("newOrderId").value.trim(),
+      account_size: Number($("newAccountSize").value),
+      account_type: $("newAccountType").value,
+      platform: $("newPlatform").value,
+      mt_login: $("newMtLogin").value.trim(),
+      mt_server: $("newMtServer").value.trim()
+    };
+
+    if (!payload.user_id || !payload.order_id ||
+        !payload.account_size || !payload.account_type ||
+        !payload.platform || !payload.mt_login ||
+        !payload.mt_server) {
+      throw new Error("Please complete all fields.");
+    }
+
+    if (!["evaluation", "instant"].includes(payload.account_type)) {
+      throw new Error("Invalid account type.");
+    }
+
     const { data, error } = await db.functions.invoke(
       "admin-create-trading-account",
-      {
-        body: {
-          user_id: userId,
-          order_id: orderId,
-          account_size: Number($("newAccountSize").value),
-          account_type: $("newAccountType").value,
-          platform: $("newPlatform").value,
-          mt_login: mtLogin,
-          mt_server: mtServer
-        }
-      }
+      { body: payload }
     );
 
     if (error) throw error;
     if (data?.error) throw new Error(data.error);
 
-    showMessage("Trading account created successfully.", "success");
+    showMessage("createMessage", "Trading account created successfully.", "success");
+    $("createAccountForm").reset();
 
-    $("newUserId").value = "";
-    $("newOrderId").value = "";
-    $("newMtLogin").value = "";
-    $("newMtServer").value = "";
-
-    await refreshAll();
+    await loadTradingAccounts();
+    await loadOrders();
 
   } catch (error) {
-    console.error("CREATE ACCOUNT:", error);
-    showMessage("Could not create account: " + error.message, "error");
+    console.error("Create account error:", error);
+    showMessage(
+      "createMessage",
+      error.message || "Unable to create trading account.",
+      "error"
+    );
   } finally {
-    btn.disabled = false;
-    btn.textContent = "Create Account";
+    button.disabled = false;
+    button.textContent = "Create Trading Account";
   }
 }
 
-// =====================================
-// TRADING ACCOUNTS
-// =====================================
+/* ---------- TRADING ACCOUNTS ---------- */
 
 async function loadTradingAccounts() {
-  const tb = $("accountsTable");
-  tb.innerHTML = '<tr><td colspan="11">Loading accounts...</td></tr>';
+  const tbody = $("accountsTable");
+  if (tbody) tbody.innerHTML =
+    `<tr><td colspan="8" class="empty">Loading accounts...</td></tr>`;
 
-  try {
-    const { data, error } = await db
-      .from("trading_accounts")
-      .select("*")
-      .order("created_at", { ascending: false });
+  const { data, error } = await db
+    .from("trading_accounts")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-    if (error) throw error;
-
-    const rows = data || [];
-    $("totalAccounts").textContent = rows.length;
-
-    if (!rows.length) {
-      tb.innerHTML = '<tr><td colspan="11">No trading accounts found.</td></tr>';
-      return;
-    }
-
-    tb.innerHTML = rows.map(account => `
-      <tr>
-        <td title="${escapeHTML(account.id)}">${escapeHTML(shortId(account.id))}</td>
-        <td>${escapeHTML(shortId(account.user_id))}</td>
-        <td>${money(account.account_size)}</td>
-        <td>${escapeHTML(account.account_type || "—")}</td>
-        <td>${money(account.balance)}</td>
-        <td>${money(account.equity)}</td>
-        <td>${money(account.profit)}</td>
-        <td><span class="status">${escapeHTML(account.status || "—")}</span></td>
-        <td>${escapeHTML(account.mt_login || "—")}</td>
-        <td>${escapeHTML(account.platform || "—")}</td>
-        <td>${escapeHTML(account.phase || "—")}</td>
-      </tr>
-    `).join("");
-
-  } catch (error) {
-    console.error("LOAD ACCOUNTS:", error);
-    tb.innerHTML = `<tr><td colspan="11">${escapeHTML(error.message)}</td></tr>`;
+  if (error) {
+    if (tbody) tbody.innerHTML =
+      `<tr><td colspan="8" class="empty">Accounts error: ${escapeHTML(error.message)}</td></tr>`;
+    throw error;
   }
+
+  accountsData = data || [];
+  renderAccounts();
+  updateOverviewStats();
 }
 
-// =====================================
-// WFT PAYOUT MANAGEMENT
-// =====================================
+function renderAccounts() {
+  const tbody = $("accountsTable");
+  if (!tbody) return;
+
+  const search = ($("accountSearch")?.value || "").toLowerCase();
+
+  const filtered = accountsData.filter(account => {
+    const text = [
+      account.user_id, account.mt_login, account.account_size,
+      account.account_type, account.status
+    ].join(" ").toLowerCase();
+
+    return text.includes(search);
+  });
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="8" class="empty">No trading accounts found.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(account => `
+    <tr>
+      <td>${escapeHTML(shortId(account.user_id))}</td>
+      <td>${escapeHTML(account.mt_login || "—")}</td>
+      <td>${money(account.account_size)}</td>
+      <td>${escapeHTML(account.account_type || "—")}</td>
+      <td>${escapeHTML(account.phase || "—")}</td>
+      <td>${escapeHTML(account.platform || "—")}</td>
+      <td>${statusHTML(account.status)}</td>
+      <td>${money(account.profit)}</td>
+    </tr>
+  `).join("");
+}
+
+/* ---------- PAYOUT MANAGEMENT ---------- */
 
 async function loadPayouts() {
-  const tb = $("payoutsTable");
-  if (!tb) return;
+  const tbody = $("payoutTable");
+  if (tbody) tbody.innerHTML =
+    `<tr><td colspan="10" class="empty">Loading payouts...</td></tr>`;
 
-  tb.innerHTML = '<tr><td colspan="12">Loading payout requests...</td></tr>';
+  const { data, error } = await db
+    .from("payout_requests")
+    .select("*")
+    .order("requested_at", { ascending: false });
 
-  try {
-    const { data, error } = await db
-      .from("payout_requests")
-      .select("*")
-      .order("requested_at", { ascending: false });
-
-    if (error) throw error;
-
-    const rows = data || [];
-
-    const pending = rows.filter(x => x.status === "pending");
-    const approved = rows.filter(x => x.status === "approved");
-    const paid = rows.filter(x => x.status === "paid");
-
-    $("payoutPending").textContent = pending.length;
-    $("payoutApproved").textContent = approved.length;
-    $("payoutPendingCard").textContent = pending.length;
-    $("payoutApprovedCard").textContent = approved.length;
-    $("payoutPaid").textContent = paid.length;
-
-    const totalPaid = paid.reduce(
-      (sum, x) => sum + Number(x.payout_amount || 0), 0
-    );
-
-    $("payoutTotalPaid").textContent = money(totalPaid);
-    $("payoutTotalPaidCard").textContent = money(totalPaid);
-
-    if (!rows.length) {
-      tb.innerHTML = '<tr><td colspan="12">No payout requests found.</td></tr>';
-      return;
-    }
-
-    tb.innerHTML = rows.map(item => {
-      const status = String(item.status || "pending").toLowerCase();
-
-      let actions = "";
-
-      if (status === "pending") {
-        actions = `
-          <button class="primary small-btn"
-            onclick="reviewPayout('${escapeHTML(item.id)}','approved')">Approve</button>
-          <button class="danger small-btn"
-            onclick="reviewPayout('${escapeHTML(item.id)}','rejected')">Reject</button>`;
-      } else if (status === "approved") {
-        actions = `
-          <button class="primary small-btn"
-            onclick="reviewPayout('${escapeHTML(item.id)}','paid')">Mark Paid</button>`;
-      } else {
-        actions = `<span class="status">${escapeHTML(status)}</span>`;
-      }
-
-      return `
-        <tr>
-          <td title="${escapeHTML(item.id)}">${escapeHTML(shortId(item.id))}</td>
-          <td>${escapeHTML(shortId(item.user_id))}</td>
-          <td>${escapeHTML(shortId(item.trading_account_id))}</td>
-          <td>${money(item.account_profit)}</td>
-          <td>${money(item.trader_share)}</td>
-          <td>${money(item.company_share)}</td>
-          <td>${money(item.payout_amount)}</td>
-          <td>${escapeHTML(item.network || "—")}</td>
-          <td class="hash" title="${escapeHTML(item.wallet_address || "")}">
-            ${escapeHTML(item.wallet_address || "—")}
-          </td>
-          <td>${displayDate(item.requested_at)}</td>
-          <td><span class="status">${escapeHTML(status)}</span></td>
-          <td>
-            ${actions}
-            <details>
-              <summary>Details</summary>
-              <div class="details-box">
-                <b>Request:</b> ${escapeHTML(item.id)}<br>
-                <b>Wallet:</b> ${escapeHTML(item.wallet_address)}<br>
-                <b>Network:</b> ${escapeHTML(item.network)}<br>
-                <b>Amount:</b> ${money(item.payout_amount)}<br>
-                <b>Admin note:</b> ${escapeHTML(item.admin_note || "None")}<br>
-                <b>Reviewed:</b> ${displayDate(item.reviewed_at)}<br>
-                <b>Paid:</b> ${displayDate(item.paid_at)}
-              </div>
-            </details>
-          </td>
-        </tr>`;
-    }).join("");
-
-  } catch (error) {
-    console.error("LOAD PAYOUTS:", error);
-    tb.innerHTML = `<tr><td colspan="12">Payout Error: ${escapeHTML(error.message)}</td></tr>`;
+  if (error) {
+    if (tbody) tbody.innerHTML =
+      `<tr><td colspan="10" class="empty">Payout error: ${escapeHTML(error.message)}</td></tr>`;
+    throw error;
   }
+
+  payoutsData = data || [];
+  renderPayouts();
+  updateOverviewStats();
+}
+
+function renderPayouts() {
+  const tbody = $("payoutTable");
+  if (!tbody) return;
+
+  const filter = ($("payoutFilter")?.value || "").toLowerCase();
+
+  const filtered = payoutsData.filter(item =>
+    !filter || String(item.status).toLowerCase() === filter
+  );
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="10" class="empty">No payout requests found.</td></tr>`;
+  } else {
+    tbody.innerHTML = filtered.map(item => `
+      <tr>
+        <td>${escapeHTML(shortId(item.id))}</td>
+        <td>${escapeHTML(shortId(item.user_id))}</td>
+        <td>${escapeHTML(shortId(item.trading_account_id))}</td>
+        <td>${money(item.account_profit)}</td>
+        <td>${money(item.trader_share)}</td>
+        <td>${money(item.company_share)}</td>
+        <td>${escapeHTML(item.network || "—")}</td>
+        <td title="${escapeHTML(item.wallet_address || "")}">
+          ${escapeHTML(shortId(item.wallet_address))}
+        </td>
+        <td>${statusHTML(item.status)}</td>
+        <td>
+          ${item.status === "pending" ? `
+            <button class="btn small green"
+              onclick="reviewPayout('${escapeHTML(item.id)}','approved')">Approve</button>
+            <button class="btn small red"
+              onclick="reviewPayout('${escapeHTML(item.id)}','rejected')">Reject</button>
+          ` : ""}
+          ${item.status === "approved" ? `
+            <button class="btn small gold"
+              onclick="reviewPayout('${escapeHTML(item.id)}','paid')">Mark Paid</button>
+          ` : ""}
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  const count = status => payoutsData.filter(
+    item => String(item.status).toLowerCase() === status
+  ).length;
+
+  $("payoutStatTotal").textContent = payoutsData.length;
+  $("payoutStatPending").textContent = count("pending");
+  $("payoutStatApproved").textContent = count("approved");
+  $("payoutStatPaid").textContent = count("paid");
+
+  updateOverviewStats();
 }
 
 async function reviewPayout(id, action) {
-  if (busy) return;
-
   if (!["approved", "rejected", "paid"].includes(action)) return;
 
+  const item = payoutsData.find(p => p.id === id);
+  if (!item) {
+    showToast("Payout request not found.", true);
+    return;
+  }
+
   if (action === "paid") {
-    showMessage(
-      "Paid action is disabled until transaction-hash storage is added and verified.",
-      "error"
+    const confirmed = confirm(
+      "IMPORTANT: Have you actually sent the USDT payment to the trader's wallet? " +
+      "Only confirm if the transfer is completed."
+    );
+
+    if (!confirmed) return;
+  }
+
+  const note = prompt(
+    action === "approved" ? "Optional admin note:" :
+    action === "rejected" ? "Reason for rejection:" :
+    "Enter transaction reference / hash if available:"
+  );
+
+  if (note === null) return;
+
+  if (action === "rejected" && !note.trim()) {
+    showToast("Please provide a rejection reason.", true);
+    return;
+  }
+
+  /*
+    The current RPC does not store a transaction hash.
+    Therefore this UI deliberately blocks Paid until the database
+    supports recording and verifying the transfer reference.
+  */
+
+  if (action === "paid") {
+    showToast(
+      "Paid action is locked until transaction-hash storage is added to the database.",
+      true
     );
     return;
   }
 
-  const question = action === "approved"
-    ? "Approve this payout request?"
-    : "Reject this payout request?";
+  const { error } = await db.rpc("admin_review_wft_payout", {
+    p_request_id: id,
+    p_action: action,
+    p_admin_note: note.trim() || null
+  });
 
-  if (!confirm(question)) return;
+  if (error) {
+    showToast("Payout review failed: " + error.message, true);
+    return;
+  }
 
-  const note = prompt("Admin note (optional):", "");
-  if (note === null) return;
+  showToast("Payout " + action + " successfully.");
+  await loadPayouts();
+}
 
-  busy = true;
+/* ---------- OVERVIEW COUNTERS ---------- */
 
+function updateOverviewStats() {
+  $("totalOrders").textContent = ordersData.length;
+
+  $("pendingOrders").textContent = ordersData.filter(item =>
+    String(item.status).toLowerCase() === "pending"
+  ).length;
+
+  $("paidOrders").textContent = ordersData.filter(item =>
+    ["paid", "completed"].includes(String(item.status).toLowerCase())
+  ).length;
+
+  $("totalAccounts").textContent = accountsData.length;
+
+  $("activeAccounts").textContent = accountsData.filter(item =>
+    String(item.status).toLowerCase() === "active"
+  ).length;
+
+  $("pendingKyc").textContent = kycData.filter(item =>
+    String(item.status).toLowerCase() === "pending"
+  ).length;
+
+  $("totalPayouts").textContent = payoutsData.length;
+
+  $("pendingPayouts").textContent = payoutsData.filter(item =>
+    String(item.status).toLowerCase() === "pending"
+  ).length;
+}
+
+
+/* ---------- SAFE INITIALIZATION ---------- */
+
+document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const { data, error } = await db.rpc(
-      "admin_review_wft_payout",
-      {
-        p_request_id: id,
-        p_action: action,
-        p_admin_note: note.trim() || null
-      }
+    setLoadingText("Connecting to Supabase...");
+
+    if (!window.supabase || !window.supabase.createClient) {
+      throw new Error(
+        "Supabase library failed to load. Check your internet connection or CDN access."
+      );
+    }
+
+    db = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
     );
 
-    if (error) throw error;
-    if (data?.error) throw new Error(data.error);
-
-    showMessage("Payout " + action + " successfully.", "success");
-    await loadPayouts();
+    await loadAdmin();
 
   } catch (error) {
     console.error("WFT INITIALIZATION ERROR:", error);
 
-    const loading = document.getElementById("loading");
-    const denied = document.getElementById("denied");
-    const deniedText = document.getElementById("deniedText");
+    $("loading").classList.add("hidden");
+    $("app").classList.add("hidden");
+    $("denied").classList.remove("hidden");
 
-    if (loading) {
-      loading.classList.add("hidden");
-    }
-
-    if (denied) {
-      denied.classList.remove("hidden");
-    }
-
-    if (deniedText) {
-      deniedText.textContent =
-        error && error.message
-          ? error.message
-          : "An unexpected initialization error occurred.";
-    }
+    $("deniedText").textContent =
+      error && error.message
+        ? error.message
+        : "An unexpected initialization error occurred.";
   }
 });
+
+/* ---------- AUTH SESSION MONITOR ---------- */
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (!db) return;
+
+  db.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_OUT") {
+      location.href = "Login.html";
+    }
+  });
+});
+
 </script>
 
 </body>
 </html>
+
