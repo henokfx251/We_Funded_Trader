@@ -782,8 +782,7 @@ const safe = value => String(value ?? "").replace(/[&<>"']/g, c => ({
  ">":"&gt;",
  '"':"&quot;",
  "'":"&#39;"
-}[c]));
-
+   
 const displayDate = value => {
  if(!value) return "-";
  const date = new Date(value);
@@ -881,326 +880,461 @@ async function loadOrders(){
 
  if(error) throw error;
 
- orders = data || [];
 
- $("allOrders").innerHTML = orderTable(orders);
- $("recentOrders").innerHTML = orderTable(orders.slice(0,5));
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
- $("orderCount").textContent = orders.length;
- $("paidCount").textContent =
-  orders.filter(o => String(o.status).toLowerCase() === "paid").length;
-}
+const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
 
-async function loadAccounts(){
- const {data,error} = await db
-  .from("trading_accounts")
-  .select("*")
-  .eq("user_id",currentUser.id)
-  .order("created_at",{ascending:false})
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
 
- if(error) throw error;
+let currentUser = null;
+let orders = [];
+let accounts = [];
+let kycRecord = null;
 
- accounts = data || [];
-
- $("allAccounts").innerHTML = accounts.length
-  ? accounts.map(accountCard).join("")
-  : '<div class="empty">No trading accounts assigned yet.</div>';
-
- $("overviewAccounts").innerHTML = accounts.length
-  ? accounts.slice(0,3).map(accountCard).join("")
-  : '<div class="empty">No trading accounts assigned yet.</div>';
-
- $("terminalAccounts").innerHTML = accounts.length
-  ? accounts.map(a => `
-    <div class="account-card">
-     <h3>${safe(a.account_name || "Trading Account")}</h3>
-     <p class="muted">${safe(a.platform || "Platform not assigned")}</p>
-     <div class="account-details">
-      <div>
-       <div class="detail-label">MT Login</div>
-       <div class="detail-value">${safe(a.mt_login || "Not assigned")}</div>
-      </div>
-      <div>
-       <div class="detail-label">MT Server</div>
-       <div class="detail-value">${safe(a.mt_server || "Not assigned")}</div>
-      </div>
-      <div>
-       <div class="detail-label">Balance</div>
-       <div class="detail-value">${money(a.balance)}</div>
-      </div>
-      <div>
-       <div class="detail-label">Status</div>
-       <div class="detail-value">${badge(a.status)}</div>
-      </div>
-     </div>
-    </div>
-   `).join("")
-  : '<div class="empty">No trading terminal credentials assigned yet.</div>';
-
- const balance = accounts.reduce((sum,a) => sum + (Number(a.balance)||0),0);
- const equity = accounts.reduce((sum,a) => sum + (Number(a.equity)||0),0);
- const profit = accounts.reduce((sum,a) => sum + (Number(a.profit)||0),0);
-
- $("totalBalance").textContent = money(balance);
- $("totalEquity").textContent = money(equity);
- $("totalProfit").textContent = money(profit);
- $("accountCount").textContent = accounts.length;
- $("accountSummary").textContent = accounts.length + " accounts";
-
- $("activeCount").textContent =
-  accounts.filter(a => String(a.status).toLowerCase() === "active").length;
-
- $("pendingCount").textContent =
-  accounts.filter(a => String(a.status).toLowerCase() === "pending").length;
-}
-
-async function loadChallenge(){
- const evaluation = orders.filter(o => o.account_type === "evaluation");
- const instant = orders.filter(o => o.account_type === "instant");
-
- $("challengeContent").innerHTML = `
-  <div class="info-card">
-   <h3>1-Step Evaluation</h3>
-   <p>You have ${evaluation.length} evaluation order(s).</p>
-  </div>
-  <div class="info-card">
-   <h3>Instant Funding</h3>
-   <p>You have ${instant.length} instant funding order(s).</p>
-  </div>
- `;
-}
-
-async function loadKYC(){
- const {data,error} = await db
-  .from("kyc_submissions")
-  .select("*")
-  .eq("user_id",currentUser.id)
-  .order("created_at",{ascending:false})
-  .limit(1);
-
- if(error) throw error;
-
- kycRecord = data && data.length ? data[0] : null;
-
- if(!kycRecord){
-  $("kycStatus").innerHTML =
-   '<div class="kyc-status"><h3>KYC Not Submitted</h3><p class="muted">Please submit your identity documents below.</p></div>';
-  $("kycFormCard").style.display = "block";
-  return;
- }
-
- $("kycStatus").innerHTML = `
-  <div class="kyc-status">
-   <h3>KYC Status: ${badge(kycRecord.status)}</h3>
-   <p class="muted">Submitted: ${displayDate(kycRecord.created_at)}</p>
-   ${kycRecord.admin_note
-    ? `<p class="muted">Admin Note: ${safe(kycRecord.admin_note)}</p>`
-    : ""}
-  </div>
- `;
-
- const status = String(kycRecord.status || "").toLowerCase();
-
- $("kycFormCard").style.display =
-  status === "rejected" ? "block" : "none";
-}
-
-async function uploadKycFile(file,folder){
- if(!file) return null;
-
- if(file.size > 10 * 1024 * 1024){
-  throw new Error("Each file must be 10 MB or smaller.");
- }
-
- const allowed = [
-  "image/jpeg",
-  "image/png",
-  "application/pdf"
- ];
-
- if(!allowed.includes(file.type)){
-  throw new Error("Unsupported document format.");
- }
-
- const extension = file.name.split(".").pop().toLowerCase();
- const path = `${currentUser.id}/${folder}_${Date.now()}.${extension}`;
-
- const {error} = await db.storage
-  .from("kyc-documents")
-  .upload(path,file,{upsert:false});
-
- if(error) throw error;
-
- return path;
-}
-
-$("kycForm").addEventListener("submit",async event => {
- event.preventDefault();
-
- const btn = $("submitKycBtn");
- btn.disabled = true;
- btn.textContent = "Uploading...";
-
- try{
-  if(kycRecord && String(kycRecord.status).toLowerCase() !== "rejected"){
-   throw new Error("Your KYC is already submitted and is awaiting review.");
-  }
-
-  const front = $("kycFront").files[0];
-  const back = $("kycBack").files[0];
-  const selfie = $("kycSelfie").files[0];
-
-  if(!front) throw new Error("Upload the front side of your ID.");
-
-  const frontPath = await uploadKycFile(front,"front");
-  const backPath = back ? await uploadKycFile(back,"back") : null;
-  const selfiePath = selfie ? await uploadKycFile(selfie,"selfie") : null;
-
-  const record = {
-   user_id:currentUser.id,
-   full_name:$("kycFullName").value.trim(),
-   country:$("kycCountry").value.trim(),
-   document_type:$("kycDocumentType").value,
-   front_path:frontPath,
-   back_path:backPath,
-   selfie_path:selfiePath,
-   status:"pending",
-   admin_note:null,
-   reviewed_at:null
-  };
-
-  const {error} = await db
-   .from("kyc_submissions")
-   .insert(record);
-
-  if(error) throw error;
-
-  toast("KYC submitted successfully.");
-  $("kycForm").reset();
-  await loadKYC();
-
- }catch(error){
-  console.error("KYC SUBMISSION ERROR:",error);
-  toast(error.message || "KYC submission failed.");
- }finally{
-  btn.disabled = false;
-  btn.textContent = "Submit KYC Verification";
- }
+const money = value => "$" + (Number(value) || 0).toLocaleString("en-US", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
 });
 
-async function refreshAll(){
- await Promise.all([
-  loadOrders(),
-  loadAccounts(),
-  loadKYC()
- ]);
+const safe = value => String(value ?? "").replace(/[&<>"']/g, c => ({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+}[c]));
 
- await loadChallenge();
+const displayDate = value => {
+  if (!value) return "-";
+  const date = new Date(value);
+  return isNaN(date) ? "-" : date.toLocaleDateString();
+};
+
+const badge = value => {
+  const status = String(value || "Unknown").toLowerCase();
+  return `<span class="status ${safe(status)}">${safe(value || "Unknown")}</span>`;
+};
+
+function toast(message) {
+  $("toast").textContent = message;
+  $("toast").style.display = "block";
+  setTimeout(() => $("toast").style.display = "none", 4000);
 }
 
-async function loadDashboard(){
- try{
-  const {data,error} = await db.auth.getSession();
-  if(error) throw error;
+function accountCard(a) {
+  const name = a.account_name ||
+    (a.account_type === "evaluation" ? "1-Step Evaluation" : "Instant Funding");
 
-  if(!data.session){
-   window.location.replace("Login.html");
-   return;
+  return `
+    <div class="account-card">
+      <div class="account-head">
+        <div>
+          <strong>${safe(name)}</strong>
+          <p class="muted">${safe(a.platform || "Platform not assigned")} · ${safe(a.account_size || "")}</p>
+        </div>
+        ${badge(a.status)}
+      </div>
+
+      <div class="account-balance">${money(a.balance)}</div>
+
+      <div class="account-details">
+        <div>
+          <div class="detail-label">Equity</div>
+          <div class="detail-value">${money(a.equity)}</div>
+        </div>
+        <div>
+          <div class="detail-label">Profit</div>
+          <div class="detail-value">${money(a.profit)}</div>
+        </div>
+        <div>
+          <div class="detail-label">MT Login</div>
+          <div class="detail-value">${safe(a.mt_login || "Not assigned")}</div>
+        </div>
+        <div>
+          <div class="detail-label">MT Server</div>
+          <div class="detail-value">${safe(a.mt_server || "Not assigned")}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function orderTable(list) {
+  if (!list.length) return '<div class="empty">No orders found.</div>';
+
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Account Size</th>
+            <th>Type</th>
+            <th>Platform</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${list.map(o => `
+            <tr>
+              <td>${safe(String(o.id).slice(0,8))}</td>
+              <td>${money(o.account_size)}</td>
+              <td>${safe(o.account_type)}</td>
+              <td>${safe(o.platform || "-")}</td>
+              <td>${money(o.final_price)}</td>
+              <td>${badge(o.status)}</td>
+              <td>${displayDate(o.created_at)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+/* LOAD ORDERS */
+async function loadOrders() {
+  const { data, error } = await db
+    .from("orders")
+    .select("*")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  orders = data || [];
+
+  $("allOrders").innerHTML = orderTable(orders);
+  $("recentOrders").innerHTML = orderTable(orders.slice(0,5));
+
+  $("orderCount").textContent = orders.length;
+  $("paidCount").textContent =
+    orders.filter(o => String(o.status).toLowerCase() === "paid").length;
+}
+
+/* LOAD TRADING ACCOUNTS */
+async function loadAccounts() {
+  const { data, error } = await db
+    .from("trading_accounts")
+    .select("*")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  accounts = data || [];
+
+  $("allAccounts").innerHTML = accounts.length
+    ? accounts.map(accountCard).join("")
+    : '<div class="empty">No trading accounts assigned yet.</div>';
+
+  $("overviewAccounts").innerHTML = accounts.length
+    ? accounts.slice(0,3).map(accountCard).join("")
+    : '<div class="empty">No trading accounts assigned yet.</div>';
+
+  $("terminalAccounts").innerHTML = accounts.length
+    ? accounts.map(a => `
+      <div class="account-card">
+        <h3>${safe(a.account_name || "Trading Account")}</h3>
+        <p class="muted">${safe(a.platform || "Platform not assigned")}</p>
+        <div class="account-details">
+          <div>
+            <div class="detail-label">MT Login</div>
+            <div class="detail-value">${safe(a.mt_login || "Not assigned")}</div>
+          </div>
+          <div>
+            <div class="detail-label">MT Server</div>
+            <div class="detail-value">${safe(a.mt_server || "Not assigned")}</div>
+          </div>
+          <div>
+            <div class="detail-label">Balance</div>
+            <div class="detail-value">${money(a.balance)}</div>
+          </div>
+          <div>
+            <div class="detail-label">Status</div>
+            <div class="detail-value">${badge(a.status)}</div>
+          </div>
+        </div>
+      </div>
+    `).join("")
+    : '<div class="empty">No trading terminal credentials assigned yet.</div>';
+
+  const balance = accounts.reduce((sum,a) => sum + (Number(a.balance) || 0), 0);
+  const equity = accounts.reduce((sum,a) => sum + (Number(a.equity) || 0), 0);
+  const profit = accounts.reduce((sum,a) => sum + (Number(a.profit) || 0), 0);
+
+  $("totalBalance").textContent = money(balance);
+  $("totalEquity").textContent = money(equity);
+  $("totalProfit").textContent = money(profit);
+  $("accountCount").textContent = accounts.length;
+  $("accountSummary").textContent = accounts.length + " accounts";
+
+  $("activeCount").textContent =
+    accounts.filter(a => String(a.status).toLowerCase() === "active").length;
+
+  $("pendingCount").textContent =
+    accounts.filter(a => String(a.status).toLowerCase() === "pending").length;
+}
+
+/* LOAD CHALLENGE */
+async function loadChallenge() {
+  const evaluation = orders.filter(o => o.account_type === "evaluation");
+  const instant = orders.filter(o => o.account_type === "instant");
+
+  $("challengeContent").innerHTML = `
+    <div class="info-card">
+      <h3>1-Step Evaluation</h3>
+      <p>You have ${evaluation.length} evaluation order(s).</p>
+    </div>
+    <div class="info-card">
+      <h3>Instant Funding</h3>
+      <p>You have ${instant.length} instant funding order(s).</p>
+    </div>
+  `;
+}
+
+/* LOAD KYC — CORRECT DATABASE COLUMNS */
+async function loadKYC() {
+  const { data, error } = await db
+    .from("kyc_submissions")
+    .select("*")
+    .eq("user_id", currentUser.id)
+    .order("submitted_at", { ascending: false })
+    .limit(1);
+
+  if (error) throw error;
+
+  kycRecord = data && data.length ? data[0] : null;
+
+  if (!kycRecord) {
+    $("kycStatus").innerHTML = `
+      <div class="kyc-status">
+        <h3>KYC Not Submitted</h3>
+        <p class="muted">Please submit your identity documents below.</p>
+      </div>`;
+    $("kycFormCard").style.display = "block";
+    return;
   }
 
-  currentUser = data.session.user;
+  $("kycStatus").innerHTML = `
+    <div class="kyc-status">
+      <h3>KYC Status: ${badge(kycRecord.status)}</h3>
+      <p class="muted">Submitted: ${displayDate(kycRecord.submitted_at)}</p>
+      ${kycRecord.admin_note
+        ? `<p class="muted">Admin Note: ${safe(kycRecord.admin_note)}</p>`
+        : ""}
+    </div>`;
 
-  $("profileEmail").value = currentUser.email || "";
-  $("profileId").value = currentUser.id;
+  const status = String(kycRecord.status || "").toLowerCase();
 
-  const displayName =
-   currentUser.user_metadata?.full_name ||
-   currentUser.user_metadata?.name ||
-   currentUser.email?.split("@")[0] ||
-   "Trader";
-
-  $("welcomeName").textContent = displayName;
-  $("avatar").textContent = displayName.charAt(0).toUpperCase();
-  $("todayDate").textContent = new Date().toLocaleDateString();
-
-  await refreshAll();
-
- }catch(error){
-  console.error("DASHBOARD LOAD ERROR:",error);
-  toast(error.message || "Could not load dashboard data.");
- }
+  $("kycFormCard").style.display =
+    status === "rejected" ? "block" : "none";
 }
 
-/* FIXED LOGOUT */
-$("logoutBtn").addEventListener("click",async()=>{
- const btn = $("logoutBtn");
- const label = $("logoutText");
+/* UPLOAD KYC FILE */
+async function uploadKycFile(file, folder) {
+  if (!file) return null;
 
- btn.disabled = true;
- label.textContent = "Logging out...";
+  if (file.size > 10 * 1024 * 1024) {
+    throw new Error("Each file must be 10 MB or smaller.");
+  }
 
- try{
-  await db.auth.signOut({scope:"local"});
- }catch(error){
-  console.error("LOGOUT ERROR:",error);
- }finally{
-  currentUser = null;
-  window.location.replace("Login.html");
- }
+  const allowed = [
+    "image/jpeg",
+    "image/png",
+    "application/pdf"
+  ];
+
+  if (!allowed.includes(file.type)) {
+    throw new Error("Unsupported document format.");
+  }
+
+  const extension = file.name.split(".").pop().toLowerCase();
+  const path = `${currentUser.id}/${folder}_${Date.now()}.${extension}`;
+
+  const { error } = await db.storage
+    .from("kyc-documents")
+    .upload(path, file, { upsert: false });
+
+  if (error) throw error;
+
+  return path;
+}
+
+/* SUBMIT KYC — CORRECT DATABASE COLUMNS */
+$("kycForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const btn = $("submitKycBtn");
+  btn.disabled = true;
+  btn.textContent = "Uploading...";
+
+  try {
+    if (kycRecord && String(kycRecord.status).toLowerCase() !== "rejected") {
+      throw new Error("Your KYC is already submitted and is awaiting review.");
+    }
+
+    const front = $("kycFront").files[0];
+    const back = $("kycBack").files[0];
+    const selfie = $("kycSelfie").files[0];
+
+    if (!front) throw new Error("Upload the front side of your ID.");
+
+    const frontFile = await uploadKycFile(front, "front");
+    const backFile = back ? await uploadKycFile(back, "back") : null;
+    const selfieFile = selfie ? await uploadKycFile(selfie, "selfie") : null;
+
+    const record = {
+      user_id: currentUser.id,
+      full_name: $("kycFullName").value.trim(),
+      country: $("kycCountry").value.trim(),
+      document_type: $("kycDocumentType").value,
+      front_file: frontFile,
+      back_file: backFile,
+      selfie_file: selfieFile,
+      status: "pending",
+      admin_note: null,
+      reviewed_at: null
+    };
+
+    const { error } = await db
+      .from("kyc_submissions")
+      .insert(record);
+
+    if (error) throw error;
+
+    toast("KYC submitted successfully.");
+    $("kycForm").reset();
+    await loadKYC();
+
+  } catch (error) {
+    console.error("KYC SUBMISSION ERROR:", error);
+    toast(error.message || "KYC submission failed.");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Submit KYC Verification";
+  }
+});
+
+/* REFRESH ALL DATA */
+async function refreshAll() {
+  await Promise.all([
+    loadOrders(),
+    loadAccounts(),
+    loadKYC()
+  ]);
+
+  await loadChallenge();
+}
+
+/* LOAD DASHBOARD */
+async function loadDashboard() {
+  try {
+    const { data, error } = await db.auth.getSession();
+    if (error) throw error;
+
+    if (!data.session) {
+      window.location.replace("Login.html");
+      return;
+    }
+
+    currentUser = data.session.user;
+
+    $("profileEmail").value = currentUser.email || "";
+    $("profileId").value = currentUser.id;
+
+    const displayName =
+      currentUser.user_metadata?.full_name ||
+      currentUser.user_metadata?.name ||
+      currentUser.email?.split("@")[0] ||
+      "Trader";
+
+    $("welcomeName").textContent = displayName;
+    $("avatar").textContent = displayName.charAt(0).toUpperCase();
+    $("todayDate").textContent = new Date().toLocaleDateString();
+
+    $("referralLink").value =
+      window.location.origin + window.location.pathname +
+      "?ref=" + encodeURIComponent(currentUser.id);
+
+    await refreshAll();
+
+  } catch (error) {
+    console.error("DASHBOARD LOAD ERROR:", error);
+    toast(error.message || "Could not load dashboard data.");
+  }
+}
+
+/* LOGOUT */
+$("logoutBtn").addEventListener("click", async () => {
+  const btn = $("logoutBtn");
+  const label = $("logoutText");
+
+  btn.disabled = true;
+  label.textContent = "Logging out...";
+
+  try {
+    await db.auth.signOut({ scope: "local" });
+  } catch (error) {
+    console.error("LOGOUT ERROR:", error);
+  } finally {
+    currentUser = null;
+    window.location.replace("Login.html");
+  }
 });
 
 /* CHANGE PASSWORD */
-$("changePasswordBtn").addEventListener("click",async()=>{
- const password = $("newPassword").value.trim();
- const message = $("settingsMessage");
+$("changePasswordBtn").addEventListener("click", async () => {
+  const password = $("newPassword").value.trim();
+  const message = $("settingsMessage");
 
- message.style.display = "block";
+  message.style.display = "block";
 
- if(password.length < 6){
-  message.textContent = "Password must be at least 6 characters.";
-  return;
- }
+  if (password.length < 6) {
+    message.textContent = "Password must be at least 6 characters.";
+    return;
+  }
 
- const btn = $("changePasswordBtn");
- btn.disabled = true;
- btn.textContent = "Updating...";
+  const btn = $("changePasswordBtn");
+  btn.disabled = true;
+  btn.textContent = "Updating...";
 
- try{
-  const {error} = await db.auth.updateUser({password});
-  if(error) throw error;
+  try {
+    const { error } = await db.auth.updateUser({ password });
+    if (error) throw error;
 
-  $("newPassword").value = "";
-  message.textContent = "Password updated successfully.";
-  toast("Password updated.");
+    $("newPassword").value = "";
+    message.textContent = "Password updated successfully.";
+    toast("Password updated.");
 
- }catch(error){
-  console.error("PASSWORD ERROR:",error);
-  message.textContent = error.message || "Password update failed.";
- }finally{
-  btn.disabled = false;
-  btn.textContent = "Update Password";
- }
+  } catch (error) {
+    console.error("PASSWORD ERROR:", error);
+    message.textContent = error.message || "Password update failed.";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Update Password";
+  }
 });
 
 /* COPY REFERRAL LINK */
-$("referralLink").value =
- window.location.origin + window.location.pathname +
- "?ref=" + encodeURIComponent(currentUser?.id || "");
-
-$("copyReferralBtn").addEventListener("click",async()=>{
- try{
-  await navigator.clipboard.writeText($("referralLink").value);
-  toast("Referral link copied.");
- }catch(error){
-  toast("Could not copy referral link.");
- }
+$("copyReferralBtn").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText($("referralLink").value);
+    toast("Referral link copied.");
+  } catch (error) {
+    toast("Could not copy referral link.");
+  }
 });
 
 /* AUTH SESSION CHANGES */
-db.auth.onAuthStateChange((event,session)=>{
- if(event === "SIGNED_OUT"){
-  window.location.replace("Login.html");
- }
+db.auth.onAuthStateChange((event, session) => {
+  if (event === "SIGNED_OUT") {
+    window.location.replace("Login.html");
+  }
 });
 
 /* START DASHBOARD */
