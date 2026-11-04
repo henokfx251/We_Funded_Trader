@@ -794,6 +794,7 @@ async function loadOrders() {
   updateOverviewStats();
 }
 
+
 function renderOrders() {
   const tbody = $("ordersTable");
   if (!tbody) return;
@@ -803,7 +804,10 @@ function renderOrders() {
 
   const filtered = ordersData.filter(order => {
     const text = [
-      order.id, order.user_id, order.account_type, order.status
+      order.id,
+      order.user_id,
+      order.account_type,
+      order.status
     ].join(" ").toLowerCase();
 
     return text.includes(search) &&
@@ -813,40 +817,53 @@ function renderOrders() {
   if (!filtered.length) {
     tbody.innerHTML = `<tr><td colspan="7" class="empty">No orders found.</td></tr>`;
   } else {
-    tbody.innerHTML = filtered.map(order => `
-      <tr>
-        <td>${escapeHTML(shortId(order.id))}</td>
-        <td>${escapeHTML(shortId(order.user_id))}</td>
-        <td>${escapeHTML(order.account_type || order.challenge_type || "—")}</td>
-        <td>${money(order.amount ?? order.price)}</td>
-        <td>${statusHTML(order.status)}</td>
-        <td>${escapeHTML(displayDate(order.created_at))}</td>
-        <td>
-          <button class="btn small green"
-            onclick="updateOrder('${escapeHTML(order.id)}','paid')">Paid</button>
-          <button class="btn small red"
-            onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
-        </td>
-      </tr>
-    `).join("");
+    tbody.innerHTML = filtered.map(order => {
+      const finalPrice = Number(
+        order.final_price ?? order.base_price ?? 0
+      );
+
+      return `
+        <tr>
+          <td>${escapeHTML(shortId(order.id))}</td>
+          <td>${escapeHTML(shortId(order.user_id))}</td>
+          <td>${escapeHTML(order.account_type || "—")}</td>
+          <td>${money(finalPrice)}</td>
+          <td>${statusHTML(order.status)}</td>
+          <td>${escapeHTML(displayDate(order.created_at))}</td>
+          <td>
+            <button class="btn small green"
+              onclick="updateOrder('${escapeHTML(order.id)}','paid')">Paid</button>
+            <button class="btn small red"
+              onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
+          </td>
+        </tr>
+      `;
+    }).join("");
   }
 
   const recent = $("recentOrdersTable");
+
   if (recent) {
-    recent.innerHTML = ordersData.slice(0, 5).map(order => `
-      <tr>
-        <td>${escapeHTML(shortId(order.id))}</td>
-        <td>${escapeHTML(shortId(order.user_id))}</td>
-        <td>${money(order.amount ?? order.price)}</td>
-        <td>${statusHTML(order.status)}</td>
-        <td>${escapeHTML(displayDate(order.created_at))}</td>
-      </tr>
-    `).join("") || `<tr><td colspan="5" class="empty">No orders yet.</td></tr>`;
+    recent.innerHTML = ordersData.slice(0, 5).map(order => {
+      const finalPrice = Number(
+        order.final_price ?? order.base_price ?? 0
+      );
+
+      return `
+        <tr>
+          <td>${escapeHTML(shortId(order.id))}</td>
+          <td>${escapeHTML(shortId(order.user_id))}</td>
+          <td>${money(finalPrice)}</td>
+          <td>${statusHTML(order.status)}</td>
+          <td>${escapeHTML(displayDate(order.created_at))}</td>
+        </tr>
+      `;
+    }).join("") || `<tr><td colspan="5" class="empty">No orders yet.</td></tr>`;
   }
 
   updateOverviewStats();
-}
-
+    }
+       
 async function updateOrder(orderId, action) {
   if (!["paid", "rejected"].includes(action)) return;
 
