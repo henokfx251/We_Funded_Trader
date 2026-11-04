@@ -13,7 +13,7 @@ h1{color:#42a5ff;text-align:center}
 p{color:#b8c8dc;line-height:1.5}
 .item{display:flex;justify-content:space-between;margin:17px 0;gap:12px}
 input,select{width:100%;padding:13px;border-radius:7px;border:1px solid #38516e;background:#07111f;color:white;margin:10px 0}
-button{width:100%;padding:14px;background:#1685ee;color:white;border:0;border-radius:8px;font-weight:bold;margin-top:15px}
+button{width:100%;padding:14px;background:#1685ee;color:white;border:0;border-radius:8px;font-weight:bold;margin-top:15px;cursor:pointer}
 button:disabled{opacity:.5}
 #message,#paymentMessage{margin-top:15px;word-break:break-word}
 .success{color:#55dc91}
@@ -32,6 +32,14 @@ a{color:#55adff}
 
 <div class="item"><span>Account Size</span><strong id="size">Loading...</strong></div>
 <div class="item"><span>Challenge Type</span><strong id="type">Loading...</strong></div>
+
+<label for="platform">Trading Platform</label>
+<select id="platform">
+<option value="MT5">MT5 — Standard Price</option>
+<option value="MT4">MT4 — 10% Discount Available</option>
+<option value="OTHER" disabled>Other Platform — Coming Soon</option>
+</select>
+
 <div class="item"><span>Base Price</span><strong id="base">Loading...</strong></div>
 
 <label for="coupon">Coupon Code</label>
@@ -40,24 +48,24 @@ a{color:#55adff}
 <div class="item"><span>Discount</span><strong id="discount">$0.00</strong></div>
 <div class="item"><strong>Final Price</strong><strong id="final">$0.00</strong></div>
 
+<p class="small" id="discountNote"></p>
+
 <button id="orderButton" disabled>Place Order</button>
 <div id="message"></div>
 
 <div id="paymentSection" class="payment-box hidden">
 <h2>Submit Your Payment</h2>
-<p>Choose the network you used to send USDT, then enter your transaction hash (TXID).</p>
+<p>Send USDT using BEP20 (BNB Smart Chain) only.</p>
 
 <label for="network">Payment Network</label>
 <select id="network">
-<option value="">Select Network</option>
 <option value="BEP20">USDT BEP20 (BSC)</option>
-<option value="TRC20">USDT TRC20 (TRON)</option>
 </select>
 
 <label for="txid">Transaction ID (TXID)</label>
-<input id="txid" placeholder="Paste your transaction hash">
+<input id="txid" placeholder="Paste your BEP20 transaction hash">
 
-<p class="small">Make sure the TXID belongs to the selected network. Your payment will remain pending until the Admin verifies it.</p>
+<p class="small">Your payment will remain pending until the Admin independently verifies it on the blockchain.</p>
 
 <button id="submitPayment">Submit Payment Details</button>
 <div id="paymentMessage"></div>
@@ -72,14 +80,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
-
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const params = new URLSearchParams(window.location.search);
+const params = new URLSearchParams(location.search);
 const size = Number(params.get("size"));
 const type = (params.get("type") || "").toLowerCase();
 
 const couponInput = document.getElementById("coupon");
+const platformInput = document.getElementById("platform");
 const button = document.getElementById("orderButton");
 const message = document.getElementById("message");
 const paymentSection = document.getElementById("paymentSection");
@@ -89,31 +97,49 @@ const submitPaymentButton = document.getElementById("submitPayment");
 let basePrice = 0;
 let currentOrderId = null;
 
-function showMessage(text, className="") {
+function showMessage(text, cls="") {
   message.textContent = text;
-  message.className = className;
+  message.className = cls;
 }
 
-function showPaymentMessage(text, className="") {
+function showPaymentMessage(text, cls="") {
   paymentMessage.textContent = text;
-  paymentMessage.className = className;
+  paymentMessage.className = cls;
 }
 
 function calculatePrice() {
   const code = couponInput.value.trim().toUpperCase();
+  const platform = platformInput.value;
   let discountPercent = 0;
 
   if (code === "WFT10") discountPercent = 10;
-  if (code === "WFT20") discountPercent = 20;
+  else if (code === "WFT20") discountPercent = 20;
+  else if (code === "MT4WFT10" && platform === "MT4") discountPercent = 10;
+  else if (code === "MT4WFT10" && platform !== "MT4") discountPercent = 0;
+
+  // MT4 receives its automatic 10% discount.
+  if (platform === "MT4") {
+    discountPercent = Math.max(discountPercent, 10);
+  }
 
   const discountAmount = basePrice * discountPercent / 100;
   const finalPrice = basePrice - discountAmount;
 
   document.getElementById("discount").textContent =
     "$" + discountAmount.toFixed(2);
-
   document.getElementById("final").textContent =
     "$" + finalPrice.toFixed(2);
+
+  const note = document.getElementById("discountNote");
+  if (code === "MT4WFT10" && platform !== "MT4") {
+    note.textContent = "MT4WFT10 is available for MT4 only.";
+  } else if (platform === "MT4") {
+    note.textContent = "MT4 10% discount applied.";
+  } else {
+    note.textContent = discountPercent
+      ? discountPercent + "% coupon discount applied."
+      : "";
+  }
 }
 
 async function initialize() {
@@ -121,7 +147,7 @@ async function initialize() {
     const { data: { session }, error } = await db.auth.getSession();
 
     if (error || !session) {
-      window.location.href = "Login.html";
+      location.href = "Login.html";
       return;
     }
 
@@ -145,22 +171,17 @@ async function initialize() {
       .eq("account_size", size)
       .single();
 
-    if (priceError) throw priceError;
-    if (!price) throw new Error("Challenge price not found.");
+    if (priceError || !price) throw new Error("Challenge price not found.");
 
-    if (type === "evaluation" && !price.evaluation_enabled) {
-      throw new Error("Evaluation is currently unavailable.");
-    }
+    if (type === "evaluation" && !price.evaluation_enabled)
+      throw new Error("1-Step Evaluation is unavailable.");
 
-    if (type === "instant" && !price.instant_enabled) {
-      throw new Error("Instant Funding is currently unavailable.");
-    }
+    if (type === "instant" && !price.instant_enabled)
+      throw new Error("Instant Funding is unavailable.");
 
     basePrice = Number(price.base_price);
-
-    if (!Number.isFinite(basePrice) || basePrice < 0) {
+    if (!Number.isFinite(basePrice) || basePrice <= 0)
       throw new Error("Invalid challenge price.");
-    }
 
     document.getElementById("base").textContent =
       "$" + basePrice.toFixed(2);
@@ -177,6 +198,7 @@ async function initialize() {
 }
 
 couponInput.addEventListener("input", calculatePrice);
+platformInput.addEventListener("change", calculatePrice);
 
 button.addEventListener("click", async () => {
   button.disabled = true;
@@ -187,43 +209,41 @@ button.addEventListener("click", async () => {
     const { data: { session }, error: sessionError } =
       await db.auth.getSession();
 
-    if (sessionError || !session) {
+    if (sessionError || !session)
       throw new Error("Please log in again.");
-    }
 
+    const platform = platformInput.value;
     const couponCode = couponInput.value.trim().toUpperCase();
+
+    if (!["MT4","MT5"].includes(platform))
+      throw new Error("Please select MT4 or MT5.");
+
+    if (couponCode === "MT4WFT10" && platform !== "MT4")
+      throw new Error("MT4WFT10 is valid for MT4 only.");
 
     const { data, error } = await db.functions.invoke("smart-handler", {
       body: {
         account_size: size,
         account_type: type,
+        platform: platform,
         coupon_code: couponCode
       }
     });
 
-    if (error) {
-      throw new Error(error.message || "Edge Function request failed.");
-    }
-
-    if (!data || data.error) {
-      throw new Error(data?.error || "Order creation failed.");
-    }
+    if (error) throw new Error(error.message || "Request failed.");
+    if (!data || data.error) throw new Error(data?.error || "Order failed.");
 
     currentOrderId = data.order?.id || data.order_id;
-
-    if (!currentOrderId) {
-      throw new Error("Order was created but its ID was not returned. Check My Orders.");
-    }
+    if (!currentOrderId) throw new Error("Order ID was not returned.");
 
     showMessage(
-      "Order created successfully! Order ID: " +
-      currentOrderId + ". Status: Pending.",
+      "Order created successfully! Order ID: " + currentOrderId +
+      ". Status: Pending.",
       "success"
     );
 
     button.textContent = "Order Created";
     paymentSection.classList.remove("hidden");
-
     paymentSection.scrollIntoView({behavior:"smooth"});
 
   } catch (error) {
@@ -233,56 +253,39 @@ button.addEventListener("click", async () => {
   }
 });
 
-
 submitPaymentButton.addEventListener("click", async () => {
-  const network = document.getElementById("network").value;
   const txid = document.getElementById("txid").value.trim();
 
   if (!currentOrderId) {
-    showPaymentMessage("Please create an order first.", "error");
+    showPaymentMessage("Create an order first.", "error");
     return;
   }
 
-  if (!network) {
-    showPaymentMessage("Please select a payment network.", "error");
-    return;
-  }
-
-  const validBep20 = /^0x[a-fA-F0-9]{64}$/.test(txid);
-  const validTrc20 = /^[a-fA-F0-9]{64}$/.test(txid);
-
-  if (
-    (network === "BEP20" && !validBep20) ||
-    (network === "TRC20" && !validTrc20)
-  ) {
-    showPaymentMessage(
-      "Invalid TXID format for the selected network.",
-      "error"
-    );
+  if (!/^0x[a-fA-F0-9]{64}$/.test(txid)) {
+    showPaymentMessage("Invalid BEP20 transaction hash.", "error");
     return;
   }
 
   submitPaymentButton.disabled = true;
   submitPaymentButton.textContent = "Submitting...";
-  showPaymentMessage("Submitting payment details...");
 
   try {
     const { data: { session }, error: sessionError } =
       await db.auth.getSession();
 
-    if (sessionError || !session) {
+    if (sessionError || !session)
       throw new Error("Please log in again.");
-    }
 
     const { data, error } = await db
       .from("orders")
       .update({
-        payment_network: network,
+        payment_network: "BEP20",
         transaction_hash: txid,
         payment_submitted_at: new Date().toISOString()
       })
       .eq("id", currentOrderId)
       .eq("user_id", session.user.id)
+      .eq("status", "pending")
       .select("id")
       .single();
 
@@ -290,7 +293,7 @@ submitPaymentButton.addEventListener("click", async () => {
     if (!data) throw new Error("Payment details were not saved.");
 
     showPaymentMessage(
-      "Payment details submitted. Your order is awaiting Admin verification.",
+      "Payment details submitted. Awaiting Admin verification.",
       "success"
     );
 
@@ -299,10 +302,7 @@ submitPaymentButton.addEventListener("click", async () => {
     document.getElementById("txid").disabled = true;
 
   } catch (error) {
-    showPaymentMessage(
-      "Payment submission failed: " + error.message,
-      "error"
-    );
+    showPaymentMessage("Payment submission failed: " + error.message, "error");
     submitPaymentButton.disabled = false;
     submitPaymentButton.textContent = "Try Again";
   }
