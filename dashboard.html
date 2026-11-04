@@ -5,204 +5,176 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WE FUNDED TRADER | Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 :root{
-  --bg:#080d18;
-  --panel:#101827;
-  --panel2:#151f30;
-  --border:#263348;
-  --text:#f1f5f9;
-  --muted:#91a0b7;
-  --gold:#eab308;
-  --green:#22c55e;
-  --red:#ef4444;
-  --blue:#3b82f6;
+  --bg:#07111f;--panel:#101d30;--panel2:#14243a;
+  --gold:#e8b84b;--gold2:#f5d27c;--text:#f4f7fb;
+  --muted:#94a3b8;--line:#26374d;--green:#22c55e;
+  --red:#ef4444;--blue:#38bdf8;--sidebar:255px;
 }
 *{box-sizing:border-box}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:Arial,Helvetica,sans-serif}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
-.layout{min-height:100vh}
+a{color:var(--gold)}
 .sidebar{
-  width:250px;background:#0c1422;border-right:1px solid var(--border);
-  position:fixed;left:0;top:0;bottom:0;z-index:100;
-  padding:22px 15px;overflow-y:auto;transition:.25s;
+ position:fixed;inset:0 auto 0 0;width:var(--sidebar);
+ background:#091525;border-right:1px solid var(--line);
+ padding:22px 14px;overflow-y:auto;z-index:100;
+ transition:transform .25s
 }
-.brand{font-size:20px;font-weight:800;color:var(--gold);margin:5px 8px 28px}
-.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:2px;margin-top:5px}
-.nav-label{font-size:10px;color:#718096;margin:20px 10px 8px;letter-spacing:1.5px}
+.brand{font-size:20px;font-weight:900;color:var(--gold);
+ padding:8px 10px 24px;line-height:1.35}
+.brand small{display:block;color:var(--muted);font-size:10px;
+ letter-spacing:2px;margin-top:5px}
+.nav-label{color:#64748b;font-size:10px;font-weight:bold;
+ letter-spacing:1.5px;padding:14px 12px 7px}
 .nav-btn{
-  width:100%;border:0;background:transparent;color:#bdc8d8;
-  text-align:left;padding:12px;border-radius:9px;margin:3px 0;
-  display:flex;align-items:center;gap:12px;font-size:14px;
+ width:100%;display:flex;align-items:center;gap:12px;
+ padding:12px;border:0;border-radius:9px;background:transparent;
+ color:#b8c5d6;text-align:left;margin:3px 0;font-size:13px
 }
-.nav-btn:hover,.nav-btn.active{background:#1d2a3d;color:var(--gold)}
-.nav-btn.active{border-left:3px solid var(--gold)}
-.logout-nav{color:#f87171}
-.main{margin-left:250px;min-height:100vh}
+.nav-btn:hover,.nav-btn.active{background:#1b2c43;color:var(--gold)}
+.nav-btn .ico{width:20px;text-align:center;font-size:16px}
+.nav-btn.logout{color:#f87171;margin-top:16px}
+.main{margin-left:var(--sidebar);min-height:100vh}
 .topbar{
-  height:70px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 28px;background:#0b1320;position:sticky;top:0;z-index:50;
+ height:70px;display:flex;align-items:center;justify-content:space-between;
+ padding:0 28px;border-bottom:1px solid var(--line);
+ background:#091525;position:sticky;top:0;z-index:50
 }
-.topbar-left{display:flex;align-items:center;gap:14px}
-.topbar h2{font-size:18px;margin:0}
-.menu-btn{
-  display:none;background:var(--panel2);border:1px solid var(--border);
-  color:white;border-radius:8px;padding:8px 12px;font-size:18px;
-}
-.user-tag{font-size:12px;color:var(--muted)}
+.topbar h2{font-size:17px;margin:0}
+.top-right{display:flex;align-items:center;gap:12px;color:var(--muted);
+ font-size:12px}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--gold);
+ color:#111827;display:grid;place-items:center;font-weight:bold}
+.menu-btn{display:none;background:none;border:0;color:white;font-size:24px}
 .content{padding:28px;max-width:1500px;margin:auto}
-.page{display:none}
-.page.active{display:block}
-.welcome{margin-bottom:24px}
+.page{display:none}.page.active{display:block}
+.welcome{margin-bottom:22px}
 .welcome h1{font-size:25px;margin:0 0 8px}
-.muted{color:var(--muted)}
-.small{font-size:12px}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-.stat,.panel,.info-card,.account-card{
-  background:var(--panel);border:1px solid var(--border);
-  border-radius:13px;padding:19px;
+.muted{color:var(--muted)}.small{font-size:12px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:14px;margin-bottom:20px}
+.stat-card,.panel,.info-card,.account-card{
+ background:var(--panel);border:1px solid var(--line);
+ border-radius:13px;padding:19px;margin-bottom:16px
 }
-.stat-label{font-size:12px;color:var(--muted);margin-bottom:12px}
-.stat-value{font-size:25px;font-weight:800}
-.stat-icon{font-size:20px;margin-bottom:10px}
-.section-title{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;margin:28px 0 14px;
-}
-.section-title h2{font-size:17px;margin:0}
-.panel{margin-bottom:18px}
-.panel h3{font-size:16px;margin:0 0 15px}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.btn{
-  border:0;border-radius:8px;padding:11px 16px;
-  background:var(--gold);color:#111827;font-weight:700;
-}
-.btn:hover{filter:brightness(1.08)}
-.btn:disabled{opacity:.55;cursor:not-allowed}
-.btn-secondary{background:#26364d;color:white}
-.btn-danger{background:#991b1b;color:white}
-.btn-small{padding:7px 11px;font-size:12px}
-.field{margin:13px 0}
-.field label{display:block;font-size:12px;color:#bdc8d8;margin-bottom:7px}
-.field input,.field select,.field textarea,
-.input{
-  width:100%;background:#0a1220;color:white;
-  border:1px solid var(--border);border-radius:8px;
-  padding:12px;outline:none;
-}
-.field input:focus,.field select:focus,.field textarea:focus{
-  border-color:var(--gold);
-}
-.field textarea{min-height:100px;resize:vertical}
-.table-wrap{overflow-x:auto}
+.stat-card span{color:var(--muted);font-size:12px}
+.stat-card h2{font-size:25px;margin:12px 0 0;color:var(--gold)}
+.panel h3,.info-card h3{margin:0 0 14px;font-size:16px}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.account-card h3{margin:0 0 7px;color:var(--gold)}
+.account-details{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:14px;margin-top:17px}
+.detail-label{font-size:11px;color:var(--muted);margin-bottom:5px}
+.detail-value{font-size:14px;font-weight:bold;overflow-wrap:anywhere}
+.table-wrap{width:100%;overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:650px}
-th,td{
-  padding:13px 11px;border-bottom:1px solid var(--border);
-  text-align:left;font-size:12px;white-space:nowrap;
-}
+th,td{padding:13px 11px;text-align:left;border-bottom:1px solid var(--line);
+ font-size:12px;white-space:nowrap}
 th{color:var(--muted);font-weight:600}
-.empty{padding:25px;text-align:center;color:var(--muted);font-size:13px}
-.badge{
-  display:inline-block;padding:5px 9px;border-radius:20px;
-  font-size:10px;text-transform:capitalize;background:#26364d;color:#dbeafe;
+.empty{padding:25px;text-align:center;color:var(--muted);
+ background:#0c1929;border:1px dashed var(--line);border-radius:9px;
+ font-size:13px}
+.badge{display:inline-block;padding:5px 9px;border-radius:20px;
+ background:#334155;color:#e2e8f0;font-size:10px;text-transform:capitalize}
+.badge.active,.badge.paid,.badge.approved{background:#123c2a;color:#86efac}
+.badge.pending{background:#493719;color:#fcd34d}
+.badge.rejected,.badge.failed{background:#4a2027;color:#fca5a5}
+label{display:block;font-size:12px;color:#cbd5e1;margin:14px 0 7px}
+input,select,textarea{
+ width:100%;padding:12px;background:#091525;color:white;
+ border:1px solid var(--line);border-radius:8px;outline:none
 }
-.badge.active,.badge.paid,.badge.approved{background:#123b2b;color:#86efac}
-.badge.pending{background:#493916;color:#fde68a}
-.badge.rejected,.badge.failed{background:#4b1d25;color:#fca5a5}
-.account-card{margin-bottom:12px}
-.account-card h3{margin:0 0 7px;font-size:16px}
-.account-details{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:12px;margin-top:16px
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+input[type=file]{padding:9px;font-size:12px}
+textarea{min-height:90px;resize:vertical}
+.btn{
+ display:inline-block;padding:11px 17px;border:0;border-radius:8px;
+ background:var(--gold);color:#111827;font-weight:bold;font-size:12px
 }
-.detail-label{font-size:10px;color:var(--muted);margin-bottom:5px}
-.detail-value{font-size:13px;overflow-wrap:anywhere}
-.kyc-status{background:#0c1728;border:1px solid var(--border);padding:16px;border-radius:10px}
-.kyc-status h3{margin:0 0 8px}
-.notice{padding:13px;border-radius:8px;background:#17243a;color:#cbd5e1;font-size:12px;line-height:1.6}
-.link{color:#facc15;text-decoration:none}
-.link:hover{text-decoration:underline}
-.overlay{
-  display:none;position:fixed;inset:0;background:#0009;z-index:90;
-}
-.overlay.show{display:block}
+.btn:hover{background:var(--gold2)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-secondary{background:#26374d;color:#e2e8f0}
+.btn-danger{background:#7f1d1d;color:white}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.form-grid>div{min-width:0}
+.kyc-status{padding:16px;border-radius:10px;background:#0b192a;
+ border:1px solid var(--line);margin-bottom:15px}
+.kyc-status h3{margin-top:0}
+.info-card{background:#0c1a2b}
+.info-card p{font-size:13px;line-height:1.6}
 .toast{
-  display:none;position:fixed;right:20px;bottom:20px;z-index:300;
-  background:#17243a;border:1px solid var(--border);color:white;
-  padding:14px 18px;border-radius:9px;max-width:90%;
-  box-shadow:0 8px 30px #0007;font-size:13px;
+ position:fixed;right:22px;bottom:22px;z-index:300;
+ background:#17283e;border:1px solid var(--gold);
+ padding:14px 18px;border-radius:9px;color:white;
+ max-width:calc(100% - 44px);font-size:13px;
+ opacity:0;pointer-events:none;transform:translateY(10px);
+ transition:.2s
 }
-.toast.show{display:block}
-.profile-row{display:flex;gap:10px;align-items:center}
-.avatar{
-  width:38px;height:38px;border-radius:50%;background:#374151;
-  display:grid;place-items:center;color:var(--gold);font-weight:bold;
+.toast.show{opacity:1;transform:translateY(0)}
+.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:90}
+.overlay.show{display:block}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+.footer-note{font-size:11px;color:var(--muted);text-align:center;padding:22px}
+@media(max-width:1050px){
+ .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .account-details{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-hr{border:0;border-top:1px solid var(--border);margin:18px 0}
-
-@media(max-width:1000px){
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:700px){
-  .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0}
-  .menu-btn{display:block}
-  .topbar{padding:0 15px}
-  .content{padding:18px 14px}
-  .two-col{grid-template-columns:1fr}
-  .account-details{grid-template-columns:repeat(2,1fr)}
-  .welcome h1{font-size:21px}
-  .stat{padding:14px}
-  .stat-value{font-size:20px}
+@media(max-width:760px){
+ .sidebar{transform:translateX(-100%)}
+ .sidebar.open{transform:translateX(0)}
+ .main{margin-left:0}
+ .menu-btn{display:block}
+ .topbar{padding:0 15px}
+ .content{padding:18px 13px}
+ .top-right #todayDate{display:none}
+ .grid-2,.grid-3{grid-template-columns:1fr}
+ .form-grid{grid-template-columns:1fr}
+ .welcome h1{font-size:21px}
+ .stat-card{padding:14px}
+ .stat-card h2{font-size:21px}
 }
 </style>
 </head>
-
 <body>
-<div class="overlay" id="overlay"></div>
 
 <aside class="sidebar" id="sidebar">
-  <div class="brand">
-    WE FUNDED TRADER
-    <small>TRADER DASHBOARD</small>
-  </div>
+  <div class="brand">WE FUNDED TRADER<small>TRADER DASHBOARD</small></div>
 
   <div class="nav-label">MAIN MENU</div>
-  <button class="nav-btn active" data-page="overview">⌂ Overview</button>
-  <button class="nav-btn" data-page="challenge">◈ Challenge</button>
-  <button class="nav-btn" data-page="accounts">▣ My Accounts</button>
-  <button class="nav-btn" data-page="orders">▤ My Orders</button>
-  <button class="nav-btn" data-page="terminal">▦ Trading Terminal</button>
+  <button class="nav-btn active" data-page="overview"><span class="ico">⌂</span>Overview</button>
+  <button class="nav-btn" data-page="challenge"><span class="ico">▤</span>Challenge</button>
+  <button class="nav-btn" data-page="accounts"><span class="ico">▣</span>My Accounts</button>
+  <button class="nav-btn" data-page="orders"><span class="ico">▧</span>My Orders</button>
+  <button class="nav-btn" data-page="terminal"><span class="ico">⌁</span>Trading Terminal</button>
 
   <div class="nav-label">SERVICES</div>
-  <button class="nav-btn" data-page="kyc">▧ KYC Verification</button>
-  <button class="nav-btn" data-page="certificate">♧ Certificate</button>
-  <button class="nav-btn" data-page="payout">＄ Payout</button>
-  <button class="nav-btn" data-page="affiliate">♙ Affiliate</button>
-  <button class="nav-btn" data-page="support">✉ Support</button>
+  <button class="nav-btn" data-page="kyc"><span class="ico">◈</span>KYC Verification</button>
+  <button class="nav-btn" data-page="certificate"><span class="ico">♧</span>Certificate</button>
+  <button class="nav-btn" data-page="payout"><span class="ico">＄</span>Payout</button>
+  <button class="nav-btn" data-page="affiliate"><span class="ico">♧</span>Affiliate</button>
+  <button class="nav-btn" data-page="support"><span class="ico">✉</span>Support</button>
 
   <div class="nav-label">ACCOUNT</div>
-  <button class="nav-btn" data-page="settings">⚙ Settings</button>
-  <button class="nav-btn logout-nav" id="logoutBtn">
-    ⇥ <span id="logoutText">Logout</span>
-  </button>
+  <button class="nav-btn" data-page="settings"><span class="ico">⚙</span>Settings</button>
+  <button class="nav-btn logout" id="logoutBtn"><span class="ico">⇥</span><span id="logoutText">Logout</span></button>
 </aside>
+
+<div class="overlay" id="overlay"></div>
 
 <main class="main">
 <header class="topbar">
-  <div class="topbar-left">
+  <div style="display:flex;align-items:center;gap:13px">
     <button class="menu-btn" id="menuBtn">☰</button>
     <h2 id="topTitle">Overview</h2>
   </div>
-  <div class="profile-row">
-    <div class="user-tag" id="todayDate"></div>
+  <div class="top-right">
+    <span id="profileEmailTop"></span>
     <div class="avatar" id="avatar">T</div>
   </div>
 </header>
@@ -212,321 +184,202 @@ hr{border:0;border-top:1px solid var(--border);margin:18px 0}
 <!-- OVERVIEW -->
 <section class="page active" id="page-overview">
   <div class="welcome">
-    <h1>Welcome back, <span id="welcomeName">Trader</span></h1>
-    <div class="muted small">Here is your trading account overview.</div>
+    <h1>Welcome, <span id="welcomeName">Trader</span></h1>
+    <p class="muted">Here is your trading account overview.</p>
   </div>
-
-  <div class="grid">
-    <div class="stat">
-      <div class="stat-icon">＄</div>
-      <div class="stat-label">Total Balance</div>
-      <div class="stat-value" id="totalBalance">$0.00</div>
-    </div>
-    <div class="stat">
-      <div class="stat-icon">◈</div>
-      <div class="stat-label">Total Equity</div>
-      <div class="stat-value" id="totalEquity">$0.00</div>
-    </div>
-    <div class="stat">
-      <div class="stat-icon">↗</div>
-      <div class="stat-label">Total Profit</div>
-      <div class="stat-value" id="totalProfit">$0.00</div>
-    </div>
-    <div class="stat">
-      <div class="stat-icon">▣</div>
-      <div class="stat-label">Trading Accounts</div>
-      <div class="stat-value" id="accountCount">0</div>
-    </div>
+  <div class="stats-grid">
+    <div class="stat-card"><span>Total Balance</span><h2 id="totalBalance">$0.00</h2></div>
+    <div class="stat-card"><span>Total Equity</span><h2 id="totalEquity">$0.00</h2></div>
+    <div class="stat-card"><span>Total Profit</span><h2 id="totalProfit">$0.00</h2></div>
+    <div class="stat-card"><span>Trading Accounts</span><h2 id="accountCount">0</h2></div>
+    <div class="stat-card"><span>Total Orders</span><h2 id="orderCount">0</h2></div>
+    <div class="stat-card"><span>Paid Orders</span><h2 id="paidCount">0</h2></div>
+    <div class="stat-card"><span>Active Accounts</span><h2 id="activeCount">0</h2></div>
+    <div class="stat-card"><span>Pending Accounts</span><h2 id="pendingCount">0</h2></div>
   </div>
-
-  <div class="grid" style="margin-top:16px">
-    <div class="stat">
-      <div class="stat-label">Total Orders</div>
-      <div class="stat-value" id="orderCount">0</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Paid Orders</div>
-      <div class="stat-value" id="paidCount">0</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Active Accounts</div>
-      <div class="stat-value" id="activeCount">0</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Pending Accounts</div>
-      <div class="stat-value" id="pendingCount">0</div>
-    </div>
+  <div class="panel">
+    <h3>My Trading Accounts</h3>
+    <div id="overviewAccounts"><div class="empty">Loading accounts...</div></div>
   </div>
-
-  <div class="section-title">
-    <h2>My Trading Accounts</h2>
-    <button class="btn btn-secondary btn-small" onclick="showPage('accounts')">View All</button>
-  </div>
-  <div id="overviewAccounts">
-    <div class="empty">Loading accounts...</div>
-  </div>
-
-  <div class="section-title"><h2>Recent Orders</h2></div>
-  <div class="panel table-wrap">
-    <table>
-      <thead><tr>
-        <th>Order ID</th><th>Account Size</th><th>Type</th>
-        <th>Platform</th><th>Price</th><th>Status</th><th>Date</th>
-      </tr></thead>
-      <tbody id="overviewOrders">
-        <tr><td colspan="7" class="empty">Loading orders...</td></tr>
-      </tbody>
-    </table>
+  <div class="panel">
+    <h3>Recent Orders</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Order</th><th>Type</th><th>Size</th><th>Price</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody id="overviewOrders"><tr><td colspan="6" class="empty">Loading orders...</td></tr></tbody>
+    </table></div>
   </div>
 </section>
 
 <!-- CHALLENGE -->
 <section class="page" id="page-challenge">
-  <div class="welcome">
-    <h1>Challenge</h1>
-    <p class="muted">Track your Evaluation and Instant Funding orders.</p>
-  </div>
-  <div id="challengeContent" class="two-col">
-    <div class="empty">Loading challenge information...</div>
-  </div>
-  <div class="panel" style="margin-top:18px">
-    <h3>Challenge Rules</h3>
-    <div class="notice">
-      <b>1-Step Evaluation</b><br>
-      Profit Target: 10% · Daily Drawdown: 3% · Maximum Drawdown: 5% ·
-      Minimum Profitable Day: 0.5% · Required Profitable Days: 5.
-      <hr>
-      <b>Instant Funding</b><br>
-      No Daily Drawdown · Maximum Drawdown: 5% ·
-      Drawdown is measured on closed positions only.
-    </div>
-  </div>
+  <div class="welcome"><h1>Challenge</h1><p class="muted">Your evaluation and instant funding rules.</p></div>
+  <div id="challengeContent"><div class="empty">Loading challenge information...</div></div>
 </section>
 
 <!-- ACCOUNTS -->
 <section class="page" id="page-accounts">
-  <div class="welcome">
-    <h1>My Trading Accounts</h1>
-    <p class="muted">Your assigned trading accounts.</p>
-  </div>
+  <div class="welcome"><h1>My Trading Accounts</h1><p class="muted">View your account balance, equity and credentials.</p></div>
   <div id="allAccounts"><div class="empty">Loading accounts...</div></div>
 </section>
 
 <!-- ORDERS -->
 <section class="page" id="page-orders">
-  <div class="welcome">
-    <h1>My Orders</h1>
-    <p class="muted">View your challenge purchases and payment status.</p>
-  </div>
-  <div class="panel table-wrap">
-    <table>
-      <thead><tr>
-        <th>Order ID</th><th>Account Size</th><th>Type</th>
-        <th>Platform</th><th>Price</th><th>Coupon</th><th>Status</th><th>Date</th>
-      </tr></thead>
-      <tbody id="ordersTable">
-        <tr><td colspan="8" class="empty">Loading orders...</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="welcome"><h1>My Orders</h1><p class="muted">View your challenge purchase history.</p></div>
+  <div class="panel"><div class="table-wrap"><table>
+    <thead><tr><th>Order ID</th><th>Account Type</th><th>Size</th><th>Platform</th><th>Price</th><th>Coupon</th><th>Status</th><th>Date</th></tr></thead>
+    <tbody id="ordersTable"><tr><td colspan="8" class="empty">Loading orders...</td></tr></tbody>
+  </table></div></div>
 </section>
 
-<!-- TRADING TERMINAL -->
+<!-- TERMINAL -->
 <section class="page" id="page-terminal">
-  <div class="welcome">
-    <h1>Trading Terminal</h1>
-    <p class="muted">Your MetaTrader login credentials.</p>
-  </div>
+  <div class="welcome"><h1>Trading Terminal</h1><p class="muted">Your assigned MT4/MT5 account details.</p></div>
   <div id="terminalAccounts"><div class="empty">Loading terminal accounts...</div></div>
-  <div class="notice">
-    Your MetaTrader login and server details are provided by the administrator
-    after your account is assigned.
-  </div>
+  <div class="info-card"><p>Use your assigned login, password and server in the MetaTrader platform. If credentials are not displayed, contact support.</p></div>
 </section>
 
 <!-- KYC -->
 <section class="page" id="page-kyc">
-  <div class="welcome">
-    <h1>KYC Verification</h1>
-    <p class="muted">Submit your identity documents for verification.</p>
-  </div>
-
-  <div id="kycStatus" class="panel">
-    <div class="empty">Checking KYC status...</div>
-  </div>
-
+  <div class="welcome"><h1>KYC Verification</h1><p class="muted">Submit your identity documents for verification.</p></div>
+  <div id="kycStatus"><div class="empty">Loading KYC status...</div></div>
   <div class="panel" id="kycFormCard">
-    <h3>Identity Verification Form</h3>
-    <div class="notice">
-      Upload clear JPG, PNG, or PDF documents. Maximum file size is 10 MB each.
-      Your documents are stored privately.
-    </div>
-
+    <h3>Identity Verification</h3>
+    <p class="muted small">Accepted formats: JPG, PNG, PDF. Maximum file size: 10 MB each.</p>
     <form id="kycForm">
-      <div class="field">
-        <label>Full Name</label>
-        <input id="kycFullName" type="text" required maxlength="120"
-          placeholder="Enter your full legal name">
-      </div>
-      <div class="field">
-        <label>Country</label>
-        <input id="kycCountry" type="text" required maxlength="100"
-          placeholder="Enter your country">
-      </div>
-      <div class="field">
-        <label>Document Type</label>
-        <select id="kycDocumentType" required>
-          <option value="">Select document type</option>
-          <option value="National ID">National ID</option>
-          <option value="Passport">Passport</option>
-          <option value="Driving License">Driving License</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Front Side of ID (Required)</label>
-        <input id="kycFront" type="file" accept=".jpg,.jpeg,.png,.pdf" required>
-      </div>
-      <div class="field">
-        <label>Back Side of ID (Optional)</label>
-        <input id="kycBack" type="file" accept=".jpg,.jpeg,.png,.pdf">
-      </div>
-      <div class="field">
-        <label>Selfie (Optional)</label>
-        <input id="kycSelfie" type="file" accept=".jpg,.jpeg,.png,.pdf">
-      </div>
-      <button class="btn" id="submitKycBtn" type="submit">
-        Submit KYC Verification
-      </button>
+      <label>Full Legal Name</label>
+      <input id="kycFullName" type="text" autocomplete="name" required>
+      <label>Country</label>
+      <input id="kycCountry" type="text" required>
+      <label>Document Type</label>
+      <select id="kycDocumentType" required>
+        <option value="">Select document</option>
+        <option value="National ID">National ID</option>
+        <option value="Passport">Passport</option>
+        <option value="Driving License">Driving License</option>
+      </select>
+      <label>Front Side of Document (Required)</label>
+      <input id="kycFront" type="file" accept=".jpg,.jpeg,.png,.pdf" required>
+      <label>Back Side of Document (Optional)</label>
+      <input id="kycBack" type="file" accept=".jpg,.jpeg,.png,.pdf">
+      <label>Selfie (Optional)</label>
+      <input id="kycSelfie" type="file" accept=".jpg,.jpeg,.png,.pdf">
+      <div class="btn-row"><button class="btn" id="submitKycBtn" type="submit">Submit KYC Verification</button></div>
     </form>
   </div>
 </section>
 
 <!-- CERTIFICATE -->
 <section class="page" id="page-certificate">
-  <div class="welcome">
-    <h1>Certificate</h1>
-    <p class="muted">Your trading certificates.</p>
-  </div>
-  <div class="panel">
-    <div class="empty">Certificates will appear here when issued by the administrator.</div>
-  </div>
+  <div class="welcome"><h1>Certificate</h1><p class="muted">Your achievement certificates.</p></div>
+  <div class="panel"><div class="empty">Certificates will appear here when issued by the admin.</div></div>
 </section>
 
 <!-- PAYOUT -->
 <section class="page" id="page-payout">
-  <div class="welcome">
-    <h1>Payout</h1>
-    <p class="muted">Manage your profit payout requests.</p>
+  <div class="welcome"><h1>Payout</h1><p class="muted">Request your eligible trading profits.</p></div>
+  <div class="stats-grid">
+    <div class="stat-card"><span>Trader Profit Share</span><h2>80%</h2></div>
+    <div class="stat-card"><span>Company Share</span><h2>20%</h2></div>
+    <div class="stat-card"><span>Minimum Payout</span><h2>$50</h2></div>
+    <div class="stat-card"><span>Processing Time</span><h2>1–3 Days</h2></div>
   </div>
   <div class="panel">
-    <div class="empty">Payout requests are not available yet. Please contact support.</div>
+    <h3>Request Payout</h3>
+    <p class="muted small">First payout after 14 days, then every 14 days. Only eligible active funded accounts can request a payout.</p>
+    <form id="payoutForm">
+      <label>Eligible Trading Account</label>
+      <select id="payoutAccount" required><option value="">Loading accounts...</option></select>
+      <div id="payoutPreview" class="info-card">Select an eligible account to view your payout estimate.</div>
+      <label>USDT Network</label>
+      <select id="payoutNetwork" required>
+        <option value="TRC20">USDT TRC20</option>
+        <option value="BEP20">USDT BEP20</option>
+      </select>
+      <label>USDT Wallet Address</label>
+      <input id="payoutWallet" type="text" placeholder="Enter your wallet address" required>
+      <div class="btn-row"><button class="btn" id="requestPayoutBtn" type="submit">Submit Payout Request</button></div>
+    </form>
+  </div>
+  <div class="panel">
+    <h3>My Payout History</h3>
+    <div id="payoutHistory"><div class="empty">Loading payout history...</div></div>
   </div>
 </section>
 
 <!-- AFFILIATE -->
 <section class="page" id="page-affiliate">
-  <div class="welcome">
-    <h1>Affiliate Program</h1>
-    <p class="muted">Share your referral link.</p>
-  </div>
+  <div class="welcome"><h1>Affiliate Program</h1><p class="muted">Share your referral link.</p></div>
   <div class="panel">
     <h3>Your Referral Link</h3>
-    <div class="field">
-      <input id="referralLink" readonly>
-    </div>
-    <button class="btn" id="copyReferralBtn" type="button">Copy Referral Link</button>
-    <p class="muted small">Share your personal link with friends.</p>
+    <label>Referral URL</label>
+    <input id="referralLink" type="text" readonly>
+    <div class="btn-row"><button class="btn" id="copyReferralBtn" type="button">Copy Referral Link</button></div>
+    <p class="muted small">Referral rewards and commissions are subject to the official affiliate program terms.</p>
   </div>
 </section>
 
 <!-- SUPPORT -->
 <section class="page" id="page-support">
-  <div class="welcome">
-    <h1>Support</h1>
-    <p class="muted">Need help with your account?</p>
-  </div>
+  <div class="welcome"><h1>Support</h1><p class="muted">Need help? Contact our support team.</p></div>
   <div class="panel">
-    <h3>Contact Support</h3>
-    <p class="muted">For account, payment, or KYC questions, contact our support team.</p>
-    <a class="link" href="mailto:support@wefundedtrader.com">Email Support</a>
+    <h3>Customer Support</h3>
+    <p>For account, payment, KYC or payout assistance, email:</p>
+    <p><a href="mailto:support@wefundedtrader.com">support@wefundedtrader.com</a></p>
   </div>
 </section>
 
 <!-- SETTINGS -->
 <section class="page" id="page-settings">
-  <div class="welcome">
-    <h1>Account Settings</h1>
-    <p class="muted">Manage your profile and password.</p>
-  </div>
+  <div class="welcome"><h1>Settings</h1><p class="muted">Manage your profile and password.</p></div>
   <div class="panel">
     <h3>Profile Information</h3>
-    <div class="field">
-      <label>Email Address</label>
-      <input id="profileEmail" readonly>
-    </div>
-    <div class="field">
-      <label>User ID</label>
-      <input id="profileId" readonly>
-    </div>
+    <label>Email Address</label><input id="profileEmail" type="email" readonly>
+    <label>User ID</label><input id="profileId" type="text" readonly>
     <hr>
     <h3>Change Password</h3>
-    <div class="field">
-      <label>New Password</label>
-      <input id="newPassword" type="password" minlength="6"
-        placeholder="Enter new password">
-    </div>
-    <button class="btn" id="changePasswordBtn" type="button">Update Password</button>
+    <label>New Password</label><input id="newPassword" type="password" minlength="6" placeholder="At least 6 characters">
+    <div class="btn-row"><button class="btn" id="changePasswordBtn" type="button">Update Password</button></div>
     <p id="settingsMessage" class="muted small" style="display:none"></p>
   </div>
 </section>
 
+<div class="footer-note">WE FUNDED TRADER · Trader Dashboard</div>
 </div>
 </main>
-
 <div class="toast" id="toast"></div>
 
-<!-- PART 2 STARTS HERE -->
- <script type="module">
+<!-- PART 2 STARTS BELOW -->
+  <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-/* SUPABASE CONFIG */
 const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
-
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* GLOBAL DATA */
 let currentUser = null;
 let orders = [];
 let accounts = [];
 let kycRecord = null;
 
-/* HELPERS */
 const $ = id => document.getElementById(id);
 
 function safe(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#039;"
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
   })[char]);
 }
 
 function money(value) {
   return "$" + (Number(value) || 0).toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
   });
 }
 
 function displayDate(value) {
   if (!value) return "—";
   const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? "—"
-    : date.toLocaleDateString();
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleDateString();
 }
 
 function badge(value) {
@@ -540,14 +393,13 @@ function toast(message) {
   const element = $("toast");
   element.textContent = message;
   element.classList.add("show");
-
   clearTimeout(window.wftToastTimer);
-  window.wftToastTimer = setTimeout(() => {
-    element.classList.remove("show");
-  }, 4000);
+  window.wftToastTimer = setTimeout(
+    () => element.classList.remove("show"), 4000
+  );
 }
 
-/* MOBILE MENU AND NAVIGATION */
+/* NAVIGATION */
 function closeMenu() {
   $("sidebar").classList.remove("open");
   $("overlay").classList.remove("show");
@@ -562,13 +414,13 @@ window.showPage = function(name) {
   const target = $("page-" + name);
   if (!target) return;
 
-  document.querySelectorAll(".page").forEach(page => {
-    page.classList.remove("active");
-  });
+  document.querySelectorAll(".page").forEach(page =>
+    page.classList.remove("active")
+  );
 
-  document.querySelectorAll(".nav-btn[data-page]").forEach(button => {
-    button.classList.remove("active");
-  });
+  document.querySelectorAll(".nav-btn[data-page]").forEach(button =>
+    button.classList.remove("active")
+  );
 
   target.classList.add("active");
 
@@ -582,27 +434,27 @@ window.showPage = function(name) {
   }
 
   closeMenu();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({top:0,behavior:"smooth"});
 };
 
 document.querySelectorAll(".nav-btn[data-page]").forEach(button => {
-  button.addEventListener("click", () => {
-    window.showPage(button.dataset.page);
-  });
+  button.addEventListener("click", () =>
+    window.showPage(button.dataset.page)
+  );
 });
 
 $("menuBtn").addEventListener("click", window.toggleMenu);
 $("overlay").addEventListener("click", closeMenu);
 
-/* ORDER CARD ROW */
+/* ORDER TABLE */
 function orderTable(order) {
   return `
     <tr>
       <td>${safe(String(order.id || "").slice(0,8))}</td>
-      <td>${money(order.account_size)}</td>
       <td>${safe(order.account_type || "—")}</td>
+      <td>${money(order.account_size)}</td>
       <td>${safe(order.platform || "—")}</td>
-      <td>${money(order.final_price)}</td>
+      <td>${money(order.final_price ?? order.base_price)}</td>
       <td>${safe(order.coupon_code || "—")}</td>
       <td>${badge(order.status)}</td>
       <td>${displayDate(order.created_at)}</td>
@@ -612,11 +464,11 @@ function orderTable(order) {
 
 /* LOAD ORDERS */
 async function loadOrders() {
-  const { data, error } = await db
+  const {data,error} = await db
     .from("orders")
     .select("*")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false });
+    .eq("user_id",currentUser.id)
+    .order("created_at",{ascending:false});
 
   if (error) throw error;
 
@@ -627,13 +479,22 @@ async function loadOrders() {
     : '<tr><td colspan="8" class="empty">No orders found.</td></tr>';
 
   $("overviewOrders").innerHTML = orders.length
-    ? orders.slice(0,5).map(orderTable).join("")
-    : '<tr><td colspan="7" class="empty">No recent orders.</td></tr>';
+    ? orders.slice(0,5).map(order => `
+      <tr>
+        <td>${safe(String(order.id || "").slice(0,8))}</td>
+        <td>${safe(order.account_type || "—")}</td>
+        <td>${money(order.account_size)}</td>
+        <td>${money(order.final_price ?? order.base_price)}</td>
+        <td>${badge(order.status)}</td>
+        <td>${displayDate(order.created_at)}</td>
+      </tr>
+    `).join("")
+    : '<tr><td colspan="6" class="empty">No recent orders.</td></tr>';
 
   $("orderCount").textContent = orders.length;
 
-  $("paidCount").textContent = orders.filter(
-    order => String(order.status).toLowerCase() === "paid"
+  $("paidCount").textContent = orders.filter(order =>
+    String(order.status).toLowerCase() === "paid"
   ).length;
 }
 
@@ -642,6 +503,7 @@ function accountCard(account) {
   return `
     <div class="account-card">
       <h3>${safe(account.account_name || "Trading Account")}</h3>
+
       <p class="muted small">
         ${safe(account.platform || "Platform not assigned")}
         · ${safe(account.account_type || "Account")}
@@ -652,30 +514,37 @@ function accountCard(account) {
           <div class="detail-label">Account Size</div>
           <div class="detail-value">${money(account.account_size)}</div>
         </div>
+
         <div>
           <div class="detail-label">Balance</div>
           <div class="detail-value">${money(account.balance)}</div>
         </div>
+
         <div>
           <div class="detail-label">Equity</div>
           <div class="detail-value">${money(account.equity)}</div>
         </div>
+
         <div>
           <div class="detail-label">Profit</div>
           <div class="detail-value">${money(account.profit)}</div>
         </div>
+
         <div>
           <div class="detail-label">MT Login</div>
           <div class="detail-value">${safe(account.mt_login || "Not assigned")}</div>
         </div>
+
         <div>
           <div class="detail-label">MT Server</div>
           <div class="detail-value">${safe(account.mt_server || "Not assigned")}</div>
         </div>
+
         <div>
           <div class="detail-label">Phase</div>
           <div class="detail-value">${safe(account.phase || "—")}</div>
         </div>
+
         <div>
           <div class="detail-label">Status</div>
           <div class="detail-value">${badge(account.status)}</div>
@@ -687,11 +556,11 @@ function accountCard(account) {
 
 /* LOAD TRADING ACCOUNTS */
 async function loadAccounts() {
-  const { data, error } = await db
+  const {data,error} = await db
     .from("trading_accounts")
     .select("*")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false });
+    .eq("user_id",currentUser.id)
+    .order("created_at",{ascending:false});
 
   if (error) throw error;
 
@@ -710,15 +579,15 @@ async function loadAccounts() {
     : '<div class="empty">No trading terminal credentials assigned yet.</div>';
 
   const balance = accounts.reduce(
-    (sum, account) => sum + (Number(account.balance) || 0), 0
+    (sum,a) => sum + (Number(a.balance) || 0),0
   );
 
   const equity = accounts.reduce(
-    (sum, account) => sum + (Number(account.equity) || 0), 0
+    (sum,a) => sum + (Number(a.equity) || 0),0
   );
 
   const profit = accounts.reduce(
-    (sum, account) => sum + (Number(account.profit) || 0), 0
+    (sum,a) => sum + (Number(a.profit) || 0),0
   );
 
   $("totalBalance").textContent = money(balance);
@@ -726,16 +595,16 @@ async function loadAccounts() {
   $("totalProfit").textContent = money(profit);
   $("accountCount").textContent = accounts.length;
 
-  $("activeCount").textContent = accounts.filter(
-    account => String(account.status).toLowerCase() === "active"
+  $("activeCount").textContent = accounts.filter(a =>
+    String(a.status).toLowerCase() === "active"
   ).length;
 
-  $("pendingCount").textContent = accounts.filter(
-    account => String(account.status).toLowerCase() === "pending"
+  $("pendingCount").textContent = accounts.filter(a =>
+    String(a.status).toLowerCase() === "pending"
   ).length;
 }
 
-/* LOAD CHALLENGE */
+/* CHALLENGE INFORMATION */
 async function loadChallenge() {
   const evaluation = orders.filter(
     order => order.account_type === "evaluation"
@@ -746,27 +615,39 @@ async function loadChallenge() {
   );
 
   $("challengeContent").innerHTML = `
-    <div class="info-card">
-      <h3>1-Step Evaluation</h3>
-      <p>You have ${evaluation.length} evaluation order(s).</p>
-      <p class="muted small">Profit target: 10% · Daily DD: 3% · Max DD: 5%</p>
-    </div>
+    <div class="grid-2">
+      <div class="info-card">
+        <h3>1-Step Evaluation</h3>
+        <p>You have ${evaluation.length} evaluation order(s).</p>
+        <p class="muted small">
+          Profit Target: 10%<br>
+          Daily Drawdown: 3%<br>
+          Maximum Drawdown: 5%<br>
+          Minimum Profitable Day: 0.5%<br>
+          Required Profitable Days: 5
+        </p>
+      </div>
 
-    <div class="info-card">
-      <h3>Instant Funding</h3>
-      <p>You have ${instant.length} instant funding order(s).</p>
-      <p class="muted small">No daily DD · Maximum DD: 5%</p>
+      <div class="info-card">
+        <h3>Instant Funding</h3>
+        <p>You have ${instant.length} instant funding order(s).</p>
+        <p class="muted small">
+          No Daily Drawdown<br>
+          Maximum Drawdown: 5%<br>
+          Drawdown measured on closed positions only
+        </p>
+      </div>
     </div>
   `;
 }
 
-/* LOAD KYC */
+/* KYC STATUS */
 async function loadKYC() {
-  const { data, error } = await db
+  const {data,error} = await db
     .from("kyc_submissions")
     .select("*")
-    .eq("user_id", currentUser.id)
-    .order("submitted_at", { ascending: false })
+    .eq("user_id",currentUser.id)
+    .order("submitted_at",{ascending:false})
     .limit(1);
 
   if (error) throw error;
@@ -788,12 +669,15 @@ async function loadKYC() {
   $("kycStatus").innerHTML = `
     <div class="kyc-status">
       <h3>KYC Status: ${badge(kycRecord.status)}</h3>
+
       <p class="muted small">
         Submitted: ${displayDate(kycRecord.submitted_at)}
       </p>
+
       <p><b>Name:</b> ${safe(kycRecord.full_name)}</p>
       <p><b>Country:</b> ${safe(kycRecord.country)}</p>
       <p><b>Document:</b> ${safe(kycRecord.document_type)}</p>
+
       ${
         kycRecord.admin_note
           ? `<p><b>Admin Note:</b> ${safe(kycRecord.admin_note)}</p>`
@@ -809,7 +693,7 @@ async function loadKYC() {
 }
 
 /* UPLOAD KYC FILE */
-async function uploadKycFile(file, folder) {
+async function uploadKycFile(file,folder) {
   if (!file) return null;
 
   if (file.size > 10 * 1024 * 1024) {
@@ -823,7 +707,7 @@ async function uploadKycFile(file, folder) {
   ];
 
   if (!allowed.includes(file.type)) {
-    throw new Error("Unsupported document format. Use JPG, PNG or PDF.");
+    throw new Error("Unsupported format. Use JPG, PNG or PDF.");
   }
 
   const extension = file.name.split(".").pop().toLowerCase();
@@ -832,9 +716,9 @@ async function uploadKycFile(file, folder) {
     `${currentUser.id}/${folder}_${Date.now()}_${Math.random()
       .toString(36).slice(2,8)}.${extension}`;
 
-  const { error } = await db.storage
+  const {error} = await db.storage
     .from("kyc-documents")
-    .upload(path, file, { upsert: false });
+    .upload(path,file,{upsert:false});
 
   if (error) throw error;
 
@@ -842,7 +726,7 @@ async function uploadKycFile(file, folder) {
 }
 
 /* SUBMIT KYC */
-$("kycForm").addEventListener("submit", async event => {
+$("kycForm").addEventListener("submit",async event => {
   event.preventDefault();
 
   const button = $("submitKycBtn");
@@ -861,7 +745,7 @@ $("kycForm").addEventListener("submit", async event => {
       String(kycRecord.status).toLowerCase() !== "rejected"
     ) {
       throw new Error(
-        "Your KYC is already submitted and is awaiting review."
+        "Your KYC is already submitted and awaiting review."
       );
     }
 
@@ -881,29 +765,29 @@ $("kycForm").addEventListener("submit", async event => {
       throw new Error("Upload the front side of your ID.");
     }
 
-    const frontFile = await uploadKycFile(front, "front");
+    const frontFile = await uploadKycFile(front,"front");
     const backFile = back
-      ? await uploadKycFile(back, "back")
+      ? await uploadKycFile(back,"back")
       : null;
 
     const selfieFile = selfie
-      ? await uploadKycFile(selfie, "selfie")
+      ? await uploadKycFile(selfie,"selfie")
       : null;
 
     const record = {
-      user_id: currentUser.id,
-      full_name: fullName,
-      country: country,
-      document_type: documentType,
-      front_file: frontFile,
-      back_file: backFile,
-      selfie_file: selfieFile,
-      status: "pending",
-      admin_note: null,
-      reviewed_at: null
+      user_id:currentUser.id,
+      full_name:fullName,
+      country:country,
+      document_type:documentType,
+      front_file:frontFile,
+      back_file:backFile,
+      selfie_file:selfieFile,
+      status:"pending",
+      admin_note:null,
+      reviewed_at:null
     };
 
-    const { error } = await db
+    const {error} = await db
       .from("kyc_submissions")
       .insert(record);
 
@@ -912,11 +796,10 @@ $("kycForm").addEventListener("submit", async event => {
     $("kycForm").reset();
 
     toast("KYC submitted successfully.");
-
     await loadKYC();
 
-  } catch (error) {
-    console.error("KYC SUBMISSION ERROR:", error);
+  } catch(error) {
+    console.error("KYC SUBMISSION ERROR:",error);
     toast(error.message || "KYC submission failed.");
   } finally {
     button.disabled = false;
@@ -924,7 +807,150 @@ $("kycForm").addEventListener("submit", async event => {
   }
 });
 
-/* REFRESH DASHBOARD DATA */
+/* PAYOUT ELIGIBILITY */
+function eligibleAccount(account) {
+  const type = String(account.account_type || "").toLowerCase();
+  const status = String(account.status || "").toLowerCase();
+  const phase = String(account.phase || "").toLowerCase();
+
+  return status === "active" &&
+    (
+      type === "instant" ||
+      (type === "evaluation" && phase === "funded")
+    );
+}
+
+/* PAYOUT PREVIEW */
+function updatePayoutPreview() {
+  const account = accounts.find(
+    item => item.id === $("payoutAccount").value
+  );
+
+  if (!account) {
+    $("payoutPreview").textContent =
+      "Select an eligible account to view your payout estimate.";
+    return;
+  }
+
+  const profit = Math.max(Number(account.profit) || 0,0);
+
+  $("payoutPreview").innerHTML = `
+    <p><b>Account:</b> ${safe(account.account_name || "Trading Account")}</p>
+    <p><b>Account Profit:</b> ${money(profit)}</p>
+    <p><b>Your 80% Share:</b> ${money(profit * 0.8)}</p>
+    <p><b>Company 20%:</b> ${money(profit * 0.2)}</p>
+    <p class="muted small">
+      This is an estimate. The secure server checks the final eligible amount.
+    </p>
+  `;
+}
+
+/* LOAD PAYOUT REQUESTS */
+async function loadPayouts() {
+  const {data,error} = await db
+    .from("payout_requests")
+    .select("*")
+    .eq("user_id",currentUser.id)
+    .order("requested_at",{ascending:false});
+
+  if (error) throw error;
+
+  const requests = data || [];
+  const eligible = accounts.filter(eligibleAccount);
+
+  $("payoutAccount").innerHTML = eligible.length
+    ? '<option value="">Select Account</option>' +
+      eligible.map(account => `
+        <option value="${safe(account.id)}">
+          ${safe(account.account_name || account.account_type)}
+          — ${money(account.profit)} profit
+        </option>
+      `).join("")
+    : '<option value="">No eligible accounts</option>';
+
+  $("payoutHistory").innerHTML = requests.length
+    ? `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Network</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${requests.map(request => `
+              <tr>
+                <td>${displayDate(request.requested_at)}</td>
+                <td>${money(request.payout_amount)}</td>
+                <td>${safe(request.network)}</td>
+                <td>${badge(request.status)}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    `
+    : '<div class="empty">No payout requests yet.</div>';
+
+  updatePayoutPreview();
+}
+
+$("payoutAccount").addEventListener("change",updatePayoutPreview);
+
+/* SUBMIT PAYOUT REQUEST */
+$("payoutForm").addEventListener("submit",async event => {
+  event.preventDefault();
+
+  const button = $("requestPayoutBtn");
+
+  if (!currentUser) {
+    toast("Please log in again.");
+    return;
+  }
+
+  const accountId = $("payoutAccount").value;
+  const network = $("payoutNetwork").value;
+  const wallet = $("payoutWallet").value.trim();
+
+  if (!accountId || !wallet) {
+    toast("Complete all payout fields.");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Submitting...";
+
+  try {
+    const {data,error} = await db.rpc("request_wft_payout",{
+      p_trading_account_id:accountId,
+      p_network:network,
+      p_wallet_address:wallet
+    });
+
+    if (error) throw error;
+
+    if (!data || !data.success) {
+      throw new Error("Payout request was not confirmed.");
+    }
+
+    toast("Payout request submitted: " + money(data.payout_amount));
+
+    $("payoutWallet").value = "";
+    await loadPayouts();
+
+  } catch(error) {
+    console.error("PAYOUT ERROR:",error);
+    toast(error.message || "Payout request failed.");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Submit Payout Request";
+  }
+});
+
+/* REFRESH DASHBOARD */
 async function refreshAll() {
   const results = await Promise.allSettled([
     loadOrders(),
@@ -932,22 +958,30 @@ async function refreshAll() {
     loadKYC()
   ]);
 
-  const names = ["Orders", "Trading Accounts", "KYC"];
+  const names = ["Orders","Trading Accounts","KYC"];
 
-  results.forEach((result, index) => {
+  results.forEach((result,index) => {
     if (result.status === "rejected") {
-      console.error(names[index] + " loading error:", result.reason);
+      console.error(names[index] + " loading error:",result.reason);
       toast(names[index] + " could not be loaded.");
     }
   });
 
   await loadChallenge();
+
+  try {
+    await loadPayouts();
+  } catch(error) {
+    console.error("PAYOUT LOAD ERROR:",error);
+    $("payoutHistory").innerHTML =
+      '<div class="empty">Payout information could not be loaded.</div>';
+  }
 }
 
 /* LOAD DASHBOARD */
 async function loadDashboard() {
   try {
-    const { data, error } = await db.auth.getSession();
+    const {data,error} = await db.auth.getSession();
 
     if (error) throw error;
 
@@ -971,6 +1005,9 @@ async function loadDashboard() {
     $("avatar").textContent = displayName.charAt(0).toUpperCase();
     $("todayDate").textContent = new Date().toLocaleDateString();
 
+    const topEmail = document.getElementById("profileEmailTop");
+    if (topEmail) topEmail.textContent = currentUser.email || "";
+
     $("referralLink").value =
       window.location.origin +
       window.location.pathname +
@@ -978,14 +1015,14 @@ async function loadDashboard() {
 
     await refreshAll();
 
-  } catch (error) {
-    console.error("DASHBOARD LOAD ERROR:", error);
+  } catch(error) {
+    console.error("DASHBOARD LOAD ERROR:",error);
     toast(error.message || "Could not load dashboard data.");
   }
 }
 
 /* LOGOUT */
-$("logoutBtn").addEventListener("click", async () => {
+$("logoutBtn").addEventListener("click",async () => {
   const button = $("logoutBtn");
   const label = $("logoutText");
 
@@ -993,10 +1030,10 @@ $("logoutBtn").addEventListener("click", async () => {
   label.textContent = "Logging out...";
 
   try {
-    const { error } = await db.auth.signOut({ scope: "local" });
+    const {error} = await db.auth.signOut({scope:"local"});
     if (error) throw error;
-  } catch (error) {
-    console.error("LOGOUT ERROR:", error);
+  } catch(error) {
+    console.error("LOGOUT ERROR:",error);
   }
 
   currentUser = null;
@@ -1004,7 +1041,7 @@ $("logoutBtn").addEventListener("click", async () => {
 });
 
 /* CHANGE PASSWORD */
-$("changePasswordBtn").addEventListener("click", async () => {
+$("changePasswordBtn").addEventListener("click",async () => {
   const password = $("newPassword").value.trim();
   const message = $("settingsMessage");
 
@@ -1020,7 +1057,7 @@ $("changePasswordBtn").addEventListener("click", async () => {
   button.textContent = "Updating...";
 
   try {
-    const { error } = await db.auth.updateUser({ password });
+    const {error} = await db.auth.updateUser({password});
 
     if (error) throw error;
 
@@ -1028,8 +1065,8 @@ $("changePasswordBtn").addEventListener("click", async () => {
     message.textContent = "Password updated successfully.";
     toast("Password updated.");
 
-  } catch (error) {
-    console.error("PASSWORD ERROR:", error);
+  } catch(error) {
+    console.error("PASSWORD ERROR:",error);
     message.textContent = error.message || "Password update failed.";
   } finally {
     button.disabled = false;
@@ -1038,18 +1075,18 @@ $("changePasswordBtn").addEventListener("click", async () => {
 });
 
 /* COPY REFERRAL LINK */
-$("copyReferralBtn").addEventListener("click", async () => {
+$("copyReferralBtn").addEventListener("click",async () => {
   try {
     await navigator.clipboard.writeText($("referralLink").value);
     toast("Referral link copied.");
-  } catch (error) {
-    console.error("COPY ERROR:", error);
+  } catch(error) {
+    console.error("COPY ERROR:",error);
     toast("Could not copy referral link.");
   }
 });
 
 /* AUTH SESSION CHANGES */
-db.auth.onAuthStateChange((event) => {
+db.auth.onAuthStateChange(event => {
   if (event === "SIGNED_OUT") {
     window.location.replace("Login.html");
   }
@@ -1060,4 +1097,4 @@ loadDashboard();
 
 </script>
 </body>
- </html>
+  </html>
