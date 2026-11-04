@@ -6,37 +6,79 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WFT Admin Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#07111f;color:#fff;font-family:Arial,sans-serif}
-header{background:#101f35;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px}
+body{
+ margin:0;background:#07111f;color:#fff;
+ font-family:Arial,sans-serif
+}
+header{
+ background:#101f35;padding:18px 5%;
+ display:flex;justify-content:space-between;
+ align-items:center;gap:12px;flex-wrap:wrap
+}
 h1{font-size:21px;color:#48a5ff;margin:0}
-button{background:#1685ee;color:white;border:0;padding:10px 13px;border-radius:7px;cursor:pointer;font-weight:bold}
+button{
+ background:#1685ee;color:white;border:0;
+ padding:10px 13px;border-radius:7px;
+ cursor:pointer;font-weight:bold
+}
 button:disabled{opacity:.5;cursor:not-allowed}
 .reject{background:#c83c50}
-main{padding:25px 5%;max-width:1400px;margin:auto}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:20px 0}
-.card{background:#11243b;padding:20px;border-radius:12px;border:1px solid #203b5c}
+.assign{background:#168b68}
+main{padding:25px 5%;max-width:1500px;margin:auto}
+.cards{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+ gap:14px;margin:20px 0
+}
+.card{
+ background:#11243b;padding:20px;
+ border-radius:12px;border:1px solid #203b5c
+}
 .card p{color:#a9bdd3;margin:0 0 12px}
 .card h2{margin:0;color:#55adff}
-.panel{background:#11243b;padding:18px;border-radius:12px;overflow-x:auto;margin-top:20px}
-table{width:100%;border-collapse:collapse;min-width:1150px}
-th,td{text-align:left;padding:12px;border-bottom:1px solid #29415c;font-size:13px;vertical-align:middle}
+.panel{
+ background:#11243b;padding:18px;
+ border-radius:12px;overflow-x:auto;margin-top:20px
+}
+table{width:100%;border-collapse:collapse;min-width:1350px}
+th,td{
+ text-align:left;padding:12px;
+ border-bottom:1px solid #29415c;
+ font-size:13px;vertical-align:middle
+}
 th{color:#55adff}
-.status{padding:5px 9px;border-radius:6px;background:#35445a}
+.status{
+ padding:5px 9px;border-radius:6px;
+ background:#35445a;display:inline-block
+}
 .message{padding:15px;color:#b9c9dc}
 .error{color:#ff7373}
 .success{color:#55dc91}
 .txid{max-width:210px;overflow-wrap:anywhere;color:#c6d9ef}
-.actions{display:flex;gap:7px}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
 a{color:#55adff}
+.small{font-size:11px;color:#a9bdd3}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:600px){
+ main{padding:16px 12px}
+ header{padding:15px 12px}
+ h1{font-size:17px}
+ .panel{padding:12px}
+}
 </style>
 </head>
+
 <body>
 
 <header>
 <h1>WE FUNDED TRADER | ADMIN</h1>
+<div class="top-actions">
+<button id="refresh">Refresh</button>
 <button id="logout">Logout</button>
+</div>
 </header>
 
 <main>
@@ -44,11 +86,14 @@ a{color:#55adff}
 <p id="message" class="message">Checking admin access...</p>
 
 <div id="content" style="display:none">
+
 <div class="cards">
-<div class="card"><p>Total Orders</p><h2 id="total">0</h2></div>
-<div class="card"><p>Pending Orders</p><h2 id="pending">0</h2></div>
-<div class="card"><p>Paid Orders</p><h2 id="paid">0</h2></div>
-<div class="card"><p>Total Order Value</p><h2 id="value">$0.00</h2></div>
+ <div class="card"><p>Total Orders</p><h2 id="total">0</h2></div>
+ <div class="card"><p>Pending Orders</p><h2 id="pending">0</h2></div>
+ <div class="card"><p>Paid Orders</p><h2 id="paid">0</h2></div>
+ <div class="card"><p>Rejected Orders</p><h2 id="rejected">0</h2></div>
+ <div class="card"><p>Assigned Accounts</p><h2 id="assigned">0</h2></div>
+ <div class="card"><p>Total Order Value</p><h2 id="value">$0.00</h2></div>
 </div>
 
 <div class="panel">
@@ -64,6 +109,7 @@ a{color:#55adff}
 <th>Network</th>
 <th>Transaction Hash</th>
 <th>Status</th>
+<th>Account ID</th>
 <th>Date</th>
 <th>Admin Action</th>
 </tr>
@@ -71,19 +117,34 @@ a{color:#55adff}
 <tbody id="orders"></tbody>
 </table>
 </div>
+
+<p class="small">
+Payment approval must only happen after manually verifying the transaction,
+network, USDT token, recipient address, amount and confirmations.
+</p>
+
 </div>
 </main>
 
 <script>
-const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
-const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+const SUPABASE_URL =
+ "https://vxcwfirfgxrxafbirnwu.supabase.co";
 
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_KEY =
+ "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+
+const db = window.supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_KEY
+);
+
 const message = document.getElementById("message");
 
-function showMessage(text, type="message"){
- message.textContent = text;
- message.className = "message " + type;
+let currentSession = null;
+
+function showMessage(text,type="message"){
+ message.textContent=text;
+ message.className="message "+type;
 }
 
 function makeCell(row,text,className=""){
@@ -105,52 +166,162 @@ function explorerUrl(network,txid){
 }
 
 async function reviewOrder(orderId,decision,button){
+
  const action=decision==="paid"?"approve":"reject";
+
  const confirmed=window.confirm(
-  "Are you sure you want to "+action+" this order? Verify the TXID on the correct blockchain first."
+  "Are you sure you want to "+action+
+  " this order? Verify the TXID on the correct blockchain first."
  );
+
  if(!confirmed) return;
 
  button.disabled=true;
  button.textContent="Processing...";
 
  try{
-  const {data,error}=await db.functions.invoke("admin-update-order",{
-   body:{order_id:orderId,decision:decision}
-  });
+  const {data,error}=await db.functions.invoke(
+   "admin-update-order",
+   {
+    body:{
+     order_id:orderId,
+     decision:decision
+    }
+   }
+  );
 
   if(error) throw new Error(error.message);
-  if(!data || !data.success) throw new Error(data?.error || "Review failed.");
+  if(!data || !data.success){
+   throw new Error(data?.error||"Review failed.");
+  }
 
-  showMessage("Order "+decision+" successfully.","success");
+  showMessage(
+   "Order "+decision+" successfully.",
+   "success"
+  );
+
   await loadOrders();
 
  }catch(error){
-  showMessage("Could not update order: "+error.message,"error");
+  showMessage(
+   "Could not update order: "+error.message,
+   "error"
+  );
+
   button.disabled=false;
-  button.textContent=action==="approve"?"Approve":"Reject";
+  button.textContent=
+   decision==="paid"?"Approve":"Reject";
+ }
+}
+
+async function assignAccount(orderId,button){
+
+ const confirmed=window.confirm(
+  "Create an internal trading account record for this paid order?"
+ );
+
+ if(!confirmed) return;
+
+ button.disabled=true;
+ button.textContent="Assigning...";
+
+ try{
+  const {data,error}=await db.functions.invoke(
+   "admin-assign-account",
+   {
+    body:{
+     order_id:orderId
+    }
+   }
+  );
+
+  if(error) throw new Error(error.message);
+
+  if(!data || !data.success){
+   throw new Error(
+    data?.error||"Account assignment failed."
+   );
+  }
+
+  showMessage(
+   data.already_assigned
+    ? "This order already has an assigned account."
+    : "Trading account record created successfully.",
+   "success"
+  );
+
+  await loadOrders();
+
+ }catch(error){
+  showMessage(
+   "Could not assign account: "+error.message,
+   "error"
+  );
+
+  button.disabled=false;
+  button.textContent="Assign Account";
  }
 }
 
 async function loadOrders(){
+
+ showMessage("Loading orders...");
+
  const {data:orders,error}=await db
   .from("orders")
   .select("*")
   .order("created_at",{ascending:false});
 
  if(error){
-  showMessage("Could not load orders: "+error.message,"error");
+  showMessage(
+   "Could not load orders: "+error.message,
+   "error"
+  );
   return;
  }
 
- document.getElementById("total").textContent=orders.length;
+ const {data:accounts,error:accountsError}=await db
+  .from("trading_accounts")
+  .select("id,order_id");
+
+ if(accountsError){
+  showMessage(
+   "Could not load trading accounts: "+
+   accountsError.message,
+   "error"
+  );
+  return;
+ }
+
+ const accountMap=new Map();
+
+ (accounts||[]).forEach(account=>{
+  if(account.order_id){
+   accountMap.set(account.order_id,account.id);
+  }
+ });
+
+ document.getElementById("total").textContent=
+  orders.length;
+
  document.getElementById("pending").textContent=
   orders.filter(o=>o.status==="pending").length;
+
  document.getElementById("paid").textContent=
   orders.filter(o=>o.status==="paid").length;
 
- const totalValue=orders.reduce((sum,o)=>sum+Number(o.final_price||0),0);
- document.getElementById("value").textContent="$"+totalValue.toFixed(2);
+ document.getElementById("rejected").textContent=
+  orders.filter(o=>o.status==="rejected").length;
+
+ document.getElementById("assigned").textContent=
+  accountMap.size;
+
+ const totalValue=orders.reduce(
+  (sum,o)=>sum+Number(o.final_price||0),0
+ );
+
+ document.getElementById("value").textContent=
+  "$"+totalValue.toFixed(2);
 
  const tbody=document.getElementById("orders");
  tbody.replaceChildren();
@@ -159,66 +330,165 @@ async function loadOrders(){
   const tr=document.createElement("tr");
   makeCell(tr,"No orders found.");
   tbody.appendChild(tr);
+  showMessage("Admin access verified. No orders found.");
   return;
  }
 
  orders.forEach(o=>{
+
   const tr=document.createElement("tr");
 
-  makeCell(tr,String(o.id||"").slice(0,8));
-  makeCell(tr,String(o.user_id||"").slice(0,8));
-  makeCell(tr,"$"+Number(o.account_size).toLocaleString());
-  makeCell(tr,o.account_type||"-");
-  makeCell(tr,"$"+Number(o.final_price||0).toFixed(2));
-  makeCell(tr,o.payment_network||"Not submitted");
+  makeCell(
+   tr,
+   String(o.id||"").slice(0,8)
+  );
 
-  const txCell=makeCell(tr,o.transaction_hash||"Not submitted","txid");
+  makeCell(
+   tr,
+   String(o.user_id||"").slice(0,8)
+  );
+
+  makeCell(
+   tr,
+   "$"+Number(o.account_size||0).toLocaleString()
+  );
+
+  makeCell(tr,o.account_type||"-");
+
+  makeCell(
+   tr,
+   "$"+Number(o.final_price||0).toFixed(2)
+  );
+
+  makeCell(
+   tr,
+   o.payment_network||"Not submitted"
+  );
+
+  const txCell=makeCell(
+   tr,
+   o.transaction_hash||"Not submitted",
+   "txid"
+  );
 
   if(o.transaction_hash && o.payment_network){
-   const link=document.createElement("a");
-   link.href=explorerUrl(o.payment_network,o.transaction_hash);
-   link.target="_blank";
-   link.rel="noopener noreferrer";
-   link.textContent="Open in Explorer";
-   txCell.appendChild(document.createElement("br"));
-   txCell.appendChild(link);
+
+   const url=explorerUrl(
+    o.payment_network,
+    o.transaction_hash
+   );
+
+   if(url){
+    const link=document.createElement("a");
+    link.href=url;
+    link.target="_blank";
+    link.rel="noopener noreferrer";
+    link.textContent="Open in Explorer";
+
+    txCell.appendChild(
+     document.createElement("br")
+    );
+
+    txCell.appendChild(link);
+   }
   }
 
-  makeCell(tr,o.status||"-","status");
-  makeCell(tr,o.created_at?new Date(o.created_at).toLocaleString():"-");
+  makeCell(
+   tr,
+   o.status||"-",
+   "status"
+  );
+
+  const accountId=accountMap.get(o.id);
+
+  makeCell(
+   tr,
+   accountId?String(accountId).slice(0,8):"Not assigned"
+  );
+
+  makeCell(
+   tr,
+   o.created_at
+    ?new Date(o.created_at).toLocaleString()
+    :"-"
+  );
 
   const actionCell=document.createElement("td");
   const actions=document.createElement("div");
   actions.className="actions";
 
-  if(o.status==="pending" && o.transaction_hash && o.payment_network){
+  if(
+   o.status==="pending" &&
+   o.transaction_hash &&
+   o.payment_network
+  ){
+
    const approve=document.createElement("button");
    approve.textContent="Approve";
-   approve.addEventListener("click",()=>reviewOrder(o.id,"paid",approve));
+
+   approve.addEventListener(
+    "click",
+    ()=>reviewOrder(o.id,"paid",approve)
+   );
 
    const reject=document.createElement("button");
    reject.textContent="Reject";
    reject.className="reject";
-   reject.addEventListener("click",()=>reviewOrder(o.id,"rejected",reject));
+
+   reject.addEventListener(
+    "click",
+    ()=>reviewOrder(o.id,"rejected",reject)
+   );
 
    actions.append(approve,reject);
+
+  }else if(o.status==="pending"){
+
+   actions.textContent="Waiting for TXID";
+
+  }else if(o.status==="paid" && accountId){
+
+   actions.textContent="Account Assigned";
+
+  }else if(o.status==="paid"){
+
+   const assign=document.createElement("button");
+   assign.textContent="Assign Account";
+   assign.className="assign";
+
+   assign.addEventListener(
+    "click",
+    ()=>assignAccount(o.id,assign)
+   );
+
+   actions.appendChild(assign);
+
   }else{
-   actions.textContent=o.status==="pending"?"Waiting for TXID":"Reviewed";
+
+   actions.textContent="Reviewed";
   }
 
   actionCell.appendChild(actions);
   tr.appendChild(actionCell);
   tbody.appendChild(tr);
  });
+
+ showMessage("Admin access verified. Orders loaded.","success");
 }
 
 async function loadAdmin(){
- const {data:{session},error:sessionError}=await db.auth.getSession();
+
+ const {
+  data:{session},
+  error:sessionError
+ }=await db.auth.getSession();
 
  if(sessionError || !session){
   window.location.href="Login.html";
   return;
  }
+
+ currentSession=session;
 
  const {data:admin,error:adminError}=await db
   .from("admin_users")
@@ -227,26 +497,38 @@ async function loadAdmin(){
   .maybeSingle();
 
  if(adminError){
-  showMessage("Admin verification failed: "+adminError.message,"error");
+  showMessage(
+   "Admin verification failed: "+adminError.message,
+   "error"
+  );
   return;
  }
 
  if(!admin){
-  showMessage("Access denied. This account is not an admin.","error");
+  showMessage(
+   "Access denied. This account is not an admin.",
+   "error"
+  );
   return;
  }
 
- showMessage("Admin access verified.");
  document.getElementById("content").style.display="block";
+
  await loadOrders();
 }
 
-document.getElementById("logout").addEventListener("click",async()=>{
- await db.auth.signOut();
- window.location.href="Login.html";
-});
+document.getElementById("refresh")
+ .addEventListener("click",loadOrders);
+
+document.getElementById("logout")
+ .addEventListener("click",async()=>{
+  await db.auth.signOut();
+  window.location.href="Login.html";
+ });
 
 loadAdmin();
 </script>
+
 </body>
-</html>
+ </html>
+  
