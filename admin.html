@@ -919,4 +919,29 @@ async function reviewPayout(id, action) {
     await loadPayouts();
 
   } catch (error) {
-    console.e
+    console.error("WFT INITIALIZATION ERROR:", error);
+
+    const loading = document.getElementById("loading");
+    const denied = document.getElementById("denied");
+    const deniedText = document.getElementById("deniedText");
+
+    if (loading) {
+      loading.classList.add("hidden");
+    }
+
+    if (denied) {
+      denied.classList.remove("hidden");
+    }
+
+    if (deniedText) {
+      deniedText.textContent =
+        error && error.message
+          ? error.message
+          : "An unexpected initialization error occurred.";
+    }
+  }
+});
+</script>
+
+</body>
+</html>
