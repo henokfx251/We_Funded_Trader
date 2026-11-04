@@ -4,451 +4,443 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WE FUNDED TRADER | Admin</title>
+<title>WE FUNDED TRADER | Admin Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 :root{
-  --bg:#07111f;--panel:#101e30;--panel2:#14243a;
-  --line:#263b52;--blue:#2694ff;--green:#43d9a3;
-  --gold:#e8b95b;--red:#ef626c;--text:#f4f7fc;
-  --muted:#9db0c5;
+ --bg:#07111f;--sidebar:#0b192b;--panel:#101f33;--panel2:#142740;
+ --line:#263d57;--blue:#2694ff;--green:#43d9a3;--gold:#e8b95b;
+ --red:#ef626c;--text:#f4f7fc;--muted:#9db0c5;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
 button,input,select,textarea{font:inherit}
-button{cursor:pointer;border:0;border-radius:8px;padding:11px 15px;font-weight:bold}
-button:disabled{opacity:.5;cursor:not-allowed}
+button{border:0;border-radius:9px;padding:11px 15px;font-weight:700;cursor:pointer;transition:.2s}
+button:hover{filter:brightness(1.12);transform:translateY(-1px)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
 header{
-  height:70px;background:#0c192a;border-bottom:1px solid var(--line);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 22px;position:sticky;top:0;z-index:20
+ height:70px;background:#0b192b;border-bottom:1px solid var(--line);
+ display:flex;align-items:center;justify-content:space-between;padding:0 23px;
+ position:sticky;top:0;z-index:50
 }
-.brand{font-size:19px;font-weight:800;color:var(--green);letter-spacing:.4px}
-.header-right{display:flex;align-items:center;gap:12px}
-.admin-label{font-size:12px;color:var(--muted)}
+.brand{font-size:19px;font-weight:900;letter-spacing:.5px;color:var(--green)}
+.brand span{color:var(--gold)}
+.header-right{display:flex;align-items:center;gap:13px}
+.admin-label{font-size:11px;letter-spacing:1.5px;color:var(--muted)}
 .layout{display:flex;min-height:calc(100vh - 70px)}
 .sidebar{
-  width:225px;flex-shrink:0;background:#0c192a;
-  border-right:1px solid var(--line);padding:20px 13px;
+ width:245px;flex-shrink:0;background:var(--sidebar);
+ border-right:1px solid var(--line);padding:22px 14px;
 }
-.side-title{font-size:11px;color:#70869e;margin:5px 10px 13px;letter-spacing:1.4px}
+.side-title{font-size:10px;color:#7289a3;letter-spacing:1.8px;margin:6px 12px 15px}
 .nav-btn{
-  display:flex;width:100%;align-items:center;gap:11px;text-align:left;
-  background:transparent;color:#b7c8d9;margin:4px 0;padding:13px 12px;
-  border-radius:9px;font-weight:600
+ display:flex;width:100%;align-items:center;gap:13px;text-align:left;
+ background:transparent;color:#aebfd1;margin:5px 0;padding:14px 13px;
+ border-radius:10px;font-weight:600
 }
-.nav-btn:hover,.nav-btn.active{background:#18334e;color:var(--green)}
-.nav-icon{width:22px;text-align:center;font-size:17px}
-.content{flex:1;min-width:0;padding:25px;max-width:1600px;margin:0 auto;width:100%}
-.page-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
-.page-heading h2{font-size:23px;margin:0 0 6px}
+.nav-btn:hover,.nav-btn.active{
+ background:linear-gradient(100deg,#173b5d,#142c45);
+ color:var(--green);box-shadow:inset 3px 0 var(--green)
+}
+.nav-icon{width:22px;text-align:center;font-size:18px}
+.content{flex:1;min-width:0;padding:27px;max-width:1650px;margin:0 auto;width:100%}
+.page{display:none;animation:fade .2s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:none}}
+.page-heading{display:flex;justify-content:space-between;align-items:center;gap:13px;flex-wrap:wrap;margin-bottom:23px}
+.page-heading h2{font-size:25px;margin:0 0 7px}
 .page-heading p{margin:0;color:var(--muted);font-size:13px}
 .panel,.stat{
-  background:linear-gradient(145deg,#122239,#0e1c2e);
-  border:1px solid var(--line);border-radius:14px;padding:19px;margin-bottom:20px;
+ background:linear-gradient(145deg,#12243a,#0e1c2e);
+ border:1px solid var(--line);border-radius:15px;padding:20px;margin-bottom:20px;
+ box-shadow:0 8px 25px #00000014
 }
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;margin-bottom:20px}
-.stat{margin:0;position:relative;overflow:hidden}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:15px;margin-bottom:21px}
+.stat{margin:0;position:relative;overflow:hidden;min-height:115px}
+.stat:after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;background:#2694ff0b;right:-25px;bottom:-35px}
 .stat small{color:var(--muted);font-size:12px}
-.stat strong{display:block;font-size:27px;margin-top:10px;color:var(--green)}
-.stat .stat-icon{float:right;font-size:22px;color:var(--gold)}
-.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:15px}
+.stat strong{display:block;font-size:29px;margin-top:12px;color:var(--green)}
+.stat-icon{float:right;font-size:23px;color:var(--gold)}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
 .section-title h3{margin:0;font-size:17px}
-.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.muted{color:var(--muted);font-size:13px;line-height:1.7}
 .primary{background:#16a879;color:white}
-.danger{background:#d94343;color:white}
+.danger{background:#c93f4b;color:white}
 .secondary{background:#263e59;color:white}
 .blue{background:#176fc0;color:white}
-.gold{background:#b88b35;color:#fff}
+.gold{background:#a97d2c;color:white}
+.small-btn{padding:8px 10px;font-size:11px;margin:2px}
 input,select,textarea{
-  width:100%;padding:12px;margin:6px 0 14px;background:#07111f;color:white;
-  border:1px solid #344b64;border-radius:8px;outline:none
+ width:100%;padding:12px;margin:7px 0 15px;background:#07111f;color:white;
+ border:1px solid #344b64;border-radius:9px;outline:none
 }
-input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 2px #2694ff20}
 textarea{min-height:85px;resize:vertical}
-label{font-size:13px;color:#c2d1df}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 15px}
-.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px}
+label{font-size:12px;color:#c2d1df;font-weight:600}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 17px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:11px}
 table{width:100%;border-collapse:collapse;min-width:1050px}
-th,td{padding:13px 11px;border-bottom:1px solid var(--line);text-align:left;font-size:12px;vertical-align:top}
-th{background:#0c192a;color:var(--green);white-space:nowrap}
-tr:hover td{background:#14243a}
-.status{display:inline-block;padding:5px 9px;border-radius:20px;background:#263b52;font-size:11px}
+th,td{padding:14px 11px;border-bottom:1px solid var(--line);text-align:left;font-size:12px;vertical-align:middle}
+th{background:#0b192b;color:var(--green);white-space:nowrap;font-size:11px;letter-spacing:.3px}
+tr:hover td{background:#142740}
+.status{display:inline-block;padding:6px 10px;border-radius:20px;background:#263b52;font-size:10px;font-weight:700;text-transform:uppercase}
 .good{color:#72edb9}.bad{color:#ff9ca7}.warning{color:#ffd27d}
 .hash{overflow-wrap:anywhere;word-break:break-all;max-width:220px}
 .actions{white-space:nowrap}
-.details-box{min-width:250px;padding:12px;background:#07111f;border:1px solid var(--line);border-radius:8px;margin-top:8px;line-height:1.8;overflow-wrap:anywhere}
+.details-box{min-width:250px;padding:12px;background:#07111f;border:1px solid var(--line);border-radius:9px;margin-top:8px;line-height:1.9;overflow-wrap:anywhere}
 details summary{cursor:pointer;color:var(--green);font-weight:bold}
 #message{padding:13px 15px;border-radius:9px;margin-bottom:18px;display:none;overflow-wrap:anywhere;font-size:13px}
-.success{display:block!important;background:#123e32;color:#8df3c8}
-.error{display:block!important;background:#481e27;color:#ffb3bd}
-.info{display:block!important;background:#18334e;color:#b8dcff}
+#message.success{display:block;background:#123e32;color:#8df3c8}
+#message.error{display:block;background:#481e27;color:#ffb3bd}
+#message.info{display:block;background:#18334e;color:#b8dcff}
 .hidden{display:none!important}
-#loading{max-width:600px;margin:60px auto;text-align:center;padding:35px}
+#loading,#denied{max-width:600px;margin:65px auto;text-align:center;padding:35px}
 #loading h2{color:var(--green)}
-#loading p{color:var(--muted);line-height:1.6}
-.loading-dot{font-size:25px;color:var(--green);margin:15px}
+#loading p,#denied p{color:var(--muted);line-height:1.7}
+.loading-dot{font-size:27px;color:var(--green);margin:18px}
 .file-buttons{display:flex;flex-wrap:wrap;gap:5px}
 .file-btn{background:#263e59;color:white;padding:8px;font-size:11px}
-.page{display:none}
-.page.active{display:block}
-.mobile-menu{display:none;background:#263e59;color:white}
-@media(max-width:800px){
-  .layout{display:block}
-  .sidebar{width:100%;display:flex;overflow-x:auto;padding:8px;border-right:0;border-bottom:1px solid var(--line)}
-  .side-title{display:none}
-  .nav-btn{width:auto;white-space:nowrap;margin:0 3px;padding:11px}
-  .content{padding:15px}
-  header{padding:0 13px}
-  .brand{font-size:15px}
-  .admin-label{display:none}
+.welcome-card{
+ background:linear-gradient(115deg,#163b5c,#12263d 70%,#49391e);
+ border:1px solid #34506c;border-radius:16px;padding:25px;margin-bottom:20px
 }
-@media(max-width:520px){
-  .form-grid{grid-template-columns:1fr}
-  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .stat strong{font-size:22px}
-  .panel{padding:14px}
+.welcome-card h3{font-size:21px;margin:0 0 9px}
+.welcome-card p{color:#c3d3e4;font-size:13px;line-height:1.7;margin:0 0 16px}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+@media(max-width:850px){
+ .layout{display:block}
+ .sidebar{width:100%;display:flex;overflow-x:auto;padding:9px;border-right:0;border-bottom:1px solid var(--line)}
+ .side-title{display:none}
+ .nav-btn{width:auto;white-space:nowrap;margin:0 3px;padding:11px}
+ .content{padding:17px}
+ .admin-label{display:none}
+}
+@media(max-width:540px){
+ header{height:62px;padding:0 13px}
+ .brand{font-size:15px}
+ .content{padding:13px}
+ .form-grid{grid-template-columns:1fr}
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .stat{padding:14px;min-height:100px}
+ .stat strong{font-size:23px}
+ .panel{padding:14px}
+ .page-heading h2{font-size:21px}
 }
 </style>
 </head>
-
 <body>
+
 <header>
-  <div class="brand">WE FUNDED TRADER</div>
-  <div class="header-right">
-    <span class="admin-label">ADMIN CONTROL PANEL</span>
-    <button class="danger" onclick="logout()">Logout</button>
-  </div>
+ <div class="brand">WE FUNDED <span>TRADER</span></div>
+ <div class="header-right">
+  <span class="admin-label">ADMIN CONTROL PANEL</span>
+  <button class="danger" onclick="logout()">Logout</button>
+ </div>
 </header>
 
 <div id="loading" class="panel">
-  <h2>Admin Dashboard</h2>
-  <div class="loading-dot">◉</div>
-  <p id="loadingText">Connecting to Supabase and checking admin access...</p>
-  <button class="secondary" onclick="loadAdmin()">Retry Connection</button>
-  <p class="muted">If this continues, check your internet connection and admin permissions.</p>
+ <h2>Admin Dashboard</h2>
+ <div class="loading-dot">◉</div>
+ <p id="loadingText">Connecting to Supabase and checking admin access...</p>
+ <button class="secondary" onclick="loadAdmin()">Retry Connection</button>
 </div>
 
-<div id="denied" class="panel hidden" style="max-width:600px;margin:60px auto;text-align:center">
-  <h2 style="color:#ff9ca7">Admin Access Unavailable</h2>
-  <p id="deniedText" class="muted"></p>
-  <button class="secondary" onclick="loadAdmin()">Try Again</button>
-  <button class="danger" onclick="logout()">Logout</button>
+<div id="denied" class="panel hidden">
+ <h2 style="color:#ff9ca7">Admin Access Unavailable</h2>
+ <p id="deniedText"></p>
+ <button class="secondary" onclick="loadAdmin()">Try Again</button>
+ <button class="danger" onclick="logout()">Logout</button>
 </div>
 
 <div id="app" class="layout hidden">
-  <aside class="sidebar">
-    <div class="side-title">ADMIN MENU</div>
-    <button class="nav-btn active" onclick="showPage('overview',this)"><span class="nav-icon">⌂</span>Overview</button>
-    <button class="nav-btn" onclick="showPage('orders',this)"><span class="nav-icon">▤</span>Orders</button>
-    <button class="nav-btn" onclick="showPage('kyc',this)"><span class="nav-icon">▣</span>KYC Review</button>
-    <button class="nav-btn" onclick="showPage('create',this)"><span class="nav-icon">＋</span>Create Account</button>
-    <button class="nav-btn" onclick="showPage('accounts',this)"><span class="nav-icon">◫</span>Trading Accounts</button>
-  </aside>
+ <aside class="sidebar">
+  <div class="side-title">ADMIN MENU</div>
+  <button class="nav-btn active" onclick="showPage('overview',this)"><span class="nav-icon">⌂</span>Overview</button>
+  <button class="nav-btn" onclick="showPage('orders',this)"><span class="nav-icon">▤</span>Orders</button>
+  <button class="nav-btn" onclick="showPage('kyc',this)"><span class="nav-icon">▣</span>KYC Review</button>
+  <button class="nav-btn" onclick="showPage('create',this)"><span class="nav-icon">＋</span>Create Account</button>
+  <button class="nav-btn" onclick="showPage('accounts',this)"><span class="nav-icon">◫</span>Trading Accounts</button>
+ </aside>
 
-  <main class="content">
-    <div id="message"></div>
+ <main class="content">
+  <div id="message"></div>
 
-    <!-- OVERVIEW -->
-    <section id="page-overview" class="page active">
-      <div class="page-heading">
-        <div>
-          <h2>Dashboard Overview</h2>
-          <p>Monitor orders, KYC submissions and trading accounts.</p>
-        </div>
-        <button class="secondary" onclick="refreshAll()">↻ Refresh All</button>
-      </div>
+  <section id="page-overview" class="page active">
+   <div class="page-heading">
+    <div><h2>Dashboard Overview</h2><p>Welcome to your WE FUNDED TRADER control center.</p></div>
+    <button class="secondary" onclick="refreshAll()">↻ Refresh All</button>
+   </div>
+   <div class="welcome-card">
+    <h3>Admin Control Center</h3>
+    <p>Manage customer orders, review identity verification submissions and create trading account records from one place.</p>
+    <button class="primary" onclick="goPage('orders')">Manage Orders</button>
+    <button class="gold" onclick="goPage('kyc')">Review KYC</button>
+   </div>
+   <div class="stats">
+    <div class="stat"><span class="stat-icon">▤</span><small>Total Orders</small><strong id="totalOrders">0</strong></div>
+    <div class="stat"><span class="stat-icon">◷</span><small>Pending Orders</small><strong id="pendingOrders">0</strong></div>
+    <div class="stat"><span class="stat-icon">✓</span><small>Paid Orders</small><strong id="paidOrders">0</strong></div>
+    <div class="stat"><span class="stat-icon">◫</span><small>Trading Accounts</small><strong id="totalAccounts">0</strong></div>
+    <div class="stat"><span class="stat-icon">▣</span><small>Pending KYC</small><strong id="pendingKyc">0</strong></div>
+   </div>
+   <div class="panel">
+    <div class="section-title"><h3>Quick Actions</h3></div>
+    <button class="secondary" onclick="goPage('orders')">Orders Management</button>
+    <button class="secondary" onclick="goPage('kyc')">KYC Verification</button>
+    <button class="secondary" onclick="goPage('create')">Create Trading Account</button>
+    <button class="secondary" onclick="goPage('accounts')">View Accounts</button>
+   </div>
+  </section>
 
-      <div class="stats">
-        <div class="stat"><span class="stat-icon">▤</span><small>Total Orders</small><strong id="totalOrders">0</strong></div>
-        <div class="stat"><span class="stat-icon">◷</span><small>Pending Orders</small><strong id="pendingOrders">0</strong></div>
-        <div class="stat"><span class="stat-icon">✓</span><small>Paid Orders</small><strong id="paidOrders">0</strong></div>
-        <div class="stat"><span class="stat-icon">◫</span><small>Trading Accounts</small><strong id="totalAccounts">0</strong></div>
-        <div class="stat"><span class="stat-icon">▣</span><small>Pending KYC</small><strong id="pendingKyc">0</strong></div>
-      </div>
+  <section id="page-orders" class="page">
+   <div class="page-heading">
+    <div><h2>Orders Management</h2><p>Review customer orders and payment submissions.</p></div>
+    <button class="secondary" onclick="loadOrders()">↻ Refresh Orders</button>
+   </div>
+   <div class="panel">
+    <div class="table-wrap">
+     <table>
+      <thead><tr>
+       <th>Order ID</th><th>Customer ID</th><th>Account Size</th><th>Type</th>
+       <th>Platform</th><th>Coupon</th><th>Discount</th><th>Base Price</th>
+       <th>Final Price</th><th>Network</th><th>Transaction Hash</th>
+       <th>Payment Check</th><th>Status</th><th>Details</th><th>Actions</th>
+      </tr></thead>
+      <tbody id="ordersTable"><tr><td colspan="15">Loading...</td></tr></tbody>
+     </table>
+    </div>
+   </div>
+  </section>
 
-      <div class="panel">
-        <h3>Admin Control Center</h3>
-        <p class="muted">Use the navigation menu to manage customer orders, verify KYC submissions and create trading account records.</p>
-        <button class="primary" onclick="showPage('kyc',document.querySelectorAll('.nav-btn')[2])">Review KYC</button>
-        <button class="secondary" onclick="showPage('orders',document.querySelectorAll('.nav-btn')[1])">Manage Orders</button>
-      </div>
-    </section>
+  <section id="page-kyc" class="page">
+   <div class="page-heading">
+    <div><h2>KYC Verification Review</h2><p>Review customer identity documents and verification requests.</p></div>
+    <button class="secondary" onclick="loadKYC()">↻ Refresh KYC</button>
+   </div>
+   <div class="panel">
+    <p class="muted">Identity documents are stored privately. Secure document links expire after five minutes.</p>
+    <div class="table-wrap">
+     <table>
+      <thead><tr>
+       <th>Customer ID</th><th>Full Name</th><th>Country</th><th>Document Type</th>
+       <th>Submitted</th><th>Documents</th><th>Status</th><th>Admin Note</th><th>Actions</th>
+      </tr></thead>
+      <tbody id="kycTable"><tr><td colspan="9">Loading KYC...</td></tr></tbody>
+     </table>
+    </div>
+   </div>
+  </section>
 
-    <!-- ORDERS -->
-    <section id="page-orders" class="page">
-      <div class="page-heading">
-        <div><h2>Orders Management</h2><p>Review order information and payment submissions.</p></div>
-        <button class="secondary" onclick="loadOrders()">↻ Refresh Orders</button>
-      </div>
-      <div class="panel">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Order ID</th><th>Customer ID</th><th>Account Size</th>
-                <th>Type</th><th>Platform</th><th>Coupon</th>
-                <th>Discount</th><th>Base Price</th><th>Final Price</th>
-                <th>Network</th><th>Transaction Hash</th>
-                <th>Payment Check</th><th>Status</th><th>Details</th><th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="ordersTable"><tr><td colspan="15">Loading...</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+  <section id="page-create" class="page">
+   <div class="page-heading"><div><h2>Create Trading Account</h2><p>Assign a trading account to a paid customer order.</p></div></div>
+   <div class="panel">
+    <p class="muted">Confirm payment independently and enter the real MetaTrader credentials before creating an account record.</p>
+    <div class="form-grid">
+     <div><label>Customer User ID</label><input id="newUserId" placeholder="Supabase User UUID"></div>
+     <div><label>Paid Order ID</label><input id="newOrderId" placeholder="Paid Order UUID"></div>
+     <div><label>Account Size</label>
+      <select id="newAccountSize">
+       <option value="2500">$2,500</option><option value="5000">$5,000</option>
+       <option value="10000">$10,000</option><option value="25000">$25,000</option>
+       <option value="50000">$50,000</option><option value="100000">$100,000</option>
+      </select>
+     </div>
+     <div><label>Account Type</label>
+      <select id="newAccountType">
+       <option value="evaluation">1-Step Evaluation</option>
+       <option value="instant">Instant Funding</option>
+      </select>
+     </div>
+     <div><label>Platform</label><select id="newPlatform"><option value="MT5">MT5</option><option value="MT4">MT4</option></select></div>
+     <div><label>MT Login</label><input id="newMtLogin" placeholder="Trading Account Login"></div>
+     <div><label>MT Server</label><input id="newMtServer" placeholder="Broker Server"></div>
+    </div>
+    <button class="primary" id="createAccountBtn" onclick="createTradingAccount()">Create Account</button>
+   </div>
+  </section>
 
-    <!-- KYC -->
-    <section id="page-kyc" class="page">
-      <div class="page-heading">
-        <div><h2>KYC Verification Review</h2><p>Review identity documents and update customer verification status.</p></div>
-        <button class="secondary" onclick="loadKYC()">↻ Refresh KYC</button>
-      </div>
-      <div class="panel">
-        <p class="muted">Documents are private. Secure document links expire after five minutes.</p>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Customer ID</th><th>Full Name</th><th>Country</th>
-                <th>Document Type</th><th>Submitted</th><th>Documents</th>
-                <th>Status</th><th>Admin Note</th><th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="kycTable"><tr><td colspan="9">Loading KYC...</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- CREATE ACCOUNT -->
-    <section id="page-create" class="page">
-      <div class="page-heading"><div><h2>Create Trading Account</h2><p>Assign an account to a verified paid order.</p></div></div>
-      <div class="panel">
-        <p class="muted">Verify payment independently and confirm real MT credentials before creating an account.</p>
-        <div class="form-grid">
-          <div><label>Customer User ID</label><input id="newUserId" placeholder="Supabase User UUID"></div>
-          <div><label>Paid Order ID</label><input id="newOrderId" placeholder="Paid Order UUID"></div>
-          <div><label>Account Size</label>
-            <select id="newAccountSize">
-              <option value="2500">$2,500</option><option value="5000">$5,000</option>
-              <option value="10000">$10,000</option><option value="25000">$25,000</option>
-              <option value="50000">$50,000</option><option value="100000">$100,000</option>
-            </select>
-          </div>
-          <div><label>Account Type</label>
-            <select id="newAccountType">
-              <option value="evaluation">1-Step Evaluation</option>
-              <option value="instant">Instant Funding</option>
-            </select>
-          </div>
-          <div><label>Platform</label><select id="newPlatform"><option>MT5</option><option>MT4</option></select></div>
-          <div><label>MT Login</label><input id="newMtLogin" placeholder="Trading Account Login"></div>
-          <div><label>MT Server</label><input id="newMtServer" placeholder="Broker Server"></div>
-        </div>
-        <button class="primary" id="createAccountBtn" onclick="createTradingAccount()">Create Account</button>
-      </div>
-    </section>
-
-    <!-- ACCOUNTS -->
-    <section id="page-accounts" class="page">
-      <div class="page-heading">
-        <div><h2>Trading Accounts</h2><p>View customer trading account records.</p></div>
-        <button class="secondary" onclick="loadTradingAccounts()">↻ Refresh Accounts</button>
-      </div>
-      <div class="panel">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Account ID</th><th>User ID</th><th>Account Size</th><th>Type</th><th>Balance</th><th>Status</th><th>MT Login</th><th>Platform</th></tr>
-            </thead>
-            <tbody id="accountsTable"><tr><td colspan="8">Loading...</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-  </main>
+  <section id="page-accounts" class="page">
+   <div class="page-heading">
+    <div><h2>Trading Accounts</h2><p>View customer trading account records.</p></div>
+    <button class="secondary" onclick="loadTradingAccounts()">↻ Refresh Accounts</button>
+   </div>
+   <div class="panel">
+    <div class="table-wrap">
+     <table>
+      <thead><tr>
+       <th>Account ID</th><th>User ID</th><th>Account Size</th><th>Type</th>
+       <th>Balance</th><th>Equity</th><th>Profit</th><th>Status</th>
+       <th>MT Login</th><th>Platform</th><th>Phase</th>
+      </tr></thead>
+      <tbody id="accountsTable"><tr><td colspan="11">Loading...</td></tr></tbody>
+     </table>
+    </div>
+   </div>
+  </section>
+ </main>
 </div>
 
 <script>
 "use strict";
 
-const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
-const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
-let db = null;
-let currentSession = null;
-let isCreatingAccount = false;
-let isReviewingKYC = false;
+const SUPABASE_URL="https://vxcwfirfgxrxafbirnwu.supabase.co";
+const SUPABASE_KEY="sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+const KYC_BUCKET="kyc-documents";
+
+let db=null;
+let currentSession=null;
+let isCreatingAccount=false;
+let isReviewingKYC=false;
 
 function $(id){return document.getElementById(id)}
 
 function escapeHTML(value){
-  return String(value ?? "").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[c]));
+ return String(value??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+ }[c]));
 }
 function money(value){
-  return "$"+Number(value||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+ return "$"+Number(value||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 function shortId(value){return value?String(value).slice(0,8)+"...":"—"}
 function isValidBep20Hash(hash){return /^0x[a-fA-F0-9]{64}$/.test(String(hash||"").trim())}
 function displayDate(value){
-  if(!value)return "—";
-  const d=new Date(value);
-  return isNaN(d.getTime())?escapeHTML(value):d.toLocaleString();
+ if(!value)return "—";
+ const d=new Date(value);
+ return isNaN(d.getTime())?escapeHTML(value):d.toLocaleString();
 }
 function showMessage(message,type="info"){
-  const box=$("message");
-  box.textContent=message;
-  box.className=type;
-  box.style.display="block";
+ const box=$("message");
+ box.textContent=message;
+ box.className=type;
+ box.style.display="block";
+}
+function hideMessage(){
+ $("message").style.display="none";
 }
 function withTimeout(promise,ms,label){
-  return Promise.race([
-    promise,
-    new Promise((_,reject)=>setTimeout(()=>reject(new Error(label+" timed out. Check connection and try again.")),ms))
-  ]);
+ return Promise.race([
+  promise,
+  new Promise((_,reject)=>setTimeout(()=>reject(new Error(label+" timed out. Check connection and try again.")),ms))
+ ]);
 }
 function showPage(name,button){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  $("page-"+name).classList.add("active");
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
-  if(button)button.classList.add("active");
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ $("page-"+name).classList.add("active");
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+ if(button)button.classList.add("active");
+ hideMessage();
+}
+function goPage(name){
+ const index={overview:0,orders:1,kyc:2,create:3,accounts:4}[name]||0;
+ showPage(name,document.querySelectorAll(".nav-btn")[index]);
 }
 function paymentCheck(order){
-  const hash=String(order.transaction_hash||"").trim();
-  const network=String(order.payment_network||"").toUpperCase();
-  if(!hash)return '<span class="bad">Not submitted</span>';
-  if(!network.includes("BEP20")&&!network.includes("BSC"))return '<span class="warning">Check network manually</span>';
-  if(!isValidBep20Hash(hash))return '<span class="bad">Invalid hash format</span>';
-  return '<span class="warning">Hash valid — blockchain verification required</span>';
+ const hash=String(order.transaction_hash||"").trim();
+ const network=String(order.payment_network||"").toUpperCase();
+ if(!hash)return '<span class="bad">Not submitted</span>';
+ if(!network.includes("BEP20")&&!network.includes("BSC"))return '<span class="warning">Check network manually</span>';
+ if(!isValidBep20Hash(hash))return '<span class="bad">Invalid hash format</span>';
+ return '<span class="warning">Hash format valid — blockchain verification required</span>';
 }
 
-// AUTHENTICATION WITH TIMEOUT AND VISIBLE ERRORS
 async function loadAdmin(){
-  $("loading").classList.remove("hidden");
-  $("denied").classList.add("hidden");
-  $("app").classList.add("hidden");
-  $("loadingText").textContent="Connecting to Supabase and checking admin access...";
+ $("loading").classList.remove("hidden");
+ $("denied").classList.add("hidden");
+ $("app").classList.add("hidden");
+ $("loadingText").textContent="Connecting to Supabase and checking admin access...";
 
-  try{
-    if(!window.supabase || !window.supabase.createClient){
-      throw new Error("Supabase library did not load. Check your internet connection.");
-    }
-
-    if(!db){
-      db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-    }
-
-    const {data,error}=await withTimeout(
-      db.auth.getSession(),12000,"Supabase session check"
-    );
-    if(error)throw error;
-
-    currentSession=data.session;
-    if(!currentSession){
-      throw new Error("No active login session. Please login again.");
-    }
-
-    $("loadingText").textContent="Checking admin permission...";
-
-    const result=await withTimeout(
-      db.from("admin_users").select("user_id")
-        .eq("user_id",currentSession.user.id).maybeSingle(),
-      12000,"Admin permission check"
-    );
-
-    if(result.error)throw result.error;
-    if(!result.data){
-      throw new Error("Access denied. This user is not registered in admin_users.");
-    }
-
-    $("loading").classList.add("hidden");
-    $("denied").classList.add("hidden");
-    $("app").classList.remove("hidden");
-    showMessage("Admin access verified successfully.","success");
-
-    await refreshAll();
-
-  }catch(error){
-    console.error("Admin startup error:",error);
-    $("loading").classList.add("hidden");
-    $("denied").classList.remove("hidden");
-    $("deniedText").textContent=error.message||"Unknown admin connection error.";
+ try{
+  if(!window.supabase||!window.supabase.createClient){
+   throw new Error("Supabase library did not load. Check your internet connection.");
   }
+  if(!db)db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+  const {data,error}=await withTimeout(db.auth.getSession(),12000,"Supabase session check");
+  if(error)throw error;
+  currentSession=data.session;
+  if(!currentSession)throw new Error("No active login session. Please login again.");
+
+  $("loadingText").textContent="Checking admin permission...";
+  const result=await withTimeout(
+   db.from("admin_users").select("user_id").eq("user_id",currentSession.user.id).maybeSingle(),
+   12000,"Admin permission check"
+  );
+  if(result.error)throw result.error;
+  if(!result.data)throw new Error("Access denied. This user is not registered in admin_users.");
+
+  $("loading").classList.add("hidden");
+  $("app").classList.remove("hidden");
+  showMessage("Admin access verified successfully.","success");
+  await refreshAll();
+ }catch(error){
+  console.error("Admin startup error:",error);
+  $("loading").classList.add("hidden");
+  $("denied").classList.remove("hidden");
+  $("deniedText").textContent=error.message||"Unknown admin connection error.";
+ }
+}
+
+async function logout(){
+ try{
+  if(db)await db.auth.signOut();
+ }catch(e){console.error(e)}
+ location.href="Login.html";
 }
 
 async function refreshAll(){
-  await Promise.allSettled([loadOrders(),loadTradingAccounts(),loadKYC()]);
+ await Promise.allSettled([loadOrders(),loadTradingAccounts(),loadKYC()]);
 }
 
-// ORDERS
+// ORDERS MANAGEMENT
 async function loadOrders(){
-  const tbody=$("ordersTable");
-  tbody.innerHTML='<tr><td colspan="15">Loading orders...</td></tr>';
+ const tbody=$("ordersTable");
+ tbody.innerHTML='<tr><td colspan="15">Loading orders...</td></tr>';
 
-  try{
-    const {data,error}=await db.from("orders").select("*").order("created_at",{ascending:false});
-    if(error)throw error;
-    const orders=data||[];
+ try{
+  const {data,error}=await db.from("orders").select("*").order("created_at",{ascending:false});
+  if(error)throw error;
+  const orders=data||[];
 
-    $("totalOrders").textContent=orders.length;
-    $("pendingOrders").textContent=orders.filter(o=>String(o.status).toLowerCase()==="pending").length;
-    $("paidOrders").textContent=orders.filter(o=>String(o.status).toLowerCase()==="paid").length;
+  $("totalOrders").textContent=orders.length;
+  $("pendingOrders").textContent=orders.filter(o=>String(o.status).toLowerCase()==="pending").length;
+  $("paidOrders").textContent=orders.filter(o=>String(o.status).toLowerCase()==="paid").length;
 
-    if(!orders.length){
-      tbody.innerHTML='<tr><td colspan="15">No orders found.</td></tr>';return;
-    }
-
-    tbody.innerHTML=orders.map(order=>{
-      const status=String(order.status||"pending").toLowerCase();
-      const hash=String(order.transaction_hash||"");
-      const network=String(order.payment_network||"—");
-      const net=network.toUpperCase();
-      const valid=isValidBep20Hash(hash);
-      const bep=net.includes("BEP20")||net.includes("BSC");
-      let actions=status==="pending"?`
-        <button class="primary" ${(!valid||!bep)?"disabled":""} onclick="updateOrder('${escapeHTML(order.id)}','paid')">Approve</button>
-        <button class="danger" onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
-      `:`<span class="status">${escapeHTML(status)}</span>`;
-
-      return `<tr>
-        <td title="${escapeHTML(order.id)}">${escapeHTML(shortId(order.id))}</td>
-        <td title="${escapeHTML(order.user_id)}">${escapeHTML(shortId(order.user_id))}</td>
-        <td>${money(order.account_size)}</td>
-        <td>${escapeHTML(order.account_type)}</td>
-        <td>${escapeHTML(order.platform||"—")}</td>
-        <td>${escapeHTML(order.coupon_code||"—")}</td>
-        <td>${Number(order.discount_percent||0)}%</td>
-        <td>${money(order.base_price)}</td><td>${money(order.final_price)}</td>
-        <td>${escapeHTML(network)}</td>
-        <td class="hash">${escapeHTML(hash||"Not submitted")}</td>
-        <td>${paymentCheck(order)}</td>
-        <td><span class="status">${escapeHTML(status)}</span></td>
-        <td><details><summary>View Details</summary><div class="details-box">
-          <b>Order:</b> ${escapeHTML(order.id)}<br>
-          <b>Customer:</b> ${escapeHTML(order.user_id)}<br>
-          <b>Receipt:</b> ${escapeHTML(order.receipt_path||"None")}<br>
-          <b>Payment submitted:</b> ${displayDate(order.payment_submitted_at)}<br>
-          <b>Created:</b> ${displayDate(order.created_at)}
-        </div></details></td>
-        <td class="actions">${actions}</td>
-      </tr>`;
-    }).join("");
-  }catch(error){
-    tbody.innerHTML=`<tr><td colspan="15">Error: ${escapeHTML(error.message)}</td></tr>`;
-    showMessage("Orders error: "+error.message,"error");
+  if(!orders.length){
+   tbody.innerHTML='<tr><td colspan="15">No orders found.</td></tr>';
+   return;
   }
-}
 
-async function updateOrder(orderId,status){
-  const promptText=status==="paid"
-    ?"Have you independently verified the exact amount, receiving wallet, transaction status and BEP20 network on the blockchain? A valid hash format is NOT proof of payment. Continue?"
-    :"Are you sure you want to reject this order?";
-  if(!confirm(promptText))return;
+  tbody.innerHTML=orders.map(order=>{
+   const status=String(order.status||"pending").toLowerCase();
+   const hash=String(order.transaction_hash||"");
+   const net=String(order.payment_network||"").toUpperCase();
+   const valid=isValidBep20Hash(hash);
+   const bep=net.includes("BEP20")||net.includes("BSC");
 
-  try{
-    showMessage("Updating order...","info");
-    const {data,error}=aw
+   let actions=status==="pending"?`
+    <button class="primary small-btn" ${(!valid||!bep)?"disabled":""}
+     onclick="updateOrder('${escapeHTML(order.id)}','paid')">Approve</button>
+    <button class="danger small-btn" onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
+   `:`<span class="status">${escapeHTML(status)}</span>`;
+
+   return `<tr>
+    <td title="${escapeHTML(order.id)}">${escapeHTML(shortId(order.id))}</td>
+    <td title="${escapeHTML(order.user_id)}">${escapeHTML(shortId(order.user_id))}</td>
+    <td>${money(order.account_size)}</td>
+    <td>${escapeHTML(order.account_type)}</td>
+    <td>${escapeHTML(order.platform||"—")}</td>
+    <td>${escapeHTML(order.coupon_code||"—")}</td>
+    <td>${Number(order.discount_percent||0)}%</td>
+    <td>${money(order.base_price)}</td>
+    <td>${money(order.final_price)}</td>
+    <td>${escapeHTML(order.payment_network||"—")}</td>
+    <td class="hash">${escapeHTML(hash||"Not submitted")}</td>
+    <td>${paymentCheck(order)}</td>
+    <td><span class="status">${escapeHTML(status)}</span></td>
+    <td><details><summary>View Details</summary><div class="details-box">
+     <b>Order:</b> ${escapeHTML(order.id)}<br>
+     <b>Customer:</b> ${escapeHTML(order.user_id)}<br>
+     <b>Receipt:</b> ${escapeHTML(order.receipt_path||"None")}<br>
+     <b>Payment submitted:</b> ${displayDate(order.payment_submitted_at)}<br>
+     <b>Created:</b> ${
