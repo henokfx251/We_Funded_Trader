@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -443,4 +442,20 @@ async function loadOrders(){
      <b>Customer:</b> ${escapeHTML(order.user_id)}<br>
      <b>Receipt:</b> ${escapeHTML(order.receipt_path||"None")}<br>
      <b>Payment submitted:</b> ${displayDate(order.payment_submitted_at)}<br>
-     <b>Created:</b> ${
+     <b>Created:</b> ${ 
+      <b>Created:</b> ${displayDate(order.created_at)}<br>
+<b>Account Size:</b> ${money(order.account_size)}<br>
+<b>Account Type:</b> ${escapeHTML(order.account_type)}<br>
+<b>Platform:</b> ${escapeHTML(order.platform || "—")}<br>
+<b>Base Price:</b> ${money(order.base_price)}<br>
+<b>Discount:</b> ${Number(order.discount_percent || 0)}%<br>
+<b>Final Price:</b> ${money(order.final_price)}<br>
+<b>Payment Network:</b> ${escapeHTML(order.payment_network || "—")}<br>
+<b>Transaction Hash:</b> ${escapeHTML(hash || "Not submitted")}<br>
+<b>Status:</b> ${escapeHTML(status)}
+</div></details></td>
+<td>
+  <button onclick="updateOrder('${escapeHTML(order.id)}','paid')">Approve</button>
+  <button onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
+</td>
+</tr>`;
