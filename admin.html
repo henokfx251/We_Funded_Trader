@@ -1,599 +1,454 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WFT Admin Dashboard</title>
+<title>WE FUNDED TRADER | Admin</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+:root{
+  --bg:#07111f;--panel:#101e30;--panel2:#14243a;
+  --line:#263b52;--blue:#2694ff;--green:#43d9a3;
+  --gold:#e8b95b;--red:#ef626c;--text:#f4f7fc;
+  --muted:#9db0c5;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#07111f;color:#fff;font-family:Arial,sans-serif}
-header{background:#101e30;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid #263b52}
-h1{font-size:21px;margin:0;color:#43d9a3}
-h2{font-size:18px;margin:0 0 15px}
-main{max-width:1500px;margin:25px auto;padding:0 15px}
-.panel,.stat{background:#101e30;border:1px solid #263b52;border-radius:12px;padding:18px;margin-bottom:20px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
-.stat small{color:#9db0c5}
-.stat strong{display:block;font-size:25px;margin-top:8px;color:#43d9a3}
-input,select,textarea{width:100%;padding:12px;margin:6px 0 13px;background:#07111f;color:#fff;border:1px solid #344b64;border-radius:7px}
-textarea{min-height:85px;resize:vertical}
-button{border:0;border-radius:7px;padding:10px 14px;font-weight:bold;cursor:pointer;margin:3px}
-.primary{background:#16a879;color:#fff}
-.danger{background:#d94343;color:#fff}
-.secondary{background:#344b64;color:#fff}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:8px;padding:11px 15px;font-weight:bold}
 button:disabled{opacity:.5;cursor:not-allowed}
-table{width:100%;border-collapse:collapse;min-width:1100px}
-th,td{padding:12px 10px;border-bottom:1px solid #263b52;text-align:left;font-size:13px;vertical-align:top}
-th{color:#43d9a3;white-space:nowrap}
-.table-wrap{overflow-x:auto}
-.muted,.form-note{color:#9db0c5;font-size:13px}
-.status{padding:5px 8px;border-radius:5px;background:#263b52;display:inline-block}
-#message{padding:12px;border-radius:7px;margin-bottom:15px;display:none;overflow-wrap:anywhere}
+header{
+  height:70px;background:#0c192a;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px;position:sticky;top:0;z-index:20
+}
+.brand{font-size:19px;font-weight:800;color:var(--green);letter-spacing:.4px}
+.header-right{display:flex;align-items:center;gap:12px}
+.admin-label{font-size:12px;color:var(--muted)}
+.layout{display:flex;min-height:calc(100vh - 70px)}
+.sidebar{
+  width:225px;flex-shrink:0;background:#0c192a;
+  border-right:1px solid var(--line);padding:20px 13px;
+}
+.side-title{font-size:11px;color:#70869e;margin:5px 10px 13px;letter-spacing:1.4px}
+.nav-btn{
+  display:flex;width:100%;align-items:center;gap:11px;text-align:left;
+  background:transparent;color:#b7c8d9;margin:4px 0;padding:13px 12px;
+  border-radius:9px;font-weight:600
+}
+.nav-btn:hover,.nav-btn.active{background:#18334e;color:var(--green)}
+.nav-icon{width:22px;text-align:center;font-size:17px}
+.content{flex:1;min-width:0;padding:25px;max-width:1600px;margin:0 auto;width:100%}
+.page-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.page-heading h2{font-size:23px;margin:0 0 6px}
+.page-heading p{margin:0;color:var(--muted);font-size:13px}
+.panel,.stat{
+  background:linear-gradient(145deg,#122239,#0e1c2e);
+  border:1px solid var(--line);border-radius:14px;padding:19px;margin-bottom:20px;
+}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;margin-bottom:20px}
+.stat{margin:0;position:relative;overflow:hidden}
+.stat small{color:var(--muted);font-size:12px}
+.stat strong{display:block;font-size:27px;margin-top:10px;color:var(--green)}
+.stat .stat-icon{float:right;font-size:22px;color:var(--gold)}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:15px}
+.section-title h3{margin:0;font-size:17px}
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.primary{background:#16a879;color:white}
+.danger{background:#d94343;color:white}
+.secondary{background:#263e59;color:white}
+.blue{background:#176fc0;color:white}
+.gold{background:#b88b35;color:#fff}
+input,select,textarea{
+  width:100%;padding:12px;margin:6px 0 14px;background:#07111f;color:white;
+  border:1px solid #344b64;border-radius:8px;outline:none
+}
+input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+textarea{min-height:85px;resize:vertical}
+label{font-size:13px;color:#c2d1df}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 15px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px}
+table{width:100%;border-collapse:collapse;min-width:1050px}
+th,td{padding:13px 11px;border-bottom:1px solid var(--line);text-align:left;font-size:12px;vertical-align:top}
+th{background:#0c192a;color:var(--green);white-space:nowrap}
+tr:hover td{background:#14243a}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;background:#263b52;font-size:11px}
+.good{color:#72edb9}.bad{color:#ff9ca7}.warning{color:#ffd27d}
+.hash{overflow-wrap:anywhere;word-break:break-all;max-width:220px}
+.actions{white-space:nowrap}
+.details-box{min-width:250px;padding:12px;background:#07111f;border:1px solid var(--line);border-radius:8px;margin-top:8px;line-height:1.8;overflow-wrap:anywhere}
+details summary{cursor:pointer;color:var(--green);font-weight:bold}
+#message{padding:13px 15px;border-radius:9px;margin-bottom:18px;display:none;overflow-wrap:anywhere;font-size:13px}
 .success{display:block!important;background:#123e32;color:#8df3c8}
 .error{display:block!important;background:#481e27;color:#ffb3bd}
 .info{display:block!important;background:#18334e;color:#b8dcff}
 .hidden{display:none!important}
-.actions{white-space:nowrap}
-label{font-size:13px;color:#b7c8d9}
-.form-note{font-size:12px;margin-top:-8px;margin-bottom:12px}
-details summary{cursor:pointer;color:#43d9a3;font-weight:bold}
-.details-box{min-width:260px;padding:10px;background:#07111f;border:1px solid #344b64;border-radius:7px;margin-top:8px;line-height:1.8;overflow-wrap:anywhere}
-.details-box strong{color:#43d9a3}
-.warning{color:#ffd27d}
-.bad{color:#ff9ca7}
-.price{font-weight:bold}
-.hash{overflow-wrap:anywhere;word-break:break-all;max-width:220px}
-.kyc-files{display:flex;flex-wrap:wrap;gap:5px}
-.kyc-note{min-width:190px}
-.file-button{background:#344b64;color:#fff}
+#loading{max-width:600px;margin:60px auto;text-align:center;padding:35px}
+#loading h2{color:var(--green)}
+#loading p{color:var(--muted);line-height:1.6}
+.loading-dot{font-size:25px;color:var(--green);margin:15px}
+.file-buttons{display:flex;flex-wrap:wrap;gap:5px}
+.file-btn{background:#263e59;color:white;padding:8px;font-size:11px}
+.page{display:none}
+.page.active{display:block}
+.mobile-menu{display:none;background:#263e59;color:white}
+@media(max-width:800px){
+  .layout{display:block}
+  .sidebar{width:100%;display:flex;overflow-x:auto;padding:8px;border-right:0;border-bottom:1px solid var(--line)}
+  .side-title{display:none}
+  .nav-btn{width:auto;white-space:nowrap;margin:0 3px;padding:11px}
+  .content{padding:15px}
+  header{padding:0 13px}
+  .brand{font-size:15px}
+  .admin-label{display:none}
+}
+@media(max-width:520px){
+  .form-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat strong{font-size:22px}
+  .panel{padding:14px}
+}
 </style>
 </head>
 
 <body>
 <header>
-  <h1>WE FUNDED TRADER — ADMIN</h1>
-  <button class="danger" onclick="logout()">Logout</button>
+  <div class="brand">WE FUNDED TRADER</div>
+  <div class="header-right">
+    <span class="admin-label">ADMIN CONTROL PANEL</span>
+    <button class="danger" onclick="logout()">Logout</button>
+  </div>
 </header>
 
-<main>
-<div id="message"></div>
-
-<section id="loading" class="panel">Checking admin access...</section>
-
-<section id="dashboard" class="hidden">
-
-<div class="stats">
-  <div class="stat"><small>Total Orders</small><strong id="totalOrders">0</strong></div>
-  <div class="stat"><small>Pending Orders</small><strong id="pendingOrders">0</strong></div>
-  <div class="stat"><small>Paid Orders</small><strong id="paidOrders">0</strong></div>
-  <div class="stat"><small>Trading Accounts</small><strong id="totalAccounts">0</strong></div>
-  <div class="stat"><small>Pending KYC</small><strong id="pendingKyc">0</strong></div>
+<div id="loading" class="panel">
+  <h2>Admin Dashboard</h2>
+  <div class="loading-dot">◉</div>
+  <p id="loadingText">Connecting to Supabase and checking admin access...</p>
+  <button class="secondary" onclick="loadAdmin()">Retry Connection</button>
+  <p class="muted">If this continues, check your internet connection and admin permissions.</p>
 </div>
 
-<!-- ORDERS -->
-<section class="panel">
-<h2>Orders Management</h2>
-<button class="secondary" onclick="loadOrders()">Refresh Orders</button>
-<p class="muted">Review payment, platform, coupon and pricing before approving orders.</p>
-
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Order ID</th><th>Customer ID</th><th>Account Size</th>
-<th>Account Type</th><th>Platform</th><th>Coupon</th>
-<th>Discount</th><th>Base Price</th><th>Final Price</th>
-<th>Network</th><th>Transaction Hash</th>
-<th>Payment Verification</th><th>Status</th>
-<th>Full Details</th><th>Actions</th>
-</tr>
-</thead>
-<tbody id="ordersTable">
-<tr><td colspan="15">Loading orders...</td></tr>
-</tbody>
-</table>
+<div id="denied" class="panel hidden" style="max-width:600px;margin:60px auto;text-align:center">
+  <h2 style="color:#ff9ca7">Admin Access Unavailable</h2>
+  <p id="deniedText" class="muted"></p>
+  <button class="secondary" onclick="loadAdmin()">Try Again</button>
+  <button class="danger" onclick="logout()">Logout</button>
 </div>
-</section>
 
-<!-- KYC REVIEW -->
-<section class="panel">
-<h2>KYC Verification Review</h2>
-<p class="muted">
-Review customer identity documents carefully. Files are private and opened through temporary secure links.
-</p>
-<button class="secondary" onclick="loadKYC()">Refresh KYC</button>
+<div id="app" class="layout hidden">
+  <aside class="sidebar">
+    <div class="side-title">ADMIN MENU</div>
+    <button class="nav-btn active" onclick="showPage('overview',this)"><span class="nav-icon">⌂</span>Overview</button>
+    <button class="nav-btn" onclick="showPage('orders',this)"><span class="nav-icon">▤</span>Orders</button>
+    <button class="nav-btn" onclick="showPage('kyc',this)"><span class="nav-icon">▣</span>KYC Review</button>
+    <button class="nav-btn" onclick="showPage('create',this)"><span class="nav-icon">＋</span>Create Account</button>
+    <button class="nav-btn" onclick="showPage('accounts',this)"><span class="nav-icon">◫</span>Trading Accounts</button>
+  </aside>
 
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Customer ID</th>
-<th>Full Name</th>
-<th>Country</th>
-<th>Document Type</th>
-<th>Submitted</th>
-<th>Documents</th>
-<th>Status</th>
-<th>Admin Note</th>
-<th>Review Actions</th>
-</tr>
-</thead>
-<tbody id="kycTable">
-<tr><td colspan="9">Loading KYC submissions...</td></tr>
-</tbody>
-</table>
+  <main class="content">
+    <div id="message"></div>
+
+    <!-- OVERVIEW -->
+    <section id="page-overview" class="page active">
+      <div class="page-heading">
+        <div>
+          <h2>Dashboard Overview</h2>
+          <p>Monitor orders, KYC submissions and trading accounts.</p>
+        </div>
+        <button class="secondary" onclick="refreshAll()">↻ Refresh All</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span class="stat-icon">▤</span><small>Total Orders</small><strong id="totalOrders">0</strong></div>
+        <div class="stat"><span class="stat-icon">◷</span><small>Pending Orders</small><strong id="pendingOrders">0</strong></div>
+        <div class="stat"><span class="stat-icon">✓</span><small>Paid Orders</small><strong id="paidOrders">0</strong></div>
+        <div class="stat"><span class="stat-icon">◫</span><small>Trading Accounts</small><strong id="totalAccounts">0</strong></div>
+        <div class="stat"><span class="stat-icon">▣</span><small>Pending KYC</small><strong id="pendingKyc">0</strong></div>
+      </div>
+
+      <div class="panel">
+        <h3>Admin Control Center</h3>
+        <p class="muted">Use the navigation menu to manage customer orders, verify KYC submissions and create trading account records.</p>
+        <button class="primary" onclick="showPage('kyc',document.querySelectorAll('.nav-btn')[2])">Review KYC</button>
+        <button class="secondary" onclick="showPage('orders',document.querySelectorAll('.nav-btn')[1])">Manage Orders</button>
+      </div>
+    </section>
+
+    <!-- ORDERS -->
+    <section id="page-orders" class="page">
+      <div class="page-heading">
+        <div><h2>Orders Management</h2><p>Review order information and payment submissions.</p></div>
+        <button class="secondary" onclick="loadOrders()">↻ Refresh Orders</button>
+      </div>
+      <div class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th><th>Customer ID</th><th>Account Size</th>
+                <th>Type</th><th>Platform</th><th>Coupon</th>
+                <th>Discount</th><th>Base Price</th><th>Final Price</th>
+                <th>Network</th><th>Transaction Hash</th>
+                <th>Payment Check</th><th>Status</th><th>Details</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTable"><tr><td colspan="15">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- KYC -->
+    <section id="page-kyc" class="page">
+      <div class="page-heading">
+        <div><h2>KYC Verification Review</h2><p>Review identity documents and update customer verification status.</p></div>
+        <button class="secondary" onclick="loadKYC()">↻ Refresh KYC</button>
+      </div>
+      <div class="panel">
+        <p class="muted">Documents are private. Secure document links expire after five minutes.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Customer ID</th><th>Full Name</th><th>Country</th>
+                <th>Document Type</th><th>Submitted</th><th>Documents</th>
+                <th>Status</th><th>Admin Note</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="kycTable"><tr><td colspan="9">Loading KYC...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CREATE ACCOUNT -->
+    <section id="page-create" class="page">
+      <div class="page-heading"><div><h2>Create Trading Account</h2><p>Assign an account to a verified paid order.</p></div></div>
+      <div class="panel">
+        <p class="muted">Verify payment independently and confirm real MT credentials before creating an account.</p>
+        <div class="form-grid">
+          <div><label>Customer User ID</label><input id="newUserId" placeholder="Supabase User UUID"></div>
+          <div><label>Paid Order ID</label><input id="newOrderId" placeholder="Paid Order UUID"></div>
+          <div><label>Account Size</label>
+            <select id="newAccountSize">
+              <option value="2500">$2,500</option><option value="5000">$5,000</option>
+              <option value="10000">$10,000</option><option value="25000">$25,000</option>
+              <option value="50000">$50,000</option><option value="100000">$100,000</option>
+            </select>
+          </div>
+          <div><label>Account Type</label>
+            <select id="newAccountType">
+              <option value="evaluation">1-Step Evaluation</option>
+              <option value="instant">Instant Funding</option>
+            </select>
+          </div>
+          <div><label>Platform</label><select id="newPlatform"><option>MT5</option><option>MT4</option></select></div>
+          <div><label>MT Login</label><input id="newMtLogin" placeholder="Trading Account Login"></div>
+          <div><label>MT Server</label><input id="newMtServer" placeholder="Broker Server"></div>
+        </div>
+        <button class="primary" id="createAccountBtn" onclick="createTradingAccount()">Create Account</button>
+      </div>
+    </section>
+
+    <!-- ACCOUNTS -->
+    <section id="page-accounts" class="page">
+      <div class="page-heading">
+        <div><h2>Trading Accounts</h2><p>View customer trading account records.</p></div>
+        <button class="secondary" onclick="loadTradingAccounts()">↻ Refresh Accounts</button>
+      </div>
+      <div class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Account ID</th><th>User ID</th><th>Account Size</th><th>Type</th><th>Balance</th><th>Status</th><th>MT Login</th><th>Platform</th></tr>
+            </thead>
+            <tbody id="accountsTable"><tr><td colspan="8">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
-</section>
-
-<!-- CREATE TRADING ACCOUNT -->
-<section class="panel">
-<h2>Create Trading Account</h2>
-<p class="muted">Only create an account after independently verifying payment and confirming real MT credentials.</p>
-
-<label>Customer User ID</label>
-<input id="newUserId" placeholder="Supabase User UUID">
-
-<label>Order ID (Required)</label>
-<input id="newOrderId" placeholder="Paid Order UUID">
-
-<label>Account Size</label>
-<select id="newAccountSize">
-<option value="2500">$2,500</option>
-<option value="5000">$5,000</option>
-<option value="10000">$10,000</option>
-<option value="25000">$25,000</option>
-<option value="50000">$50,000</option>
-<option value="100000">$100,000</option>
-</select>
-
-<label>Account Type</label>
-<select id="newAccountType">
-<option value="evaluation">1-Step Evaluation</option>
-<option value="instant">Instant Funding</option>
-</select>
-
-<label>Trading Platform</label>
-<select id="newPlatform">
-<option value="MT5">MT5</option>
-<option value="MT4">MT4</option>
-</select>
-
-<label>MT Login</label>
-<input id="newMtLogin" placeholder="Trading Account Login">
-
-<label>MT Server</label>
-<input id="newMtServer" placeholder="Broker Server">
-
-<p class="form-note">Enter the real MT login and server details supplied by your account provider.</p>
-
-<button class="primary" id="createAccountBtn" onclick="createTradingAccount()">Create Account</button>
-</section>
-
-<!-- TRADING ACCOUNTS -->
-<section class="panel">
-<h2>Trading Accounts</h2>
-<button class="secondary" onclick="loadTradingAccounts()">Refresh Accounts</button>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Account ID</th><th>User ID</th><th>Account Size</th>
-<th>Type</th><th>Balance</th><th>Status</th>
-<th>MT Login</th><th>Platform</th>
-</tr>
-</thead>
-<tbody id="accountsTable">
-<tr><td colspan="8">Loading accounts...</td></tr>
-</tbody>
-</table>
-</div>
-</section>
-
-</section>
-</main>
 
 <script>
 "use strict";
 
 const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
-
 let db = null;
 let currentSession = null;
 let isCreatingAccount = false;
 let isReviewingKYC = false;
 
-function showMessage(message, type = "info") {
-  const box = document.getElementById("message");
-  box.textContent = message;
-  box.className = type;
+function $(id){return document.getElementById(id)}
+
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[c]));
+}
+function money(value){
+  return "$"+Number(value||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function shortId(value){return value?String(value).slice(0,8)+"...":"—"}
+function isValidBep20Hash(hash){return /^0x[a-fA-F0-9]{64}$/.test(String(hash||"").trim())}
+function displayDate(value){
+  if(!value)return "—";
+  const d=new Date(value);
+  return isNaN(d.getTime())?escapeHTML(value):d.toLocaleString();
+}
+function showMessage(message,type="info"){
+  const box=$("message");
+  box.textContent=message;
+  box.className=type;
+  box.style.display="block";
+}
+function withTimeout(promise,ms,label){
+  return Promise.race([
+    promise,
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error(label+" timed out. Check connection and try again.")),ms))
+  ]);
+}
+function showPage(name,button){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $("page-"+name).classList.add("active");
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  if(button)button.classList.add("active");
+}
+function paymentCheck(order){
+  const hash=String(order.transaction_hash||"").trim();
+  const network=String(order.payment_network||"").toUpperCase();
+  if(!hash)return '<span class="bad">Not submitted</span>';
+  if(!network.includes("BEP20")&&!network.includes("BSC"))return '<span class="warning">Check network manually</span>';
+  if(!isValidBep20Hash(hash))return '<span class="bad">Invalid hash format</span>';
+  return '<span class="warning">Hash valid — blockchain verification required</span>';
 }
 
-function money(value) {
-  return "$" + Number(value || 0).toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-}
+// AUTHENTICATION WITH TIMEOUT AND VISIBLE ERRORS
+async function loadAdmin(){
+  $("loading").classList.remove("hidden");
+  $("denied").classList.add("hidden");
+  $("app").classList.add("hidden");
+  $("loadingText").textContent="Connecting to Supabase and checking admin access...";
 
-function shortId(value) {
-  return value ? String(value).slice(0, 8) + "..." : "—";
-}
-
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;"
-  }[char]));
-}
-
-function isValidBep20Hash(hash) {
-  return /^0x[a-fA-F0-9]{64}$/.test(String(hash || "").trim());
-}
-
-function displayDate(value) {
-  if (!value) return "—";
-  const date = new Date(value);
-  return isNaN(date.getTime()) ? escapeHTML(value) : date.toLocaleString();
-}
-
-function paymentCheck(order) {
-  const hash = String(order.transaction_hash || "").trim();
-  const network = String(order.payment_network || "").toUpperCase();
-
-  if (!hash) return '<span class="bad">Not submitted</span>';
-  if (!network.includes("BEP20") && !network.includes("BSC")) {
-    return '<span class="warning">Check network manually</span>';
-  }
-  if (!isValidBep20Hash(hash)) {
-    return '<span class="bad">Invalid hash format</span>';
-  }
-  return '<span class="warning">Hash format valid — blockchain verification required</span>';
-}
-
-// ADMIN AUTHENTICATION
-async function loadAdmin() {
-  document.getElementById("loading").classList.remove("hidden");
-  document.getElementById("dashboard").classList.add("hidden");
-  showMessage("Checking Supabase session...", "info");
-
-  try {
-    const { data, error } = await db.auth.getSession();
-    if (error) throw error;
-
-    currentSession = data.session;
-
-    if (!currentSession) {
-      showMessage("No active login session. Please login again.", "error");
-      return;
+  try{
+    if(!window.supabase || !window.supabase.createClient){
+      throw new Error("Supabase library did not load. Check your internet connection.");
     }
 
-    showMessage("Checking admin permission...", "info");
-
-    const { data: admin, error: adminError } = await db
-      .from("admin_users")
-      .select("user_id")
-      .eq("user_id", currentSession.user.id)
-      .maybeSingle();
-
-    if (adminError) throw adminError;
-
-    if (!admin) {
-      showMessage("Access denied. Your user is not listed in admin_users.", "error");
-      return;
+    if(!db){
+      db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
     }
 
-    document.getElementById("loading").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
-    showMessage("Admin access verified.", "success");
+    const {data,error}=await withTimeout(
+      db.auth.getSession(),12000,"Supabase session check"
+    );
+    if(error)throw error;
 
-    await Promise.all([
-      loadOrders(),
-      loadTradingAccounts(),
-      loadKYC()
-    ]);
+    currentSession=data.session;
+    if(!currentSession){
+      throw new Error("No active login session. Please login again.");
+    }
 
-  } catch (error) {
-    showMessage("Admin error: " + error.message, "error");
-    console.error("Admin authentication error:", error);
+    $("loadingText").textContent="Checking admin permission...";
+
+    const result=await withTimeout(
+      db.from("admin_users").select("user_id")
+        .eq("user_id",currentSession.user.id).maybeSingle(),
+      12000,"Admin permission check"
+    );
+
+    if(result.error)throw result.error;
+    if(!result.data){
+      throw new Error("Access denied. This user is not registered in admin_users.");
+    }
+
+    $("loading").classList.add("hidden");
+    $("denied").classList.add("hidden");
+    $("app").classList.remove("hidden");
+    showMessage("Admin access verified successfully.","success");
+
+    await refreshAll();
+
+  }catch(error){
+    console.error("Admin startup error:",error);
+    $("loading").classList.add("hidden");
+    $("denied").classList.remove("hidden");
+    $("deniedText").textContent=error.message||"Unknown admin connection error.";
   }
 }
 
-// LOAD ORDERS
-async function loadOrders() {
-  const tbody = document.getElementById("ordersTable");
-  tbody.innerHTML = '<tr><td colspan="15">Loading orders...</td></tr>';
+async function refreshAll(){
+  await Promise.allSettled([loadOrders(),loadTradingAccounts(),loadKYC()]);
+}
 
-  try {
-    const { data, error } = await db
-      .from("orders")
-      .select("*")
-      .order("created_at", { ascending: false });
+// ORDERS
+async function loadOrders(){
+  const tbody=$("ordersTable");
+  tbody.innerHTML='<tr><td colspan="15">Loading orders...</td></tr>';
 
-    if (error) throw error;
+  try{
+    const {data,error}=await db.from("orders").select("*").order("created_at",{ascending:false});
+    if(error)throw error;
+    const orders=data||[];
 
-    const orders = data || [];
+    $("totalOrders").textContent=orders.length;
+    $("pendingOrders").textContent=orders.filter(o=>String(o.status).toLowerCase()==="pending").length;
+    $("paidOrders").textContent=orders.filter(o=>String(o.status).toLowerCase()==="paid").length;
 
-    document.getElementById("totalOrders").textContent = orders.length;
-    document.getElementById("pendingOrders").textContent =
-      orders.filter(o => String(o.status).toLowerCase() === "pending").length;
-    document.getElementById("paidOrders").textContent =
-      orders.filter(o => String(o.status).toLowerCase() === "paid").length;
-
-    if (!orders.length) {
-      tbody.innerHTML = '<tr><td colspan="15">No orders found.</td></tr>';
-      return;
+    if(!orders.length){
+      tbody.innerHTML='<tr><td colspan="15">No orders found.</td></tr>';return;
     }
 
-    tbody.innerHTML = orders.map(order => {
-      const hash = String(order.transaction_hash || "");
-      const network = order.payment_network || "—";
-      const status = String(order.status || "pending").toLowerCase();
-      const validHash = isValidBep20Hash(hash);
-      const upperNetwork = String(network).toUpperCase();
-      const isBep20 = upperNetwork.includes("BEP20") || upperNetwork.includes("BSC");
-      const coupon = order.coupon_code || "—";
-      const discount = Number(order.discount_percent || 0);
-      const basePrice = Number(order.base_price || 0);
-      const finalPrice = Number(order.final_price || 0);
+    tbody.innerHTML=orders.map(order=>{
+      const status=String(order.status||"pending").toLowerCase();
+      const hash=String(order.transaction_hash||"");
+      const network=String(order.payment_network||"—");
+      const net=network.toUpperCase();
+      const valid=isValidBep20Hash(hash);
+      const bep=net.includes("BEP20")||net.includes("BSC");
+      let actions=status==="pending"?`
+        <button class="primary" ${(!valid||!bep)?"disabled":""} onclick="updateOrder('${escapeHTML(order.id)}','paid')">Approve</button>
+        <button class="danger" onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
+      `:`<span class="status">${escapeHTML(status)}</span>`;
 
-      let actions = "";
-
-      if (status === "pending") {
-        actions = `
-          <button class="primary"
-            onclick="updateOrder('${escapeHTML(order.id)}','paid')"
-            ${(!isBep20 || !validHash) ? "disabled" : ""}>Approve</button>
-          <button class="danger"
-            onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
-        `;
-      } else {
-        actions = `<span class="status">${escapeHTML(status)}</span>`;
-      }
-
-      const details = `
-        <details>
-          <summary>View Details</summary>
-          <div class="details-box">
-            <strong>Order ID:</strong><br>${escapeHTML(order.id)}<br>
-            <strong>Customer User ID:</strong><br>${escapeHTML(order.user_id)}<br>
-            <strong>Account Size:</strong> ${money(order.account_size)}<br>
-            <strong>Account Type:</strong> ${escapeHTML(order.account_type || "—")}<br>
-            <strong>Platform:</strong> ${escapeHTML(order.platform || "—")}<br>
-            <strong>Coupon:</strong> ${escapeHTML(coupon)}<br>
-            <strong>Discount:</strong> ${discount}%<br>
-            <strong>Base Price:</strong> ${money(basePrice)}<br>
-            <strong>Final Price:</strong> ${money(finalPrice)}<br>
-            <strong>Payment Network:</strong> ${escapeHTML(network)}<br>
-            <strong>Transaction Hash:</strong><br><span class="hash">${escapeHTML(hash || "Not submitted")}</span><br>
-            <strong>Receipt Path:</strong><br>${escapeHTML(order.receipt_path || "No receipt path")}<br>
-            <strong>Payment Submitted:</strong><br>${displayDate(order.payment_submitted_at)}<br>
-            <strong>Order Created:</strong><br>${displayDate(order.created_at)}<br>
-            <strong>Status:</strong> ${escapeHTML(status)}
-          </div>
-        </details>
-      `;
-
-      return `
-        <tr>
-          <td title="${escapeHTML(order.id)}">${escapeHTML(shortId(order.id))}</td>
-          <td title="${escapeHTML(order.user_id)}">${escapeHTML(shortId(order.user_id))}</td>
-          <td>${money(order.account_size)}</td>
-          <td>${escapeHTML(order.account_type || "—")}</td>
-          <td>${escapeHTML(order.platform || "—")}</td>
-          <td>${escapeHTML(coupon)}</td>
-          <td>${discount}%</td>
-          <td class="price">${money(basePrice)}</td>
-          <td class="price">${money(finalPrice)}</td>
-          <td>${escapeHTML(network)}</td>
-          <td><span class="hash" title="${escapeHTML(hash)}">${escapeHTML(hash ? shortId(hash) : "Not submitted")}</span></td>
-          <td>${paymentCheck(order)}</td>
-          <td><span class="status">${escapeHTML(status)}</span></td>
-          <td>${details}</td>
-          <td class="actions">${actions}</td>
-        </tr>
-      `;
+      return `<tr>
+        <td title="${escapeHTML(order.id)}">${escapeHTML(shortId(order.id))}</td>
+        <td title="${escapeHTML(order.user_id)}">${escapeHTML(shortId(order.user_id))}</td>
+        <td>${money(order.account_size)}</td>
+        <td>${escapeHTML(order.account_type)}</td>
+        <td>${escapeHTML(order.platform||"—")}</td>
+        <td>${escapeHTML(order.coupon_code||"—")}</td>
+        <td>${Number(order.discount_percent||0)}%</td>
+        <td>${money(order.base_price)}</td><td>${money(order.final_price)}</td>
+        <td>${escapeHTML(network)}</td>
+        <td class="hash">${escapeHTML(hash||"Not submitted")}</td>
+        <td>${paymentCheck(order)}</td>
+        <td><span class="status">${escapeHTML(status)}</span></td>
+        <td><details><summary>View Details</summary><div class="details-box">
+          <b>Order:</b> ${escapeHTML(order.id)}<br>
+          <b>Customer:</b> ${escapeHTML(order.user_id)}<br>
+          <b>Receipt:</b> ${escapeHTML(order.receipt_path||"None")}<br>
+          <b>Payment submitted:</b> ${displayDate(order.payment_submitted_at)}<br>
+          <b>Created:</b> ${displayDate(order.created_at)}
+        </div></details></td>
+        <td class="actions">${actions}</td>
+      </tr>`;
     }).join("");
-
-  } catch (error) {
-    tbody.innerHTML = `<tr><td colspan="15">Error: ${escapeHTML(error.message)}</td></tr>`;
-    showMessage("Orders loading error: " + error.message, "error");
-    console.error(error);
+  }catch(error){
+    tbody.innerHTML=`<tr><td colspan="15">Error: ${escapeHTML(error.message)}</td></tr>`;
+    showMessage("Orders error: "+error.message,"error");
   }
 }
 
-// APPROVE OR REJECT ORDER
-async function updateOrder(orderId, status) {
-  if (!currentSession) {
-    showMessage("Please login again.", "error");
-    return;
-  }
+async function updateOrder(orderId,status){
+  const promptText=status==="paid"
+    ?"Have you independently verified the exact amount, receiving wallet, transaction status and BEP20 network on the blockchain? A valid hash format is NOT proof of payment. Continue?"
+    :"Are you sure you want to reject this order?";
+  if(!confirm(promptText))return;
 
-  const confirmation = status === "paid"
-    ? "Have you independently verified the exact payment amount, transaction hash, receiving wallet and BEP20 network on the blockchain? A valid hash format alone is NOT proof of payment. Continue?"
-    : "Are you sure you want to reject this order?";
-
-  if (!confirm(confirmation)) return;
-
-  try {
-    showMessage("Updating order...", "info");
-
-    const { data, error } = await db.functions.invoke("admin-update-order", {
-      body: { order_id: orderId, status: status }
-    });
-
-    if (error) throw error;
-    if (data?.error) throw new Error(data.error);
-
-    showMessage("Order update completed.", "success");
-    await loadOrders();
-
-  } catch (error) {
-    showMessage("Order update failed: " + error.message, "error");
-    console.error(error);
-  }
-}
-
-// LOAD KYC SUBMISSIONS
-async function loadKYC() {
-  const tbody = document.getElementById("kycTable");
-  tbody.innerHTML = '<tr><td colspan="9">Loading KYC submissions...</td></tr>';
-
-  try {
-    const { data, error } = await db
-      .from("kyc_submissions")
-      .select("*")
-      .order("submitted_at", { ascending: false });
-
-    if (error) throw error;
-
-    const submissions = data || [];
-    const pending = submissions.filter(item =>
-      String(item.status).toLowerCase() === "pending"
-    ).length;
-
-    document.getElementById("pendingKyc").textContent = pending;
-
-    if (!submissions.length) {
-      tbody.innerHTML = '<tr><td colspan="9">No KYC submissions found.</td></tr>';
-      return;
-    }
-
-    tbody.innerHTML = submissions.map(item => {
-      const status = String(item.status || "pending").toLowerCase();
-
-      const fileButton = (path, label) => {
-        if (!path) return `<span class="muted">${label}: Not uploaded</span>`;
-        const safePath = encodeURIComponent(path);
-        return `<button class="file-button" onclick="viewKYCFile('${safePath}')">${label}</button>`;
-      };
-
-      const actions = status === "pending"
-        ? `
-          <button class="primary" onclick="reviewKYC('${escapeHTML(item.id)}','approved')">Approve</button>
-          <button class="danger" onclick="reviewKYC('${escapeHTML(item.id)}','rejected')">Reject</button>
-        `
-        : `<span class="status">${escapeHTML(status)}</span>`;
-
-      return `
-        <tr>
-          <td title="${escapeHTML(item.user_id)}">${escapeHTML(shortId(item.user_id))}</td>
-          <td>${escapeHTML(item.full_name)}</td>
-          <td>${escapeHTML(item.country)}</td>
-          <td>${escapeHTML(item.document_type)}</td>
-          <td>${displayDate(item.submitted_at)}</td>
-          <td>
-            <div class="kyc-files">
-              ${fileButton(item.front_file, "ID Front")}
-              ${fileButton(item.back_file, "ID Back")}
-              ${fileButton(item.selfie_file, "Selfie")}
-            </div>
-          </td>
-          <td><span class="status">${escapeHTML(status)}</span></td>
-          <td>${escapeHTML(item.admin_note || "—")}</td>
-          <td class="actions">${actions}</td>
-        </tr>
-      `;
-    }).join("");
-
-  } catch (error) {
-    tbody.innerHTML = `<tr><td colspan="9">Error: ${escapeHTML(error.message)}</td></tr>`;
-    showMessage("KYC loading error: " + error.message, "error");
-    console.error("KYC loading error:", error);
-  }
-}
-
-// OPEN PRIVATE KYC FILE USING TEMPORARY SIGNED URL
-async function viewKYCFile(encodedPath) {
-  try {
-    const path = decodeURIComponent(encodedPath);
-
-    if (!path || path.includes("..")) {
-      throw new Error("Invalid document path.");
-    }
-
-    showMessage("Preparing secure document link...", "info");
-
-    const { data, error } = await db.storage
-      .from("kyc-documents")
-      .createSignedUrl(path, 300);
-
-    if (error) throw error;
-    if (!data?.signedUrl) throw new Error("Secure link could not be created.");
-
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
-    showMessage("Temporary secure link created. It expires in 5 minutes.", "success");
-
-  } catch (error) {
-    showMessage("Could not open KYC document: " + error.message, "error");
-    console.error(error);
-  }
-}
-
-// APPROVE OR REJECT KYC
-async function reviewKYC(id, status) {
-  if (isReviewingKYC) return;
-
-  if (!["approved", "rejected"].includes(status)) {
-    showMessage("Invalid KYC review status.", "error");
-    return;
-  }
-
-  const note = prompt(
-    status === "approved"
-      ? "Optional admin note for this approval:"
-      : "Enter the reason for rejecting this KYC:"
-  );
-
-  if (note === null) return;
-
-  if (status === "rejected" && !note.trim()) {
-    showMessage("Please enter a rejection reason.", "error");
-    return;
-  }
-
-  const confirmation = status === "approved"
-    ? "Confirm that you reviewed the documents and approve this KYC?"
-    : "Confirm rejection of this KYC submission?";
-
-  if (!confirm(confirmation)) return;
-
-  try {
-    isReviewingKYC = true;
-    showMessage("Saving KYC review...", "info");
-
-    const { data, error } = await db
-      .from("kyc_submissions")
-      .update({
-        status: status,
-        admin_note: note.trim() || null,
-        reviewed_at: new Date().toISOString()
-      })
-      .eq("id", id)
-      .eq("status", "pending")
-      .select("id");
-
-    if (error) throw error;
-
-    if (!data || data.length === 0) {
-      throw new Error("No pending KYC record was updated. Refresh and check its status.");
-    }
-
-    showMessage("KYC " + status + " successfully.", "success");
-    await loadKYC();
-
-  } catch (error) {
-    showMessage("KYC review failed: " + error.message, "error");
-    console.error("KYC review error:", error);
-  } finally {
-    isReviewingKYC = false;
-  }
-}
-
-// LOAD TRADING ACCOUNTS
-async function loadTradingAccounts
+  try{
+    showMessage("Updating order...","info");
+    const {data,error}=aw
