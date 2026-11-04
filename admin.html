@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,13 +17,14 @@ main{max-width:1500px;margin:25px auto;padding:0 15px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
 .stat small{color:#9db0c5}
 .stat strong{display:block;font-size:25px;margin-top:8px;color:#43d9a3}
-input,select{width:100%;padding:12px;margin:6px 0 13px;background:#07111f;color:#fff;border:1px solid #344b64;border-radius:7px}
+input,select,textarea{width:100%;padding:12px;margin:6px 0 13px;background:#07111f;color:#fff;border:1px solid #344b64;border-radius:7px}
+textarea{min-height:85px;resize:vertical}
 button{border:0;border-radius:7px;padding:10px 14px;font-weight:bold;cursor:pointer;margin:3px}
 .primary{background:#16a879;color:#fff}
 .danger{background:#d94343;color:#fff}
 .secondary{background:#344b64;color:#fff}
 button:disabled{opacity:.5;cursor:not-allowed}
-table{width:100%;border-collapse:collapse;min-width:1450px}
+table{width:100%;border-collapse:collapse;min-width:1100px}
 th,td{padding:12px 10px;border-bottom:1px solid #263b52;text-align:left;font-size:13px;vertical-align:top}
 th{color:#43d9a3;white-space:nowrap}
 .table-wrap{overflow-x:auto}
@@ -45,6 +45,9 @@ details summary{cursor:pointer;color:#43d9a3;font-weight:bold}
 .bad{color:#ff9ca7}
 .price{font-weight:bold}
 .hash{overflow-wrap:anywhere;word-break:break-all;max-width:220px}
+.kyc-files{display:flex;flex-wrap:wrap;gap:5px}
+.kyc-note{min-width:190px}
+.file-button{background:#344b64;color:#fff}
 </style>
 </head>
 
@@ -57,9 +60,7 @@ details summary{cursor:pointer;color:#43d9a3;font-weight:bold}
 <main>
 <div id="message"></div>
 
-<section id="loading" class="panel">
-  Checking admin access...
-</section>
+<section id="loading" class="panel">Checking admin access...</section>
 
 <section id="dashboard" class="hidden">
 
@@ -68,8 +69,10 @@ details summary{cursor:pointer;color:#43d9a3;font-weight:bold}
   <div class="stat"><small>Pending Orders</small><strong id="pendingOrders">0</strong></div>
   <div class="stat"><small>Paid Orders</small><strong id="paidOrders">0</strong></div>
   <div class="stat"><small>Trading Accounts</small><strong id="totalAccounts">0</strong></div>
+  <div class="stat"><small>Pending KYC</small><strong id="pendingKyc">0</strong></div>
 </div>
 
+<!-- ORDERS -->
 <section class="panel">
 <h2>Orders Management</h2>
 <button class="secondary" onclick="loadOrders()">Refresh Orders</button>
@@ -94,6 +97,37 @@ details summary{cursor:pointer;color:#43d9a3;font-weight:bold}
 </div>
 </section>
 
+<!-- KYC REVIEW -->
+<section class="panel">
+<h2>KYC Verification Review</h2>
+<p class="muted">
+Review customer identity documents carefully. Files are private and opened through temporary secure links.
+</p>
+<button class="secondary" onclick="loadKYC()">Refresh KYC</button>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Customer ID</th>
+<th>Full Name</th>
+<th>Country</th>
+<th>Document Type</th>
+<th>Submitted</th>
+<th>Documents</th>
+<th>Status</th>
+<th>Admin Note</th>
+<th>Review Actions</th>
+</tr>
+</thead>
+<tbody id="kycTable">
+<tr><td colspan="9">Loading KYC submissions...</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- CREATE TRADING ACCOUNT -->
 <section class="panel">
 <h2>Create Trading Account</h2>
 <p class="muted">Only create an account after independently verifying payment and confirming real MT credentials.</p>
@@ -137,6 +171,7 @@ details summary{cursor:pointer;color:#43d9a3;font-weight:bold}
 <button class="primary" id="createAccountBtn" onclick="createTradingAccount()">Create Account</button>
 </section>
 
+<!-- TRADING ACCOUNTS -->
 <section class="panel">
 <h2>Trading Accounts</h2>
 <button class="secondary" onclick="loadTradingAccounts()">Refresh Accounts</button>
@@ -168,6 +203,7 @@ const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
 let db = null;
 let currentSession = null;
 let isCreatingAccount = false;
+let isReviewingKYC = false;
 
 function showMessage(message, type = "info") {
   const box = document.getElementById("message");
@@ -256,7 +292,11 @@ async function loadAdmin() {
     document.getElementById("dashboard").classList.remove("hidden");
     showMessage("Admin access verified.", "success");
 
-    await Promise.all([loadOrders(), loadTradingAccounts()]);
+    await Promise.all([
+      loadOrders(),
+      loadTradingAccounts(),
+      loadKYC()
+    ]);
 
   } catch (error) {
     showMessage("Admin error: " + error.message, "error");
@@ -375,7 +415,7 @@ async function updateOrder(orderId, status) {
   }
 
   const confirmation = status === "paid"
-    ? "IMPORTANT: Have you independently verified the exact payment amount, transaction hash, receiving wallet and BEP20 network on the blockchain? A valid hash format alone is NOT proof of payment. Continue?"
+    ? "Have you independently verified the exact payment amount, transaction hash, receiving wallet and BEP20 network on the blockchain? A valid hash format alone is NOT proof of payment. Continue?"
     : "Are you sure you want to reject this order?";
 
   if (!confirm(confirmation)) return;
@@ -399,168 +439,161 @@ async function updateOrder(orderId, status) {
   }
 }
 
-// LOAD TRADING ACCOUNTS
-async function loadTradingAccounts() {
-  const tbody = document.getElementById("accountsTable");
-  tbody.innerHTML = '<tr><td colspan="8">Loading accounts...</td></tr>';
+// LOAD KYC SUBMISSIONS
+async function loadKYC() {
+  const tbody = document.getElementById("kycTable");
+  tbody.innerHTML = '<tr><td colspan="9">Loading KYC submissions...</td></tr>';
 
   try {
     const { data, error } = await db
-      .from("trading_accounts")
+      .from("kyc_submissions")
       .select("*")
-      .order("created_at", { ascending: false });
+      .order("submitted_at", { ascending: false });
 
     if (error) throw error;
 
-    const accounts = data || [];
-    document.getElementById("totalAccounts").textContent = accounts.length;
+    const submissions = data || [];
+    const pending = submissions.filter(item =>
+      String(item.status).toLowerCase() === "pending"
+    ).length;
 
-    if (!accounts.length) {
-      tbody.innerHTML = '<tr><td colspan="8">No trading accounts found.</td></tr>';
+    document.getElementById("pendingKyc").textContent = pending;
+
+    if (!submissions.length) {
+      tbody.innerHTML = '<tr><td colspan="9">No KYC submissions found.</td></tr>';
       return;
     }
 
-    tbody.innerHTML = accounts.map(account => `
-      <tr>
-        <td title="${escapeHTML(account.id)}">${escapeHTML(shortId(account.id))}</td>
-        <td title="${escapeHTML(account.user_id)}">${escapeHTML(shortId(account.user_id))}</td>
-        <td>${money(account.account_size)}</td>
-        <td>${escapeHTML(account.account_type || "—")}</td>
-        <td>${money(account.balance)}</td>
-        <td>${escapeHTML(account.status || "—")}</td>
-        <td>${escapeHTML(account.mt_login || "—")}</td>
-        <td>${escapeHTML(account.platform || "—")}</td>
-      </tr>
-    `).join("");
+    tbody.innerHTML = submissions.map(item => {
+      const status = String(item.status || "pending").toLowerCase();
+
+      const fileButton = (path, label) => {
+        if (!path) return `<span class="muted">${label}: Not uploaded</span>`;
+        const safePath = encodeURIComponent(path);
+        return `<button class="file-button" onclick="viewKYCFile('${safePath}')">${label}</button>`;
+      };
+
+      const actions = status === "pending"
+        ? `
+          <button class="primary" onclick="reviewKYC('${escapeHTML(item.id)}','approved')">Approve</button>
+          <button class="danger" onclick="reviewKYC('${escapeHTML(item.id)}','rejected')">Reject</button>
+        `
+        : `<span class="status">${escapeHTML(status)}</span>`;
+
+      return `
+        <tr>
+          <td title="${escapeHTML(item.user_id)}">${escapeHTML(shortId(item.user_id))}</td>
+          <td>${escapeHTML(item.full_name)}</td>
+          <td>${escapeHTML(item.country)}</td>
+          <td>${escapeHTML(item.document_type)}</td>
+          <td>${displayDate(item.submitted_at)}</td>
+          <td>
+            <div class="kyc-files">
+              ${fileButton(item.front_file, "ID Front")}
+              ${fileButton(item.back_file, "ID Back")}
+              ${fileButton(item.selfie_file, "Selfie")}
+            </div>
+          </td>
+          <td><span class="status">${escapeHTML(status)}</span></td>
+          <td>${escapeHTML(item.admin_note || "—")}</td>
+          <td class="actions">${actions}</td>
+        </tr>
+      `;
+    }).join("");
 
   } catch (error) {
-    tbody.innerHTML = `<tr><td colspan="8">Error: ${escapeHTML(error.message)}</td></tr>`;
-    showMessage("Trading accounts error: " + error.message, "error");
-    console.error(error);
+    tbody.innerHTML = `<tr><td colspan="9">Error: ${escapeHTML(error.message)}</td></tr>`;
+    showMessage("KYC loading error: " + error.message, "error");
+    console.error("KYC loading error:", error);
   }
 }
 
-// CREATE TRADING ACCOUNT
-async function createTradingAccount() {
-  if (isCreatingAccount) return;
-
-  if (!currentSession) {
-    showMessage("Please login again.", "error");
-    return;
-  }
-
-  const userId = document.getElementById("newUserId").value.trim();
-  const orderId = document.getElementById("newOrderId").value.trim();
-  const accountSize = Number(document.getElementById("newAccountSize").value);
-  const accountType = document.getElementById("newAccountType").value;
-  const platform = document.getElementById("newPlatform").value;
-  const mtLogin = document.getElementById("newMtLogin").value.trim();
-  const mtServer = document.getElementById("newMtServer").value.trim();
-
-  if (!userId) {
-    showMessage("Enter the customer's Supabase User ID.", "error");
-    return;
-  }
-
-  if (!orderId) {
-    showMessage("Enter the customer's paid Order ID.", "error");
-    return;
-  }
-
-  if (!mtLogin || !mtServer) {
-    showMessage("Enter both MT Login and MT Server.", "error");
-    return;
-  }
-
-  if (!confirm("Create this trading account record? Verify the paid order and real MT details first.")) return;
-
-  const button = document.getElementById("createAccountBtn");
-
+// OPEN PRIVATE KYC FILE USING TEMPORARY SIGNED URL
+async function viewKYCFile(encodedPath) {
   try {
-    isCreatingAccount = true;
-    button.disabled = true;
-    button.textContent = "Creating...";
-    showMessage("Creating trading account...", "info");
+    const path = decodeURIComponent(encodedPath);
 
-    const { data, error } = await db.functions.invoke("admin-create-trading-account", {
-      body: {
-        user_id: userId,
-        order_id: orderId,
-        account_size: accountSize,
-        account_type: accountType,
-        platform: platform,
-        mt_login: mtLogin,
-        mt_server: mtServer
-      }
-    });
-
-    if (error) throw error;
-    if (!data || data.success !== true) {
-      throw new Error(data?.error || "Account creation was not confirmed.");
+    if (!path || path.includes("..")) {
+      throw new Error("Invalid document path.");
     }
 
-    showMessage("Trading account record created successfully!", "success");
+    showMessage("Preparing secure document link...", "info");
 
-    document.getElementById("newUserId").value = "";
-    document.getElementById("newOrderId").value = "";
-    document.getElementById("newMtLogin").value = "";
-    document.getElementById("newMtServer").value = "";
+    const { data, error } = await db.storage
+      .from("kyc-documents")
+      .createSignedUrl(path, 300);
 
-    await loadTradingAccounts();
+    if (error) throw error;
+    if (!data?.signedUrl) throw new Error("Secure link could not be created.");
 
-  } catch (error) {
-    showMessage("Account creation failed: " + error.message, "error");
-    console.error("Account creation error:", error);
-
-  } finally {
-    isCreatingAccount = false;
-    button.disabled = false;
-    button.textContent = "Create Account";
-  }
-}
-
-// LOGOUT
-async function logout() {
-  if (!db) {
-    window.location.href = "Login.html";
-    return;
-  }
-
-  const { error } = await db.auth.signOut();
-
-  if (error) {
-    showMessage("Logout error: " + error.message, "error");
-    return;
-  }
-
-  window.location.href = "Login.html";
-}
-
-// STARTUP
-window.addEventListener("DOMContentLoaded", () => {
-  if (!window.supabase || typeof window.supabase.createClient !== "function") {
-    document.getElementById("loading").textContent =
-      "ERROR: Supabase library failed to load. Check your internet connection and reload this page.";
-    showMessage("Supabase JavaScript library could not load. Try again later.", "error");
-    return;
-  }
-
-  try {
-    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    db.auth.onAuthStateChange((event, session) => {
-      currentSession = session;
-    });
-
-    loadAdmin();
+    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+    showMessage("Temporary secure link created. It expires in 5 minutes.", "success");
 
   } catch (error) {
-    document.getElementById("loading").textContent = "Admin initialization failed.";
-    showMessage("Initialization error: " + error.message, "error");
+    showMessage("Could not open KYC document: " + error.message, "error");
     console.error(error);
   }
-});
-</script>
-</body>
-  </html>
-  
+}
+
+// APPROVE OR REJECT KYC
+async function reviewKYC(id, status) {
+  if (isReviewingKYC) return;
+
+  if (!["approved", "rejected"].includes(status)) {
+    showMessage("Invalid KYC review status.", "error");
+    return;
+  }
+
+  const note = prompt(
+    status === "approved"
+      ? "Optional admin note for this approval:"
+      : "Enter the reason for rejecting this KYC:"
+  );
+
+  if (note === null) return;
+
+  if (status === "rejected" && !note.trim()) {
+    showMessage("Please enter a rejection reason.", "error");
+    return;
+  }
+
+  const confirmation = status === "approved"
+    ? "Confirm that you reviewed the documents and approve this KYC?"
+    : "Confirm rejection of this KYC submission?";
+
+  if (!confirm(confirmation)) return;
+
+  try {
+    isReviewingKYC = true;
+    showMessage("Saving KYC review...", "info");
+
+    const { data, error } = await db
+      .from("kyc_submissions")
+      .update({
+        status: status,
+        admin_note: note.trim() || null,
+        reviewed_at: new Date().toISOString()
+      })
+      .eq("id", id)
+      .eq("status", "pending")
+      .select("id");
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      throw new Error("No pending KYC record was updated. Refresh and check its status.");
+    }
+
+    showMessage("KYC " + status + " successfully.", "success");
+    await loadKYC();
+
+  } catch (error) {
+    showMessage("KYC review failed: " + error.message, "error");
+    console.error("KYC review error:", error);
+  } finally {
+    isReviewingKYC = false;
+  }
+}
+
+// LOAD TRADING ACCOUNTS
+async function loadTradingAccounts
