@@ -650,60 +650,43 @@ async function updateOrder(id, status) {
 
 async function loadKYC() {
   const tb = $("kycTable");
-  tb.innerHTML = '<tr><td colspan="9">Loading KYC...</td></tr>';
+  tb.innerHTML = `<tr><td colspan="9">Loading KYC...</td></tr>`;
 
-  try {
-    const { data, error } = await db
-      .from("kyc_submissions")
-      .select("*")
-      .order("created_at", { ascending: false });
+  const { data, error } = await db
+    .from("kyc_submissions")
+    .select("*")
+    .order("submitted_at", { ascending: false });
 
-    if (error) throw error;
-
-    const rows = data || [];
-
-    $("pendingKyc").textContent =
-      rows.filter(x => x.status === "pending").length;
-
-    if (!rows.length) {
-      tb.innerHTML = '<tr><td colspan="9">No KYC submissions yet.</td></tr>';
-      return;
-    }
-
-    tb.innerHTML = rows.map(item => {
-      const status = String(item.status || "pending").toLowerCase();
-
-      return `
-        <tr>
-          <td title="${escapeHTML(item.user_id)}">${escapeHTML(shortId(item.user_id))}</td>
-          <td>${escapeHTML(item.full_name || "—")}</td>
-          <td>${escapeHTML(item.country || "—")}</td>
-          <td>${escapeHTML(item.document_type || "—")}</td>
-          <td>${displayDate(item.created_at)}</td>
-          <td>
-            ${item.front_path ? `<button class="file-btn" onclick="openKycFile('${escapeHTML(item.front_path)}')">Front</button>` : ""}
-            ${item.back_path ? `<button class="file-btn" onclick="openKycFile('${escapeHTML(item.back_path)}')">Back</button>` : ""}
-            ${item.selfie_path ? `<button class="file-btn" onclick="openKycFile('${escapeHTML(item.selfie_path)}')">Selfie</button>` : ""}
-          </td>
-          <td><span class="status">${escapeHTML(status)}</span></td>
-          <td>${escapeHTML(item.admin_note || "—")}</td>
-          <td>
-            ${status === "pending" ? `
-              <button class="primary small-btn"
-                onclick="reviewKYC('${escapeHTML(item.id)}','approved')">Approve</button>
-              <button class="danger small-btn"
-                onclick="reviewKYC('${escapeHTML(item.id)}','rejected')">Reject</button>
-            ` : "—"}
-          </td>
-        </tr>
-      `;
-    }).join("");
-
-  } catch (error) {
-    console.error("LOAD KYC:", error);
-    tb.innerHTML =
-      `<tr><td colspan="9">KYC Error: ${escapeHTML(error.message)}</td></tr>`;
+  if (error) {
+    tb.innerHTML = `<tr><td colspan="9">KYC Error: ${error.message}</td></tr>`;
+    return;
   }
+
+  if (!data || data.length === 0) {
+    tb.innerHTML = `<tr><td colspan="9">No KYC submissions found.</td></tr>`;
+    return;
+  }
+
+  tb.innerHTML = data.map(item => `
+    <tr>
+      <td>${item.user_id || ""}</td>
+      <td>${item.full_name || ""}</td>
+      <td>${item.country || ""}</td>
+      <td>${item.document_type || ""}</td>
+      <td>${displayDate(item.submitted_at)}</td>
+      <td>
+        ${item.front_file ? `<button onclick="openKycFile('${item.front_file}')">Front</button>` : ""}
+        ${item.back_file ? `<button onclick="openKycFile('${item.back_file}')">Back</button>` : ""}
+        ${item.selfie_file ? `<button onclick="openKycFile('${item.selfie_file}')">Selfie</button>` : ""}
+      </td>
+      <td>${item.status || "pending"}</td>
+      <td>${item.admin_note || ""}</td>
+      <td>
+        <button onclick="reviewKYC('${item.id}','approved')">Approve</button>
+        <button onclick="reviewKYC('${item.id}','rejected')">Reject</button>
+      </td>
+    </tr>
+  `).join("");
 }
 
 
