@@ -649,6 +649,8 @@ async function updateOrder(id, status) {
 }
 
 async function loadKYC() {
+
+async function loadKYC() {
   const tb = $("kycTable");
   tb.innerHTML = '<tr><td colspan="9">Loading KYC...</td></tr>';
 
@@ -656,7 +658,7 @@ async function loadKYC() {
     const { data, error } = await db
       .from("kyc_submissions")
       .select("*")
-      .order("submitted_at", { ascending: false });
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
 
@@ -666,7 +668,7 @@ async function loadKYC() {
       rows.filter(x => x.status === "pending").length;
 
     if (!rows.length) {
-      tb.innerHTML = '<tr><td colspan="9">No KYC submissions.</td></tr>';
+      tb.innerHTML = '<tr><td colspan="9">No KYC submissions yet.</td></tr>';
       return;
     }
 
@@ -679,11 +681,11 @@ async function loadKYC() {
           <td>${escapeHTML(item.full_name || "—")}</td>
           <td>${escapeHTML(item.country || "—")}</td>
           <td>${escapeHTML(item.document_type || "—")}</td>
-          <td>${displayDate(item.submitted_at || item.created_at)}</td>
+          <td>${displayDate(item.created_at)}</td>
           <td>
-            ${item.front_file ? `<button class="file-btn" onclick="openKycFile('${escapeHTML(item.front_file)}')">Front</button>` : ""}
-            ${item.back_file ? `<button class="file-btn" onclick="openKycFile('${escapeHTML(item.back_file)}')">Back</button>` : ""}
-            ${item.selfie_file ? `<button class="file-btn" onclick="openKycFile('${escapeHTML(item.selfie_file)}')">Selfie</button>` : ""}
+            ${item.front_path ? `<button class="file-btn" onclick="openKycFile('${escapeHTML(item.front_path)}')">Front</button>` : ""}
+            ${item.back_path ? `<button class="file-btn" onclick="openKycFile('${escapeHTML(item.back_path)}')">Back</button>` : ""}
+            ${item.selfie_path ? `<button class="file-btn" onclick="openKycFile('${escapeHTML(item.selfie_path)}')">Selfie</button>` : ""}
           </td>
           <td><span class="status">${escapeHTML(status)}</span></td>
           <td>${escapeHTML(item.admin_note || "—")}</td>
@@ -702,9 +704,10 @@ async function loadKYC() {
   } catch (error) {
     console.error("LOAD KYC:", error);
     tb.innerHTML =
-      `<tr><td colspan="9">${escapeHTML(error.message)}</td></tr>`;
+      `<tr><td colspan="9">KYC Error: ${escapeHTML(error.message)}</td></tr>`;
   }
 }
+
 
 async function openKycFile(path) {
   try {
