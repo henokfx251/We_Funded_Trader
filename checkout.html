@@ -31,23 +31,40 @@ a{color:#55adff}
 <h2>Checkout</h2>
 <p>Review your challenge order.</p>
 
-<div class="item"><span>Account Size</span><strong id="size">Loading...</strong></div>
-<div class="item"><span>Challenge Type</span><strong id="type">Loading...</strong></div>
+<div class="item">
+<span>Account Size</span>
+<strong id="size">Loading...</strong>
+</div>
+
+<div class="item">
+<span>Challenge Type</span>
+<strong id="type">Loading...</strong>
+</div>
 
 <label for="platform">Trading Platform</label>
 <select id="platform">
 <option value="MT5">MT5 — Standard Price</option>
-<option value="MT4">MT4 — 10% Discount with Coupon</option>
+<option value="MT4">MT4 — Automatic 10% Discount</option>
 <option value="OTHER" disabled>Other Platform — Coming Soon</option>
 </select>
 
-<div class="item"><span>Base Price</span><strong id="base">Loading...</strong></div>
+<div class="item">
+<span>Base Price</span>
+<strong id="base">Loading...</strong>
+</div>
 
 <label for="coupon">Coupon Code</label>
 <input id="coupon" placeholder="Enter coupon code">
 
-<div class="item"><span>Discount</span><strong id="discount">$0.00</strong></div>
-<div class="item"><strong>Final Price</strong><strong id="final">$0.00</strong></div>
+<div class="item">
+<span>Discount</span>
+<strong id="discount">$0.00</strong>
+</div>
+
+<div class="item">
+<strong>Final Price</strong>
+<strong id="final">$0.00</strong>
+</div>
 
 <p class="small" id="discountNote"></p>
 
@@ -66,7 +83,9 @@ a{color:#55adff}
 <label for="txid">Transaction ID (TXID)</label>
 <input id="txid" placeholder="Paste your BEP20 transaction hash">
 
-<p class="small">Your payment will remain pending until the Admin independently verifies it on the blockchain.</p>
+<p class="small">
+Your payment will remain pending until the Admin independently verifies it on the blockchain.
+</p>
 
 <button id="submitPayment">Submit Payment Details</button>
 <div id="paymentMessage"></div>
@@ -83,8 +102,8 @@ const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
 
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
-const params = new URLSearchParams(location.search);
 
+const params = new URLSearchParams(location.search);
 const size = Number(params.get("size"));
 const type = (params.get("type") || "").toLowerCase();
 
@@ -100,25 +119,29 @@ let basePrice = 0;
 let currentOrderId = null;
 let orderCreated = false;
 
-function showMessage(text, cls="") {
+function showMessage(text, cls = "") {
   message.textContent = text;
   message.className = cls;
 }
 
-function showPaymentMessage(text, cls="") {
+function showPaymentMessage(text, cls = "") {
   paymentMessage.textContent = text;
   paymentMessage.className = cls;
 }
 
+// Calculate estimated discount for display.
+// The server independently validates all discounts.
 function getDiscountPercent() {
   const code = couponInput.value.trim().toUpperCase();
   const platform = platformInput.value;
 
-  if (code === "") return 0;
-  if (code === "WFT10") return 10;
+  if (code === "NEW50") return 50;
   if (code === "WFT20") return 20;
+  if (code === "WFT10") return 10;
 
-  if (code === "MT4WFT10" && platform === "MT4") return 10;
+  if (code !== "") return 0;
+
+  if (platform === "MT4") return 10;
 
   return 0;
 }
@@ -127,8 +150,7 @@ function calculatePrice() {
   const code = couponInput.value.trim().toUpperCase();
   const platform = platformInput.value;
 
-  let discountPercent = getDiscountPercent();
-
+  const discountPercent = getDiscountPercent();
   const discountAmount = basePrice * discountPercent / 100;
   const finalPrice = basePrice - discountAmount;
 
@@ -140,14 +162,22 @@ function calculatePrice() {
 
   const note = document.getElementById("discountNote");
 
-  if (code === "MT4WFT10" && platform !== "MT4") {
-    note.textContent = "MT4WFT10 is valid for MT4 only.";
-  } else if (code && discountPercent === 0) {
+  if (code === "NEW50") {
+    note.textContent =
+      "50% NEW CUSTOMER discount. Valid for first-time customers only. Server verification required.";
+
+  } else if (code === "WFT20") {
+    note.textContent = "WFT20 — 20% discount applied.";
+
+  } else if (code === "WFT10") {
+    note.textContent = "WFT10 — 10% discount applied.";
+
+  } else if (code !== "") {
     note.textContent = "Invalid coupon code.";
-  } else if (discountPercent > 0) {
-    note.textContent = discountPercent + "% coupon discount applied.";
+
   } else if (platform === "MT4") {
-    note.textContent = "Enter MT4WFT10 to receive your 10% discount.";
+    note.textContent = "Automatic 10% MT4 discount applied.";
+
   } else {
     note.textContent = "No discount applied.";
   }
@@ -155,7 +185,8 @@ function calculatePrice() {
 
 async function initialize() {
   try {
-    const { data: { session }, error } = await db.auth.getSession();
+    const { data: { session }, error } =
+      await db.auth.getSession();
 
     if (error || !session) {
       location.href = "Login.html";
@@ -174,9 +205,10 @@ async function initialize() {
       "$" + size.toLocaleString();
 
     document.getElementById("type").textContent =
-      type === "evaluation" ? "1-Step Evaluation" : "Instant Funding";
+      type === "evaluation"
+        ? "1-Step Evaluation"
+        : "Instant Funding";
 
-    // Read platform selected on Challenges page.
     const selectedPlatform = params.get("platform");
 
     platformInput.value =
@@ -218,7 +250,10 @@ async function initialize() {
     showMessage("Ready to place your order.");
 
   } catch (error) {
-    showMessage(error.message || "Checkout loading failed.", "error");
+    showMessage(
+      error.message || "Checkout loading failed.",
+      "error"
+    );
   }
 }
 
@@ -247,22 +282,24 @@ button.addEventListener("click", async () => {
       throw new Error("Please select MT4 or MT5.");
     }
 
-    if (couponCode && !["WFT10","WFT20","MT4WFT10"].includes(couponCode)) {
+    if (
+      couponCode &&
+      !["WFT10","WFT20","NEW50"].includes(couponCode)
+    ) {
       throw new Error("Invalid coupon code.");
     }
 
-    if (couponCode === "MT4WFT10" && platform !== "MT4") {
-      throw new Error("MT4WFT10 is valid for MT4 only.");
-    }
-
-    const { data, error } = await db.functions.invoke("smart-handler", {
-      body: {
-        account_size: size,
-        account_type: type,
-        platform: platform,
-        coupon_code: couponCode
+    const { data, error } = await db.functions.invoke(
+      "smart-handler",
+      {
+        body: {
+          account_size: size,
+          account_type: type,
+          platform: platform,
+          coupon_code: couponCode
+        }
       }
-    });
+    );
 
     if (error) {
       throw new Error(error.message || "Request failed.");
@@ -280,6 +317,27 @@ button.addEventListener("click", async () => {
 
     orderCreated = true;
 
+    // Display the actual server-calculated price.
+    if (data.pricing) {
+      const pricing = data.pricing;
+
+      document.getElementById("base").textContent =
+        "$" + Number(pricing.base_price).toFixed(2);
+
+      document.getElementById("discount").textContent =
+        "$" + (
+          Number(pricing.base_price) -
+          Number(pricing.final_price)
+        ).toFixed(2);
+
+      document.getElementById("final").textContent =
+        "$" + Number(pricing.final_price).toFixed(2);
+
+      document.getElementById("discountNote").textContent =
+        Number(pricing.discount_percent) +
+        "% discount confirmed by server.";
+    }
+
     showMessage(
       "Order created successfully! Order ID: " +
       currentOrderId + ". Status: Pending.",
@@ -287,11 +345,13 @@ button.addEventListener("click", async () => {
     );
 
     button.textContent = "Order Created";
+
     paymentSection.classList.remove("hidden");
     paymentSection.scrollIntoView({behavior:"smooth"});
 
   } catch (error) {
     showMessage("Order failed: " + error.message, "error");
+
     button.disabled = false;
     button.textContent = "Try Again";
   }
@@ -306,7 +366,10 @@ submitPaymentButton.addEventListener("click", async () => {
   }
 
   if (!/^0x[a-fA-F0-9]{64}$/.test(txid)) {
-    showPaymentMessage("Invalid BEP20 transaction hash.", "error");
+    showPaymentMessage(
+      "Invalid BEP20 transaction hash.",
+      "error"
+    );
     return;
   }
 
@@ -335,7 +398,9 @@ submitPaymentButton.addEventListener("click", async () => {
       .single();
 
     if (error) throw error;
-    if (!data) throw new Error("Payment details were not saved.");
+    if (!data) {
+      throw new Error("Payment details were not saved.");
+    }
 
     showPaymentMessage(
       "Payment details submitted. Awaiting Admin verification.",
@@ -343,6 +408,7 @@ submitPaymentButton.addEventListener("click", async () => {
     );
 
     submitPaymentButton.textContent = "Submitted";
+
     document.getElementById("network").disabled = true;
     document.getElementById("txid").disabled = true;
 
