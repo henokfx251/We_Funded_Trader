@@ -4,427 +4,480 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout | We Funded Trader</title>
+<title>Dashboard | We Funded Trader</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
+:root{
+  --bg:#07111f;
+  --panel:#101e31;
+  --panel2:#14253b;
+  --line:#243952;
+  --blue:#2694ff;
+  --gold:#e8b95b;
+  --text:#f4f7fc;
+  --muted:#91a4bb;
+  --green:#35d49a;
+  --red:#ff6b75;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#07111f;color:white;font-family:Arial,sans-serif;padding:20px}
-.container{max-width:520px;margin:35px auto;background:#102139;padding:25px;border-radius:15px}
-h1{color:#42a5ff;text-align:center}
-p{color:#b8c8dc;line-height:1.5}
-.item{display:flex;justify-content:space-between;margin:17px 0;gap:12px}
-input,select{width:100%;padding:13px;border-radius:7px;border:1px solid #38516e;background:#07111f;color:white;margin:10px 0}
-button{width:100%;padding:14px;background:#1685ee;color:white;border:0;border-radius:8px;font-weight:bold;margin-top:15px;cursor:pointer}
-button:disabled{opacity:.5;cursor:not-allowed}
-#message,#paymentMessage{margin-top:15px;word-break:break-word}
-.success{color:#55dc91}
-.error{color:#ff7777}
-a{color:#55adff}
-.payment-box{border-top:1px solid #38516e;margin-top:25px;padding-top:20px}
-.small{font-size:13px;color:#9fb3cc}
-.hidden{display:none}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,Arial,sans-serif;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:255px;flex-shrink:0;background:#0a1728;
+  border-right:1px solid var(--line);
+  padding:24px 15px;display:flex;flex-direction:column;
+  position:fixed;top:0;bottom:0;left:0;z-index:20;
+  overflow-y:auto;
+}
+.brand{padding:5px 12px 25px;border-bottom:1px solid var(--line)}
+.brand h2{margin:0;font-size:19px;letter-spacing:1px}
+.brand h2 span{color:var(--blue)}
+.brand p{font-size:10px;color:var(--muted);letter-spacing:3px;margin:7px 0 0}
+.nav-label{font-size:10px;color:#647b95;letter-spacing:2px;padding:23px 12px 9px}
+.nav-btn{
+  display:flex;align-items:center;gap:13px;width:100%;
+  border:0;background:transparent;color:#9eb0c5;
+  padding:12px;border-radius:9px;text-align:left;
+  margin:2px 0;font-size:13px;transition:.2s;
+}
+.nav-btn:hover,.nav-btn.active{background:#142d49;color:white}
+.nav-btn.active{border-left:3px solid var(--blue)}
+.nav-icon{width:22px;text-align:center;font-size:17px}
+.sidebar-bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:15px}
+.main{margin-left:255px;width:calc(100% - 255px);min-width:0}
+.topbar{
+  height:76px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;background:#091525;
+  position:sticky;top:0;z-index:10;
+}
+.top-left{display:flex;align-items:center;gap:14px}
+.menu-btn{display:none}
+.page-title{font-size:18px;font-weight:700}
+.top-right{display:flex;align-items:center;gap:15px}
+.online{font-size:11px;color:var(--green)}
+.avatar{
+  width:37px;height:37px;border-radius:50%;
+  display:grid;place-items:center;background:#1b4771;
+  color:white;font-weight:bold;border:1px solid #357ab7;
+}
+.content{padding:30px;max-width:1500px;margin:auto}
+.welcome{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:15px;margin-bottom:25px;
+}
+.welcome h1{font-size:25px;margin:0 0 7px}
+.welcome p{color:var(--muted);font-size:13px;margin:0}
+.date-label{font-size:12px;color:var(--muted)}
+.grid{display:grid;gap:16px}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:20px}
+.card{
+  background:linear-gradient(145deg,#12243a,#0e1c2e);
+  border:1px solid var(--line);border-radius:14px;padding:20px;
+  min-width:0;
+}
+.stat-top{display:flex;justify-content:space-between;align-items:center}
+.stat-name{font-size:12px;color:var(--muted)}
+.stat-icon{
+  width:35px;height:35px;border-radius:10px;
+  background:#173b60;display:grid;place-items:center;font-size:17px;
+}
+.stat-value{font-size:25px;font-weight:750;margin-top:17px;word-break:break-word}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:7px}
+.blue{color:var(--blue)}.gold{color:var(--gold)}
+.green{color:var(--green)}.red{color:var(--red)}
+.two-col{grid-template-columns:1.5fr 1fr;margin-bottom:20px}
+.section-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;margin-bottom:17px;
+}
+.section-head h3{font-size:15px;margin:0}
+.section-head span{font-size:11px;color:var(--muted)}
+.account-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.account-card{
+  background:linear-gradient(135deg,#142d49,#102037);
+  border:1px solid #29496b;border-radius:13px;padding:18px;
+  margin-bottom:13px;
+}
+.account-head{display:flex;justify-content:space-between;gap:10px}
+.account-head h4{margin:0 0 5px;font-size:15px}
+.account-head p{margin:0;color:var(--muted);font-size:11px}
+.status{
+  display:inline-block;padding:5px 9px;border-radius:20px;
+  font-size:10px;background:#263a50;color:#b8c8da;
+  text-transform:capitalize;
+}
+.status.paid,.status.active,.status.approved,.status.qualified{
+  background:#123b35;color:#55e0ae;
+}
+.status.pending{background:#49391e;color:#f2c56d}
+.status.rejected,.status.failed{background:#48252d;color:#ff8992}
+.account-balance{font-size:26px;font-weight:750;margin:22px 0 15px}
+.account-details{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:13px;border-top:1px solid #29415d;padding-top:15px;
+}
+.detail-label{font-size:10px;color:var(--muted);margin-bottom:5px}
+.detail-value{font-size:13px;font-weight:600;word-break:break-word}
+.progress{
+  height:7px;background:#263b53;border-radius:20px;
+  overflow:hidden;margin:12px 0 7px;
+}
+.progress div{height:100%;background:linear-gradient(90deg,#1688f4,#55c2ff);border-radius:20px}
+.progress-caption{display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{
+  padding:13px 12px;text-align:left;border-bottom:1px solid var(--line);
+  font-size:11px;white-space:nowrap;
+}
+th{color:#8298b2;font-weight:600}
+td{color:#dbe5f1}
+.empty{
+  text-align:center;padding:35px 15px;color:var(--muted);
+  font-size:13px;border:1px dashed #2a405a;border-radius:12px;
+}
+.empty strong{display:block;color:white;font-size:14px;margin-bottom:8px}
+.page{display:none}
+.page.active{display:block}
+.page-heading{margin-bottom:22px}
+.page-heading h1{font-size:24px;margin:0 0 7px}
+.page-heading p{font-size:13px;color:var(--muted);margin:0}
+.info-card{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:13px;padding:22px;margin-bottom:15px;
+}
+.info-card h3{font-size:15px;margin:0 0 10px}
+.info-card p{font-size:13px;color:var(--muted);line-height:1.7}
+.action-btn{
+  display:inline-block;background:var(--blue);color:white;
+  border:0;padding:11px 17px;border-radius:8px;
+  font-size:12px;font-weight:700;text-decoration:none;
+}
+.action-btn.secondary{background:#1a3049;border:1px solid #35516e}
+.field{margin:15px 0}
+.field label{display:block;color:#aabbd0;font-size:12px;margin-bottom:8px}
+.field input{
+  width:100%;background:#091727;border:1px solid #304861;
+  border-radius:8px;padding:12px;color:white;outline:none;
+}
+.field input:focus{border-color:var(--blue)}
+.notice{
+  padding:14px;border-radius:9px;background:#172c43;
+  border:1px solid #2b4a69;color:#b8cce2;
+  font-size:12px;line-height:1.6;margin:15px 0;
+}
+.mobile-overlay{display:none}
+.toast{
+  position:fixed;bottom:22px;right:22px;background:#173b35;
+  color:#6be6b7;padding:13px 18px;border-radius:9px;
+  display:none;z-index:99;font-size:12px;
+}
+.footer{text-align:center;color:#5f7690;font-size:10px;padding:25px}
+@media(max-width:1100px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .sidebar{transform:translateX(-100%);transition:.25s}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;width:100%}
+  .menu-btn{
+    display:grid;place-items:center;background:#142b43;color:white;
+    border:1px solid var(--line);border-radius:8px;width:38px;height:38px;
+  }
+  .topbar{padding:0 15px;height:65px}
+  .content{padding:20px 14px}
+  .welcome h1{font-size:21px}
+  .two-col{grid-template-columns:1fr}
+  .account-grid{grid-template-columns:1fr}
+  .mobile-overlay{
+    position:fixed;inset:0;background:#0009;z-index:15;
+  }
+  .mobile-overlay.show{display:block}
+  .date-label{display:none}
+}
+@media(max-width:420px){
+  .stats{grid-template-columns:1fr 1fr;gap:9px}
+  .card{padding:14px}
+  .stat-value{font-size:20px}
+  .stat-name{font-size:10px}
+  .welcome{align-items:flex-start}
+}
 </style>
 </head>
 <body>
 
-<div class="container">
-<h1>WE FUNDED TRADER</h1>
-<h2>Checkout</h2>
-<p>Review your challenge order.</p>
+<div class="mobile-overlay" id="overlay" onclick="toggleMenu()"></div>
 
-<div class="item">
-<span>Account Size</span>
-<strong id="size">Loading...</strong>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <h2>WE FUNDED <span>TRADER</span></h2>
+    <p>TRADING EXCELLENCE</p>
+  </div>
+
+  <div class="nav-label">MAIN MENU</div>
+  <button class="nav-btn active" data-page="overview"><span class="nav-icon">▦</span>Overview</button>
+  <button class="nav-btn" data-page="challenge"><span class="nav-icon">◈</span>Challenge</button>
+  <button class="nav-btn" data-page="accounts"><span class="nav-icon">▣</span>My Accounts</button>
+  <button class="nav-btn" data-page="orders"><span class="nav-icon">▤</span>My Orders</button>
+  <button class="nav-btn" data-page="terminal"><span class="nav-icon">⌁</span>Trading Terminal</button>
+
+  <div class="nav-label">SERVICES</div>
+  <button class="nav-btn" data-page="kyc"><span class="nav-icon">◇</span>KYC Verification</button>
+  <button class="nav-btn" data-page="certificate"><span class="nav-icon">✧</span>Certificate</button>
+  <button class="nav-btn" data-page="payout"><span class="nav-icon">＄</span>Payout</button>
+
+  <div class="nav-label">MORE</div>
+  <button class="nav-btn" data-page="affiliate"><span class="nav-icon">♧</span>Affiliate</button>
+  <button class="nav-btn" data-page="support"><span class="nav-icon">✉</span>Support</button>
+  <button class="nav-btn" data-page="settings"><span class="nav-icon">⚙</span>Settings</button>
+
+  <div class="sidebar-bottom">
+    <button class="nav-btn" id="logoutBtn"><span class="nav-icon">⇥</span>Logout</button>
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="top-left">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <div class="page-title" id="topTitle">Overview</div>
+  </div>
+  <div class="top-right">
+    <span class="online">● Account Connected</span>
+    <div class="avatar" id="avatar">W</div>
+  </div>
+</header>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<section class="page active" id="page-overview">
+  <div class="welcome">
+    <div>
+      <h1>Welcome back, <span class="blue" id="welcomeName">Trader</span></h1>
+      <p>Here is your trading performance overview.</p>
+    </div>
+    <div class="date-label" id="todayDate"></div>
+  </div>
+
+  <div class="grid stats">
+    <div class="card">
+      <div class="stat-top"><span class="stat-name">Total Balance</span><span class="stat-icon">＄</span></div>
+      <div class="stat-value" id="totalBalance">$0.00</div>
+      <div class="stat-sub">Across your trading accounts</div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><span class="stat-name">Total Equity</span><span class="stat-icon">◈</span></div>
+      <div class="stat-value blue" id="totalEquity">$0.00</div>
+      <div class="stat-sub">Reported account equity</div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><span class="stat-name">Total Profit</span><span class="stat-icon">↗</span></div>
+      <div class="stat-value green" id="totalProfit">$0.00</div>
+      <div class="stat-sub">Reported trading profit</div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><span class="stat-name">Trading Accounts</span><span class="stat-icon">▣</span></div>
+      <div class="stat-value gold" id="accountCount">0</div>
+      <div class="stat-sub">Your assigned accounts</div>
+    </div>
+  </div>
+
+  <div class="grid two-col">
+    <div class="card">
+      <div class="section-head"><h3>My Trading Accounts</h3><span id="accountSummary">0 accounts</span></div>
+      <div id="overviewAccounts"><div class="empty">Loading accounts...</div></div>
+    </div>
+    <div class="card">
+      <div class="section-head"><h3>Account Summary</h3><span>Live database values</span></div>
+      <div class="account-details">
+        <div><div class="detail-label">Active Accounts</div><div class="detail-value green" id="activeCount">0</div></div>
+        <div><div class="detail-label">Pending Accounts</div><div class="detail-value gold" id="pendingCount">0</div></div>
+        <div><div class="detail-label">Total Orders</div><div class="detail-value" id="orderCount">0</div></div>
+        <div><div class="detail-label">Paid Orders</div><div class="detail-value green" id="paidCount">0</div></div>
+      </div>
+      <div class="notice">Your dashboard values are loaded from your We Funded Trader account records.</div>
+      <button class="action-btn" onclick="showPage('accounts')">View My Accounts</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head"><h3>Recent Orders</h3><button class="action-btn secondary" onclick="showPage('orders')">View All</button></div>
+    <div id="recentOrders"><div class="empty">Loading orders...</div></div>
+  </div>
+</section>
+
+<!-- CHALLENGE -->
+<section class="page" id="page-challenge">
+  <div class="page-heading"><h1>Challenge Center</h1><p>Track your evaluation and funding progress.</p></div>
+  <div id="challengeContent"><div class="empty">Loading challenge information...</div></div>
+  <div class="info-card">
+    <h3>1-Step Evaluation Rules</h3>
+    <p>Profit Target: 10% · Daily Drawdown: 3% static · Maximum Drawdown: 5% · Minimum Profitable Day: 0.5% · Required Profitable Days: 5.</p>
+  </div>
+  <div class="info-card">
+    <h3>Instant Funding Rules</h3>
+    <p>Maximum Drawdown: 5%. No daily drawdown. Drawdown is measured on closed positions only.</p>
+  </div>
+</section>
+
+<!-- ACCOUNTS -->
+<section class="page" id="page-accounts">
+  <div class="page-heading"><h1>My Trading Accounts</h1><p>View your assigned accounts and trading credentials.</p></div>
+  <div id="allAccounts"><div class="empty">Loading...</div></div>
+</section>
+
+<!-- ORDERS -->
+<section class="page" id="page-orders">
+  <div class="page-heading"><h1>My Orders</h1><p>Track your challenge purchases and payment status.</p></div>
+  <div class="card"><div id="allOrders"><div class="empty">Loading...</div></div></div>
+</section>
+
+<!-- TERMINAL -->
+<section class="page" id="page-terminal">
+  <div class="page-heading"><h1>Trading Terminal</h1><p>Your MetaTrader account connection details.</p></div>
+  <div id="terminalAccounts"><div class="empty">Loading...</div></div>
+  <div class="info-card">
+    <h3>MetaTrader Access</h3>
+    <p>Use the MT4 or MT5 platform selected for your account. Your login credentials and server must be provided by the Admin after account setup.</p>
+    <a class="action-btn" href="https://www.metatrader5.com/" target="_blank" rel="noopener">Open MetaTrader 5</a>
+    <a class="action-btn secondary" href="https://www.metatrader4.com/" target="_blank" rel="noopener">Open MetaTrader 4</a>
+  </div>
+</section>
+
+<!-- KYC -->
+<section class="page" id="page-kyc">
+  <div class="page-heading"><h1>KYC Verification</h1><p>Identity verification and compliance.</p></div>
+  <div class="info-card">
+    <h3>Identity Verification</h3>
+    <p>Your KYC status will be displayed here once the verification system is connected.</p>
+    <div class="notice">KYC submission is not enabled yet. Please contact Support for instructions. Do not send identity documents through an unsecured channel.</div>
+  </div>
+</section>
+
+<!-- CERTIFICATE -->
+<section class="page" id="page-certificate">
+  <div class="page-heading"><h1>Certificates</h1><p>Your achievement and qualification certificates.</p></div>
+  <div class="info-card">
+    <h3>My Certificates</h3>
+    <div class="empty">No certificate has been issued to your account yet.</div>
+    <p>Certificates will appear here after the Admin issues and attaches an official certificate.</p>
+  </div>
+</section>
+
+<!-- PAYOUT -->
+<section class="page" id="page-payout">
+  <div class="page-heading"><h1>Payout Center</h1><p>Manage your profit withdrawal requests.</p></div>
+  <div class="info-card">
+    <h3>Payout Requests</h3>
+    <div class="notice">Payout request submission is not connected yet. This page does not submit or promise any payment.</div>
+    <p>Contact Support to ask about payout eligibility, required documents, and payment methods.</p>
+  </div>
+</section>
+
+<!-- AFFILIATE -->
+<section class="page" id="page-affiliate">
+  <div class="page-heading"><h1>Affiliate Program</h1><p>Share We Funded Trader with your network.</p></div>
+  <div class="info-card">
+    <h3>Your Referral Link</h3>
+    <p>This is a shareable link containing your account ID. Referral tracking and commissions are not active until the affiliate backend is connected.</p>
+    <div class="field"><input id="referralLink" readonly></div>
+    <button class="action-btn" onclick="copyReferral()">Copy Referral Link</button>
+    <div class="notice">No referral commission is calculated or credited by this page.</div>
+  </div>
+</section>
+
+<!-- SUPPORT -->
+<section class="page" id="page-support">
+  <div class="page-heading"><h1>Customer Support</h1><p>We are here to help you.</p></div>
+  <div class="info-card">
+    <h3>Need Assistance?</h3>
+    <p>For account access, payment verification, trading credentials, or challenge questions, contact the support team using your official support channel.</p>
+    <div class="notice">Support email/contact details have not yet been configured in this dashboard.</div>
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section class="page" id="page-settings">
+  <div class="page-heading"><h1>Account Settings</h1><p>Manage your login and profile information.</p></div>
+  <div class="info-card">
+    <h3>Profile Information</h3>
+    <div class="field"><label>Email Address</label><input id="profileEmail" readonly></div>
+    <div class="field"><label>User ID</label><input id="profileId" readonly></div>
+  </div>
+  <div class="info-card">
+    <h3>Change Password</h3>
+    <div class="field"><label>New Password</label><input type="password" id="newPassword" placeholder="Enter new password" minlength="6"></div>
+    <button class="action-btn" id="changePasswordBtn">Update Password</button>
+    <div id="settingsMessage" class="notice" style="display:none"></div>
+  </div>
+</section>
+
+<div class="footer">© 2026 WE FUNDED TRADER. All Rights Reserved.</div>
+</div>
+</main>
 </div>
 
-<div class="item">
-<span>Challenge Type</span>
-<strong id="type">Loading...</strong>
-</div>
-
-<label for="platform">Trading Platform</label>
-<select id="platform">
-<option value="MT5">MT5 — Standard Price</option>
-<option value="MT4">MT4 — Automatic 10% Discount</option>
-<option value="OTHER" disabled>Other Platform — Coming Soon</option>
-</select>
-
-<div class="item">
-<span>Base Price</span>
-<strong id="base">Loading...</strong>
-</div>
-
-<label for="coupon">Coupon Code</label>
-<input id="coupon" placeholder="Enter coupon code">
-
-<div class="item">
-<span>Discount</span>
-<strong id="discount">$0.00</strong>
-</div>
-
-<div class="item">
-<strong>Final Price</strong>
-<strong id="final">$0.00</strong>
-</div>
-
-<p class="small" id="discountNote"></p>
-
-<button id="orderButton" disabled>Place Order</button>
-<div id="message"></div>
-
-<div id="paymentSection" class="payment-box hidden">
-<h2>Submit Your Payment</h2>
-<p>Send USDT using BEP20 (BNB Smart Chain) only.</p>
-
-<label for="network">Payment Network</label>
-<select id="network">
-<option value="BEP20">USDT BEP20 (BSC)</option>
-</select>
-
-<label for="txid">Transaction ID (TXID)</label>
-<input id="txid" placeholder="Paste your BEP20 transaction hash">
-
-<p class="small">
-Your payment will remain pending until the Admin independently verifies it on the blockchain.
-</p>
-
-<button id="submitPayment">Submit Payment Details</button>
-<div id="paymentMessage"></div>
-</div>
-
-<p><a href="challenges.html">Back to Challenges</a></p>
-<p><a href="orders.html">My Orders</a></p>
-</div>
+<div class="toast" id="toast"></div>
 
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
-
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const params = new URLSearchParams(location.search);
-const size = Number(params.get("size"));
-const type = (params.get("type") || "").toLowerCase();
+let currentUser = null;
+let orders = [];
+let accounts = [];
 
-const couponInput = document.getElementById("coupon");
-const platformInput = document.getElementById("platform");
-const button = document.getElementById("orderButton");
-const message = document.getElementById("message");
-const paymentSection = document.getElementById("paymentSection");
-const paymentMessage = document.getElementById("paymentMessage");
-const submitPaymentButton = document.getElementById("submitPayment");
+const $ = id => document.getElementById(id);
+const money = value => "$" + (Number(value) || 0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const safe = value => String(value ?? "").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+const statusClass = value => {
+  const s = String(value || "unknown").toLowerCase();
+  return ["paid","active","approved","qualified","pending","rejected","failed"].includes(s) ? s : "";
+};
+const statusBadge = value => `<span class="status ${statusClass(value)}">${safe(value || "Unknown")}</span>`;
 
-let basePrice = 0;
-let currentOrderId = null;
-let orderCreated = false;
-
-function showMessage(text, cls = "") {
-  message.textContent = text;
-  message.className = cls;
+function toast(text){
+  $("toast").textContent = text;
+  $("toast").style.display = "block";
+  setTimeout(()=> $("toast").style.display="none",2800);
 }
 
-function showPaymentMessage(text, cls = "") {
-  paymentMessage.textContent = text;
-  paymentMessage.className = cls;
-}
+window.toggleMenu = function(){
+  $("sidebar").classList.toggle("open");
+  $("overlay").classList.toggle("show");
+};
 
-// Calculate estimated discount for display.
-// The server independently validates all discounts.
-function getDiscountPercent() {
-  const code = couponInput.value.trim().toUpperCase();
-  const platform = platformInput.value;
+window.showPage = function(name){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-btn[data-page]").forEach(b=>b.classList.remove("active"));
+  const page = $("page-"+name);
+  if(page) page.classList.add("active");
+  const btn = document.querySelector(`.nav-btn[data-page="${name}"]`);
+  if(btn) btn.classList.add("active");
+  $("topTitle").textContent = btn ? btn.textContent.trim() : "Overview";
+  $("sidebar").classList.remove("open");
+  $("overlay").classList.remove("show");
+};
 
-  if (code === "NEW50") return 50;
-  if (code === "WFT20") return 20;
-  if (code === "WFT10") return 10;
-
-  if (code !== "") return 0;
-
-  if (platform === "MT4") return 10;
-
-  return 0;
-}
-
-function calculatePrice() {
-  const code = couponInput.value.trim().toUpperCase();
-  const platform = platformInput.value;
-
-  const discountPercent = getDiscountPercent();
-  const discountAmount = basePrice * discountPercent / 100;
-  const finalPrice = basePrice - discountAmount;
-
-  document.getElementById("discount").textContent =
-    "$" + discountAmount.toFixed(2);
-
-  document.getElementById("final").textContent =
-    "$" + finalPrice.toFixed(2);
-
-  const note = document.getElementById("discountNote");
-
-  if (code === "NEW50") {
-    note.textContent =
-      "50% NEW CUSTOMER discount. Valid for first-time customers only. Server verification required.";
-
-  } else if (code === "WFT20") {
-    note.textContent = "WFT20 — 20% discount applied.";
-
-  } else if (code === "WFT10") {
-    note.textContent = "WFT10 — 10% discount applied.";
-
-  } else if (code !== "") {
-    note.textContent = "Invalid coupon code.";
-
-  } else if (platform === "MT4") {
-    note.textContent = "Automatic 10% MT4 discount applied.";
-
-  } else {
-    note.textContent = "No discount applied.";
-  }
-}
-
-async function initialize() {
-  try {
-    const { data: { session }, error } =
-      await db.auth.getSession();
-
-    if (error || !session) {
-      location.href = "Login.html";
-      return;
-    }
-
-    if (![2500,5000,10000,25000,50000,100000].includes(size)) {
-      throw new Error("Invalid account size.");
-    }
-
-    if (!["evaluation","instant"].includes(type)) {
-      throw new Error("Invalid challenge type.");
-    }
-
-    document.getElementById("size").textContent =
-      "$" + size.toLocaleString();
-
-    document.getElementById("type").textContent =
-      type === "evaluation"
-        ? "1-Step Evaluation"
-        : "Instant Funding";
-
-    const selectedPlatform = params.get("platform");
-
-    platformInput.value =
-      selectedPlatform === "MT4" ? "MT4" : "MT5";
-
-    const { data: price, error: priceError } = await db
-      .from("challenge_prices")
-      .select("base_price,evaluation_enabled,instant_enabled")
-      .eq("account_size", size)
-      .single();
-
-    if (priceError || !price) {
-      throw new Error("Challenge price not found.");
-    }
-
-    if (type === "evaluation" && !price.evaluation_enabled) {
-      throw new Error("1-Step Evaluation is unavailable.");
-    }
-
-    if (type === "instant" && !price.instant_enabled) {
-      throw new Error("Instant Funding is unavailable.");
-    }
-
-    basePrice = Number(price.base_price);
-
-    if (!Number.isFinite(basePrice) || basePrice <= 0) {
-      throw new Error("Invalid challenge price.");
-    }
-
-    document.getElementById("base").textContent =
-      "$" + basePrice.toFixed(2);
-
-    couponInput.value =
-      (params.get("coupon") || "").toUpperCase();
-
-    calculatePrice();
-
-    button.disabled = false;
-    showMessage("Ready to place your order.");
-
-  } catch (error) {
-    showMessage(
-      error.message || "Checkout loading failed.",
-      "error"
-    );
-  }
-}
-
-couponInput.addEventListener("input", calculatePrice);
-platformInput.addEventListener("change", calculatePrice);
-
-button.addEventListener("click", async () => {
-  if (orderCreated) return;
-
-  button.disabled = true;
-  button.textContent = "Processing...";
-  showMessage("Creating your order...");
-
-  try {
-    const { data: { session }, error: sessionError } =
-      await db.auth.getSession();
-
-    if (sessionError || !session) {
-      throw new Error("Please log in again.");
-    }
-
-    const platform = platformInput.value;
-    const couponCode = couponInput.value.trim().toUpperCase();
-
-    if (!["MT4","MT5"].includes(platform)) {
-      throw new Error("Please select MT4 or MT5.");
-    }
-
-    if (
-      couponCode &&
-      !["WFT10","WFT20","NEW50"].includes(couponCode)
-    ) {
-      throw new Error("Invalid coupon code.");
-    }
-
-    const { data, error } = await db.functions.invoke(
-      "smart-handler",
-      {
-        body: {
-          account_size: size,
-          account_type: type,
-          platform: platform,
-          coupon_code: couponCode
-        }
-      }
-    );
-
-    if (error) {
-      throw new Error(error.message || "Request failed.");
-    }
-
-    if (!data || data.error) {
-      throw new Error(data?.error || "Order failed.");
-    }
-
-    currentOrderId = data.order?.id || data.order_id;
-
-    if (!currentOrderId) {
-      throw new Error("Order ID was not returned.");
-    }
-
-    orderCreated = true;
-
-    // Display the actual server-calculated price.
-    if (data.pricing) {
-      const pricing = data.pricing;
-
-      document.getElementById("base").textContent =
-        "$" + Number(pricing.base_price).toFixed(2);
-
-      document.getElementById("discount").textContent =
-        "$" + (
-          Number(pricing.base_price) -
-          Number(pricing.final_price)
-        ).toFixed(2);
-
-      document.getElementById("final").textContent =
-        "$" + Number(pricing.final_price).toFixed(2);
-
-      document.getElementById("discountNote").textContent =
-        Number(pricing.discount_percent) +
-        "% discount confirmed by server.";
-    }
-
-    showMessage(
-      "Order created successfully! Order ID: " +
-      currentOrderId + ". Status: Pending.",
-      "success"
-    );
-
-    button.textContent = "Order Created";
-
-    paymentSection.classList.remove("hidden");
-    paymentSection.scrollIntoView({behavior:"smooth"});
-
-  } catch (error) {
-    showMessage("Order failed: " + error.message, "error");
-
-    button.disabled = false;
-    button.textContent = "Try Again";
-  }
+document.querySelectorAll(".nav-btn[data-page]").forEach(btn=>{
+  btn.addEventListener("click",()=>showPage(btn.dataset.page));
 });
 
-submitPaymentButton.addEventListener("click", async () => {
-  const txid = document.getElementById("txid").value.trim();
-
-  if (!currentOrderId) {
-    showPaymentMessage("Create an order first.", "error");
-    return;
-  }
-
-  if (!/^0x[a-fA-F0-9]{64}$/.test(txid)) {
-    showPaymentMessage(
-      "Invalid BEP20 transaction hash.",
-      "error"
-    );
-    return;
-  }
-
-  submitPaymentButton.disabled = true;
-  submitPaymentButton.textContent = "Submitting...";
-
-  try {
-    const { data: { session }, error: sessionError } =
-      await db.auth.getSession();
-
-    if (sessionError || !session) {
-      throw new Error("Please log in again.");
-    }
-
-    const { data, error } = await db
-      .from("orders")
-      .update({
-        payment_network: "BEP20",
-        transaction_hash: txid,
-        payment_submitted_at: new Date().toISOString()
-      })
-      .eq("id", currentOrderId)
-      .eq("user_id", session.user.id)
-      .eq("status", "pending")
-      .select("id")
-      .single();
-
-    if (error) throw error;
-    if (!data) {
-      throw new Error("Payment details were not saved.");
-    }
-
-    showPaymentMessage(
-      "Payment details submitted. Awaiting Admin verification.",
-      "success"
-    );
-
-    submitPaymentButton.textContent = "Submitted";
-
-    document.getElementById("network").disabled = true;
-    document.getElementById("txid").disabled = true;
-
-  } catch (error) {
-    showPaymentMessage(
-      "Payment submission failed: " + error.message,
-      "error"
-    );
-
-    submitPaymentButton.disabled = false;
-    submitPaymentButton.textContent = "Try Again";
-  }
-});
-
-initialize();
-</script>
-</body>
-  </html>
-  
+function renderAccountCard(a){
+  const name = a.account_name || (a.account_type === "evaluation" ? "1-Step Evaluation" : "Instant Funding");
+  const balance = Number(a.balance) || 0;
+  const equity = Number(a.equity) || 0;
+  const profit = Number(a.profit) || 
