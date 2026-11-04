@@ -43,6 +43,8 @@ a{color:#55adff}
 .top-actions{display:flex;gap:8px;flex-wrap:wrap}
 .section-title{color:#55adff}
 .account-input{min-width:100px;max-width:150px}
+.rule{background:#08182a;border:1px solid #29415c;padding:14px;border-radius:9px;margin:10px 0}
+.rule strong{color:#55adff}
 @media(max-width:600px){
  main{padding:16px 12px}
  header{padding:15px 12px}
@@ -79,16 +81,45 @@ a{color:#55adff}
 <div class="card"><p>Total Order Value</p><h2 id="value">$0.00</h2></div>
 </div>
 
+<!-- CHALLENGE RULES -->
+<div class="panel">
+<h3 class="section-title">WFT Challenge Rules Reference</h3>
+
+<div class="rule">
+<strong>1-Step Challenge</strong>
+<p>Profit Target: 10%</p>
+<p>Daily Drawdown: 3% Static</p>
+<p>Maximum Drawdown: 5%</p>
+<p>Minimum Profitable Day: 0.5%</p>
+<p>Required Profitable Days: 5</p>
+</div>
+
+<div class="rule">
+<strong>Instant Account</strong>
+<p>Daily Drawdown: None</p>
+<p>Maximum Drawdown: 5%</p>
+<p>Drawdown calculation: Closed positions only</p>
+</div>
+
+<div class="rule">
+<strong>2-Step Challenge</strong>
+<p>Rules not configured yet. Do not assign or advertise unconfirmed rules.</p>
+</div>
+
+<p class="small">
+These are reference rules only. Automatic drawdown monitoring requires a verified trading-platform data connection.
+</p>
+</div>
+
 <!-- CREATE ACCOUNT -->
 <div class="panel">
 <h3 class="section-title">Create Trading Account</h3>
 <p class="small">
-Create a trading account and assign it directly to a customer.
+Create a trading account and assign it to a customer.
 Enter the customer's authenticated Supabase User ID.
 </p>
 
 <form id="createAccountForm">
-
 <div class="form-grid">
 
 <div>
@@ -131,12 +162,12 @@ Enter the customer's authenticated Supabase User ID.
 </div>
 
 <div>
-<label>MT5 Login</label>
+<label>MT Login</label>
 <input id="new_mt_login" placeholder="MT5 account login">
 </div>
 
 <div>
-<label>MT5 Server</label>
+<label>MT Server</label>
 <input id="new_mt_server" placeholder="Broker server">
 </div>
 
@@ -182,7 +213,6 @@ Enter the customer's authenticated Supabase User ID.
 <textarea id="new_admin_notes" placeholder="Internal admin notes"></textarea>
 
 <button id="createButton" type="submit">Create Trading Account</button>
-
 </form>
 </div>
 
@@ -190,8 +220,7 @@ Enter the customer's authenticated Supabase User ID.
 <div class="panel">
 <h3 class="section-title">Trading Accounts Management</h3>
 <p class="small">
-View accounts, update MT5 credentials, customer assignment,
-balance, equity, profit and status.
+View accounts, update MT credentials, balance, equity, profit and status.
 </p>
 
 <table>
@@ -241,8 +270,9 @@ balance, equity, profit and status.
 </div>
 
 <p class="small">
-Payment approval must only happen after manually verifying the
-transaction, network, USDT token, recipient address, amount and confirmations.
+Before approving, manually verify the transaction on the correct blockchain:
+USDT token, BEP20 network, recipient wallet, amount and confirmations.
+Never approve a transaction based only on a submitted hash.
 </p>
 
 </div>
@@ -263,6 +293,7 @@ SUPABASE_KEY
 const message = document.getElementById("message");
 
 let currentSession = null;
+let loading = false;
 
 function showMessage(text,type="message"){
 message.textContent=text;
@@ -285,6 +316,12 @@ if(network==="TRC20"){
 return "https://tronscan.org/#/transaction/"+encodeURIComponent(txid);
 }
 return null;
+}
+
+// BEP20 transaction hash validation
+function isValidBep20Hash(hash){
+return /^0x[a-fA-F0-9]{64}$/.test(hash) &&
+!/^[0x]+$/.test(hash);
 }
 
 function addInput(row,value,type="text",className="account-input"){
@@ -318,9 +355,37 @@ async function reviewOrder(orderId,decision,button){
 
 const action=decision==="paid"?"approve":"reject";
 
+if(decision==="paid"){
+const {data:order,error}=await db
+.from("orders")
+.select("id,status,transaction_hash,payment_network")
+.eq("id",orderId)
+.maybeSingle();
+
+if(error || !order){
+showMessage("Could not verify order before approval.","error");
+return;
+}
+
+if(order.status!=="pending"){
+showMessage("This order is no longer pending.","error");
+return;
+}
+
+if(order.payment_network!=="BEP20"){
+showMessage("Only BEP20 orders can be approved through this dashboard.","error");
+return;
+}
+
+if(!isValidBep20Hash(order.transaction_hash||"")){
+showMessage("Invalid or missing BEP20 transaction hash.","error");
+return;
+}
+}
+
 const confirmed=window.confirm(
 "Are you sure you want to "+action+
-" this order? Verify the TXID on the correct blockchain first."
+" this order? Manually verify the transaction first."
 );
 
 if(!confirmed) return;
@@ -354,11 +419,11 @@ button.textContent=decision==="paid"?"Approve":"Reject";
 }
 }
 
-// EXISTING ASSIGN ACCOUNT FUNCTION
+// ASSIGN ACCOUNT
 async function assignAccount(orderId,button){
 
 const confirmed=window.confirm(
-"Create an internal trading account record for this paid order?"
+"Create a trading account record for this paid order?"
 );
 
 if(!confirmed) return;
@@ -397,7 +462,7 @@ button.textContent="Assign Account";
 }
 }
 
-// CREATE ACCOUNT THROUGH EDGE FUNCTION
+// CREATE TRADING ACCOUNT
 document.getElementById("createAccountForm")
 .addEventListener("submit",async function(event){
 
@@ -439,7 +504,11 @@ if(numericFields.some(n=>!Number.isFinite(n))){
 throw new Error("Enter valid account numbers.");
 }
 
-if(payload.initial_balance<0 || payload.balance<0 || payload.equity<0){
+if(payload.initial_balance<=0){
+throw new Error("Initial balance must be greater than zero.");
+}
+
+if(payload.balance<0 || payload.equity<0){
 throw new Error("Balance and equity cannot be negative.");
 }
 
@@ -471,7 +540,6 @@ showMessage("Create account failed: "+error.message,"error");
 
 button.disabled=false;
 button.textContent="Create Trading Account";
-
 });
 
 // LOAD TRADING ACCOUNTS
@@ -537,8 +605,7 @@ initial_balance:Number(initial.value),
 balance:Number(balance.value),
 equity:Number(equity.value),
 profit:Number(profit.value),
-status:status.value,
-updated_at:new Date().toISOString()
+status:status.value
 };
 
 if(Object.values(values).some(v=>
@@ -548,8 +615,10 @@ showMessage("Enter valid numeric values.","error");
 return;
 }
 
-if(values.initial_balance<0 || values.balance<0 || values.equity<0){
-showMessage("Initial balance, balance and equity cannot be negative.","error");
+if(values.initial_balance<=0 ||
+values.balance<0 ||
+values.equity<0){
+showMessage("Invalid balance or equity values.","error");
 return;
 }
 
@@ -712,11 +781,13 @@ const actionCell=document.createElement("td");
 const actions=document.createElement("div");
 actions.className="actions";
 
-if(
-o.status==="pending" &&
-o.transaction_hash &&
-o.payment_network
-){
+if(o.status==="pending"){
+
+const canApprove=
+o.payment_network==="BEP20" &&
+isValidBep20Hash(o.transaction_hash||"");
+
+if(canApprove){
 
 const approve=document.createElement("button");
 approve.textContent="Approve";
@@ -725,6 +796,17 @@ approve.addEventListener(
 "click",
 ()=>reviewOrder(o.id,"paid",approve)
 );
+
+actions.appendChild(approve);
+
+}else{
+
+const waiting=document.createElement("span");
+waiting.className="small";
+waiting.textContent="Invalid / missing BEP20 TXID";
+actions.appendChild(waiting);
+
+}
 
 const reject=document.createElement("button");
 reject.textContent="Reject";
@@ -735,11 +817,7 @@ reject.addEventListener(
 ()=>reviewOrder(o.id,"rejected",reject)
 );
 
-actions.append(approve,reject);
-
-}else if(o.status==="pending"){
-
-actions.textContent="Waiting for TXID";
+actions.appendChild(reject);
 
 }else if(o.status==="paid" && accountId){
 
@@ -763,69 +841,4 @@ actions.appendChild(assign);
 actions.textContent="Reviewed";
 }
 
-actionCell.appendChild(actions);
-tr.appendChild(actionCell);
-tbody.appendChild(tr);
-
-});
-
-showMessage("Admin access verified. Orders loaded.","success");
-}
-
-// ADMIN AUTHENTICATION
-async function loadAdmin(){
-
-const {
-data:{session},
-error:sessionError
-}=await db.auth.getSession();
-
-if(sessionError || !session){
-window.location.href="Login.html";
-return;
-}
-
-currentSession=session;
-
-const {data:admin,error:adminError}=await db
-.from("admin_users")
-.select("user_id")
-.eq("user_id",session.user.id)
-.maybeSingle();
-
-if(adminError){
-showMessage("Admin verification failed: "+adminError.message,"error");
-return;
-}
-
-if(!admin){
-showMessage("Access denied. This account is not an admin.","error");
-return;
-}
-
-document.getElementById("content").style.display="block";
-
-await Promise.all([
-loadOrders(),
-loadTradingAccounts()
-]);
-
-}
-
-document.getElementById("refresh")
-.addEventListener("click",async()=>{
-await loadAdmin();
-});
-
-document.getElementById("logout")
-.addEventListener("click",async()=>{
-await db.auth.signOut();
-window.location.href="Login.html";
-});
-
-loadAdmin();
-
-</script>
-</body>
- </html>
- 
+actionCell.appendChild(actions)
