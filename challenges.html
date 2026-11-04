@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +33,15 @@ button:hover{background:#0068c5}
 .note{color:#9eb1c8;font-size:13px;line-height:1.6}
 .message{font-size:14px;margin-top:10px}
 footer{text-align:center;color:#71869e;padding:30px}
-@media(max-width:600px){header{display:block;text-align:center}nav{margin-top:15px}nav a{margin:0 7px}h1{font-size:27px}.apply{display:block}.apply button{width:100%;margin-top:10px}}
+.coming{opacity:.6}
+@media(max-width:600px){
+ header{display:block;text-align:center}
+ nav{margin-top:15px}
+ nav a{margin:0 7px}
+ h1{font-size:27px}
+ .apply{display:block}
+ .apply button{width:100%;margin-top:10px}
+}
 </style>
 </head>
 <body>
@@ -48,7 +57,7 @@ footer{text-align:center;color:#71869e;padding:30px}
 
 <main>
 <h1>Choose Your Challenge</h1>
-<p class="sub">Select your account size and start your trading journey.</p>
+<p class="sub">Select your account size, challenge and trading platform.</p>
 
 <div class="tabs">
   <button class="tab active" id="evaluationTab" onclick="setType('evaluation')">1-Step Evaluation</button>
@@ -58,7 +67,7 @@ footer{text-align:center;color:#71869e;padding:30px}
 <section class="panel">
   <label for="accountSize">Select Account Size</label>
   <select id="accountSize" onchange="updatePrice()">
-    <option value="2500"> $2,500 Account</option>
+    <option value="2500">$2,500 Account</option>
     <option value="5000">$5,000 Account</option>
     <option value="10000">$10,000 Account</option>
     <option value="25000">$25,000 Account</option>
@@ -66,23 +75,32 @@ footer{text-align:center;color:#71869e;padding:30px}
     <option value="100000">$100,000 Account</option>
   </select>
 
+  <label for="platform">Trading Platform</label>
+  <select id="platform" onchange="updatePrice()">
+    <option value="MT5">MT5 — Standard Price</option>
+    <option value="MT4">MT4 — 10% Discount</option>
+    <option value="OTHER" disabled>Other Platform — Coming Soon</option>
+  </select>
+
   <div class="grid">
     <div class="stat"><small>Profit Target</small><strong id="target">10%</strong></div>
     <div class="stat"><small>Daily Drawdown</small><strong id="daily">3%</strong></div>
     <div class="stat"><small>Maximum Drawdown</small><strong>5%</strong></div>
-    <div class="stat"><small>Minimum Profitable Days</small><strong>5 Days</strong></div>
+    <div class="stat"><small>Minimum Profitable Days</small><strong id="days">5 Days</strong></div>
   </div>
 </section>
 
 <section class="panel">
-  <label>Coupon Code</label>
+  <label for="coupon">Coupon Code</label>
   <div class="apply">
     <input id="coupon" type="text" placeholder="Enter coupon code">
     <button onclick="applyCoupon()">Apply Coupon</button>
   </div>
   <div class="message" id="couponMessage"></div>
   <div class="price" id="price">$10.00</div>
-  <p class="note" style="text-align:center">Displayed price is for the selected account. Coupon discounts are calculated before checkout.</p>
+  <p class="note" id="discountNote" style="text-align:center">
+    MT4 receives a 10% discount. Additional coupon discounts are not stackable.
+  </p>
   <button style="width:100%" onclick="checkout()">Continue</button>
   <p class="message" id="checkoutMessage"></p>
 </section>
@@ -100,83 +118,135 @@ footer{text-align:center;color:#71869e;padding:30px}
 <script>
 let accountType = "evaluation";
 let discount = 0;
+let couponApplied = false;
 
 const prices = {
-  2500: 10,
-  5000: 20,
-  10000: 40,
-  25000: 100,
-  50000: 200,
-  100000: 400
+  2500:10,
+  5000:20,
+  10000:40,
+  25000:100,
+  50000:200,
+  100000:400
 };
 
 function setType(type) {
   accountType = type;
+  couponApplied = false;
   discount = 0;
   document.getElementById("coupon").value = "";
   document.getElementById("couponMessage").textContent = "";
-  document.getElementById("evaluationTab").classList.toggle("active", type === "evaluation");
-  document.getElementById("instantTab").classList.toggle("active", type === "instant");
 
-  if (type === "evaluation") {
-    document.getElementById("target").textContent = "10%";
-    document.getElementById("daily").textContent = "3%";
-    document.getElementById("rules").textContent =
+  document.getElementById("evaluationTab").classList.toggle("active",type==="evaluation");
+  document.getElementById("instantTab").classList.toggle("active",type==="instant");
+
+  if(type==="evaluation"){
+    document.getElementById("target").textContent="10%";
+    document.getElementById("daily").textContent="3%";
+    document.getElementById("days").textContent="5 Days";
+    document.getElementById("rules").textContent=
       "1-Step Evaluation: 10% profit target, 3% static daily drawdown, 5% maximum drawdown, at least 5 profitable days, and minimum 0.5% profit per profitable day.";
-  } else {
-    document.getElementById("target").textContent = "No Evaluation";
-    document.getElementById("daily").textContent = "None";
-    document.getElementById("rules").textContent =
+  }else{
+    document.getElementById("target").textContent="No Evaluation";
+    document.getElementById("daily").textContent="None";
+    document.getElementById("days").textContent="No Evaluation Days";
+    document.getElementById("rules").textContent=
       "Instant Funding: No evaluation phase and no daily drawdown. Maximum drawdown is 5%, measured on closed positions only.";
   }
   updatePrice();
 }
 
-function updatePrice() {
-  discount = 0;
-  document.getElementById("couponMessage").textContent = "";
-  const size = document.getElementById("accountSize").value;
-  const basePrice = prices[size];
-  document.getElementById("price").textContent = "$" + basePrice.toFixed(2);
+function updatePrice(){
+  couponApplied=false;
+  discount=0;
+  document.getElementById("couponMessage").textContent="";
+  calculateDisplay();
 }
 
-function applyCoupon() {
-  const code = document.getElementById("coupon").value.trim().toUpperCase();
-  const size = document.getElementById("accountSize").value;
-  const basePrice = prices[size];
-  const message = document.getElementById("couponMessage");
+function calculateDisplay(){
+  const size=document.getElementById("accountSize").value;
+  const platform=document.getElementById("platform").value;
+  const basePrice=prices[size];
+  const code=document.getElementById("coupon").value.trim().toUpperCase();
 
-  if (code === "WFT10") {
-    discount = 10;
-  } else if (code === "WFT20") {
-    discount = 20;
-  } else {
-    discount = 0;
-    message.style.color = "#ff7777";
-    message.textContent = "Invalid coupon code.";
-    updatePrice();
+  let percent=platform==="MT4"?10:0;
+
+  if(couponApplied){
+    if(code==="WFT10") percent=10;
+    if(code==="WFT20") percent=20;
+    if(code==="MT4WFT10" && platform==="MT4") percent=10;
+  }
+
+  discount=percent;
+  const finalPrice=basePrice*(1-percent/100);
+  document.getElementById("price").textContent="$"+finalPrice.toFixed(2);
+
+  document.getElementById("discountNote").textContent =
+    percent>0 ? percent+"% discount applied. Discounts cannot be combined."
+    : "MT4 receives a 10% discount. Additional coupon discounts are not stackable.";
+}
+
+function applyCoupon(){
+  const code=document.getElementById("coupon").value.trim().toUpperCase();
+  const platform=document.getElementById("platform").value;
+  const msg=document.getElementById("couponMessage");
+
+  if(code===""){
+    couponApplied=false;
+    msg.style.color="#ff7777";
+    msg.textContent="Enter a coupon code.";
+    calculateDisplay();
     return;
   }
 
-  const finalPrice = basePrice * (1 - discount / 100);
-  document.getElementById("price").textContent = "$" + finalPrice.toFixed(2);
-  message.style.color = "#4cdb9a";
-  message.textContent = discount + "% discount applied successfully!";
+  if(code==="MT4WFT10" && platform!=="MT4"){
+    couponApplied=false;
+    msg.style.color="#ff7777";
+    msg.textContent="MT4WFT10 is valid for MT4 only.";
+    calculateDisplay();
+    return;
+  }
+
+  if(!["WFT10","WFT20","MT4WFT10"].includes(code)){
+    couponApplied=false;
+    msg.style.color="#ff7777";
+    msg.textContent="Invalid coupon code.";
+    calculateDisplay();
+    return;
+  }
+
+  couponApplied=true;
+  msg.style.color="#4cdb9a";
+  msg.textContent="Coupon accepted!";
+  calculateDisplay();
 }
 
+function checkout(){
+  const size=document.getElementById("accountSize").value;
+  const platform=document.getElementById("platform").value;
+  const coupon=document.getElementById("coupon").value.trim().toUpperCase();
 
-function checkout() {
-  const size = document.getElementById("accountSize").value;
-  const coupon = document.getElementById("coupon").value.trim().toUpperCase();
+  if(platform==="OTHER"){
+    document.getElementById("checkoutMessage").textContent="This platform is coming soon.";
+    return;
+  }
 
-  const params = new URLSearchParams({
-    size: size,
-    type: accountType,
-    coupon: coupon
+  if(coupon && !couponApplied){
+    document.getElementById("checkoutMessage").textContent="Please apply or remove your coupon before continuing.";
+    return;
+  }
+
+  const params=new URLSearchParams({
+    size:size,
+    type:accountType,
+    platform:platform,
+    coupon:couponApplied?coupon:""
   });
 
-  window.location.href = "checkout.html?" + params.toString();
+  window.location.href="checkout.html?"+params.toString();
 }
+
+setType("evaluation");
 </script>
 </body>
-</html>
+  </html>
+  
