@@ -197,37 +197,72 @@ function goPage(name){
 }
 
 async function loadAdmin(){
- $("loading").classList.remove("hidden");
- $("denied").classList.add("hidden");
- $("app").classList.add("hidden");
- $("loadingText").textContent="Connecting to Supabase...";
+  $("loading").classList.remove("hidden");
+  $("denied").classList.add("hidden");
+  $("app").classList.add("hidden");
 
- try{
-  if(!window.supabase?.createClient)throw new Error("Supabase library did not load.");
-  if(!db)db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  $("loadingText").textContent = "Checking Supabase library...";
 
-  const {data,error}=await db.auth.getSession();
-  if(error)throw error;
-  currentSession=data.session;
-  if(!currentSession)throw new Error("No active login. Please login again.");
+  const timeout = (promise, label) =>
+    Promise.race([
+      promise,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error(label + " timed out after 10 seconds")), 10000)
+      )
+    ]);
 
-  const {data:admin,error:adminError}=await db.from("admin_users")
-   .select("user_id").eq("user_id",currentSession.user.id).maybeSingle();
+  try {
+    if (!window.supabase || !window.supabase.createClient) {
+      throw new Error("Supabase CDN failed. Check internet connection.");
+    }
 
-  if(adminError)throw adminError;
-  if(!admin)throw new Error("Access denied. User is not registered in admin_users.");
+    if (!db) {
+      db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
 
-  $("loading").classList.add("hidden");
-  $("app").classList.remove("hidden");
-  showMessage("Admin access verified.","success");
-  await refreshAll();
+    $("loadingText").textContent = "Checking login session...";
 
- }catch(e){
-  console.error(e);
-  $("loading").classList.add("hidden");
-  $("denied").classList.remove("hidden");
-  $("deniedText").textContent=e.message||"Unknown error";
- }
+    const {data, error} = await timeout(
+      db.auth.getSession(),
+      "Supabase session check"
+    );
+
+    if (error) throw error;
+
+    currentSession = data.session;
+
+    if (!currentSession) {
+      throw new Error("No active session. Please login again.");
+    }
+
+    $("loadingText").textContent = "Checking admin permission...";
+
+    const result = await timeout(
+      db.from("admin_users")
+        .select("user_id")
+        .eq("user_id", currentSession.user.id)
+        .maybeSingle(),
+      "Admin permission check"
+    );
+
+    if (result.error) throw result.error;
+    if (!result.data) {
+      throw new Error("This user is not registered in admin_users.");
+    }
+
+    $("loading").classList.add("hidden");
+    $("app").classList.remove("hidden");
+
+    showMessage("Admin access verified.", "success");
+    await refreshAll();
+
+  } catch(e) {
+    console.error("ADMIN LOAD ERROR:", e);
+
+    $("loading").classList.add("hidden");
+    $("denied").classList.remove("hidden");
+    $("deniedText").textContent = e.message || String(e);
+  }
 }
 
 async function logout(){
