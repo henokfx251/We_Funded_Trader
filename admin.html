@@ -196,7 +196,7 @@ function goPage(name){
  showPage(name,document.querySelectorAll(".nav-btn")[names.indexOf(name)]);
 }
 
-async function loadAdmin(){
+ async function loadAdmin(){
   $("loading").classList.remove("hidden");
   $("denied").classList.add("hidden");
   $("app").classList.add("hidden");
@@ -263,7 +263,7 @@ async function loadAdmin(){
     $("denied").classList.remove("hidden");
     $("deniedText").textContent = e.message || String(e);
   }
-}
+ }
 
 async function logout(){
  if(db)await db.auth.signOut();
