@@ -13,11 +13,9 @@ body{margin:0;background:#07111f;color:#fff;font-family:Arial,sans-serif}
 header{background:#101e30;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid #263b52}
 h1{font-size:21px;margin:0;color:#43d9a3}
 h2{font-size:18px;margin:0 0 15px}
-h3{font-size:15px;color:#43d9a3;margin:12px 0 8px}
 main{max-width:1500px;margin:25px auto;padding:0 15px}
-.panel{background:#101e30;border:1px solid #263b52;border-radius:12px;padding:18px;margin-bottom:20px}
+.panel,.stat{background:#101e30;border:1px solid #263b52;border-radius:12px;padding:18px;margin-bottom:20px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
-.stat{background:#101e30;padding:18px;border:1px solid #263b52;border-radius:10px}
 .stat small{color:#9db0c5}
 .stat strong{display:block;font-size:25px;margin-top:8px;color:#43d9a3}
 input,select{width:100%;padding:12px;margin:6px 0 13px;background:#07111f;color:#fff;border:1px solid #344b64;border-radius:7px}
@@ -30,7 +28,7 @@ table{width:100%;border-collapse:collapse;min-width:1450px}
 th,td{padding:12px 10px;border-bottom:1px solid #263b52;text-align:left;font-size:13px;vertical-align:top}
 th{color:#43d9a3;white-space:nowrap}
 .table-wrap{overflow-x:auto}
-.muted{color:#9db0c5;font-size:13px}
+.muted,.form-note{color:#9db0c5;font-size:13px}
 .status{padding:5px 8px;border-radius:5px;background:#263b52;display:inline-block}
 #message{padding:12px;border-radius:7px;margin-bottom:15px;display:none;overflow-wrap:anywhere}
 .success{display:block!important;background:#123e32;color:#8df3c8}
@@ -39,29 +37,24 @@ th{color:#43d9a3;white-space:nowrap}
 .hidden{display:none!important}
 .actions{white-space:nowrap}
 label{font-size:13px;color:#b7c8d9}
-.form-note{font-size:12px;color:#9db0c5;margin-top:-8px;margin-bottom:12px}
-details{min-width:100px}
+.form-note{font-size:12px;margin-top:-8px;margin-bottom:12px}
 details summary{cursor:pointer;color:#43d9a3;font-weight:bold}
 .details-box{min-width:260px;padding:10px;background:#07111f;border:1px solid #344b64;border-radius:7px;margin-top:8px;line-height:1.8;overflow-wrap:anywhere}
 .details-box strong{color:#43d9a3}
-.good{color:#8df3c8}
 .warning{color:#ffd27d}
 .bad{color:#ff9ca7}
-.price{font-weight:bold;color:#fff}
-.small{font-size:11px;color:#9db0c5}
+.price{font-weight:bold}
 .hash{overflow-wrap:anywhere;word-break:break-all;max-width:220px}
 </style>
 </head>
 
 <body>
-
 <header>
   <h1>WE FUNDED TRADER — ADMIN</h1>
   <button class="danger" onclick="logout()">Logout</button>
 </header>
 
 <main>
-
 <div id="message"></div>
 
 <section id="loading" class="panel">
@@ -70,162 +63,109 @@ details summary{cursor:pointer;color:#43d9a3;font-weight:bold}
 
 <section id="dashboard" class="hidden">
 
-  <div class="stats">
-    <div class="stat">
-      <small>Total Orders</small>
-      <strong id="totalOrders">0</strong>
-    </div>
-    <div class="stat">
-      <small>Pending Orders</small>
-      <strong id="pendingOrders">0</strong>
-    </div>
-    <div class="stat">
-      <small>Paid Orders</small>
-      <strong id="paidOrders">0</strong>
-    </div>
-    <div class="stat">
-      <small>Trading Accounts</small>
-      <strong id="totalAccounts">0</strong>
-    </div>
-  </div>
+<div class="stats">
+  <div class="stat"><small>Total Orders</small><strong id="totalOrders">0</strong></div>
+  <div class="stat"><small>Pending Orders</small><strong id="pendingOrders">0</strong></div>
+  <div class="stat"><small>Paid Orders</small><strong id="paidOrders">0</strong></div>
+  <div class="stat"><small>Trading Accounts</small><strong id="totalAccounts">0</strong></div>
+</div>
 
-  <!-- ORDERS -->
-  <section class="panel">
-    <h2>Orders Management</h2>
+<section class="panel">
+<h2>Orders Management</h2>
+<button class="secondary" onclick="loadOrders()">Refresh Orders</button>
+<p class="muted">Review payment, platform, coupon and pricing before approving orders.</p>
 
-    <button class="secondary" onclick="loadOrders()">
-      Refresh Orders
-    </button>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Order ID</th><th>Customer ID</th><th>Account Size</th>
+<th>Account Type</th><th>Platform</th><th>Coupon</th>
+<th>Discount</th><th>Base Price</th><th>Final Price</th>
+<th>Network</th><th>Transaction Hash</th>
+<th>Payment Verification</th><th>Status</th>
+<th>Full Details</th><th>Actions</th>
+</tr>
+</thead>
+<tbody id="ordersTable">
+<tr><td colspan="15">Loading orders...</td></tr>
+</tbody>
+</table>
+</div>
+</section>
 
-    <p class="muted">
-      Review platform, coupon, discount, pricing and payment details before approving an order.
-    </p>
+<section class="panel">
+<h2>Create Trading Account</h2>
+<p class="muted">Only create an account after independently verifying payment and confirming real MT credentials.</p>
 
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Customer ID</th>
-            <th>Account Size</th>
-            <th>Account Type</th>
-            <th>Platform</th>
-            <th>Coupon</th>
-            <th>Discount</th>
-            <th>Base Price</th>
-            <th>Final Price</th>
-            <th>Network</th>
-            <th>Transaction Hash</th>
-            <th>Payment Verification</th>
-            <th>Status</th>
-            <th>Full Details</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+<label>Customer User ID</label>
+<input id="newUserId" placeholder="Supabase User UUID">
 
-        <tbody id="ordersTable">
-          <tr><td colspan="15">Loading orders...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+<label>Order ID (Required)</label>
+<input id="newOrderId" placeholder="Paid Order UUID">
 
-  <!-- CREATE ACCOUNT -->
-  <section class="panel">
-    <h2>Create Trading Account</h2>
+<label>Account Size</label>
+<select id="newAccountSize">
+<option value="2500">$2,500</option>
+<option value="5000">$5,000</option>
+<option value="10000">$10,000</option>
+<option value="25000">$25,000</option>
+<option value="50000">$50,000</option>
+<option value="100000">$100,000</option>
+</select>
 
-    <p class="muted">
-      Only create an account after independently verifying the customer's payment and confirming real MT credentials.
-    </p>
+<label>Account Type</label>
+<select id="newAccountType">
+<option value="evaluation">1-Step Evaluation</option>
+<option value="instant">Instant Funding</option>
+</select>
 
-    <label>Customer User ID</label>
-    <input id="newUserId" placeholder="Supabase User UUID" autocomplete="off">
+<label>Trading Platform</label>
+<select id="newPlatform">
+<option value="MT5">MT5</option>
+<option value="MT4">MT4</option>
+</select>
 
-    <label>Order ID (Required)</label>
-    <input id="newOrderId" placeholder="Paid Order UUID" autocomplete="off">
+<label>MT Login</label>
+<input id="newMtLogin" placeholder="Trading Account Login">
 
-    <label>Account Size</label>
-    <select id="newAccountSize">
-      <option value="2500">$2,500</option>
-      <option value="5000">$5,000</option>
-      <option value="10000">$10,000</option>
-      <option value="25000">$25,000</option>
-      <option value="50000">$50,000</option>
-      <option value="100000">$100,000</option>
-    </select>
+<label>MT Server</label>
+<input id="newMtServer" placeholder="Broker Server">
 
-    <label>Account Type</label>
-    <select id="newAccountType">
-      <option value="evaluation">1-Step Evaluation</option>
-      <option value="instant">Instant Funding</option>
-    </select>
+<p class="form-note">Enter the real MT login and server details supplied by your account provider.</p>
 
-    <label>Trading Platform</label>
-    <select id="newPlatform">
-      <option value="MT5">MT5</option>
-      <option value="MT4">MT4</option>
-    </select>
+<button class="primary" id="createAccountBtn" onclick="createTradingAccount()">Create Account</button>
+</section>
 
-    <label>MT Login</label>
-    <input id="newMtLogin" placeholder="Trading Account Login" autocomplete="off">
-
-    <label>MT Server</label>
-    <input id="newMtServer" placeholder="Broker Server" autocomplete="off">
-
-    <p class="form-note">
-      Enter the real MT login and server details supplied by your account provider.
-    </p>
-
-    <button class="primary" id="createAccountBtn" onclick="createTradingAccount()">
-      Create Account
-    </button>
-  </section>
-
-  <!-- TRADING ACCOUNTS -->
-  <section class="panel">
-    <h2>Trading Accounts</h2>
-
-    <button class="secondary" onclick="loadTradingAccounts()">
-      Refresh Accounts
-    </button>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Account ID</th>
-            <th>User ID</th>
-            <th>Account Size</th>
-            <th>Type</th>
-            <th>Balance</th>
-            <th>Status</th>
-            <th>MT Login</th>
-            <th>Platform</th>
-          </tr>
-        </thead>
-
-        <tbody id="accountsTable">
-          <tr><td colspan="8">Loading accounts...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+<section class="panel">
+<h2>Trading Accounts</h2>
+<button class="secondary" onclick="loadTradingAccounts()">Refresh Accounts</button>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Account ID</th><th>User ID</th><th>Account Size</th>
+<th>Type</th><th>Balance</th><th>Status</th>
+<th>MT Login</th><th>Platform</th>
+</tr>
+</thead>
+<tbody id="accountsTable">
+<tr><td colspan="8">Loading accounts...</td></tr>
+</tbody>
+</table>
+</div>
+</section>
 
 </section>
 </main>
 
 <script>
-const SUPABASE_URL =
-  "https://vxcwfirfgxrxafbirnwu.supabase.co";
+"use strict";
 
-const SUPABASE_KEY =
-  "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
 
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
+let db = null;
 let currentSession = null;
 let isCreatingAccount = false;
 
@@ -257,9 +197,7 @@ function escapeHTML(value) {
 }
 
 function isValidBep20Hash(hash) {
-  return /^0x[a-fA-F0-9]{64}$/.test(
-    String(hash || "").trim()
-  );
+  return /^0x[a-fA-F0-9]{64}$/.test(String(hash || "").trim());
 }
 
 function displayDate(value) {
@@ -272,18 +210,13 @@ function paymentCheck(order) {
   const hash = String(order.transaction_hash || "").trim();
   const network = String(order.payment_network || "").toUpperCase();
 
-  if (!hash) {
-    return '<span class="bad">Not submitted</span>';
-  }
-
+  if (!hash) return '<span class="bad">Not submitted</span>';
   if (!network.includes("BEP20") && !network.includes("BSC")) {
     return '<span class="warning">Check network manually</span>';
   }
-
   if (!isValidBep20Hash(hash)) {
     return '<span class="bad">Invalid hash format</span>';
   }
-
   return '<span class="warning">Hash format valid — blockchain verification required</span>';
 }
 
@@ -291,7 +224,6 @@ function paymentCheck(order) {
 async function loadAdmin() {
   document.getElementById("loading").classList.remove("hidden");
   document.getElementById("dashboard").classList.add("hidden");
-
   showMessage("Checking Supabase session...", "info");
 
   try {
@@ -322,17 +254,13 @@ async function loadAdmin() {
 
     document.getElementById("loading").classList.add("hidden");
     document.getElementById("dashboard").classList.remove("hidden");
-
     showMessage("Admin access verified.", "success");
 
-    await Promise.all([
-      loadOrders(),
-      loadTradingAccounts()
-    ]);
+    await Promise.all([loadOrders(), loadTradingAccounts()]);
 
   } catch (error) {
     showMessage("Admin error: " + error.message, "error");
-    console.error(error);
+    console.error("Admin authentication error:", error);
   }
 }
 
@@ -352,10 +280,8 @@ async function loadOrders() {
     const orders = data || [];
 
     document.getElementById("totalOrders").textContent = orders.length;
-
     document.getElementById("pendingOrders").textContent =
       orders.filter(o => String(o.status).toLowerCase() === "pending").length;
-
     document.getElementById("paidOrders").textContent =
       orders.filter(o => String(o.status).toLowerCase() === "paid").length;
 
@@ -368,12 +294,9 @@ async function loadOrders() {
       const hash = String(order.transaction_hash || "");
       const network = order.payment_network || "—";
       const status = String(order.status || "pending").toLowerCase();
-
       const validHash = isValidBep20Hash(hash);
-      const isBep20 =
-        String(network).toUpperCase().includes("BEP20") ||
-        String(network).toUpperCase().includes("BSC");
-
+      const upperNetwork = String(network).toUpperCase();
+      const isBep20 = upperNetwork.includes("BEP20") || upperNetwork.includes("BSC");
       const coupon = order.coupon_code || "—";
       const discount = Number(order.discount_percent || 0);
       const basePrice = Number(order.base_price || 0);
@@ -385,14 +308,9 @@ async function loadOrders() {
         actions = `
           <button class="primary"
             onclick="updateOrder('${escapeHTML(order.id)}','paid')"
-            ${(!isBep20 || !validHash) ? "disabled" : ""}>
-            Approve
-          </button>
-
+            ${(!isBep20 || !validHash) ? "disabled" : ""}>Approve</button>
           <button class="danger"
-            onclick="updateOrder('${escapeHTML(order.id)}','rejected')">
-            Reject
-          </button>
+            onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
         `;
       } else {
         actions = `<span class="status">${escapeHTML(status)}</span>`;
@@ -402,102 +320,48 @@ async function loadOrders() {
         <details>
           <summary>View Details</summary>
           <div class="details-box">
-            <strong>Order ID:</strong><br>
-            ${escapeHTML(order.id)}<br>
-
-            <strong>Customer User ID:</strong><br>
-            ${escapeHTML(order.user_id)}<br>
-
-            <strong>Account Size:</strong>
-            ${money(order.account_size)}<br>
-
-            <strong>Account Type:</strong>
-            ${escapeHTML(order.account_type || "—")}<br>
-
-            <strong>Platform:</strong>
-            ${escapeHTML(order.platform || "—")}<br>
-
-            <strong>Coupon:</strong>
-            ${escapeHTML(coupon)}<br>
-
-            <strong>Discount:</strong>
-            ${discount}%<br>
-
-            <strong>Base Price:</strong>
-            ${money(basePrice)}<br>
-
-            <strong>Final Price:</strong>
-            ${money(finalPrice)}<br>
-
-            <strong>Payment Network:</strong>
-            ${escapeHTML(network)}<br>
-
-            <strong>Transaction Hash:</strong><br>
-            <span class="hash">${escapeHTML(hash || "Not submitted")}</span><br>
-
-            <strong>Receipt Path:</strong><br>
-            ${escapeHTML(order.receipt_path || "No receipt path")}<br>
-
-            <strong>Payment Submitted:</strong><br>
-            ${displayDate(order.payment_submitted_at)}<br>
-
-            <strong>Order Created:</strong><br>
-            ${displayDate(order.created_at)}<br>
-
-            <strong>Status:</strong>
-            ${escapeHTML(status)}
+            <strong>Order ID:</strong><br>${escapeHTML(order.id)}<br>
+            <strong>Customer User ID:</strong><br>${escapeHTML(order.user_id)}<br>
+            <strong>Account Size:</strong> ${money(order.account_size)}<br>
+            <strong>Account Type:</strong> ${escapeHTML(order.account_type || "—")}<br>
+            <strong>Platform:</strong> ${escapeHTML(order.platform || "—")}<br>
+            <strong>Coupon:</strong> ${escapeHTML(coupon)}<br>
+            <strong>Discount:</strong> ${discount}%<br>
+            <strong>Base Price:</strong> ${money(basePrice)}<br>
+            <strong>Final Price:</strong> ${money(finalPrice)}<br>
+            <strong>Payment Network:</strong> ${escapeHTML(network)}<br>
+            <strong>Transaction Hash:</strong><br><span class="hash">${escapeHTML(hash || "Not submitted")}</span><br>
+            <strong>Receipt Path:</strong><br>${escapeHTML(order.receipt_path || "No receipt path")}<br>
+            <strong>Payment Submitted:</strong><br>${displayDate(order.payment_submitted_at)}<br>
+            <strong>Order Created:</strong><br>${displayDate(order.created_at)}<br>
+            <strong>Status:</strong> ${escapeHTML(status)}
           </div>
         </details>
       `;
 
       return `
         <tr>
-          <td title="${escapeHTML(order.id)}">
-            ${escapeHTML(shortId(order.id))}
-          </td>
-
-          <td title="${escapeHTML(order.user_id)}">
-            ${escapeHTML(shortId(order.user_id))}
-          </td>
-
+          <td title="${escapeHTML(order.id)}">${escapeHTML(shortId(order.id))}</td>
+          <td title="${escapeHTML(order.user_id)}">${escapeHTML(shortId(order.user_id))}</td>
           <td>${money(order.account_size)}</td>
-
           <td>${escapeHTML(order.account_type || "—")}</td>
-
           <td>${escapeHTML(order.platform || "—")}</td>
-
           <td>${escapeHTML(coupon)}</td>
-
           <td>${discount}%</td>
-
           <td class="price">${money(basePrice)}</td>
-
           <td class="price">${money(finalPrice)}</td>
-
           <td>${escapeHTML(network)}</td>
-
-          <td>
-            <span class="hash" title="${escapeHTML(hash)}">
-              ${escapeHTML(hash ? shortId(hash) : "Not submitted")}
-            </span>
-          </td>
-
+          <td><span class="hash" title="${escapeHTML(hash)}">${escapeHTML(hash ? shortId(hash) : "Not submitted")}</span></td>
           <td>${paymentCheck(order)}</td>
-
           <td><span class="status">${escapeHTML(status)}</span></td>
-
           <td>${details}</td>
-
           <td class="actions">${actions}</td>
         </tr>
       `;
     }).join("");
 
   } catch (error) {
-    tbody.innerHTML = `
-      <tr><td colspan="15">Error: ${escapeHTML(error.message)}</td></tr>
-    `;
-
+    tbody.innerHTML = `<tr><td colspan="15">Error: ${escapeHTML(error.message)}</td></tr>`;
     showMessage("Orders loading error: " + error.message, "error");
     console.error(error);
   }
@@ -519,15 +383,9 @@ async function updateOrder(orderId, status) {
   try {
     showMessage("Updating order...", "info");
 
-    const { data, error } = await db.functions.invoke(
-      "admin-update-order",
-      {
-        body: {
-          order_id: orderId,
-          status: status
-        }
-      }
-    );
+    const { data, error } = await db.functions.invoke("admin-update-order", {
+      body: { order_id: orderId, status: status }
+    });
 
     if (error) throw error;
     if (data?.error) throw new Error(data.error);
@@ -564,14 +422,8 @@ async function loadTradingAccounts() {
 
     tbody.innerHTML = accounts.map(account => `
       <tr>
-        <td title="${escapeHTML(account.id)}">
-          ${escapeHTML(shortId(account.id))}
-        </td>
-
-        <td title="${escapeHTML(account.user_id)}">
-          ${escapeHTML(shortId(account.user_id))}
-        </td>
-
+        <td title="${escapeHTML(account.id)}">${escapeHTML(shortId(account.id))}</td>
+        <td title="${escapeHTML(account.user_id)}">${escapeHTML(shortId(account.user_id))}</td>
         <td>${money(account.account_size)}</td>
         <td>${escapeHTML(account.account_type || "—")}</td>
         <td>${money(account.balance)}</td>
@@ -582,10 +434,7 @@ async function loadTradingAccounts() {
     `).join("");
 
   } catch (error) {
-    tbody.innerHTML = `
-      <tr><td colspan="8">Error: ${escapeHTML(error.message)}</td></tr>
-    `;
-
+    tbody.innerHTML = `<tr><td colspan="8">Error: ${escapeHTML(error.message)}</td></tr>`;
     showMessage("Trading accounts error: " + error.message, "error");
     console.error(error);
   }
@@ -623,9 +472,7 @@ async function createTradingAccount() {
     return;
   }
 
-  if (!confirm(
-    "Create this trading account record? Verify the paid order and real MT details first."
-  )) return;
+  if (!confirm("Create this trading account record? Verify the paid order and real MT details first.")) return;
 
   const button = document.getElementById("createAccountBtn");
 
@@ -633,26 +480,21 @@ async function createTradingAccount() {
     isCreatingAccount = true;
     button.disabled = true;
     button.textContent = "Creating...";
-
     showMessage("Creating trading account...", "info");
 
-    const { data, error } = await db.functions.invoke(
-      "admin-create-trading-account",
-      {
-        body: {
-          user_id: userId,
-          order_id: orderId,
-          account_size: accountSize,
-          account_type: accountType,
-          platform: platform,
-          mt_login: mtLogin,
-          mt_server: mtServer
-        }
+    const { data, error } = await db.functions.invoke("admin-create-trading-account", {
+      body: {
+        user_id: userId,
+        order_id: orderId,
+        account_size: accountSize,
+        account_type: accountType,
+        platform: platform,
+        mt_login: mtLogin,
+        mt_server: mtServer
       }
-    );
+    });
 
     if (error) throw error;
-
     if (!data || data.success !== true) {
       throw new Error(data?.error || "Account creation was not confirmed.");
     }
@@ -679,6 +521,11 @@ async function createTradingAccount() {
 
 // LOGOUT
 async function logout() {
+  if (!db) {
+    window.location.href = "Login.html";
+    return;
+  }
+
   const { error } = await db.auth.signOut();
 
   if (error) {
@@ -689,5 +536,31 @@ async function logout() {
   window.location.href = "Login.html";
 }
 
-// AUTH STATE
-db.auth.onAuthStateChange((event, ses
+// STARTUP
+window.addEventListener("DOMContentLoaded", () => {
+  if (!window.supabase || typeof window.supabase.createClient !== "function") {
+    document.getElementById("loading").textContent =
+      "ERROR: Supabase library failed to load. Check your internet connection and reload this page.";
+    showMessage("Supabase JavaScript library could not load. Try again later.", "error");
+    return;
+  }
+
+  try {
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    db.auth.onAuthStateChange((event, session) => {
+      currentSession = session;
+    });
+
+    loadAdmin();
+
+  } catch (error) {
+    document.getElementById("loading").textContent = "Admin initialization failed.";
+    showMessage("Initialization error: " + error.message, "error");
+    console.error(error);
+  }
+});
+</script>
+</body>
+  </html>
+  
