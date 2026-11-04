@@ -25,7 +25,7 @@ button{border:0;border-radius:7px;padding:10px 14px;font-weight:bold;cursor:poin
 .danger{background:#d94343;color:#fff}
 .secondary{background:#344b64;color:#fff}
 button:disabled{opacity:.5;cursor:not-allowed}
-table{width:100%;border-collapse:collapse;min-width:850px}
+table{width:100%;border-collapse:collapse;min-width:950px}
 th,td{padding:12px 10px;border-bottom:1px solid #263b52;text-align:left;font-size:13px}
 th{color:#43d9a3}
 .table-wrap{overflow-x:auto}
@@ -37,8 +37,8 @@ th{color:#43d9a3}
 .info{display:block!important;background:#18334e;color:#b8dcff}
 .hidden{display:none!important}
 .actions{white-space:nowrap}
-a{color:#62b6ff}
 label{font-size:13px;color:#b7c8d9}
+.form-note{font-size:12px;color:#9db0c5;margin-top:-8px;margin-bottom:12px}
 </style>
 </head>
 
@@ -50,130 +50,197 @@ label{font-size:13px;color:#b7c8d9}
 </header>
 
 <main>
-  <div id="message"></div>
 
-  <section id="loading" class="panel">
-    Checking admin access...
-  </section>
+<div id="message"></div>
 
-  <section id="dashboard" class="hidden">
+<section id="loading" class="panel">
+  Checking admin access...
+</section>
 
-    <div class="stats">
-      <div class="stat">
-        <small>Total Orders</small>
-        <strong id="totalOrders">0</strong>
-      </div>
-      <div class="stat">
-        <small>Pending Orders</small>
-        <strong id="pendingOrders">0</strong>
-      </div>
-      <div class="stat">
-        <small>Paid Orders</small>
-        <strong id="paidOrders">0</strong>
-      </div>
-      <div class="stat">
-        <small>Trading Accounts</small>
-        <strong id="totalAccounts">0</strong>
-      </div>
+<section id="dashboard" class="hidden">
+
+  <!-- STATISTICS -->
+  <div class="stats">
+
+    <div class="stat">
+      <small>Total Orders</small>
+      <strong id="totalOrders">0</strong>
     </div>
 
-    <section class="panel">
-      <h2>Orders Management</h2>
-      <button class="secondary" onclick="loadOrders()">Refresh Orders</button>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Account</th>
-              <th>Type</th>
-              <th>Price</th>
-              <th>Network</th>
-              <th>Transaction Hash</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="ordersTable">
-            <tr><td colspan="8">Loading orders...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+    <div class="stat">
+      <small>Pending Orders</small>
+      <strong id="pendingOrders">0</strong>
+    </div>
 
-    <section class="panel">
-      <h2>Create Trading Account</h2>
-      <p class="muted">Use this form only after verifying the customer's order and payment.</p>
+    <div class="stat">
+      <small>Paid Orders</small>
+      <strong id="paidOrders">0</strong>
+    </div>
 
-      <label>Customer User ID</label>
-      <input id="newUserId" placeholder="Supabase user UUID">
+    <div class="stat">
+      <small>Trading Accounts</small>
+      <strong id="totalAccounts">0</strong>
+    </div>
 
-      <label>Order ID (optional)</label>
-      <input id="newOrderId" placeholder="Order UUID">
+  </div>
 
-      <label>Account Size</label>
-      <select id="newAccountSize">
-        <option value="2500">$2,500</option>
-        <option value="5000">$5,000</option>
-        <option value="10000">$10,000</option>
-        <option value="25000">$25,000</option>
-        <option value="50000">$50,000</option>
-        <option value="100000">$100,000</option>
-      </select>
+  <!-- ORDERS MANAGEMENT -->
+  <section class="panel">
 
-      <label>Account Type</label>
-      <select id="newAccountType">
-        <option value="1-step">1-Step</option>
-        <option value="2-step">2-Step</option>
-        <option value="instant">Instant</option>
-      </select>
+    <h2>Orders Management</h2>
 
-      <label>Trading Platform</label>
-      <select id="newPlatform">
-        <option value="MT5">MT5</option>
-        <option value="MT4">MT4</option>
-        <option value="cTrader">cTrader</option>
-      </select>
+    <button class="secondary" onclick="loadOrders()">
+      Refresh Orders
+    </button>
 
-      <label>MT Login</label>
-      <input id="newMtLogin" placeholder="Trading account login">
+    <div class="table-wrap">
+      <table>
 
-      <label>MT Server</label>
-      <input id="newMtServer" placeholder="Broker server">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer ID</th>
+            <th>Account Size</th>
+            <th>Account Type</th>
+            <th>Price</th>
+            <th>Network</th>
+            <th>Transaction Hash</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
 
-      <button class="primary" onclick="createTradingAccount()">Create Account</button>
-    </section>
+        <tbody id="ordersTable">
+          <tr>
+            <td colspan="9">Loading orders...</td>
+          </tr>
+        </tbody>
 
-    <section class="panel">
-      <h2>Trading Accounts</h2>
-      <button class="secondary" onclick="loadTradingAccounts()">Refresh Accounts</button>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Account ID</th>
-              <th>User ID</th>
-              <th>Account</th>
-              <th>Type</th>
-              <th>Balance</th>
-              <th>Status</th>
-              <th>MT Login</th>
-              <th>Platform</th>
-            </tr>
-          </thead>
-          <tbody id="accountsTable">
-            <tr><td colspan="8">Loading accounts...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+      </table>
+    </div>
 
   </section>
+
+  <!-- CREATE TRADING ACCOUNT -->
+  <section class="panel">
+
+    <h2>Create Trading Account</h2>
+
+    <p class="muted">
+      Create an account record only after verifying the customer's paid order.
+    </p>
+
+    <label>Customer User ID</label>
+    <input
+      id="newUserId"
+      placeholder="Supabase User UUID"
+      autocomplete="off"
+    >
+
+    <label>Order ID (Required)</label>
+    <input
+      id="newOrderId"
+      placeholder="Paid Order UUID"
+      autocomplete="off"
+      required
+    >
+
+    <label>Account Size</label>
+    <select id="newAccountSize">
+      <option value="2500">$2,500</option>
+      <option value="5000">$5,000</option>
+      <option value="10000">$10,000</option>
+      <option value="25000">$25,000</option>
+      <option value="50000">$50,000</option>
+      <option value="100000">$100,000</option>
+    </select>
+
+    <label>Account Type</label>
+    <select id="newAccountType">
+      <option value="1-step">1-Step</option>
+      <option value="2-step">2-Step</option>
+      <option value="instant">Instant</option>
+    </select>
+
+    <label>Trading Platform</label>
+    <select id="newPlatform">
+      <option value="MT5">MT5</option>
+      <option value="MT4">MT4</option>
+    </select>
+
+    <label>MT Login</label>
+    <input
+      id="newMtLogin"
+      placeholder="Trading Account Login"
+      autocomplete="off"
+    >
+
+    <label>MT Server</label>
+    <input
+      id="newMtServer"
+      placeholder="Broker Server"
+      autocomplete="off"
+    >
+
+    <p class="form-note">
+      Enter the real MT login and server details supplied by your account provider.
+    </p>
+
+    <button
+      class="primary"
+      id="createAccountBtn"
+      onclick="createTradingAccount()"
+    >
+      Create Account
+    </button>
+
+  </section>
+
+  <!-- TRADING ACCOUNTS -->
+  <section class="panel">
+
+    <h2>Trading Accounts</h2>
+
+    <button class="secondary" onclick="loadTradingAccounts()">
+      Refresh Accounts
+    </button>
+
+    <div class="table-wrap">
+      <table>
+
+        <thead>
+          <tr>
+            <th>Account ID</th>
+            <th>User ID</th>
+            <th>Account Size</th>
+            <th>Type</th>
+            <th>Balance</th>
+            <th>Status</th>
+            <th>MT Login</th>
+            <th>Platform</th>
+          </tr>
+        </thead>
+
+        <tbody id="accountsTable">
+          <tr>
+            <td colspan="8">Loading accounts...</td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+  </section>
+
+</section>
 </main>
 
 <script>
-const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
-const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+const SUPABASE_URL =
+  "https://vxcwfirfgxrxafbirnwu.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
 
 const db = window.supabase.createClient(
   SUPABASE_URL,
@@ -181,17 +248,12 @@ const db = window.supabase.createClient(
 );
 
 let currentSession = null;
+let isCreatingAccount = false;
 
-function showMessage(message, type="info") {
+function showMessage(message, type = "info") {
   const box = document.getElementById("message");
   box.textContent = message;
   box.className = type;
-}
-
-function hideMessage() {
-  const box = document.getElementById("message");
-  box.textContent = "";
-  box.className = "";
 }
 
 function money(value) {
@@ -199,26 +261,32 @@ function money(value) {
 }
 
 function shortId(value) {
-  return value ? String(value).slice(0, 8) + "..." : "—";
+  return value
+    ? String(value).slice(0, 8) + "..."
+    : "—";
 }
 
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#039;"
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
   }[char]));
 }
 
 function isValidBep20Hash(hash) {
-  return /^0x[a-fA-F0-9]{64}$/.test(String(hash || "").trim());
+  return /^0x[a-fA-F0-9]{64}$/.test(
+    String(hash || "").trim()
+  );
 }
 
+// ADMIN AUTHENTICATION
 async function loadAdmin() {
   document.getElementById("loading").classList.remove("hidden");
   document.getElementById("dashboard").classList.add("hidden");
+
   showMessage("Checking Supabase session...", "info");
 
   try {
@@ -229,7 +297,10 @@ async function loadAdmin() {
     currentSession = data.session;
 
     if (!currentSession) {
-      showMessage("No active login session. Please login again.", "error");
+      showMessage(
+        "No active login session. Please login again.",
+        "error"
+      );
       return;
     }
 
@@ -245,8 +316,7 @@ async function loadAdmin() {
 
     if (!admin) {
       showMessage(
-        "Access denied. Your logged-in user is not listed in admin_users. User ID: " +
-        currentSession.user.id,
+        "Access denied. Your user is not listed in admin_users.",
         "error"
       );
       return;
@@ -255,7 +325,7 @@ async function loadAdmin() {
     document.getElementById("loading").classList.add("hidden");
     document.getElementById("dashboard").classList.remove("hidden");
 
-    showMessage("Admin access verified. Loading dashboard...", "success");
+    showMessage("Admin access verified.", "success");
 
     await Promise.all([
       loadOrders(),
@@ -263,14 +333,21 @@ async function loadAdmin() {
     ]);
 
   } catch (error) {
-    showMessage("Admin error: " + error.message, "error");
-    console.error("Admin dashboard error:", error);
+    showMessage(
+      "Admin error: " + error.message,
+      "error"
+    );
+
+    console.error(error);
   }
 }
 
+// LOAD ORDERS
 async function loadOrders() {
   const tbody = document.getElementById("ordersTable");
-  tbody.innerHTML = '<tr><td colspan="8">Loading orders...</td></tr>';
+
+  tbody.innerHTML =
+    '<tr><td colspan="9">Loading orders...</td></tr>';
 
   try {
     const { data, error } = await db
@@ -282,80 +359,154 @@ async function loadOrders() {
 
     const orders = data || [];
 
-    document.getElementById("totalOrders").textContent = orders.length;
+    document.getElementById("totalOrders").textContent =
+      orders.length;
+
     document.getElementById("pendingOrders").textContent =
-      orders.filter(o => String(o.status).toLowerCase() === "pending").length;
+      orders.filter(o =>
+        String(o.status).toLowerCase() === "pending"
+      ).length;
+
     document.getElementById("paidOrders").textContent =
-      orders.filter(o => String(o.status).toLowerCase() === "paid").length;
+      orders.filter(o =>
+        String(o.status).toLowerCase() === "paid"
+      ).length;
 
     if (!orders.length) {
-      tbody.innerHTML = '<tr><td colspan="8">No orders found.</td></tr>';
+      tbody.innerHTML =
+        '<tr><td colspan="9">No orders found.</td></tr>';
       return;
     }
 
     tbody.innerHTML = orders.map(order => {
+
       const hash = order.transaction_hash || "";
       const network = order.payment_network || "—";
-      const isBep20 = String(network).toUpperCase().includes("BEP20");
+
+      const isBep20 =
+        String(network).toUpperCase().includes("BEP20");
+
       const validHash = isValidBep20Hash(hash);
-      const status = String(order.status || "pending").toLowerCase();
+
+      const status =
+        String(order.status || "pending").toLowerCase();
 
       const hashHTML = hash
-        ? `<span title="${escapeHTML(hash)}">${escapeHTML(shortId(hash))}</span>`
+        ? `<span title="${escapeHTML(hash)}">
+             ${escapeHTML(shortId(hash))}
+           </span>`
         : "Not submitted";
 
       let actions = "";
 
       if (status === "pending") {
+
         actions = `
-          <button class="primary"
-            onclick="updateOrder('${order.id}','paid')"
-            ${(!isBep20 || !validHash) ? "disabled" : ""}>
+          <button
+            class="primary"
+            onclick="updateOrder('${escapeHTML(order.id)}','paid')"
+            ${(!isBep20 || !validHash) ? "disabled" : ""}
+          >
             Approve
           </button>
-          <button class="danger"
-            onclick="updateOrder('${order.id}','rejected')">
+
+          <button
+            class="danger"
+            onclick="updateOrder('${escapeHTML(order.id)}','rejected')"
+          >
             Reject
-          </button>`;
+          </button>
+        `;
+
       } else {
-        actions = `<span class="status">${escapeHTML(status)}</span>`;
+        actions = `
+          <span class="status">
+            ${escapeHTML(status)}
+          </span>
+        `;
       }
 
       return `
         <tr>
-          <td title="${escapeHTML(order.id)}">${escapeHTML(shortId(order.id))}</td>
-          <td title="${escapeHTML(order.user_id)}">${escapeHTML(shortId(order.user_id))}</td>
-          <td>${escapeHTML(order.account_size || "—")}</td>
-          <td>${escapeHTML(order.account_type || "—")}</td>
-          <td>${money(order.final_price)}</td>
-          <td>${escapeHTML(network)}</td>
-          <td>${hashHTML}</td>
-          <td><span class="status">${escapeHTML(status)}</span></td>
-          <td class="actions">${actions}</td>
-        </tr>`;
+
+          <td title="${escapeHTML(order.id)}">
+            ${escapeHTML(shortId(order.id))}
+          </td>
+
+          <td title="${escapeHTML(order.user_id)}">
+            ${escapeHTML(shortId(order.user_id))}
+          </td>
+
+          <td>
+            ${money(order.account_size)}
+          </td>
+
+          <td>
+            ${escapeHTML(order.account_type || "—")}
+          </td>
+
+          <td>
+            ${money(order.final_price)}
+          </td>
+
+          <td>
+            ${escapeHTML(network)}
+          </td>
+
+          <td>
+            ${hashHTML}
+          </td>
+
+          <td>
+            <span class="status">
+              ${escapeHTML(status)}
+            </span>
+          </td>
+
+          <td class="actions">
+            ${actions}
+          </td>
+
+        </tr>
+      `;
+
     }).join("");
 
   } catch (error) {
-    tbody.innerHTML =
-      `<tr><td colspan="8">Error: ${escapeHTML(error.message)}</td></tr>`;
-    showMessage("Orders loading error: " + error.message, "error");
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9">
+          Error: ${escapeHTML(error.message)}
+        </td>
+      </tr>
+    `;
+
+    showMessage(
+      "Orders loading error: " + error.message,
+      "error"
+    );
+
     console.error(error);
   }
 }
 
+// APPROVE OR REJECT ORDER
 async function updateOrder(orderId, status) {
+
   if (!currentSession) {
     showMessage("Please login again.", "error");
     return;
   }
 
   const confirmation = status === "paid"
-    ? "Have you independently verified the BEP20 payment on the blockchain?"
+    ? "Have you independently verified this BEP20 payment on the blockchain?"
     : "Are you sure you want to reject this order?";
 
   if (!confirm(confirmation)) return;
 
   try {
+
     showMessage("Updating order...", "info");
 
     const { data, error } = await db.functions.invoke(
@@ -370,20 +521,38 @@ async function updateOrder(orderId, status) {
 
     if (error) throw error;
 
-    showMessage("Order update request completed.", "success");
+    if (data?.error) {
+      throw new Error(data.error);
+    }
+
+    showMessage(
+      "Order update completed.",
+      "success"
+    );
+
     await loadOrders();
 
   } catch (error) {
-    showMessage("Order update failed: " + error.message, "error");
+
+    showMessage(
+      "Order update failed: " + error.message,
+      "error"
+    );
+
     console.error(error);
   }
 }
 
+// LOAD TRADING ACCOUNTS
 async function loadTradingAccounts() {
+
   const tbody = document.getElementById("accountsTable");
-  tbody.innerHTML = '<tr><td colspan="8">Loading accounts...</td></tr>';
+
+  tbody.innerHTML =
+    '<tr><td colspan="8">Loading accounts...</td></tr>';
 
   try {
+
     const { data, error } = await db
       .from("trading_accounts")
       .select("*")
@@ -392,66 +561,156 @@ async function loadTradingAccounts() {
     if (error) throw error;
 
     const accounts = data || [];
-    document.getElementById("totalAccounts").textContent = accounts.length;
+
+    document.getElementById("totalAccounts").textContent =
+      accounts.length;
 
     if (!accounts.length) {
-      tbody.innerHTML = '<tr><td colspan="8">No trading accounts found.</td></tr>';
+
+      tbody.innerHTML =
+        '<tr><td colspan="8">No trading accounts found.</td></tr>';
+
       return;
     }
 
     tbody.innerHTML = accounts.map(account => `
       <tr>
-        <td title="${escapeHTML(account.id)}">${escapeHTML(shortId(account.id))}</td>
-        <td title="${escapeHTML(account.user_id)}">${escapeHTML(shortId(account.user_id))}</td>
-        <td>${escapeHTML(account.account_size || "—")}</td>
-        <td>${escapeHTML(account.account_type || "—")}</td>
-        <td>${money(account.balance)}</td>
-        <td>${escapeHTML(account.status || "—")}</td>
-        <td>${escapeHTML(account.mt_login || "—")}</td>
-        <td>${escapeHTML(account.platform || "—")}</td>
+
+        <td title="${escapeHTML(account.id)}">
+          ${escapeHTML(shortId(account.id))}
+        </td>
+
+        <td title="${escapeHTML(account.user_id)}">
+          ${escapeHTML(shortId(account.user_id))}
+        </td>
+
+        <td>
+          ${money(account.account_size)}
+        </td>
+
+        <td>
+          ${escapeHTML(account.account_type || "—")}
+        </td>
+
+        <td>
+          ${money(account.balance)}
+        </td>
+
+        <td>
+          ${escapeHTML(account.status || "—")}
+        </td>
+
+        <td>
+          ${escapeHTML(account.mt_login || "—")}
+        </td>
+
+        <td>
+          ${escapeHTML(account.platform || "—")}
+        </td>
+
       </tr>
     `).join("");
 
   } catch (error) {
-    tbody.innerHTML =
-      `<tr><td colspan="8">Error: ${escapeHTML(error.message)}</td></tr>`;
-    showMessage("Trading accounts error: " + error.message, "error");
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8">
+          Error: ${escapeHTML(error.message)}
+        </td>
+      </tr>
+    `;
+
+    showMessage(
+      "Trading accounts error: " + error.message,
+      "error"
+    );
+
     console.error(error);
   }
 }
 
+// CREATE TRADING ACCOUNT
 async function createTradingAccount() {
-  const userId = document.getElementById("newUserId").value.trim();
-  const orderId = document.getElementById("newOrderId").value.trim();
-  const accountSize = Number(document.getElementById("newAccountSize").value);
-  const accountType = document.getElementById("newAccountType").value;
-  const platform = document.getElementById("newPlatform").value;
-  const mtLogin = document.getElementById("newMtLogin").value.trim();
-  const mtServer = document.getElementById("newMtServer").value.trim();
+
+  if (isCreatingAccount) return;
+
+  if (!currentSession) {
+    showMessage("Please login again.", "error");
+    return;
+  }
+
+  const userId =
+    document.getElementById("newUserId").value.trim();
+
+  const orderId =
+    document.getElementById("newOrderId").value.trim();
+
+  const accountSize =
+    Number(document.getElementById("newAccountSize").value);
+
+  const accountType =
+    document.getElementById("newAccountType").value;
+
+  const platform =
+    document.getElementById("newPlatform").value;
+
+  const mtLogin =
+    document.getElementById("newMtLogin").value.trim();
+
+  const mtServer =
+    document.getElementById("newMtServer").value.trim();
 
   if (!userId) {
-    showMessage("Enter the customer's Supabase User ID.", "error");
+    showMessage(
+      "Enter the customer's Supabase User ID.",
+      "error"
+    );
+    return;
+  }
+
+  if (!orderId) {
+    showMessage(
+      "Enter the customer's paid Order ID.",
+      "error"
+    );
     return;
   }
 
   if (!mtLogin || !mtServer) {
-    showMessage("Enter both MT Login and MT Server.", "error");
+    showMessage(
+      "Enter both MT Login and MT Server.",
+      "error"
+    );
     return;
   }
 
-  if (!confirm("Create this trading account? Verify the customer's order first.")) {
+  if (!confirm(
+    "Create this trading account record? Verify the paid order and MT details first."
+  )) {
     return;
   }
+
+  const button =
+    document.getElementById("createAccountBtn");
 
   try {
-    showMessage("Creating trading account...", "info");
+
+    isCreatingAccount = true;
+    button.disabled = true;
+    button.textContent = "Creating...";
+
+    showMessage(
+      "Creating trading account...",
+      "info"
+    );
 
     const { data, error } = await db.functions.invoke(
       "admin-create-trading-account",
       {
         body: {
           user_id: userId,
-          order_id: orderId || null,
+          order_id: orderId,
           account_size: accountSize,
           account_type: accountType,
           platform: platform,
@@ -463,7 +722,16 @@ async function createTradingAccount() {
 
     if (error) throw error;
 
-    showMessage("Create account request completed.", "success");
+    if (!data || data.success !== true) {
+      throw new Error(
+        data?.error || "Account creation was not confirmed."
+      );
+    }
+
+    showMessage(
+      "Trading account record created successfully!",
+      "success"
+    );
 
     document.getElementById("newUserId").value = "";
     document.getElementById("newOrderId").value = "";
@@ -473,29 +741,49 @@ async function createTradingAccount() {
     await loadTradingAccounts();
 
   } catch (error) {
-    showMessage("Account creation failed: " + error.message, "error");
-    console.error(error);
+
+    showMessage(
+      "Account creation failed: " + error.message,
+      "error"
+    );
+
+    console.error("Account creation error:", error);
+
+  } finally {
+
+    isCreatingAccount = false;
+    button.disabled = false;
+    button.textContent = "Create Account";
+
   }
 }
 
+// LOGOUT
 async function logout() {
+
   const { error } = await db.auth.signOut();
 
   if (error) {
-    showMessage("Logout error: " + error.message, "error");
+    showMessage(
+      "Logout error: " + error.message,
+      "error"
+    );
     return;
   }
 
   window.location.href = "Login.html";
 }
 
+// AUTH STATE
 db.auth.onAuthStateChange((event, session) => {
   currentSession = session;
 });
 
+// START
 loadAdmin();
+
 </script>
 
 </body>
- </html>
- 
+  </html>
+  
