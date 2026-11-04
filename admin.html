@@ -442,7 +442,274 @@ async function loadOrders(){
      <b>Customer:</b> ${escapeHTML(order.user_id)}<br>
      <b>Receipt:</b> ${escapeHTML(order.receipt_path||"None")}<br>
      <b>Payment submitted:</b> ${displayDate(order.payment_submitted_at)}<br>
-     <b>Created:</b> ${ 
+     <b>Created:</b> ${displayDate(order.created_at)}<br>
+<b>Account Size:</b> ${money(order.account_size)}<br>
+<b>Account Type:</b> ${escapeHTML(order.account_type)}<br>
+<b>Platform:</b> ${escapeHTML(order.platform||"—")}<br>
+<b>Base Price:</b> ${money(order.base_price)}<br>
+<b>Discount:</b> ${Number(order.discount_percent||0)}%<br>
+<b>Final Price:</b> ${money(order.final_price)}
+</div></details></td>
+<td class="actions">${actions}</td>
+</tr>`;
+  }).join("");
+
+ }catch(error){
+  console.error(error);
+  tbody.innerHTML=`<tr><td colspan="15" class="bad">${escapeHTML(error.message||"Could not load orders.")}</td></tr>`;
+ }
+}
+
+// UPDATE ORDER
+async function updateOrder(orderId,newStatus){
+ if(!db)return showMessage("Database is not connected.","error");
+
+ if(newStatus==="paid"){
+  const ok=confirm("Have you independently verified the BEP20 transaction on the blockchain, including token, amount and destination wallet?");
+  if(!ok)return;
+ }
+
+ if(!confirm("Change this order status to "+newStatus.toUpperCase()+"?"))return;
+
+ try{
+  const {data,error}=await db.functions.invoke("admin-update-order",{
+   body:{
+    order_id:orderId,
+    status:newStatus
+   }
+  });
+
+  if(error)throw error;
+  if(data&&data.error)throw new Error(data.error);
+
+  showMessage("Order updated successfully.","success");
+  await refreshAll();
+
+ }catch(error){
+  console.error(error);
+  showMessage("Order update failed: "+(error.message||"Unknown error"),"error");
+ }
+}
+
+// KYC MANAGEMENT
+async function loadKYC(){
+ const tbody=$("kycTable");
+ tbody.innerHTML='<tr><td colspan="9">Loading KYC submissions...</td></tr>';
+
+ try{
+  const {data,error}=await db.from("kyc_submissions")
+   .select("*")
+   .order("submitted_at",{ascending:false});
+
+  if(error)throw error;
+
+  const rows=data||[];
+  $("pendingKyc").textContent=rows.filter(x=>x.status==="pending").length;
+
+  if(!rows.length){
+   tbody.innerHTML='<tr><td colspan="9">No KYC submissions found.</td></tr>';
+   return;
+  }
+
+  tbody.innerHTML=rows.map(item=>{
+   const status=String(item.status||"pending").toLowerCase();
+
+   return `<tr>
+    <td title="${escapeHTML(item.user_id)}">${escapeHTML(shortId(item.user_id))}</td>
+    <td>${escapeHTML(item.full_name)}</td>
+    <td>${escapeHTML(item.country)}</td>
+    <td>${escapeHTML(item.document_type)}</td>
+    <td>${displayDate(item.submitted_at)}</td>
+    <td>
+     <div class="file-buttons">
+      ${item.front_file?`<button class="file-btn" onclick="openKycFile('${escapeHTML(item.front_file)}')">Front</button>`:""}
+      ${item.back_file?`<button class="file-btn" onclick="openKycFile('${escapeHTML(item.back_file)}')">Back</button>`:""}
+      ${item.selfie_file?`<button class="file-btn" onclick="openKycFile('${escapeHTML(item.selfie_file)}')">Selfie</button>`:""}
+     </div>
+    </td>
+    <td><span class="status">${escapeHTML(status)}</span></td>
+    <td>${escapeHTML(item.admin_note||"—")}</td>
+    <td class="actions">
+     ${status==="pending"?`
+      <button class="primary small-btn" onclick="reviewKYC('${escapeHTML(item.id)}','approved')">Approve</button>
+      <button class="danger small-btn" onclick="reviewKYC('${escapeHTML(item.id)}','rejected')">Reject</button>
+     `:"—"}
+    </td>
+   </tr>`;
+  }).join("");
+
+ }catch(error){
+  console.error(error);
+  tbody.innerHTML=`<tr><td colspan="9" class="bad">${escapeHTML(error.message||"Could not load KYC.")}</td></tr>`;
+ }
+}
+
+async function openKycFile(path){
+ try{
+  const {data,error}=await db.storage
+   .from(KYC_BUCKET)
+   .createSignedUrl(path,300);
+
+  if(error)throw error;
+  if(!data||!data.signedUrl)throw new Error("Could not create secure document link.");
+
+  window.open(data.signedUrl,"_blank","noopener");
+
+ }catch(error){
+  console.error(error);
+  showMessage("Document error: "+error.message,"error");
+ }
+}
+
+async function reviewKYC(id,newStatus){
+ if(isReviewingKYC)return;
+
+ const note=prompt("Enter an admin note (optional):","");
+ if(note===null)return;
+
+ if(!confirm("Are you sure you want to mark this KYC as "+newStatus.toUpperCase()+"?"))return;
+
+ isReviewingKYC=true;
+
+ try{
+  const {data:admin,error:adminError}=await db
+   .from("admin_users")
+   .select("user_id")
+   .eq("user_id",currentSession.user.id)
+   .maybeSingle();
+
+  if(adminError)throw adminError;
+  if(!admin)throw new Error("Admin permission check failed.");
+
+  const {error}=await db.from("kyc_submissions")
+   .update({
+    status:newStatus,
+    admin_note:note.trim()||null,
+    reviewed_at:new Date().toISOString()
+   })
+   .eq("id",id)
+   .eq("status","pending");
+
+  if(error)throw error;
+
+  showMessage("KYC review updated.","success");
+  await loadKYC();
+
+ }catch(error){
+  console.error(error);
+  showMessage("KYC review failed: "+error.message,"error");
+ }finally{
+  isReviewingKYC=false;
+ }
+}
+
+// CREATE TRADING ACCOUNT
+async function createTradingAccount(){
+ if(isCreatingAccount)return;
+
+ const userId=$("newUserId").value.trim();
+ const orderId=$("newOrderId").value.trim();
+ const accountSize=Number($("newAccountSize").value);
+ const accountType=$("newAccountType").value;
+ const platform=$("newPlatform").value;
+ const mtLogin=$("newMtLogin").value.trim();
+ const mtServer=$("newMtServer").value.trim();
+
+ if(!userId||!orderId||!mtLogin||!mtServer){
+  showMessage("Please complete all fields, including MT Login and MT Server.","error");
+  return;
+ }
+
+ if(!confirm("Create a trading account using these details? Confirm that the order is paid and the MetaTrader credentials are correct."))return;
+
+ isCreatingAccount=true;
+ $("createAccountBtn").disabled=true;
+ $("createAccountBtn").textContent="Creating...";
+
+ try{
+  const {data,error}=await db.functions.invoke("admin-create-trading-account",{
+   body:{
+    user_id:userId,
+    order_id:orderId,
+    account_size:accountSize,
+    account_type:accountType,
+    platform:platform,
+    mt_login:mtLogin,
+    mt_server:mtServer
+   }
+  });
+
+  if(error)throw error;
+  if(data&&data.error)throw new Error(data.error);
+
+  showMessage("Trading account creation request completed.","success");
+
+  $("newUserId").value="";
+  $("newOrderId").value="";
+  $("newMtLogin").value="";
+  $("newMtServer").value="";
+
+  await loadTradingAccounts();
+
+ }catch(error){
+  console.error(error);
+  showMessage("Account creation failed: "+(error.message||"Unknown error"),"error");
+ }finally{
+  isCreatingAccount=false;
+  $("createAccountBtn").disabled=false;
+  $("createAccountBtn").textContent="Create Account";
+ }
+}
+
+// TRADING ACCOUNTS
+async function loadTradingAccounts(){
+ const tbody=$("accountsTable");
+ tbody.innerHTML='<tr><td colspan="11">Loading accounts...</td></tr>';
+
+ try{
+  const {data,error}=await db.from("trading_accounts")
+   .select("*")
+   .order("created_at",{ascending:false});
+
+  if(error)throw error;
+
+  const accounts=data||[];
+  $("totalAccounts").textContent=accounts.length;
+
+  if(!accounts.length){
+   tbody.innerHTML='<tr><td colspan="11">No trading accounts found.</td></tr>';
+   return;
+  }
+
+  tbody.innerHTML=accounts.map(account=>`
+   <tr>
+    <td title="${escapeHTML(account.id)}">${escapeHTML(shortId(account.id))}</td>
+    <td title="${escapeHTML(account.user_id)}">${escapeHTML(shortId(account.user_id))}</td>
+    <td>${money(account.account_size)}</td>
+    <td>${escapeHTML(account.account_type||"—")}</td>
+    <td>${money(account.balance)}</td>
+    <td>${money(account.equity)}</td>
+    <td>${money(account.profit)}</td>
+    <td><span class="status">${escapeHTML(account.status||"—")}</span></td>
+    <td>${escapeHTML(account.mt_login||"—")}</td>
+    <td>${escapeHTML(account.platform||"—")}</td>
+    <td>${escapeHTML(account.phase||"—")}</td>
+   </tr>
+  `).join("");
+
+ }catch(error){
+  console.error(error);
+  tbody.innerHTML=`<tr><td colspan="11" class="bad">${escapeHTML(error.message||"Could not load accounts.")}</td></tr>`;
+ }
+}
+
+// START DASHBOARD
+document.addEventListener("DOMContentLoaded",function(){
+ loadAdmin();
+});
+</script>
+</body>
+</html>
       <b>Created:</b> ${displayDate(order.created_at)}<br>
 <b>Account Size:</b> ${money(order.account_size)}<br>
 <b>Account Type:</b> ${escapeHTML(order.account_type)}<br>
