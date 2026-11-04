@@ -494,3 +494,107 @@ async function createTradingAccount(){
      detail=body.message||body.error||JSON.stringify(body);
     }
    }catch(e){}
+      if(error){
+    let detail=error.message || "Failed to create trading account.";
+
+    try{
+     if(error.context){
+      const body=await error.context.json();
+      detail=body.message || body.error || JSON.stringify(body);
+     }
+    }catch(e){}
+
+    throw new Error(detail);
+   }
+
+   showMessage("Trading account created successfully.","success");
+
+   $("createAccountBtn").disabled=false;
+   $("createAccountBtn").textContent="Create Trading Account";
+
+   await refreshAll();
+
+ }catch(e){
+   console.error("CREATE ACCOUNT ERROR:",e);
+   showMessage(e.message || "Could not create trading account.","error");
+
+   btn.disabled=false;
+   btn.textContent="Create Trading Account";
+ }
+}
+
+async function loadTradingAccounts(){
+ const box=$("accountsTable");
+ if(!box)return;
+
+ box.innerHTML="<p>Loading trading accounts...</p>";
+
+ try{
+  const {data,error}=await db
+   .from("trading_accounts")
+   .select("*")
+   .order("created_at",{ascending:false});
+
+  if(error)throw error;
+
+  if(!data || !data.length){
+   box.innerHTML="<p>No trading accounts found.</p>";
+   return;
+  }
+
+  box.innerHTML=`
+   <div style="overflow-x:auto">
+    <table>
+     <thead>
+      <tr>
+       <th>Account</th>
+       <th>User ID</th>
+       <th>Size</th>
+       <th>Type</th>
+       <th>Platform</th>
+       <th>Balance</th>
+       <th>Equity</th>
+       <th>Status</th>
+       <th>Created</th>
+      </tr>
+     </thead>
+     <tbody>
+      ${data.map(a=>`
+       <tr>
+        <td>${a.account_name || a.mt_login || "-"}</td>
+        <td>${a.user_id || "-"}</td>
+        <td>${money(a.account_size)}</td>
+        <td>${a.account_type || "-"}</td>
+        <td>${a.platform || "-"}</td>
+        <td>${money(a.balance)}</td>
+        <td>${money(a.equity)}</td>
+        <td>${a.status || "-"}</td>
+        <td>${displayDate(a.created_at)}</td>
+       </tr>
+      `).join("")}
+     </tbody>
+    </table>
+   </div>
+  `;
+ }catch(e){
+  console.error("LOAD ACCOUNTS ERROR:",e);
+  box.innerHTML=`<p class="error">${e.message || "Failed to load accounts."}</p>`;
+ }
+}
+
+/* Global error reporting */
+window.addEventListener("error",function(e){
+ console.error("JAVASCRIPT ERROR:",e.message,e.filename,e.lineno);
+});
+
+window.addEventListener("unhandledrejection",function(e){
+ console.error("PROMISE ERROR:",e.reason);
+});
+
+/* Start Admin Dashboard */
+document.addEventListener("DOMContentLoaded",function(){
+ loadAdmin();
+});
+</script>
+</body>
+</html>
