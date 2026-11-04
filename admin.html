@@ -9,51 +9,30 @@
 
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#07111f;color:#fff;
- font-family:Arial,sans-serif
-}
-header{
- background:#101f35;padding:18px 5%;
- display:flex;justify-content:space-between;
- align-items:center;gap:12px;flex-wrap:wrap
-}
+body{margin:0;background:#07111f;color:#fff;font-family:Arial,sans-serif}
+header{background:#101f35;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 h1{font-size:21px;color:#48a5ff;margin:0}
-button{
- background:#1685ee;color:white;border:0;
- padding:10px 13px;border-radius:7px;
- cursor:pointer;font-weight:bold
-}
+h2,h3{margin-top:12px}
+button{background:#1685ee;color:white;border:0;padding:10px 13px;border-radius:7px;cursor:pointer;font-weight:bold}
 button:disabled{opacity:.5;cursor:not-allowed}
 .reject{background:#c83c50}
 .assign{background:#168b68}
-main{padding:25px 5%;max-width:1500px;margin:auto}
-.cards{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
- gap:14px;margin:20px 0
-}
-.card{
- background:#11243b;padding:20px;
- border-radius:12px;border:1px solid #203b5c
-}
+.secondary{background:#52657d}
+main{padding:25px 5%;max-width:1600px;margin:auto}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px;margin:20px 0}
+.card{background:#11243b;padding:20px;border-radius:12px;border:1px solid #203b5c}
 .card p{color:#a9bdd3;margin:0 0 12px}
 .card h2{margin:0;color:#55adff}
-.panel{
- background:#11243b;padding:18px;
- border-radius:12px;overflow-x:auto;margin-top:20px
-}
-table{width:100%;border-collapse:collapse;min-width:1350px}
-th,td{
- text-align:left;padding:12px;
- border-bottom:1px solid #29415c;
- font-size:13px;vertical-align:middle
-}
+.panel{background:#11243b;padding:18px;border-radius:12px;overflow-x:auto;margin-top:20px}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #29415c;font-size:13px;vertical-align:middle}
 th{color:#55adff}
-.status{
- padding:5px 9px;border-radius:6px;
- background:#35445a;display:inline-block
-}
+input,select,textarea{width:100%;background:#08182a;color:white;border:1px solid #36516e;padding:11px;border-radius:7px;margin:5px 0 12px}
+textarea{min-height:75px;resize:vertical}
+label{font-size:12px;color:#a9bdd3}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.form-grid>div{min-width:0}
+.status{padding:5px 9px;border-radius:6px;background:#35445a;display:inline-block}
 .message{padding:15px;color:#b9c9dc}
 .error{color:#ff7373}
 .success{color:#55dc91}
@@ -62,6 +41,8 @@ th{color:#55adff}
 a{color:#55adff}
 .small{font-size:11px;color:#a9bdd3}
 .top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.section-title{color:#55adff}
+.account-input{min-width:100px;max-width:150px}
 @media(max-width:600px){
  main{padding:16px 12px}
  header{padding:15px 12px}
@@ -77,7 +58,7 @@ a{color:#55adff}
 <h1>WE FUNDED TRADER | ADMIN</h1>
 <div class="top-actions">
 <button id="refresh">Refresh</button>
-<button id="logout">Logout</button>
+<button id="logout" class="reject">Logout</button>
 </div>
 </header>
 
@@ -87,17 +68,158 @@ a{color:#55adff}
 
 <div id="content" style="display:none">
 
+<!-- STATISTICS -->
 <div class="cards">
- <div class="card"><p>Total Orders</p><h2 id="total">0</h2></div>
- <div class="card"><p>Pending Orders</p><h2 id="pending">0</h2></div>
- <div class="card"><p>Paid Orders</p><h2 id="paid">0</h2></div>
- <div class="card"><p>Rejected Orders</p><h2 id="rejected">0</h2></div>
- <div class="card"><p>Assigned Accounts</p><h2 id="assigned">0</h2></div>
- <div class="card"><p>Total Order Value</p><h2 id="value">$0.00</h2></div>
+<div class="card"><p>Total Orders</p><h2 id="total">0</h2></div>
+<div class="card"><p>Pending Orders</p><h2 id="pending">0</h2></div>
+<div class="card"><p>Paid Orders</p><h2 id="paid">0</h2></div>
+<div class="card"><p>Rejected Orders</p><h2 id="rejected">0</h2></div>
+<div class="card"><p>Assigned Accounts</p><h2 id="assigned">0</h2></div>
+<div class="card"><p>Trading Accounts</p><h2 id="accountCount">0</h2></div>
+<div class="card"><p>Total Order Value</p><h2 id="value">$0.00</h2></div>
 </div>
 
+<!-- CREATE ACCOUNT -->
 <div class="panel">
-<h3>All Customer Orders & Payments</h3>
+<h3 class="section-title">Create Trading Account</h3>
+<p class="small">
+Create a trading account and assign it directly to a customer.
+Enter the customer's authenticated Supabase User ID.
+</p>
+
+<form id="createAccountForm">
+
+<div class="form-grid">
+
+<div>
+<label>Customer User ID *</label>
+<input id="new_user_id" required placeholder="Customer UUID">
+</div>
+
+<div>
+<label>Account Name</label>
+<input id="new_account_name" placeholder="Example: WFT 10K Challenge">
+</div>
+
+<div>
+<label>Platform</label>
+<select id="new_platform">
+<option value="MT5">MT5</option>
+<option value="MT4">MT4</option>
+</select>
+</div>
+
+<div>
+<label>Account Type</label>
+<select id="new_account_type">
+<option value="Challenge">Challenge</option>
+<option value="Funded">Funded</option>
+<option value="Instant">Instant</option>
+<option value="Evaluation">Evaluation</option>
+</select>
+</div>
+
+<div>
+<label>Phase</label>
+<select id="new_phase">
+<option value="Phase 1">Phase 1</option>
+<option value="Phase 2">Phase 2</option>
+<option value="Verification">Verification</option>
+<option value="Funded">Funded</option>
+<option value="Instant">Instant</option>
+</select>
+</div>
+
+<div>
+<label>MT5 Login</label>
+<input id="new_mt_login" placeholder="MT5 account login">
+</div>
+
+<div>
+<label>MT5 Server</label>
+<input id="new_mt_server" placeholder="Broker server">
+</div>
+
+<div>
+<label>Initial Balance ($) *</label>
+<input id="new_initial_balance" type="number" min="0" step="0.01" required value="10000">
+</div>
+
+<div>
+<label>Current Balance ($)</label>
+<input id="new_balance" type="number" min="0" step="0.01" value="10000">
+</div>
+
+<div>
+<label>Equity ($)</label>
+<input id="new_equity" type="number" min="0" step="0.01" value="10000">
+</div>
+
+<div>
+<label>Profit ($)</label>
+<input id="new_profit" type="number" step="0.01" value="0">
+</div>
+
+<div>
+<label>Status</label>
+<select id="new_status">
+<option value="pending">Pending</option>
+<option value="active">Active</option>
+<option value="passed">Passed</option>
+<option value="breached">Breached</option>
+<option value="disabled">Disabled</option>
+</select>
+</div>
+
+<div>
+<label>Start Date</label>
+<input id="new_start_date" type="date">
+</div>
+
+</div>
+
+<label>Admin Notes</label>
+<textarea id="new_admin_notes" placeholder="Internal admin notes"></textarea>
+
+<button id="createButton" type="submit">Create Trading Account</button>
+
+</form>
+</div>
+
+<!-- TRADING ACCOUNTS -->
+<div class="panel">
+<h3 class="section-title">Trading Accounts Management</h3>
+<p class="small">
+View accounts, update MT5 credentials, customer assignment,
+balance, equity, profit and status.
+</p>
+
+<table>
+<thead>
+<tr>
+<th>Account ID</th>
+<th>Customer ID</th>
+<th>Account Name</th>
+<th>Platform</th>
+<th>Type</th>
+<th>MT Login</th>
+<th>MT Server</th>
+<th>Initial Balance</th>
+<th>Balance</th>
+<th>Equity</th>
+<th>Profit</th>
+<th>Status</th>
+<th>Admin Action</th>
+</tr>
+</thead>
+<tbody id="accounts"></tbody>
+</table>
+</div>
+
+<!-- ORDERS -->
+<div class="panel">
+<h3 class="section-title">All Customer Orders & Payments</h3>
+
 <table>
 <thead>
 <tr>
@@ -119,8 +241,8 @@ a{color:#55adff}
 </div>
 
 <p class="small">
-Payment approval must only happen after manually verifying the transaction,
-network, USDT token, recipient address, amount and confirmations.
+Payment approval must only happen after manually verifying the
+transaction, network, USDT token, recipient address, amount and confirmations.
 </p>
 
 </div>
@@ -128,14 +250,14 @@ network, USDT token, recipient address, amount and confirmations.
 
 <script>
 const SUPABASE_URL =
- "https://vxcwfirfgxrxafbirnwu.supabase.co";
+"https://vxcwfirfgxrxafbirnwu.supabase.co";
 
 const SUPABASE_KEY =
- "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+"sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
 
 const db = window.supabase.createClient(
- SUPABASE_URL,
- SUPABASE_KEY
+SUPABASE_URL,
+SUPABASE_KEY
 );
 
 const message = document.getElementById("message");
@@ -143,392 +265,567 @@ const message = document.getElementById("message");
 let currentSession = null;
 
 function showMessage(text,type="message"){
- message.textContent=text;
- message.className="message "+type;
+message.textContent=text;
+message.className="message "+type;
 }
 
 function makeCell(row,text,className=""){
- const td=document.createElement("td");
- td.textContent=text;
- if(className) td.className=className;
- row.appendChild(td);
- return td;
+const td=document.createElement("td");
+td.textContent=text ?? "-";
+if(className) td.className=className;
+row.appendChild(td);
+return td;
 }
 
 function explorerUrl(network,txid){
- if(network==="BEP20"){
-  return "https://bscscan.com/tx/"+encodeURIComponent(txid);
- }
- if(network==="TRC20"){
-  return "https://tronscan.org/#/transaction/"+encodeURIComponent(txid);
- }
- return null;
+if(network==="BEP20"){
+return "https://bscscan.com/tx/"+encodeURIComponent(txid);
+}
+if(network==="TRC20"){
+return "https://tronscan.org/#/transaction/"+encodeURIComponent(txid);
+}
+return null;
 }
 
+function addInput(row,value,type="text",className="account-input"){
+const input=document.createElement("input");
+input.type=type;
+input.value=value ?? "";
+input.className=className;
+if(type==="number") input.step="0.01";
+row.appendChild(input);
+return input;
+}
+
+function addSelect(row,value,options){
+const select=document.createElement("select");
+select.className="account-input";
+
+options.forEach(item=>{
+const option=document.createElement("option");
+option.value=item;
+option.textContent=item;
+select.appendChild(option);
+});
+
+select.value=value || options[0];
+row.appendChild(select);
+return select;
+}
+
+// APPROVE / REJECT
 async function reviewOrder(orderId,decision,button){
 
- const action=decision==="paid"?"approve":"reject";
+const action=decision==="paid"?"approve":"reject";
 
- const confirmed=window.confirm(
-  "Are you sure you want to "+action+
-  " this order? Verify the TXID on the correct blockchain first."
- );
+const confirmed=window.confirm(
+"Are you sure you want to "+action+
+" this order? Verify the TXID on the correct blockchain first."
+);
 
- if(!confirmed) return;
+if(!confirmed) return;
 
- button.disabled=true;
- button.textContent="Processing...";
+button.disabled=true;
+button.textContent="Processing...";
 
- try{
-  const {data,error}=await db.functions.invoke(
-   "admin-update-order",
-   {
-    body:{
-     order_id:orderId,
-     decision:decision
-    }
-   }
-  );
+try{
+const {data,error}=await db.functions.invoke(
+"admin-update-order",
+{
+body:{
+order_id:orderId,
+decision:decision
+}
+}
+);
 
-  if(error) throw new Error(error.message);
-  if(!data || !data.success){
-   throw new Error(data?.error||"Review failed.");
-  }
-
-  showMessage(
-   "Order "+decision+" successfully.",
-   "success"
-  );
-
-  await loadOrders();
-
- }catch(error){
-  showMessage(
-   "Could not update order: "+error.message,
-   "error"
-  );
-
-  button.disabled=false;
-  button.textContent=
-   decision==="paid"?"Approve":"Reject";
- }
+if(error) throw new Error(error.message);
+if(!data || !data.success){
+throw new Error(data?.error||"Review failed.");
 }
 
+showMessage("Order "+decision+" successfully.","success");
+await loadOrders();
+
+}catch(error){
+showMessage("Could not update order: "+error.message,"error");
+button.disabled=false;
+button.textContent=decision==="paid"?"Approve":"Reject";
+}
+}
+
+// EXISTING ASSIGN ACCOUNT FUNCTION
 async function assignAccount(orderId,button){
 
- const confirmed=window.confirm(
-  "Create an internal trading account record for this paid order?"
- );
+const confirmed=window.confirm(
+"Create an internal trading account record for this paid order?"
+);
 
- if(!confirmed) return;
+if(!confirmed) return;
 
- button.disabled=true;
- button.textContent="Assigning...";
+button.disabled=true;
+button.textContent="Assigning...";
 
- try{
-  const {data,error}=await db.functions.invoke(
-   "admin-assign-account",
-   {
-    body:{
-     order_id:orderId
-    }
-   }
-  );
+try{
+const {data,error}=await db.functions.invoke(
+"admin-assign-account",
+{
+body:{order_id:orderId}
+}
+);
 
-  if(error) throw new Error(error.message);
+if(error) throw new Error(error.message);
 
-  if(!data || !data.success){
-   throw new Error(
-    data?.error||"Account assignment failed."
-   );
-  }
-
-  showMessage(
-   data.already_assigned
-    ? "This order already has an assigned account."
-    : "Trading account record created successfully.",
-   "success"
-  );
-
-  await loadOrders();
-
- }catch(error){
-  showMessage(
-   "Could not assign account: "+error.message,
-   "error"
-  );
-
-  button.disabled=false;
-  button.textContent="Assign Account";
- }
+if(!data || !data.success){
+throw new Error(data?.error||"Account assignment failed.");
 }
 
+showMessage(
+data.already_assigned
+? "This order already has an assigned account."
+: "Trading account record created successfully.",
+"success"
+);
+
+await loadOrders();
+await loadTradingAccounts();
+
+}catch(error){
+showMessage("Could not assign account: "+error.message,"error");
+button.disabled=false;
+button.textContent="Assign Account";
+}
+}
+
+// CREATE ACCOUNT THROUGH EDGE FUNCTION
+document.getElementById("createAccountForm")
+.addEventListener("submit",async function(event){
+
+event.preventDefault();
+
+const button=document.getElementById("createButton");
+button.disabled=true;
+button.textContent="Creating...";
+
+try{
+
+const payload={
+user_id:document.getElementById("new_user_id").value.trim(),
+account_name:document.getElementById("new_account_name").value.trim(),
+platform:document.getElementById("new_platform").value,
+account_type:document.getElementById("new_account_type").value,
+phase:document.getElementById("new_phase").value,
+mt_login:document.getElementById("new_mt_login").value.trim(),
+mt_server:document.getElementById("new_mt_server").value.trim(),
+initial_balance:Number(document.getElementById("new_initial_balance").value),
+balance:Number(document.getElementById("new_balance").value),
+equity:Number(document.getElementById("new_equity").value),
+profit:Number(document.getElementById("new_profit").value),
+status:document.getElementById("new_status").value,
+start_date:document.getElementById("new_start_date").value || null,
+admin_notes:document.getElementById("new_admin_notes").value.trim()
+};
+
+if(!payload.user_id) throw new Error("Customer User ID is required.");
+
+const numericFields=[
+payload.initial_balance,
+payload.balance,
+payload.equity,
+payload.profit
+];
+
+if(numericFields.some(n=>!Number.isFinite(n))){
+throw new Error("Enter valid account numbers.");
+}
+
+if(payload.initial_balance<0 || payload.balance<0 || payload.equity<0){
+throw new Error("Balance and equity cannot be negative.");
+}
+
+const {data,error}=await db.functions.invoke(
+"admin-create-trading-account",
+{body:payload}
+);
+
+if(error) throw new Error(error.message);
+
+if(!data || !data.success){
+throw new Error(data?.error||"Account creation failed.");
+}
+
+showMessage("Trading account created successfully!","success");
+
+this.reset();
+
+document.getElementById("new_initial_balance").value="10000";
+document.getElementById("new_balance").value="10000";
+document.getElementById("new_equity").value="10000";
+document.getElementById("new_profit").value="0";
+
+await loadTradingAccounts();
+
+}catch(error){
+showMessage("Create account failed: "+error.message,"error");
+}
+
+button.disabled=false;
+button.textContent="Create Trading Account";
+
+});
+
+// LOAD TRADING ACCOUNTS
+async function loadTradingAccounts(){
+
+const tbody=document.getElementById("accounts");
+tbody.replaceChildren();
+
+const {data:accounts,error}=await db
+.from("trading_accounts")
+.select("*")
+.order("created_at",{ascending:false});
+
+if(error){
+showMessage("Could not load trading accounts: "+error.message,"error");
+return;
+}
+
+document.getElementById("accountCount").textContent=
+(accounts||[]).length;
+
+if(!accounts || accounts.length===0){
+const tr=document.createElement("tr");
+makeCell(tr,"No trading accounts found.");
+tbody.appendChild(tr);
+return;
+}
+
+accounts.forEach(account=>{
+
+const tr=document.createElement("tr");
+
+makeCell(tr,String(account.id||"").slice(0,8));
+makeCell(tr,String(account.user_id||""));
+makeCell(tr,account.account_name||"-");
+makeCell(tr,account.platform||"-");
+makeCell(tr,account.account_type||"-");
+
+const login=addInput(tr,account.mt_login);
+const server=addInput(tr,account.mt_server);
+const initial=addInput(tr,account.initial_balance,"number");
+const balance=addInput(tr,account.balance,"number");
+const equity=addInput(tr,account.equity,"number");
+const profit=addInput(tr,account.profit,"number");
+
+const status=addSelect(
+tr,
+account.status,
+["pending","active","passed","breached","disabled"]
+);
+
+const actionCell=document.createElement("td");
+const save=document.createElement("button");
+save.textContent="Save Changes";
+save.className="assign";
+
+save.addEventListener("click",async()=>{
+
+const values={
+mt_login:login.value.trim(),
+mt_server:server.value.trim(),
+initial_balance:Number(initial.value),
+balance:Number(balance.value),
+equity:Number(equity.value),
+profit:Number(profit.value),
+status:status.value,
+updated_at:new Date().toISOString()
+};
+
+if(Object.values(values).some(v=>
+typeof v==="number" && !Number.isFinite(v)
+)){
+showMessage("Enter valid numeric values.","error");
+return;
+}
+
+if(values.initial_balance<0 || values.balance<0 || values.equity<0){
+showMessage("Initial balance, balance and equity cannot be negative.","error");
+return;
+}
+
+save.disabled=true;
+save.textContent="Saving...";
+
+try{
+
+const {error:updateError}=await db
+.from("trading_accounts")
+.update(values)
+.eq("id",account.id);
+
+if(updateError) throw updateError;
+
+showMessage("Trading account updated successfully.","success");
+
+await loadTradingAccounts();
+
+}catch(error){
+showMessage("Account update failed: "+error.message,"error");
+save.disabled=false;
+save.textContent="Save Changes";
+}
+
+});
+
+actionCell.appendChild(save);
+tr.appendChild(actionCell);
+tbody.appendChild(tr);
+
+});
+}
+
+// LOAD ORDERS
 async function loadOrders(){
 
- showMessage("Loading orders...");
+showMessage("Loading orders...");
 
- const {data:orders,error}=await db
-  .from("orders")
-  .select("*")
-  .order("created_at",{ascending:false});
+const {data:orders,error}=await db
+.from("orders")
+.select("*")
+.order("created_at",{ascending:false});
 
- if(error){
-  showMessage(
-   "Could not load orders: "+error.message,
-   "error"
-  );
-  return;
- }
-
- const {data:accounts,error:accountsError}=await db
-  .from("trading_accounts")
-  .select("id,order_id");
-
- if(accountsError){
-  showMessage(
-   "Could not load trading accounts: "+
-   accountsError.message,
-   "error"
-  );
-  return;
- }
-
- const accountMap=new Map();
-
- (accounts||[]).forEach(account=>{
-  if(account.order_id){
-   accountMap.set(account.order_id,account.id);
-  }
- });
-
- document.getElementById("total").textContent=
-  orders.length;
-
- document.getElementById("pending").textContent=
-  orders.filter(o=>o.status==="pending").length;
-
- document.getElementById("paid").textContent=
-  orders.filter(o=>o.status==="paid").length;
-
- document.getElementById("rejected").textContent=
-  orders.filter(o=>o.status==="rejected").length;
-
- document.getElementById("assigned").textContent=
-  accountMap.size;
-
- const totalValue=orders.reduce(
-  (sum,o)=>sum+Number(o.final_price||0),0
- );
-
- document.getElementById("value").textContent=
-  "$"+totalValue.toFixed(2);
-
- const tbody=document.getElementById("orders");
- tbody.replaceChildren();
-
- if(orders.length===0){
-  const tr=document.createElement("tr");
-  makeCell(tr,"No orders found.");
-  tbody.appendChild(tr);
-  showMessage("Admin access verified. No orders found.");
-  return;
- }
-
- orders.forEach(o=>{
-
-  const tr=document.createElement("tr");
-
-  makeCell(
-   tr,
-   String(o.id||"").slice(0,8)
-  );
-
-  makeCell(
-   tr,
-   String(o.user_id||"").slice(0,8)
-  );
-
-  makeCell(
-   tr,
-   "$"+Number(o.account_size||0).toLocaleString()
-  );
-
-  makeCell(tr,o.account_type||"-");
-
-  makeCell(
-   tr,
-   "$"+Number(o.final_price||0).toFixed(2)
-  );
-
-  makeCell(
-   tr,
-   o.payment_network||"Not submitted"
-  );
-
-  const txCell=makeCell(
-   tr,
-   o.transaction_hash||"Not submitted",
-   "txid"
-  );
-
-  if(o.transaction_hash && o.payment_network){
-
-   const url=explorerUrl(
-    o.payment_network,
-    o.transaction_hash
-   );
-
-   if(url){
-    const link=document.createElement("a");
-    link.href=url;
-    link.target="_blank";
-    link.rel="noopener noreferrer";
-    link.textContent="Open in Explorer";
-
-    txCell.appendChild(
-     document.createElement("br")
-    );
-
-    txCell.appendChild(link);
-   }
-  }
-
-  makeCell(
-   tr,
-   o.status||"-",
-   "status"
-  );
-
-  const accountId=accountMap.get(o.id);
-
-  makeCell(
-   tr,
-   accountId?String(accountId).slice(0,8):"Not assigned"
-  );
-
-  makeCell(
-   tr,
-   o.created_at
-    ?new Date(o.created_at).toLocaleString()
-    :"-"
-  );
-
-  const actionCell=document.createElement("td");
-  const actions=document.createElement("div");
-  actions.className="actions";
-
-  if(
-   o.status==="pending" &&
-   o.transaction_hash &&
-   o.payment_network
-  ){
-
-   const approve=document.createElement("button");
-   approve.textContent="Approve";
-
-   approve.addEventListener(
-    "click",
-    ()=>reviewOrder(o.id,"paid",approve)
-   );
-
-   const reject=document.createElement("button");
-   reject.textContent="Reject";
-   reject.className="reject";
-
-   reject.addEventListener(
-    "click",
-    ()=>reviewOrder(o.id,"rejected",reject)
-   );
-
-   actions.append(approve,reject);
-
-  }else if(o.status==="pending"){
-
-   actions.textContent="Waiting for TXID";
-
-  }else if(o.status==="paid" && accountId){
-
-   actions.textContent="Account Assigned";
-
-  }else if(o.status==="paid"){
-
-   const assign=document.createElement("button");
-   assign.textContent="Assign Account";
-   assign.className="assign";
-
-   assign.addEventListener(
-    "click",
-    ()=>assignAccount(o.id,assign)
-   );
-
-   actions.appendChild(assign);
-
-  }else{
-
-   actions.textContent="Reviewed";
-  }
-
-  actionCell.appendChild(actions);
-  tr.appendChild(actionCell);
-  tbody.appendChild(tr);
- });
-
- showMessage("Admin access verified. Orders loaded.","success");
+if(error){
+showMessage("Could not load orders: "+error.message,"error");
+return;
 }
 
+const {data:accounts,error:accountsError}=await db
+.from("trading_accounts")
+.select("id,order_id");
+
+if(accountsError){
+showMessage("Could not load trading accounts: "+accountsError.message,"error");
+return;
+}
+
+const accountMap=new Map();
+
+(accounts||[]).forEach(account=>{
+if(account.order_id){
+accountMap.set(account.order_id,account.id);
+}
+});
+
+document.getElementById("total").textContent=orders.length;
+
+document.getElementById("pending").textContent=
+orders.filter(o=>o.status==="pending").length;
+
+document.getElementById("paid").textContent=
+orders.filter(o=>o.status==="paid").length;
+
+document.getElementById("rejected").textContent=
+orders.filter(o=>o.status==="rejected").length;
+
+document.getElementById("assigned").textContent=
+accountMap.size;
+
+const totalValue=orders.reduce(
+(sum,o)=>sum+Number(o.final_price||0),0
+);
+
+document.getElementById("value").textContent=
+"$"+totalValue.toFixed(2);
+
+const tbody=document.getElementById("orders");
+tbody.replaceChildren();
+
+if(orders.length===0){
+const tr=document.createElement("tr");
+makeCell(tr,"No orders found.");
+tbody.appendChild(tr);
+showMessage("Admin access verified. No orders found.","success");
+return;
+}
+
+orders.forEach(o=>{
+
+const tr=document.createElement("tr");
+
+makeCell(tr,String(o.id||"").slice(0,8));
+makeCell(tr,String(o.user_id||"").slice(0,8));
+
+makeCell(
+tr,
+"$"+Number(o.account_size||0).toLocaleString()
+);
+
+makeCell(tr,o.account_type||"-");
+
+makeCell(
+tr,
+"$"+Number(o.final_price||0).toFixed(2)
+);
+
+makeCell(tr,o.payment_network||"Not submitted");
+
+const txCell=makeCell(
+tr,
+o.transaction_hash||"Not submitted",
+"txid"
+);
+
+if(o.transaction_hash && o.payment_network){
+
+const url=explorerUrl(
+o.payment_network,
+o.transaction_hash
+);
+
+if(url){
+const link=document.createElement("a");
+link.href=url;
+link.target="_blank";
+link.rel="noopener noreferrer";
+link.textContent="Open in Explorer";
+
+txCell.appendChild(document.createElement("br"));
+txCell.appendChild(link);
+}
+}
+
+makeCell(tr,o.status||"-","status");
+
+const accountId=accountMap.get(o.id);
+
+makeCell(
+tr,
+accountId?String(accountId).slice(0,8):"Not assigned"
+);
+
+makeCell(
+tr,
+o.created_at?new Date(o.created_at).toLocaleString():"-"
+);
+
+const actionCell=document.createElement("td");
+const actions=document.createElement("div");
+actions.className="actions";
+
+if(
+o.status==="pending" &&
+o.transaction_hash &&
+o.payment_network
+){
+
+const approve=document.createElement("button");
+approve.textContent="Approve";
+
+approve.addEventListener(
+"click",
+()=>reviewOrder(o.id,"paid",approve)
+);
+
+const reject=document.createElement("button");
+reject.textContent="Reject";
+reject.className="reject";
+
+reject.addEventListener(
+"click",
+()=>reviewOrder(o.id,"rejected",reject)
+);
+
+actions.append(approve,reject);
+
+}else if(o.status==="pending"){
+
+actions.textContent="Waiting for TXID";
+
+}else if(o.status==="paid" && accountId){
+
+actions.textContent="Account Assigned";
+
+}else if(o.status==="paid"){
+
+const assign=document.createElement("button");
+assign.textContent="Assign Account";
+assign.className="assign";
+
+assign.addEventListener(
+"click",
+()=>assignAccount(o.id,assign)
+);
+
+actions.appendChild(assign);
+
+}else{
+
+actions.textContent="Reviewed";
+}
+
+actionCell.appendChild(actions);
+tr.appendChild(actionCell);
+tbody.appendChild(tr);
+
+});
+
+showMessage("Admin access verified. Orders loaded.","success");
+}
+
+// ADMIN AUTHENTICATION
 async function loadAdmin(){
 
- const {
-  data:{session},
-  error:sessionError
- }=await db.auth.getSession();
+const {
+data:{session},
+error:sessionError
+}=await db.auth.getSession();
 
- if(sessionError || !session){
-  window.location.href="Login.html";
-  return;
- }
+if(sessionError || !session){
+window.location.href="Login.html";
+return;
+}
 
- currentSession=session;
+currentSession=session;
 
- const {data:admin,error:adminError}=await db
-  .from("admin_users")
-  .select("user_id")
-  .eq("user_id",session.user.id)
-  .maybeSingle();
+const {data:admin,error:adminError}=await db
+.from("admin_users")
+.select("user_id")
+.eq("user_id",session.user.id)
+.maybeSingle();
 
- if(adminError){
-  showMessage(
-   "Admin verification failed: "+adminError.message,
-   "error"
-  );
-  return;
- }
+if(adminError){
+showMessage("Admin verification failed: "+adminError.message,"error");
+return;
+}
 
- if(!admin){
-  showMessage(
-   "Access denied. This account is not an admin.",
-   "error"
-  );
-  return;
- }
+if(!admin){
+showMessage("Access denied. This account is not an admin.","error");
+return;
+}
 
- document.getElementById("content").style.display="block";
+document.getElementById("content").style.display="block";
 
- await loadOrders();
+await Promise.all([
+loadOrders(),
+loadTradingAccounts()
+]);
+
 }
 
 document.getElementById("refresh")
- .addEventListener("click",loadOrders);
+.addEventListener("click",async()=>{
+await loadAdmin();
+});
 
 document.getElementById("logout")
- .addEventListener("click",async()=>{
-  await db.auth.signOut();
-  window.location.href="Login.html";
- });
+.addEventListener("click",async()=>{
+await db.auth.signOut();
+window.location.href="Login.html";
+});
 
 loadAdmin();
-</script>
 
+</script>
 </body>
  </html>
-  
+ 
