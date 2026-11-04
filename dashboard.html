@@ -9,7 +9,7 @@
 :root{--bg:#07111f;--panel:#101e31;--line:#243952;--blue:#2694ff;--gold:#e8b95b;--text:#f4f7fc;--muted:#91a4bb;--green:#35d49a}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
-button,input{font:inherit}
+button,input,select{font:inherit}
 button{cursor:pointer}
 .sidebar{position:fixed;top:0;bottom:0;left:0;width:255px;background:#0a1728;border-right:1px solid var(--line);padding:22px 15px;z-index:30;overflow-y:auto;transition:.25s;display:flex;flex-direction:column}
 .brand{padding:8px 12px 24px;border-bottom:1px solid var(--line)}
@@ -61,12 +61,21 @@ th{color:#8298b2}td{color:#dbe5f1}
 .action-btn{display:inline-block;background:var(--blue);color:white;border:0;padding:11px 16px;border-radius:8px;font-size:12px;font-weight:bold;text-decoration:none}
 .action-btn.secondary{background:#1a3049;border:1px solid #35516e}
 .field{margin:15px 0}.field label{display:block;color:#aabbd0;font-size:12px;margin-bottom:8px}
-.field input{width:100%;background:#091727;border:1px solid #304861;border-radius:8px;padding:12px;color:white}
+.field input,.field select{width:100%;background:#091727;border:1px solid #304861;border-radius:8px;padding:12px;color:white}
+.field input[type=file]{font-size:12px}
+.field small{display:block;color:var(--muted);font-size:10px;margin-top:7px;line-height:1.5}
+.field select option{background:#091727;color:white}
 .notice{padding:14px;border-radius:9px;background:#172c43;border:1px solid #2b4a69;color:#b8cce2;font-size:12px;line-height:1.6;margin:15px 0}
 .footer{text-align:center;color:#5f7690;font-size:10px;padding:25px}
 .mobile-overlay{display:none}
-.toast{position:fixed;bottom:20px;right:20px;background:#173b35;color:#6be6b7;padding:13px 18px;border-radius:9px;display:none;z-index:99}
+.toast{position:fixed;bottom:20px;right:20px;background:#173b35;color:#6be6b7;padding:13px 18px;border-radius:9px;display:none;z-index:99;max-width:90%;font-size:13px}
 button:disabled{opacity:.6;cursor:not-allowed}
+.kyc-status{padding:20px;border-radius:12px;background:#142d49;border:1px solid #29496b;margin-bottom:18px}
+.kyc-status h3{margin:0 0 12px;font-size:16px}
+.kyc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.kyc-file{background:#0a192b;border:1px solid #2b425d;border-radius:10px;padding:12px}
+.kyc-file label{display:block;font-size:12px;margin-bottom:8px;color:#b9c9dc}
+.kyc-form{max-width:750px}
 @media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){
 .sidebar{transform:translateX(-100%)}
@@ -78,6 +87,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 .two-col{grid-template-columns:1fr}
 .mobile-overlay.show{display:block;position:fixed;inset:0;background:#0009;z-index:20}
 .welcome h1{font-size:21px}
+.kyc-grid{grid-template-columns:1fr}
 }
 @media(max-width:420px){.stats{gap:9px}.card{padding:14px}.stat-value{font-size:20px}}
 </style>
@@ -123,6 +133,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 </header>
 
 <div class="content">
+
 <section class="page active" id="page-overview">
  <div class="welcome">
   <div><h1>Welcome back, <span class="blue" id="welcomeName">Trader</span></h1><p>Here is your trading performance overview.</p></div>
@@ -177,8 +188,50 @@ button:disabled{opacity:.6;cursor:not-allowed}
 </section>
 
 <section class="page" id="page-kyc">
- <div class="page-heading"><h1>KYC Verification</h1><p>Identity verification and compliance.</p></div>
- <div class="info-card"><h3>Identity Verification</h3><p>Your KYC status will be displayed here once the verification system is connected.</p><div class="notice">KYC submission is not enabled yet. Please contact Support for instructions. Do not send identity documents through an unsecured channel.</div></div>
+ <div class="page-heading"><h1>KYC Verification</h1><p>Complete identity verification to help protect your account.</p></div>
+ <div id="kycStatus"><div class="empty">Loading KYC status...</div></div>
+
+ <div class="info-card kyc-form" id="kycFormCard">
+  <h3>Identity Verification Form</h3>
+  <p>Enter your legal name and upload clear identity documents. Accepted formats: JPG, PNG or PDF. Maximum file size: 10 MB each.</p>
+  <div class="notice">Your documents are stored in a private Supabase Storage bucket. Do not upload documents belonging to another person. Only submit genuine, valid documents.</div>
+
+  <form id="kycForm">
+   <div class="field">
+    <label for="kycFullName">Full Legal Name</label>
+    <input id="kycFullName" type="text" maxlength="150" required placeholder="Enter your full legal name">
+   </div>
+   <div class="field">
+    <label for="kycCountry">Country</label>
+    <input id="kycCountry" type="text" maxlength="100" required placeholder="Enter your country">
+   </div>
+   <div class="field">
+    <label for="kycDocumentType">Identity Document Type</label>
+    <select id="kycDocumentType" required>
+     <option value="">Select document type</option>
+     <option value="National ID">National ID</option>
+     <option value="Passport">Passport</option>
+     <option value="Driving Licence">Driving Licence</option>
+    </select>
+   </div>
+   <div class="kyc-grid">
+    <div class="kyc-file">
+     <label for="kycFront">ID Front Side *</label>
+     <input id="kycFront" type="file" accept="image/jpeg,image/png,application/pdf" required>
+    </div>
+    <div class="kyc-file">
+     <label for="kycBack">ID Back Side</label>
+     <input id="kycBack" type="file" accept="image/jpeg,image/png,application/pdf">
+    </div>
+    <div class="kyc-file">
+     <label for="kycSelfie">Selfie (Optional)</label>
+     <input id="kycSelfie" type="file" accept="image/jpeg,image/png">
+    </div>
+   </div>
+   <div class="notice">Please check that your name matches the identity document. Once submitted, your KYC status will show as Pending while Admin reviews it.</div>
+   <button class="action-btn" id="submitKycBtn" type="submit">Submit KYC Verification</button>
+  </form>
+ </div>
 </section>
 
 <section class="page" id="page-certificate">
@@ -258,7 +311,7 @@ const SUPABASE_URL="https://vxcwfirfgxrxafbirnwu.supabase.co";
 const SUPABASE_KEY="sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
-let currentUser=null,orders=[],accounts=[];
+let currentUser=null,orders=[],accounts=[],kycRecord=null;
 
 const money=v=>"$"+(Number(v)||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const safe=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -267,7 +320,7 @@ const badge=v=>'<span class="status '+safe(String(v||"").toLowerCase())+'">'+saf
 function toast(message){
  $("toast").textContent=message;
  $("toast").style.display="block";
- setTimeout(()=>$("toast").style.display="none",3500);
+ setTimeout(()=>$("toast").style.display="none",4000);
 }
 
 function accountCard(a){
@@ -277,46 +330,4 @@ function accountCard(a){
   <div class="account-balance">${money(a.balance)}</div>
   <div class="account-details">
    <div><div class="detail-label">Equity</div><div class="detail-value">${money(a.equity)}</div></div>
-   <div><div class="detail-label">Profit</div><div class="detail-value green">${money(a.profit)}</div></div>
-   <div><div class="detail-label">MT Login</div><div class="detail-value">${safe(a.mt_login||"Not assigned")}</div></div>
-   <div><div class="detail-label">MT Server</div><div class="detail-value">${safe(a.mt_server||"Not assigned")}</div></div>
-   <div><div class="detail-label">Phase</div><div class="detail-value">${safe(a.phase||"—")}</div></div>
-   <div><div class="detail-label">Account Type</div><div class="detail-value">${safe(a.account_type||"—")}</div></div>
-  </div>
- </div>`;
-}
-
-function orderTable(rows){
- if(!rows.length)return '<div class="empty">No orders found.</div>';
- return `<div class="table-wrap"><table><thead><tr><th>Order ID</th><th>Account Size</th><th>Type</th><th>Platform</th><th>Price</th><th>Status</th><th>Date</th></tr></thead><tbody>
- ${rows.map(o=>`<tr><td>${safe(String(o.id).slice(0,8))}...</td><td>${safe(o.account_size)}</td><td>${safe(o.account_type)}</td><td>${safe(o.platform||"—")}</td><td>${money(o.final_price)}</td><td>${badge(o.status)}</td><td>${o.created_at?new Date(o.created_at).toLocaleDateString():"—"}</td></tr>`).join("")}
- </tbody></table></div>`;
-}
-
-async function loadDashboard(){
- const {data:{session},error:sessionError}=await db.auth.getSession();
- if(sessionError)throw sessionError;
- if(!session){location.replace("Login.html");return;}
-
- currentUser=session.user;
- $("profileEmail").value=currentUser.email||"";
- $("profileId").value=currentUser.id;
- $("welcomeName").textContent=(currentUser.email||"Trader").split("@")[0];
- $("avatar").textContent=(currentUser.email||"W").charAt(0).toUpperCase();
- $("todayDate").textContent=new Date().toLocaleDateString();
- $("referralLink").value=location.origin+location.pathname+"?ref="+currentUser.id;
-
- const [orderResult,accountResult]=await Promise.all([
-  db.from("orders").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}),
-  db.from("trading_accounts").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false})
- ]);
- if(orderResult.error)throw orderResult.error;
- if(accountResult.error)throw accountResult.error;
- orders=orderResult.data||[];
- accounts=accountResult.data||[];
-
- $("totalBalance").textContent=money(accounts.reduce((s,a)=>s+(Number(a.balance)||0),0));
- $("totalEquity").textContent=money(accounts.reduce((s,a)=>s+(Number(a.equity)||0),0));
- $("totalProfit").textContent=money(accounts.reduce((s,a)=>s+(Number(a.profit)||0),0));
- $("accountCount").textContent=accounts.length;
- 
+   <div><div class="detail-label">Profit</div><div class="detail-value 
