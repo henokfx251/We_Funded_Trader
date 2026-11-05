@@ -4,189 +4,108 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WE FUNDED TRADER | Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{
-  --bg:#07111f;--panel:#101d30;--panel2:#14243a;
-  --gold:#e8b84b;--gold2:#f5d27c;--text:#f4f7fb;
-  --muted:#94a3b8;--line:#26374d;--green:#22c55e;
-  --red:#ef4444;--blue:#38bdf8;--sidebar:255px;
-}
+:root{--bg:#07111f;--panel:#101d30;--panel2:#14243a;--gold:#e8b84b;--gold2:#f5d27c;--text:#f4f7fb;--muted:#94a3b8;--line:#26374d;--green:#22c55e;--red:#ef4444;--sidebar:255px}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);
-  font-family:Arial,Helvetica,sans-serif}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-a{color:var(--gold)}
-.sidebar{
- position:fixed;inset:0 auto 0 0;width:var(--sidebar);
- background:#091525;border-right:1px solid var(--line);
- padding:22px 14px;overflow-y:auto;z-index:100;
- transition:transform .25s
-}
-.brand{font-size:20px;font-weight:900;color:var(--gold);
- padding:8px 10px 24px;line-height:1.35}
-.brand small{display:block;color:var(--muted);font-size:10px;
- letter-spacing:2px;margin-top:5px}
-.nav-label{color:#64748b;font-size:10px;font-weight:bold;
- letter-spacing:1.5px;padding:14px 12px 7px}
-.nav-btn{
- width:100%;display:flex;align-items:center;gap:12px;
- padding:12px;border:0;border-radius:9px;background:transparent;
- color:#b8c5d6;text-align:left;margin:3px 0;font-size:13px
-}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:var(--gold)}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar);background:#091525;border-right:1px solid var(--line);padding:22px 14px;overflow-y:auto;z-index:100;transition:transform .25s}
+.brand{font-size:20px;font-weight:900;color:var(--gold);padding:8px 10px 24px;line-height:1.35}
+.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:2px;margin-top:5px}
+.nav-label{color:#64748b;font-size:10px;font-weight:bold;letter-spacing:1.5px;padding:14px 12px 7px}
+.nav-btn{width:100%;display:flex;align-items:center;gap:12px;padding:12px;border:0;border-radius:9px;background:transparent;color:#b8c5d6;text-align:left;margin:3px 0;font-size:13px}
 .nav-btn:hover,.nav-btn.active{background:#1b2c43;color:var(--gold)}
 .nav-btn .ico{width:20px;text-align:center;font-size:16px}
 .nav-btn.logout{color:#f87171;margin-top:16px}
 .main{margin-left:var(--sidebar);min-height:100vh}
-.topbar{
- height:70px;display:flex;align-items:center;justify-content:space-between;
- padding:0 28px;border-bottom:1px solid var(--line);
- background:#091525;position:sticky;top:0;z-index:50
-}
+.topbar{height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--line);background:#091525;position:sticky;top:0;z-index:50}
 .topbar h2{font-size:17px;margin:0}
-.top-right{display:flex;align-items:center;gap:12px;color:var(--muted);
- font-size:12px}
-.avatar{width:36px;height:36px;border-radius:50%;background:var(--gold);
- color:#111827;display:grid;place-items:center;font-weight:bold}
+.top-right{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--gold);color:#111827;display:grid;place-items:center;font-weight:bold}
 .menu-btn{display:none;background:none;border:0;color:white;font-size:24px}
 .content{padding:28px;max-width:1500px;margin:auto}
 .page{display:none}.page.active{display:block}
-.welcome{margin-bottom:22px}
-.welcome h1{font-size:25px;margin:0 0 8px}
+.welcome{margin-bottom:22px}.welcome h1{font-size:25px;margin:0 0 8px}
 .muted{color:var(--muted)}.small{font-size:12px}
-.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
- gap:14px;margin-bottom:20px}
-.stat-card,.panel,.info-card,.account-card{
- background:var(--panel);border:1px solid var(--line);
- border-radius:13px;padding:19px;margin-bottom:16px
-}
-.stat-card span{color:var(--muted);font-size:12px}
-.stat-card h2{font-size:25px;margin:12px 0 0;color:var(--gold)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.stat-card,.panel,.info-card,.account-card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:19px;margin-bottom:16px}
+.stat-card span{color:var(--muted);font-size:12px}.stat-card h2{font-size:25px;margin:12px 0 0;color:var(--gold)}
 .panel h3,.info-card h3{margin:0 0 14px;font-size:16px}
 .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .account-card h3{margin:0 0 7px;color:var(--gold)}
-.account-details{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
- gap:14px;margin-top:17px}
+.account-details{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:17px}
 .detail-label{font-size:11px;color:var(--muted);margin-bottom:5px}
 .detail-value{font-size:14px;font-weight:bold;overflow-wrap:anywhere}
 .table-wrap{width:100%;overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:650px}
-th,td{padding:13px 11px;text-align:left;border-bottom:1px solid var(--line);
- font-size:12px;white-space:nowrap}
+th,td{padding:13px 11px;text-align:left;border-bottom:1px solid var(--line);font-size:12px;white-space:nowrap}
 th{color:var(--muted);font-weight:600}
-.empty{padding:25px;text-align:center;color:var(--muted);
- background:#0c1929;border:1px dashed var(--line);border-radius:9px;
- font-size:13px}
-.badge{display:inline-block;padding:5px 9px;border-radius:20px;
- background:#334155;color:#e2e8f0;font-size:10px;text-transform:capitalize}
+.empty{padding:25px;text-align:center;color:var(--muted);background:#0c1929;border:1px dashed var(--line);border-radius:9px;font-size:13px}
+.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#334155;color:#e2e8f0;font-size:10px;text-transform:capitalize}
 .badge.active,.badge.paid,.badge.approved{background:#123c2a;color:#86efac}
 .badge.pending{background:#493719;color:#fcd34d}
 .badge.rejected,.badge.failed{background:#4a2027;color:#fca5a5}
 label{display:block;font-size:12px;color:#cbd5e1;margin:14px 0 7px}
-input,select,textarea{
- width:100%;padding:12px;background:#091525;color:white;
- border:1px solid var(--line);border-radius:8px;outline:none
-}
+input,select,textarea{width:100%;padding:12px;background:#091525;color:white;border:1px solid var(--line);border-radius:8px;outline:none}
 input:focus,select:focus,textarea:focus{border-color:var(--gold)}
 input[type=file]{padding:9px;font-size:12px}
 textarea{min-height:90px;resize:vertical}
-.btn{
- display:inline-block;padding:11px 17px;border:0;border-radius:8px;
- background:var(--gold);color:#111827;font-weight:bold;font-size:12px
-}
-.btn:hover{background:var(--gold2)}
-.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn{display:inline-block;padding:11px 17px;border:0;border-radius:8px;background:var(--gold);color:#111827;font-weight:bold;font-size:12px}
+.btn:hover{background:var(--gold2)}.btn:disabled{opacity:.55;cursor:not-allowed}
 .btn-secondary{background:#26374d;color:#e2e8f0}
 .btn-danger{background:#7f1d1d;color:white}
 .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.form-grid>div{min-width:0}
-.kyc-status{padding:16px;border-radius:10px;background:#0b192a;
- border:1px solid var(--line);margin-bottom:15px}
+.kyc-status{padding:16px;border-radius:10px;background:#0b192a;border:1px solid var(--line);margin-bottom:15px}
 .kyc-status h3{margin-top:0}
 .info-card{background:#0c1a2b}
 .info-card p{font-size:13px;line-height:1.6}
-.toast{
- position:fixed;right:22px;bottom:22px;z-index:300;
- background:#17283e;border:1px solid var(--gold);
- padding:14px 18px;border-radius:9px;color:white;
- max-width:calc(100% - 44px);font-size:13px;
- opacity:0;pointer-events:none;transform:translateY(10px);
- transition:.2s
-}
+.faq-item{border:1px solid var(--line);border-radius:9px;margin:10px 0;background:#0c1a2b;overflow:hidden}
+.faq-item summary{padding:15px;cursor:pointer;font-size:13px;font-weight:bold;color:var(--gold)}
+.faq-item p{padding:0 15px 14px;margin:0;font-size:13px;line-height:1.7;color:#cbd5e1}
+.toast{position:fixed;right:22px;bottom:22px;z-index:300;background:#17283e;border:1px solid var(--gold);padding:14px 18px;border-radius:9px;color:white;max-width:calc(100% - 44px);font-size:13px;opacity:0;pointer-events:none;transform:translateY(10px);transition:.2s}
 .toast.show{opacity:1;transform:translateY(0)}
 .overlay{display:none;position:fixed;inset:0;background:#0009;z-index:90}
 .overlay.show{display:block}
 hr{border:0;border-top:1px solid var(--line);margin:20px 0}
 .footer-note{font-size:11px;color:var(--muted);text-align:center;padding:22px}
-@media(max-width:1050px){
- .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
- .account-details{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:760px){
- .sidebar{transform:translateX(-100%)}
- .sidebar.open{transform:translateX(0)}
- .main{margin-left:0}
- .menu-btn{display:block}
- .topbar{padding:0 15px}
- .content{padding:18px 13px}
- .top-right #todayDate{display:none}
- .grid-2,.grid-3{grid-template-columns:1fr}
- .form-grid{grid-template-columns:1fr}
- .welcome h1{font-size:21px}
- .stat-card{padding:14px}
- .stat-card h2{font-size:21px}
-}
+@media(max-width:1050px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.account-details{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.menu-btn{display:block}.topbar{padding:0 15px}.content{padding:18px 13px}.grid-2,.grid-3{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.welcome h1{font-size:21px}.stat-card{padding:14px}.stat-card h2{font-size:21px}}
 </style>
 </head>
 <body>
-
 <aside class="sidebar" id="sidebar">
   <div class="brand">WE FUNDED TRADER<small>TRADER DASHBOARD</small></div>
-
   <div class="nav-label">MAIN MENU</div>
   <button class="nav-btn active" data-page="overview"><span class="ico">⌂</span>Overview</button>
   <button class="nav-btn" data-page="challenge"><span class="ico">▤</span>Challenge</button>
   <button class="nav-btn" data-page="accounts"><span class="ico">▣</span>My Accounts</button>
   <button class="nav-btn" data-page="orders"><span class="ico">▧</span>My Orders</button>
   <button class="nav-btn" data-page="terminal"><span class="ico">⌁</span>Trading Terminal</button>
-
   <div class="nav-label">SERVICES</div>
   <button class="nav-btn" data-page="kyc"><span class="ico">◈</span>KYC Verification</button>
   <button class="nav-btn" data-page="certificate"><span class="ico">♧</span>Certificate</button>
-  <button class="nav-btn" data-page="payout"><span class="ico">＄</span>Payout</button>
+  <button class="nav-btn" data-page="payout"><span class="ico">$</span>Payout</button>
+  <button class="nav-btn" data-page="reward"><span class="ico">★</span>Rewards</button>
   <button class="nav-btn" data-page="affiliate"><span class="ico">♧</span>Affiliate</button>
-  <button class="nav-btn" data-page="support"><span class="ico">✉</span>Support</button>
-
+  <button class="nav-btn" data-page="support"><span class="ico">✉</span>Support & FAQ</button>
   <div class="nav-label">ACCOUNT</div>
   <button class="nav-btn" data-page="settings"><span class="ico">⚙</span>Settings</button>
   <button class="nav-btn logout" id="logoutBtn"><span class="ico">⇥</span><span id="logoutText">Logout</span></button>
 </aside>
-
 <div class="overlay" id="overlay"></div>
-
 <main class="main">
 <header class="topbar">
   <div style="display:flex;align-items:center;gap:13px">
-    <button class="menu-btn" id="menuBtn">☰</button>
+    <button class="menu-btn" id="menuBtn" type="button">☰</button>
     <h2 id="topTitle">Overview</h2>
   </div>
-  <div class="top-right">
-    <span id="profileEmailTop"></span>
-    <div class="avatar" id="avatar">T</div>
-  </div>
+  <div class="top-right"><span id="profileEmailTop"></span><div class="avatar" id="avatar">T</div></div>
 </header>
-
 <div class="content">
-
-<!-- OVERVIEW -->
 <section class="page active" id="page-overview">
-  <div class="welcome">
-    <h1>Welcome, <span id="welcomeName">Trader</span></h1>
-    <p class="muted">Here is your trading account overview.</p>
-  </div>
+  <div class="welcome"><h1>Welcome, <span id="welcomeName">Trader</span></h1><p class="muted">Here is your trading account overview.</p></div>
   <div class="stats-grid">
     <div class="stat-card"><span>Total Balance</span><h2 id="totalBalance">$0.00</h2></div>
     <div class="stat-card"><span>Total Equity</span><h2 id="totalEquity">$0.00</h2></div>
@@ -197,108 +116,69 @@ hr{border:0;border-top:1px solid var(--line);margin:20px 0}
     <div class="stat-card"><span>Active Accounts</span><h2 id="activeCount">0</h2></div>
     <div class="stat-card"><span>Pending Accounts</span><h2 id="pendingCount">0</h2></div>
   </div>
-  <div class="panel">
-    <h3>My Trading Accounts</h3>
-    <div id="overviewAccounts"><div class="empty">Loading accounts...</div></div>
-  </div>
-  <div class="panel">
-    <h3>Recent Orders</h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Order</th><th>Type</th><th>Size</th><th>Price</th><th>Status</th><th>Date</th></tr></thead>
-      <tbody id="overviewOrders"><tr><td colspan="6" class="empty">Loading orders...</td></tr></tbody>
-    </table></div>
-  </div>
+  <div class="panel"><h3>My Trading Accounts</h3><div id="overviewAccounts"><div class="empty">Loading accounts...</div></div></div>
+  <div class="panel"><h3>Recent Orders</h3><div class="table-wrap"><table><thead><tr><th>Order</th><th>Type</th><th>Size</th><th>Price</th><th>Status</th><th>Date</th></tr></thead><tbody id="overviewOrders"><tr><td colspan="6" class="empty">Loading orders...</td></tr></tbody></table></div></div>
 </section>
-
-<!-- CHALLENGE -->
 <section class="page" id="page-challenge">
   <div class="welcome"><h1>Challenge</h1><p class="muted">Your evaluation and instant funding rules.</p></div>
   <div id="challengeContent"><div class="empty">Loading challenge information...</div></div>
 </section>
-
-<!-- ACCOUNTS -->
 <section class="page" id="page-accounts">
   <div class="welcome"><h1>My Trading Accounts</h1><p class="muted">View your account balance, equity and credentials.</p></div>
   <div id="allAccounts"><div class="empty">Loading accounts...</div></div>
 </section>
-
-<!-- ORDERS -->
 <section class="page" id="page-orders">
   <div class="welcome"><h1>My Orders</h1><p class="muted">View your challenge purchase history.</p></div>
-  <div class="panel"><div class="table-wrap"><table>
-    <thead><tr><th>Order ID</th><th>Account Type</th><th>Size</th><th>Platform</th><th>Price</th><th>Coupon</th><th>Status</th><th>Date</th></tr></thead>
-    <tbody id="ordersTable"><tr><td colspan="8" class="empty">Loading orders...</td></tr></tbody>
-  </table></div></div>
+  <div class="panel"><div class="table-wrap"><table><thead><tr><th>Order ID</th><th>Account Type</th><th>Size</th><th>Platform</th><th>Price</th><th>Coupon</th><th>Status</th><th>Date</th></tr></thead><tbody id="ordersTable"><tr><td colspan="8" class="empty">Loading orders...</td></tr></tbody></table></div></div>
 </section>
-
-<!-- TERMINAL -->
 <section class="page" id="page-terminal">
   <div class="welcome"><h1>Trading Terminal</h1><p class="muted">Your assigned MT4/MT5 account details.</p></div>
   <div id="terminalAccounts"><div class="empty">Loading terminal accounts...</div></div>
-  <div class="info-card"><p>Use your assigned login, password and server in the MetaTrader platform. If credentials are not displayed, contact support.</p></div>
+  <div class="info-card"><p>Use your assigned login, password and server in MetaTrader. If credentials are not displayed, contact support.</p></div>
 </section>
-
-<!-- KYC -->
 <section class="page" id="page-kyc">
   <div class="welcome"><h1>KYC Verification</h1><p class="muted">Submit your identity documents for verification.</p></div>
   <div id="kycStatus"><div class="empty">Loading KYC status...</div></div>
   <div class="panel" id="kycFormCard">
-    <h3>Identity Verification</h3>
-    <p class="muted small">Accepted formats: JPG, PNG, PDF. Maximum file size: 10 MB each.</p>
+    <h3>Identity Verification</h3><p class="muted small">Accepted formats: JPG, PNG, PDF. Maximum 10 MB each.</p>
     <form id="kycForm">
-      <label>Full Legal Name</label>
-      <input id="kycFullName" type="text" autocomplete="name" required>
-      <label>Country</label>
-      <input id="kycCountry" type="text" required>
-      <label>Document Type</label>
-      <select id="kycDocumentType" required>
-        <option value="">Select document</option>
-        <option value="National ID">National ID</option>
-        <option value="Passport">Passport</option>
-        <option value="Driving License">Driving License</option>
-      </select>
-      <label>Front Side of Document (Required)</label>
-      <input id="kycFront" type="file" accept=".jpg,.jpeg,.png,.pdf" required>
-      <label>Back Side of Document (Optional)</label>
-      <input id="kycBack" type="file" accept=".jpg,.jpeg,.png,.pdf">
-      <label>Selfie (Optional)</label>
-      <input id="kycSelfie" type="file" accept=".jpg,.jpeg,.png,.pdf">
+      <label>Full Legal Name</label><input id="kycFullName" type="text" required>
+      <label>Country</label><input id="kycCountry" type="text" required>
+      <label>Document Type</label><select id="kycDocumentType" required><option value="">Select document</option><option>National ID</option><option>Passport</option><option>Driving License</option></select>
+      <label>Front Side (Required)</label><input id="kycFront" type="file" accept=".jpg,.jpeg,.png,.pdf" required>
+      <label>Back Side (Optional)</label><input id="kycBack" type="file" accept=".jpg,.jpeg,.png,.pdf">
+      <label>Selfie (Optional)</label><input id="kycSelfie" type="file" accept=".jpg,.jpeg,.png,.pdf">
       <div class="btn-row"><button class="btn" id="submitKycBtn" type="submit">Submit KYC Verification</button></div>
     </form>
   </div>
-</section>
-
-<!-- CERTIFICATE -->
-<section class="page" id="page-certificate">
+  </section>
+  <section class="page" id="page-certificate">
   <div class="welcome"><h1>Certificate</h1><p class="muted">Your achievement certificates.</p></div>
   <div class="panel"><div class="empty">Certificates will appear here when issued by the admin.</div></div>
 </section>
 
-<!-- PAYOUT -->
 <section class="page" id="page-payout">
-  <div class="welcome"><h1>Payout</h1><p class="muted">Request your eligible trading profits.</p></div>
-  <div class="stats-grid">
-    <div class="stat-card"><span>Trader Profit Share</span><h2>80%</h2></div>
-    <div class="stat-card"><span>Company Share</span><h2>20%</h2></div>
-    <div class="stat-card"><span>Minimum Payout</span><h2>$50</h2></div>
-    <div class="stat-card"><span>Processing Time</span><h2>1–3 Days</h2></div>
+  <div class="welcome"><h1>Payout</h1><p class="muted">Your withdrawal rules and payout history.</p></div>
+  <div class="grid-2">
+    <div class="info-card">
+      <h3>1-Step Funded Account</h3>
+      <p><b>Trader:</b> 80% · <b>Company:</b> 20%</p>
+      <p><b>Consistency:</b> 50%</p>
+      <p><b>Withdrawal:</b> Minimum 2% · Maximum 6%</p>
+    </div>
+    <div class="info-card">
+      <h3>Instant Funding</h3>
+      <p><b>Trader:</b> 70% · <b>Company:</b> 30%</p>
+      <p><b>Consistency:</b> 30%</p>
+      <p><b>Withdrawal:</b> Minimum 1% · Maximum 4%</p>
+    </div>
   </div>
   <div class="panel">
-    <h3>Request Payout</h3>
-    <p class="muted small">First payout after 14 days, then every 14 days. Only eligible active funded accounts can request a payout.</p>
-    <form id="payoutForm">
-      <label>Eligible Trading Account</label>
-      <select id="payoutAccount" required><option value="">Loading accounts...</option></select>
-      <div id="payoutPreview" class="info-card">Select an eligible account to view your payout estimate.</div>
-      <label>USDT Network</label>
-      <select id="payoutNetwork" required>
-        <option value="TRC20">USDT TRC20</option>
-        <option value="BEP20">USDT BEP20</option>
-      </select>
-      <label>USDT Wallet Address</label>
-      <input id="payoutWallet" type="text" placeholder="Enter your wallet address" required>
-      <div class="btn-row"><button class="btn" id="requestPayoutBtn" type="submit">Submit Payout Request</button></div>
-    </form>
+    <h3>Payout Schedule</h3>
+    <p>First payout after 14 days, then every 14 days.</p>
+    <p>Processing time: 1–3 business days.</p>
+    <p>Supported networks: USDT TRC20 and BEP20.</p>
+    <p class="muted small">Payout requests are temporarily unavailable while the secure payout system is being updated to enforce the rules above. Your payout history remains visible below.</p>
   </div>
   <div class="panel">
     <h3>My Payout History</h3>
@@ -306,29 +186,115 @@ hr{border:0;border-top:1px solid var(--line);margin:20px 0}
   </div>
 </section>
 
-<!-- AFFILIATE -->
+<section class="page" id="page-reward">
+  <div class="welcome"><h1>Rewards</h1><p class="muted">Reward account conditions and redemption information.</p></div>
+  <div class="info-card">
+    <h3>Reward Account Rules</h3>
+    <p>Accounts redeemed using reward points require a <b>$1 activation fee</b>.</p>
+    <p>A Reward Account is eligible for <b>one withdrawal only</b>, with a maximum withdrawal of <b>3%</b>.</p>
+    <p>After the Reward Account payout is received, a restart fee applies if you want to continue using the account.</p>
+    <p>You may continue by paying the full standard trading account fee in installments, subject to the available payment arrangement.</p>
+    <p><b>Example:</b> The standard fee for a $10,000 account is $40.</p>
+  </div>
+  <div class="panel">
+    <h3>Reward Account Information</h3>
+    <p class="muted small">Reward account eligibility and redemption records will appear here when the reward system is connected to your account.</p>
+    <div id="rewardStatus" class="empty">No reward account information is currently available.</div>
+  </div>
+</section>
+
 <section class="page" id="page-affiliate">
   <div class="welcome"><h1>Affiliate Program</h1><p class="muted">Share your referral link.</p></div>
   <div class="panel">
     <h3>Your Referral Link</h3>
-    <label>Referral URL</label>
-    <input id="referralLink" type="text" readonly>
+    <label>Referral URL</label><input id="referralLink" type="text" readonly>
     <div class="btn-row"><button class="btn" id="copyReferralBtn" type="button">Copy Referral Link</button></div>
-    <p class="muted small">Referral rewards and commissions are subject to the official affiliate program terms.</p>
+    <p class="muted small">Referral rewards and commissions are subject to the official affiliate program terms. Commission rates will be displayed when configured by the company.</p>
   </div>
 </section>
 
-<!-- SUPPORT -->
 <section class="page" id="page-support">
-  <div class="welcome"><h1>Support</h1><p class="muted">Need help? Contact our support team.</p></div>
+  <div class="welcome"><h1>Support & FAQ</h1><p class="muted">Find answers to common questions about your account.</p></div>
+  <div class="panel">
+    <h3>Frequently Asked Questions</h3>
+
+    <details class="faq-item">
+      <summary>What are the 1-Step Evaluation rules?</summary>
+      <p>Profit target: 10%. Daily drawdown: 3%. Maximum drawdown: 5%. Minimum profitable day: 0.5%. You must achieve 5 profitable days to complete the evaluation.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>What is the 1-Step Funded profit split?</summary>
+      <p>For a 1-Step Funded account, the trader receives 80% of eligible profits and the company receives 20%.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>What is the 1-Step payout consistency rule?</summary>
+      <p>The consistency limit is 50%. The maximum withdrawal is 6% and the minimum withdrawal is 2%.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>What are the Instant Funding rules?</summary>
+      <p>Instant Funding has no daily drawdown. Maximum drawdown is 5%, measured on closed positions only.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>What is the Instant Funding profit split?</summary>
+      <p>The trader receives 70% of eligible profits and the company receives 30%.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>What is the Instant Funding payout rule?</summary>
+      <p>The consistency limit is 30%. The minimum withdrawal is 1% and the maximum withdrawal is 4%.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>When can I request my first payout?</summary>
+      <p>The first payout is available after 14 days. After that, payouts are scheduled every 14 days, subject to eligibility and review.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>How long does payout processing take?</summary>
+      <p>Approved payout processing normally takes 1–3 business days.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Which payout networks are supported?</summary>
+      <p>USDT TRC20 and USDT BEP20 are the supported payout networks. Always provide the correct wallet address for the selected network.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>What are the Reward Account rules?</summary>
+      <p>A reward account redeemed with points requires a $1 activation fee. It allows one withdrawal only, up to a maximum of 3%.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Can I continue after receiving a Reward Account payout?</summary>
+      <p>After receiving the reward account payout, a restart fee applies. You can also continue by paying the full standard trading account fee in installments, subject to the available arrangement. For example, a $10,000 account has a standard fee of $40.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>How does the Affiliate Program work?</summary>
+      <p>Share your personal referral link. Referral commissions and rewards are subject to the official affiliate program terms. The applicable commission rate will be shown when configured.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>How do I submit KYC?</summary>
+      <p>Open KYC Verification, enter your legal name and country, select your document type, and upload the front side of your ID. JPG, PNG and PDF files up to 10 MB are accepted.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>How can I contact support?</summary>
+      <p>For account, payment, KYC or payout assistance, email <a href="mailto:support@wefundedtrader.com">support@wefundedtrader.com</a>.</p>
+    </details>
+  </div>
   <div class="panel">
     <h3>Customer Support</h3>
-    <p>For account, payment, KYC or payout assistance, email:</p>
+    <p>Need additional help? Contact our support team:</p>
     <p><a href="mailto:support@wefundedtrader.com">support@wefundedtrader.com</a></p>
   </div>
 </section>
 
-<!-- SETTINGS -->
 <section class="page" id="page-settings">
   <div class="welcome"><h1>Settings</h1><p class="muted">Manage your profile and password.</p></div>
   <div class="panel">
@@ -348,9 +314,8 @@ hr{border:0;border-top:1px solid var(--line);margin:20px 0}
 </main>
 <div class="toast" id="toast"></div>
 
-<!-- PART 2 STARTS BELOW -->
-  <script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
@@ -385,8 +350,7 @@ function displayDate(value) {
 function badge(value) {
   const status = String(value || "unknown").toLowerCase();
   const allowed = ["active","paid","approved","pending","rejected","failed"];
-  const css = allowed.includes(status) ? status : "";
-  return `<span class="badge ${css}">${safe(status)}</span>`;
+  return `<span class="badge ${allowed.includes(status) ? status : ""}">${safe(status)}</span>`;
 }
 
 function toast(message) {
@@ -405,12 +369,12 @@ function closeMenu() {
   $("overlay").classList.remove("show");
 }
 
-window.toggleMenu = function() {
+function toggleMenu() {
   $("sidebar").classList.toggle("open");
   $("overlay").classList.toggle("show");
-};
+}
 
-window.showPage = function(name) {
+function showPage(name) {
   const target = $("page-" + name);
   if (!target) return;
 
@@ -435,15 +399,14 @@ window.showPage = function(name) {
 
   closeMenu();
   window.scrollTo({top:0,behavior:"smooth"});
-};
+}
 
-document.querySelectorAll(".nav-btn[data-page]").forEach(button => {
-  button.addEventListener("click", () =>
-    window.showPage(button.dataset.page)
-  );
+document.addEventListener("click", event => {
+  const navButton = event.target.closest(".nav-btn[data-page]");
+  if (navButton) showPage(navButton.dataset.page);
 });
 
-$("menuBtn").addEventListener("click", window.toggleMenu);
+$("menuBtn").addEventListener("click", toggleMenu);
 $("overlay").addEventListener("click", closeMenu);
 
 /* ORDER TABLE */
@@ -463,137 +426,72 @@ function orderTable(order) {
 }
 
 /* LOAD ORDERS */
-/* LOAD ORDERS */
 async function loadOrders() {
   const table = $("ordersTable");
   const overview = $("overviewOrders");
 
-  try {
-    if (!currentUser?.id) {
-      throw new Error("User session not found. Please login again.");
-    }
+  if (!currentUser?.id) throw new Error("User session not found.");
 
-    if (table) {
-      table.innerHTML =
-        '<tr><td colspan="8" class="empty">Loading orders...</td></tr>';
-    }
-
-    const { data, error } = await db
-      .from("orders")
-      .select("*")
-      .eq("user_id", currentUser.id)
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-
-    orders = data || [];
-
-    if (table) {
-      table.innerHTML = orders.length
-        ? orders.map(order => orderTable(order)).join("")
-        : '<tr><td colspan="8" class="empty">No orders found.</td></tr>';
-    }
-
-    if (overview) {
-      overview.innerHTML = orders.length
-        ? orders.slice(0, 5).map(order => `
-          <tr>
-            <td>${safe(String(order.id || "").slice(0, 8))}</td>
-            <td>${safe(order.account_type || "—")}</td>
-            <td>${money(order.account_size)}</td>
-            <td>${money(order.final_price ?? order.base_price)}</td>
-            <td>${badge(order.status)}</td>
-            <td>${displayDate(order.created_at)}</td>
-          </tr>
-        `).join("")
-        : '<tr><td colspan="6" class="empty">No recent orders.</td></tr>';
-    }
-
-    if ($("orderCount")) {
-      $("orderCount").textContent = orders.length;
-    }
-
-    if ($("paidCount")) {
-      $("paidCount").textContent = orders.filter(order =>
-        String(order.status).toLowerCase() === "paid"
-      ).length;
-    }
-
-  } catch (error) {
-    console.error("LOAD ORDERS ERROR:", error);
-
-    if (table) {
-      table.innerHTML = `
-        <tr>
-          <td colspan="8" class="empty">
-            Orders error: ${safe(error.message || "Unknown error")}
-          </td>
-        </tr>`;
-    }
-
-    if (overview) {
-      overview.innerHTML =
-        '<tr><td colspan="6" class="empty">Could not load recent orders.</td></tr>';
-    }
-
-    throw error;
+  if (table) {
+    table.innerHTML =
+      '<tr><td colspan="8" class="empty">Loading orders...</td></tr>';
   }
-}
 
-/* ACCOUNT CARD */
-  
+  const {data,error} = await db
+    .from("orders")
+    .select("*")
+    .eq("user_id",currentUser.id)
+    .order("created_at",{ascending:false});
+
+  if (error) throw error;
+
+  orders = data || [];
+
+  if (table) {
+    table.innerHTML = orders.length
+      ? orders.map(orderTable).join("")
+      : '<tr><td colspan="8" class="empty">No orders found.</td></tr>';
+  }
+
+  if (overview) {
+    overview.innerHTML = orders.length
+      ? orders.slice(0,5).map(order => `
+        <tr>
+          <td>${safe(String(order.id || "").slice(0,8))}</td>
+          <td>${safe(order.account_type || "—")}</td>
+          <td>${money(order.account_size)}</td>
+          <td>${money(order.final_price ?? order.base_price)}</td>
+          <td>${badge(order.status)}</td>
+          <td>${displayDate(order.created_at)}</td>
+        </tr>
+      `).join("")
+      : '<tr><td colspan="6" class="empty">No recent orders.</td></tr>';
+  }
+
+  $("orderCount").textContent = orders.length;
+  $("paidCount").textContent = orders.filter(order =>
+    String(order.status).toLowerCase() === "paid"
+  ).length;
+}
 
 /* ACCOUNT CARD */
 function accountCard(account) {
   return `
     <div class="account-card">
       <h3>${safe(account.account_name || "Trading Account")}</h3>
-
       <p class="muted small">
         ${safe(account.platform || "Platform not assigned")}
         · ${safe(account.account_type || "Account")}
       </p>
-
       <div class="account-details">
-        <div>
-          <div class="detail-label">Account Size</div>
-          <div class="detail-value">${money(account.account_size)}</div>
-        </div>
-
-        <div>
-          <div class="detail-label">Balance</div>
-          <div class="detail-value">${money(account.balance)}</div>
-        </div>
-
-        <div>
-          <div class="detail-label">Equity</div>
-          <div class="detail-value">${money(account.equity)}</div>
-        </div>
-
-        <div>
-          <div class="detail-label">Profit</div>
-          <div class="detail-value">${money(account.profit)}</div>
-        </div>
-
-        <div>
-          <div class="detail-label">MT Login</div>
-          <div class="detail-value">${safe(account.mt_login || "Not assigned")}</div>
-        </div>
-
-        <div>
-          <div class="detail-label">MT Server</div>
-          <div class="detail-value">${safe(account.mt_server || "Not assigned")}</div>
-        </div>
-
-        <div>
-          <div class="detail-label">Phase</div>
-          <div class="detail-value">${safe(account.phase || "—")}</div>
-        </div>
-
-        <div>
-          <div class="detail-label">Status</div>
-          <div class="detail-value">${badge(account.status)}</div>
-        </div>
+        <div><div class="detail-label">Account Size</div><div class="detail-value">${money(account.account_size)}</div></div>
+        <div><div class="detail-label">Balance</div><div class="detail-value">${money(account.balance)}</div></div>
+        <div><div class="detail-label">Equity</div><div class="detail-value">${money(account.equity)}</div></div>
+        <div><div class="detail-label">Profit</div><div class="detail-value">${money(account.profit)}</div></div>
+        <div><div class="detail-label">MT Login</div><div class="detail-value">${safe(account.mt_login || "Not assigned")}</div></div>
+        <div><div class="detail-label">MT Server</div><div class="detail-value">${safe(account.mt_server || "Not assigned")}</div></div>
+        <div><div class="detail-label">Phase</div><div class="detail-value">${safe(account.phase || "—")}</div></div>
+        <div><div class="detail-label">Status</div><div class="detail-value">${badge(account.status)}</div></div>
       </div>
     </div>
   `;
@@ -626,11 +524,9 @@ async function loadAccounts() {
   const balance = accounts.reduce(
     (sum,a) => sum + (Number(a.balance) || 0),0
   );
-
   const equity = accounts.reduce(
     (sum,a) => sum + (Number(a.equity) || 0),0
   );
-
   const profit = accounts.reduce(
     (sum,a) => sum + (Number(a.profit) || 0),0
   );
@@ -650,13 +546,13 @@ async function loadAccounts() {
 }
 
 /* CHALLENGE INFORMATION */
-async function loadChallenge() {
-  const evaluation = orders.filter(
-    order => order.account_type === "evaluation"
+function loadChallenge() {
+  const evaluation = orders.filter(order =>
+    String(order.account_type).toLowerCase() === "evaluation"
   );
 
-  const instant = orders.filter(
-    order => order.account_type === "instant"
+  const instant = orders.filter(order =>
+    String(order.account_type).toLowerCase() === "instant"
   );
 
   $("challengeContent").innerHTML = `
@@ -669,17 +565,22 @@ async function loadChallenge() {
           Daily Drawdown: 3%<br>
           Maximum Drawdown: 5%<br>
           Minimum Profitable Day: 0.5%<br>
-          Required Profitable Days: 5
+          Required Profitable Days: 5<br>
+          Funded Profit Split: 80% Trader / 20% Company<br>
+          Consistency: 50%<br>
+          Withdrawal: 2%–6%
         </p>
       </div>
-
       <div class="info-card">
         <h3>Instant Funding</h3>
         <p>You have ${instant.length} instant funding order(s).</p>
         <p class="muted small">
           No Daily Drawdown<br>
           Maximum Drawdown: 5%<br>
-          Drawdown measured on closed positions only
+          Drawdown measured on closed positions only<br>
+          Profit Split: 70% Trader / 30% Company<br>
+          Consistency: 30%<br>
+          Withdrawal: 1%–4%
         </p>
       </div>
     </div>
@@ -706,7 +607,6 @@ async function loadKYC() {
         <p class="muted">Please submit your identity documents below.</p>
       </div>
     `;
-
     $("kycFormCard").style.display = "block";
     return;
   }
@@ -714,27 +614,19 @@ async function loadKYC() {
   $("kycStatus").innerHTML = `
     <div class="kyc-status">
       <h3>KYC Status: ${badge(kycRecord.status)}</h3>
-
-      <p class="muted small">
-        Submitted: ${displayDate(kycRecord.submitted_at)}
-      </p>
-
+      <p class="muted small">Submitted: ${displayDate(kycRecord.submitted_at)}</p>
       <p><b>Name:</b> ${safe(kycRecord.full_name)}</p>
       <p><b>Country:</b> ${safe(kycRecord.country)}</p>
       <p><b>Document:</b> ${safe(kycRecord.document_type)}</p>
-
-      ${
-        kycRecord.admin_note
-          ? `<p><b>Admin Note:</b> ${safe(kycRecord.admin_note)}</p>`
-          : ""
-      }
+      ${kycRecord.admin_note
+        ? `<p><b>Admin Note:</b> ${safe(kycRecord.admin_note)}</p>`
+        : ""}
     </div>
   `;
 
-  const status = String(kycRecord.status || "").toLowerCase();
-
   $("kycFormCard").style.display =
-    status === "rejected" ? "block" : "none";
+    String(kycRecord.status).toLowerCase() === "rejected"
+      ? "block" : "none";
 }
 
 /* UPLOAD KYC FILE */
@@ -745,28 +637,20 @@ async function uploadKycFile(file,folder) {
     throw new Error("Each file must be 10 MB or smaller.");
   }
 
-  const allowed = [
-    "image/jpeg",
-    "image/png",
-    "application/pdf"
-  ];
+  const allowed = ["image/jpeg","image/png","application/pdf"];
 
   if (!allowed.includes(file.type)) {
     throw new Error("Unsupported format. Use JPG, PNG or PDF.");
   }
 
   const extension = file.name.split(".").pop().toLowerCase();
-
-  const path =
-    `${currentUser.id}/${folder}_${Date.now()}_${Math.random()
-      .toString(36).slice(2,8)}.${extension}`;
+  const path = `${currentUser.id}/${folder}_${Date.now()}_${Math.random().toString(36).slice(2,8)}.${extension}`;
 
   const {error} = await db.storage
     .from("kyc-documents")
     .upload(path,file,{upsert:false});
 
   if (error) throw error;
-
   return path;
 }
 
@@ -785,61 +669,44 @@ $("kycForm").addEventListener("submit",async event => {
   button.textContent = "Uploading...";
 
   try {
-    if (
-      kycRecord &&
-      String(kycRecord.status).toLowerCase() !== "rejected"
-    ) {
-      throw new Error(
-        "Your KYC is already submitted and awaiting review."
-      );
+    if (kycRecord &&
+        String(kycRecord.status).toLowerCase() !== "rejected") {
+      throw new Error("Your KYC is already submitted and awaiting review.");
     }
 
     const fullName = $("kycFullName").value.trim();
     const country = $("kycCountry").value.trim();
     const documentType = $("kycDocumentType").value;
-
-    if (!fullName || !country || !documentType) {
-      throw new Error("Please complete all required fields.");
-    }
-
     const front = $("kycFront").files[0];
     const back = $("kycBack").files[0];
     const selfie = $("kycSelfie").files[0];
 
-    if (!front) {
-      throw new Error("Upload the front side of your ID.");
+    if (!fullName || !country || !documentType || !front) {
+      throw new Error("Complete all required fields and upload the front ID.");
     }
 
     const frontFile = await uploadKycFile(front,"front");
-    const backFile = back
-      ? await uploadKycFile(back,"back")
-      : null;
-
-    const selfieFile = selfie
-      ? await uploadKycFile(selfie,"selfie")
-      : null;
-
-    const record = {
-      user_id:currentUser.id,
-      full_name:fullName,
-      country:country,
-      document_type:documentType,
-      front_file:frontFile,
-      back_file:backFile,
-      selfie_file:selfieFile,
-      status:"pending",
-      admin_note:null,
-      reviewed_at:null
-    };
+    const backFile = back ? await uploadKycFile(back,"back") : null;
+    const selfieFile = selfie ? await uploadKycFile(selfie,"selfie") : null;
 
     const {error} = await db
       .from("kyc_submissions")
-      .insert(record);
+      .insert({
+        user_id:currentUser.id,
+        full_name:fullName,
+        country,
+        document_type:documentType,
+        front_file:frontFile,
+        back_file:backFile,
+        selfie_file:selfieFile,
+        status:"pending",
+        admin_note:null,
+        reviewed_at:null
+      });
 
     if (error) throw error;
 
     $("kycForm").reset();
-
     toast("KYC submitted successfully.");
     await loadKYC();
 
@@ -852,45 +719,7 @@ $("kycForm").addEventListener("submit",async event => {
   }
 });
 
-/* PAYOUT ELIGIBILITY */
-function eligibleAccount(account) {
-  const type = String(account.account_type || "").toLowerCase();
-  const status = String(account.status || "").toLowerCase();
-  const phase = String(account.phase || "").toLowerCase();
-
-  return status === "active" &&
-    (
-      type === "instant" ||
-      (type === "evaluation" && phase === "funded")
-    );
-}
-
-/* PAYOUT PREVIEW */
-function updatePayoutPreview() {
-  const account = accounts.find(
-    item => item.id === $("payoutAccount").value
-  );
-
-  if (!account) {
-    $("payoutPreview").textContent =
-      "Select an eligible account to view your payout estimate.";
-    return;
-  }
-
-  const profit = Math.max(Number(account.profit) || 0,0);
-
-  $("payoutPreview").innerHTML = `
-    <p><b>Account:</b> ${safe(account.account_name || "Trading Account")}</p>
-    <p><b>Account Profit:</b> ${money(profit)}</p>
-    <p><b>Your 80% Share:</b> ${money(profit * 0.8)}</p>
-    <p><b>Company 20%:</b> ${money(profit * 0.2)}</p>
-    <p class="muted small">
-      This is an estimate. The secure server checks the final eligible amount.
-    </p>
-  `;
-}
-
-/* LOAD PAYOUT REQUESTS */
+/* PAYOUT HISTORY ONLY */
 async function loadPayouts() {
   const {data,error} = await db
     .from("payout_requests")
@@ -901,30 +730,11 @@ async function loadPayouts() {
   if (error) throw error;
 
   const requests = data || [];
-  const eligible = accounts.filter(eligibleAccount);
-
-  $("payoutAccount").innerHTML = eligible.length
-    ? '<option value="">Select Account</option>' +
-      eligible.map(account => `
-        <option value="${safe(account.id)}">
-          ${safe(account.account_name || account.account_type)}
-          — ${money(account.profit)} profit
-        </option>
-      `).join("")
-    : '<option value="">No eligible accounts</option>';
 
   $("payoutHistory").innerHTML = requests.length
-    ? `
-      <div class="table-wrap">
+    ? `<div class="table-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Amount</th>
-              <th>Network</th>
-              <th>Status</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Date</th><th>Amount</th><th>Network</th><th>Status</th></tr></thead>
           <tbody>
             ${requests.map(request => `
               <tr>
@@ -936,103 +746,33 @@ async function loadPayouts() {
             `).join("")}
           </tbody>
         </table>
-      </div>
-    `
+      </div>`
     : '<div class="empty">No payout requests yet.</div>';
-
-  updatePayoutPreview();
 }
-
-$("payoutAccount").addEventListener("change",updatePayoutPreview);
-
-/* SUBMIT PAYOUT REQUEST */
-$("payoutForm").addEventListener("submit",async event => {
-  event.preventDefault();
-
-  const button = $("requestPayoutBtn");
-
-  if (!currentUser) {
-    toast("Please log in again.");
-    return;
-  }
-
-  const accountId = $("payoutAccount").value;
-  const network = $("payoutNetwork").value;
-  const wallet = $("payoutWallet").value.trim();
-
-  if (!accountId || !wallet) {
-    toast("Complete all payout fields.");
-    return;
-  }
-
-  button.disabled = true;
-  button.textContent = "Submitting...";
-
-  try {
-    const {data,error} = await db.rpc("request_wft_payout",{
-      p_trading_account_id:accountId,
-      p_network:network,
-      p_wallet_address:wallet
-    });
-
-    if (error) throw error;
-
-    if (!data || !data.success) {
-      throw new Error("Payout request was not confirmed.");
-    }
-
-    toast("Payout request submitted: " + money(data.payout_amount));
-
-    $("payoutWallet").value = "";
-    await loadPayouts();
-
-  } catch(error) {
-    console.error("PAYOUT ERROR:",error);
-    toast(error.message || "Payout request failed.");
-  } finally {
-    button.disabled = false;
-    button.textContent = "Submit Payout Request";
-  }
-});
 
 /* REFRESH DASHBOARD */
 async function refreshAll() {
-  const results = await Promise.allSettled([
-    loadOrders(),
-    loadAccounts(),
-    loadKYC()
-  ]);
+  const tasks = [
+    ["Orders",loadOrders],
+    ["Trading Accounts",loadAccounts],
+    ["KYC",loadKYC],
+    ["Payout History",loadPayouts]
+  ];
 
-  const names = ["Orders","Trading Accounts","KYC"];
-
-  results.forEach((result,index) => {
-    if (result.status === "rejected") {
-      console.error(names[index] + " loading error:",result.reason);
-      toast(names[index] + " could not be loaded.");
+  for (const [name,task] of tasks) {
+    try {
+      await task();
+    } catch(error) {
+      console.error(name + " loading error:",error);
+      toast(name + " could not be loaded.");
     }
-  });
-
-  await loadChallenge();
-
-  try {
-    await loadPayouts();
-  } catch(error) {
-    console.error("PAYOUT LOAD ERROR:",error);
-    $("payoutHistory").innerHTML =
-      '<div class="empty">Payout information could not be loaded.</div>';
   }
+
+  loadChallenge();
 }
 
 /* LOAD DASHBOARD */
-    
-
-/* LOGOUT */
-$("logoutBtn").addEventListener("click",async () => {
-  const button = $("logoutBtn");
-  const label = $("logoutText");
-
-  button.disabled = true;
-  label.textContent = "Loggasync function loadDashboard() {
+async function loadDashboard() {
   try {
     const {data,error} = await db.auth.getSession();
 
@@ -1056,9 +796,8 @@ $("logoutBtn").addEventListener("click",async () => {
 
     $("welcomeName").textContent = displayName;
     $("avatar").textContent = displayName.charAt(0).toUpperCase();
-    $("todayDate").textContent = new Date().toLocaleDateString();
 
-    const topEmail = document.getElementById("profileEmailTop");
+    const topEmail = $("profileEmailTop");
     if (topEmail) topEmail.textContent = currentUser.email || "";
 
     $("referralLink").value =
@@ -1072,8 +811,15 @@ $("logoutBtn").addEventListener("click",async () => {
     console.error("DASHBOARD LOAD ERROR:",error);
     toast(error.message || "Could not load dashboard data.");
   }
-                            }
-    ing out...";
+}
+
+/* LOGOUT */
+$("logoutBtn").addEventListener("click",async () => {
+  const button = $("logoutBtn");
+  const label = $("logoutText");
+
+  button.disabled = true;
+  label.textContent = "Logging out...";
 
   try {
     const {error} = await db.auth.signOut({scope:"local"});
@@ -1104,7 +850,6 @@ $("changePasswordBtn").addEventListener("click",async () => {
 
   try {
     const {error} = await db.auth.updateUser({password});
-
     if (error) throw error;
 
     $("newPassword").value = "";
@@ -1140,7 +885,6 @@ db.auth.onAuthStateChange(event => {
 
 /* START */
 loadDashboard();
-
 </script>
 </body>
-  </html>
+</html>
