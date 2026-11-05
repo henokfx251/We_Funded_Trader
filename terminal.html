@@ -1,189 +1,170 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#07111f">
-<title>WFT Trading Terminal</title>
-
-<style>
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #07111f;
-  font-family: Arial, sans-serif;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-}
-
-.topbar {
-  height: 48px;
-  min-height: 48px;
-  background: #0b1728;
-  border-bottom: 1px solid #243852;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 14px;
-  color: white;
-}
-
-.brand {
-  color: #42a5ff;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: .5px;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-button {
-  border: 1px solid #36516f;
-  background: #142b46;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #1c4168;
-}
-
-#chartArea {
-  width: 100%;
-  height: calc(100dvh - 48px);
-  flex: 1;
-  min-height: 0;
-  background: #07111f;
-}
-
-.tradingview-widget-container {
-  width: 100%;
-  height: 100%;
-}
-
-.tradingview-widget-container__widget {
-  width: 100%;
-  height: 100%;
-}
-
-@media(max-width:600px) {
-  .topbar {
-    height: 44px;
-    min-height: 44px;
-    padding: 0 9px;
-  }
-
-  .brand {
-    font-size: 13px;
-  }
-
-  button {
-    padding: 7px 9px;
-    font-size: 11px;
-  }
-
-  #chartArea {
-    height: calc(100dvh - 44px);
-  }
-}
-</style>
-</head>
-
 <body>
+  <header class="topbar">
+    <div class="brand">WE FUNDED TRADER</div>
+    <div class="terminal-label">TRADINGVIEW ANALYSIS TERMINAL</div>
+    <a href="dashboard.html" class="back-link">← Dashboard</a>
+  </header>
 
-<header class="topbar">
-  <div class="brand">WE FUNDED TRADER</div>
+  <main class="terminal-container">
 
-  <div class="actions">
-    <button onclick="goHome()">Home</button>
-    <button onclick="fullScreen()">⛶ Full Screen</button>
-  </div>
-</header>
+    <section class="hero">
+      <div>
+        <h1>TradingView Analysis Terminal</h1>
+        <p>Professional market analysis workspace for WFT traders.</p>
+      </div>
+      <span class="analysis-badge">ANALYSIS ONLY</span>
+    </section>
 
-<main id="chartArea">
+    <section class="market-toolbar">
+      <div>
+        <label>Market</label>
+        <select id="symbol">
+          <option value="OANDA:XAUUSD">XAUUSD</option>
+          <option value="OANDA:EURUSD">EURUSD</option>
+          <option value="OANDA:GBPUSD">GBPUSD</option>
+          <option value="BINANCE:BTCUSDT">BTCUSDT</option>
+          <option value="OANDA:USDJPY">USDJPY</option>
+          <option value="OANDA:US30USD">US30</option>
+        </select>
+      </div>
 
-  <div class="tradingview-widget-container">
-    <div class="tradingview-widget-container__widget"></div>
+      <div>
+        <label>Timeframe</label>
+        <select id="timeframe">
+          <option value="1">1 Minute</option>
+          <option value="5">5 Minutes</option>
+          <option value="15" selected>15 Minutes</option>
+          <option value="30">30 Minutes</option>
+          <option value="60">1 Hour</option>
+          <option value="240">4 Hours</option>
+          <option value="D">Daily</option>
+          <option value="W">Weekly</option>
+        </select>
+      </div>
 
-    <script
-      type="text/javascript"
-      src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"
-      async>
-    {
-      "autosize": true,
-      "symbol": "OANDA:XAUUSD",
-      "interval": "15",
-      "timezone": "Africa/Addis_Ababa",
-      "theme": "dark",
-      "style": "1",
-      "locale": "en",
-      "backgroundColor": "#07111f",
-      "gridColor": "rgba(42, 65, 91, 0.35)",
-      "allow_symbol_change": true,
-      "hide_side_toolbar": false,
-      "hide_top_toolbar": false,
-      "hide_legend": false,
-      "hide_volume": false,
-      "save_image": true,
-      "withdateranges": true,
-      "details": false,
-      "hotlist": false,
-      "calendar": false,
-      "watchlist": [
-        "OANDA:EURUSD",
-        "OANDA:GBPUSD",
-        "OANDA:USDJPY",
-        "OANDA:AUDUSD",
-        "OANDA:USDCAD",
-        "OANDA:USDCHF",
-        "OANDA:NZDUSD",
-        "OANDA:XAUUSD",
-        "OANDA:XAGUSD",
-        "BITSTAMP:BTCUSD",
-        "COINBASE:BTCUSD",
-        "BITSTAMP:ETHUSD"
-      ],
-      "support_host": "https://www.tradingview.com"
-    }
-    </script>
-  </div>
+      <button id="loadChart">Load Chart</button>
+    </section>
 
-</main>
+    <section class="chart-panel">
+      <div class="chart-heading">
+        <h2 id="chartTitle">XAUUSD · 15 Minutes</h2>
+        <span>Powered by TradingView</span>
+      </div>
 
-<script>
-function fullScreen() {
-  const area = document.getElementById("chartArea");
+      <div id="tradingview_chart"></div>
+    </section>
 
-  if (!document.fullscreenElement) {
-    if (area.requestFullscreen) {
-      area.requestFullscreen();
-    }
-  } else {
-    document.exitFullscreen();
-  }
-}
+    <section class="guide-section">
+      <h2>ICT Analysis Guide</h2>
+      <p>Follow the top-down analysis process before making a trading decision.</p>
 
-function goHome() {
-  window.location.href = "dashboard.html";
-}
-</script>
+      <div class="guide-grid">
+        <article class="guide-card">
+          <h3>1. Higher Timeframe Bias</h3>
+          <p>Analyze Weekly and Daily structure.</p>
+          <ul>
+            <li>Identify bullish or bearish trend.</li>
+            <li>Mark previous highs and lows.</li>
+            <li>Identify major liquidity pools.</li>
+            <li>Mark Premium and Discount zones.</li>
+          </ul>
+        </article>
 
-</body>
-</html>
+        <article class="guide-card">
+          <h3>2. Market Structure</h3>
+          <p>Use 4H and 1H for confirmation.</p>
+          <ul>
+            <li>Identify Order Blocks.</li>
+            <li>Mark Fair Value Gaps.</li>
+            <li>Watch for liquidity sweeps.</li>
+            <li>Confirm BOS or MSS.</li>
+          </ul>
+        </article>
+
+        <article class="guide-card">
+          <h3>3. Entry Confirmation</h3>
+          <p>Use 15M and 5M for execution planning.</p>
+          <ul>
+            <li>Wait for liquidity sweep.</li>
+            <li>Look for displacement.</li>
+            <li>Confirm Market Structure Shift.</li>
+            <li>Plan entry, SL and TP.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <h2>My Market Analysis</h2>
+
+      <label>Market Bias</label>
+      <select id="bias">
+        <option value="Neutral">Neutral</option>
+        <option value="Bullish">Bullish</option>
+        <option value="Bearish">Bearish</option>
+      </select>
+
+      <label>Market Structure</label>
+      <select id="structure">
+        <option>Range</option>
+        <option>Bullish BOS</option>
+        <option>Bearish BOS</option>
+        <option>Bullish MSS</option>
+        <option>Bearish MSS</option>
+      </select>
+
+      <label>Liquidity Target</label>
+      <input id="liquidity" placeholder="e.g. Previous Day High">
+
+      <label>Entry Zone</label>
+      <input id="entry" placeholder="Entry price or zone">
+
+      <label>Stop Loss</label>
+      <input id="stopLoss" type="number" step="any">
+
+      <label>Take Profit</label>
+      <input id="takeProfit" type="number" step="any">
+
+      <label>Analysis Notes</label>
+      <textarea id="notes" rows="4"
+        placeholder="Write your ICT analysis here..."></textarea>
+
+      <button id="saveAnalysis">Save Analysis Locally</button>
+      <p id="saveStatus"></p>
+    </section>
+
+    <section class="risk-section">
+      <h2>Risk Calculator</h2>
+
+      <label>Account Balance ($)</label>
+      <input id="balance" type="number" value="2500">
+
+      <label>Risk (%)</label>
+      <input id="riskPercent" type="number" value="1" step="0.1">
+
+      <label>Stop Loss Distance (points)</label>
+      <input id="slDistance" type="number" step="any">
+
+      <button id="calculateRisk">Calculate Risk</button>
+
+      <div id="riskResult">
+        Enter values to calculate your risk.
+      </div>
+    </section>
+
+    <section class="terminal-footer">
+      <h3>Trading Execution</h3>
+      <p>
+        This terminal is strictly for market analysis.
+        It does not execute trades or connect directly to a broker.
+      </p>
+      <a href="https://play.google.com/store/apps/details?id=net.metaquotes.metatrader5"
+         target="_blank" rel="noopener noreferrer">
+        Open MetaTrader 5
+      </a>
+    </section>
+
+  </main>
+                                       </body>
+  
