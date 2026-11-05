@@ -655,10 +655,7 @@ async function uploadKycFile(file,folder) {
   if (error) throw error;
   return path;
 }
-
-/* SUBMIT KYC */
-$("kycForm").addEventListener("submit",async event => {
-  event.preventDefault();
+();
 
   const button = $("submitKycBtn");
 
@@ -721,16 +718,9 @@ if (kycRecord && kycRecord.status === "rejected") {
   }
 } else {
   result = await db
-    .from("kyc_submissions")
-    .insert(kycPayload)
-    .select("id")
-    .single();
-}
-
-if (result.error) throw result.error;
-    $("kycForm").reset();
-    toast("KYC submitted successfully.");
+  
 /* SUBMIT KYC */
+  
 $("kycForm").addEventListener("submit", async event => {
   event.preventDefault();
 
