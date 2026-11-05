@@ -901,11 +901,16 @@ function renderOrders() {
           <td>${escapeHTML(displayDate(order.created_at))}</td>
           <td>
   ${String(order.status || "").toLowerCase() === "pending" ? `
-    <button class="btn small green"
-      onclick="updateOrder('${escapeHTML(order.id)}','paid')">Paid</button>
-    <button class="btn small red"
-      onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
-  ` : `<span class="muted">—</span>`}
+  <button class="btn small green"
+    onclick="updateOrder('${escapeHTML(order.id)}','paid')">Paid</button>
+  <button class="btn small red"
+    onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
+` : String(order.status || "").toLowerCase() === "paid" ? `
+  <button class="btn small gold"
+    onclick="assignExistingOrder('${escapeHTML(order.id)}')">
+    Create Pending Account
+  </button>
+` : `<span class="muted">—</span>`}
             
           </td>
         </tr>
@@ -986,6 +991,29 @@ async function updateOrder(orderId, action) {
     loadTradingAccounts()
   ]);
              }
+
+  async function assignExistingOrder(orderId) {
+  if (!confirm("Create Pending Trading Account for this paid order?")) return;
+
+  const { data, error } = await db.functions.invoke(
+    "admin-assign-account",
+    { body: { order_id: orderId } }
+  );
+
+  if (error || data?.error) {
+    showToast(error?.message || data.error, true);
+    return;
+  }
+
+  showToast(
+    data.already_assigned
+      ? "Account already linked."
+      : "Pending Trading Account created."
+  );
+
+  await loadTradingAccounts();
+  await loadOrders();
+  }
 
 /* ---------- KYC ---------- */
 
