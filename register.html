@@ -232,7 +232,11 @@ a:hover{color:var(--gold2)}
 <script type="module">
 import { supabase } from "./supabase.js";
 
-const form = document.getElementById("registerForm");
+const button = document.getElementById("registerButton");
+
+const referralCode = (
+  new URLSearchParams(window.location.search).get("ref") || ""
+).trim().toUpperCase();
 const message = document.getElementById("message");
 const button = document.getElementById("registerButton");
 
@@ -275,8 +279,9 @@ form.addEventListener("submit", async (event) => {
       password,
       options: {
         data: {
-          full_name: name
-        }
+  full_name: name,
+  referral_code: referralCode
+  }
       }
     });
 
