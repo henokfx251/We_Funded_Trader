@@ -691,8 +691,6 @@ $("kycForm").addEventListener("submit",async event => {
     const backFile = back ? await uploadKycFile(back,"back") : null;
     const selfieFile = selfie ? await uploadKycFile(selfie,"selfie") : null;
 
-    const {error} = await db
-      .from("kyc_submissions")
     const kycPayload = {
   user_id: currentUser.id,
   full_name: fullName,
