@@ -331,7 +331,15 @@ tr:last-child td{border-bottom:0}
             <div class="table-wrap">
               <table>
                 <thead><tr>
-                  <th>Order ID</th><th>User</th><th>Amount</th><th>Status</th><th>Date</th>
+                  <th>Order</th>
+<th>User ID</th>
+<th>Type</th>
+<th>Amount</th>
+<th>Network</th>
+<th>Transaction Hash</th>
+<th>Status</th>
+<th>Date</th>
+<th>Action</th>
                 </tr></thead>
                 <tbody id="recentOrdersTable">
                   <tr><td colspan="5" class="empty">Loading...</td></tr>
@@ -368,7 +376,8 @@ tr:last-child td{border-bottom:0}
                   <th>Status</th><th>Date</th><th>Action</th>
                 </tr></thead>
                 <tbody id="ordersTable">
-                  <tr><td colspan="7" class="empty">Loading orders...</td></tr>
+                  <tr><td colspan="9" class="empty">Loading orders...</td></tr>
+                  
                 </tbody>
               </table>
             </div>
@@ -884,7 +893,7 @@ function renderOrders() {
   });
 
   if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="7" class="empty">No orders found.</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="9" class="empty">No orders found.</td></tr>`;
   } else {
     tbody.innerHTML = filtered.map(order => {
       const finalPrice = Number(
@@ -893,13 +902,19 @@ function renderOrders() {
 
       return `
         <tr>
-          <td>${escapeHTML(shortId(order.id))}</td>
-          <td>${escapeHTML(shortId(order.user_id))}</td>
-          <td>${escapeHTML(order.account_type || "—")}</td>
-          <td>${money(finalPrice)}</td>
-          <td>${statusHTML(order.status)}</td>
-          <td>${escapeHTML(displayDate(order.created_at))}</td>
-          <td>
+  <td>${escapeHTML(shortId(order.id))}</td>
+  <td>${escapeHTML(shortId(order.user_id))}</td>
+  <td>${escapeHTML(order.account_type || "—")}</td>
+  <td>${money(finalPrice)}</td>
+  <td>${escapeHTML(order.payment_network || "—")}</td>
+  <td class="txid-cell" title="${escapeHTML(order.transaction_hash || "")}">
+    ${order.transaction_hash
+      ? `<code>${escapeHTML(order.transaction_hash)}</code>`
+      : "—"}
+  </td>
+  <td>${statusHTML(order.status)}</td>
+  <td>${escapeHTML(displayDate(order.created_at))}</td>
+  <td>
   ${String(order.status || "").toLowerCase() === "pending" ? `
   <button class="btn small green"
     onclick="updateOrder('${escapeHTML(order.id)}','paid')">Paid</button>
