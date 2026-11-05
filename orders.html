@@ -1,72 +1,261 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#07111f">
-<title>My Orders | We Funded Trader</title>
+<meta name="theme-color" content="#080d18">
+<title>My Orders | WE FUNDED TRADER</title>
+
 <style>
 :root{
-  --bg:#07111f;--panel:#101e31;--line:#263a53;
-  --text:#f4f7fb;--muted:#91a3b9;--blue:#368bff;
-  --green:#20c997;--yellow:#ffc66d;--red:#ff6577;
+  --bg:#080d18;
+  --panel:#111b2b;
+  --panel2:#0c1523;
+  --line:#28364b;
+  --gold:#d6ad55;
+  --gold-light:#f0ce7b;
+  --text:#f5f6fa;
+  --muted:#9ba9bd;
+  --green:#25c997;
+  --red:#ff6577;
+  --yellow:#e9b95f;
 }
+
 *{box-sizing:border-box}
-body{margin:0;padding:20px;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
-.wrap{max-width:950px;margin:25px auto}
-h1{margin:0 0 8px;color:#39a5ff}
-.subtitle{color:var(--muted);line-height:1.6}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:20px;margin:15px 0;overflow-wrap:anywhere}
-.order{border-bottom:1px solid var(--line);padding:20px 0}
-.order:last-child{border:0}
-.row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:10px 0;font-size:13px}
-.label{color:var(--muted);flex-shrink:0}
-.row span:last-child,.row strong:last-child{text-align:right;overflow-wrap:anywhere}
-.status{display:inline-block;border-radius:30px;padding:6px 11px;background:#42351c;color:var(--yellow);font-size:11px;font-weight:bold}
-.status.paid{background:#173d35;color:#55e0b3}
-.status.rejected,.status.cancelled{background:#42212b;color:#ff9ba8}
-button,.btn{display:inline-block;padding:11px 16px;background:var(--blue);color:white;border:0;border-radius:8px;font-weight:bold;margin:5px 5px 5px 0;cursor:pointer;text-decoration:none;font-size:13px}
-.secondary{background:#20344d;border:1px solid var(--line)}
-a{color:#39a5ff}
-.small{font-size:12px;color:var(--muted);line-height:1.7}
-#message{color:var(--muted);line-height:1.6;font-size:13px}
-.txid{font-size:12px;word-break:break-all;max-width:65%}
-.payment{margin-top:15px;padding:13px;background:#0b192b;border:1px solid var(--line);border-radius:9px}
-.payment-title{font-size:13px;font-weight:bold;margin-bottom:10px}
-.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-.links a{font-size:12px}
+
+body{
+  margin:0;
+  padding:20px;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+a{color:var(--gold-light);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.wrap{
+  width:100%;
+  max-width:950px;
+  margin:25px auto;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  flex-wrap:wrap;
+  margin-bottom:25px;
+}
+
+.brand{
+  color:var(--gold);
+  font-size:19px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.brand span{color:var(--text)}
+
+h1{
+  margin:0 0 8px;
+  color:var(--gold-light);
+  font-size:28px;
+}
+
+.subtitle{
+  color:var(--muted);
+  line-height:1.6;
+  font-size:14px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:20px;
+  margin:15px 0;
+  overflow-wrap:anywhere;
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+button,.btn{
+  display:inline-block;
+  padding:12px 17px;
+  background:var(--gold);
+  color:#111827;
+  border:1px solid var(--gold);
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+  font-size:13px;
+  text-decoration:none;
+}
+
+button:hover,.btn:hover{
+  background:var(--gold-light);
+}
+
+button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.secondary{
+  background:#1b293d;
+  color:var(--text);
+  border-color:var(--line);
+}
+
+#message{
+  color:var(--muted);
+  line-height:1.6;
+  font-size:13px;
+}
+
+.order{
+  border-bottom:1px solid var(--line);
+  padding:20px 0;
+}
+
+.order:last-child{border-bottom:0}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  margin:11px 0;
+  font-size:13px;
+}
+
+.label{
+  color:var(--muted);
+  flex-shrink:0;
+}
+
+.row span:last-child,
+.row strong:last-child{
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+
+.status{
+  display:inline-block;
+  border-radius:30px;
+  padding:6px 11px;
+  background:#42351c;
+  color:var(--yellow);
+  font-size:11px;
+  font-weight:bold;
+}
+
+.status.paid{
+  background:#173d35;
+  color:#55e0b3;
+}
+
+.status.rejected,
+.status.cancelled{
+  background:#42212b;
+  color:#ff9ba8;
+}
+
+.payment{
+  margin-top:16px;
+  padding:15px;
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:10px;
+}
+
+.payment-title{
+  color:var(--gold-light);
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
+.txid{
+  font-size:12px;
+  word-break:break-all;
+  max-width:65%;
+}
+
+.links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:12px;
+  font-size:12px;
+}
+
+.small{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.7;
+}
+
+.footer-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px;
+  margin:20px 0;
+  font-size:13px;
+}
+
 @media(max-width:550px){
- body{padding:12px}
- .wrap{margin:12px auto}
- .card{padding:14px}
- .row{gap:8px}
- .txid{max-width:60%}
+  body{padding:12px}
+  .wrap{margin:12px auto}
+  .card{padding:14px}
+  h1{font-size:24px}
+  .row{gap:8px}
+  .txid{max-width:60%}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">WE FUNDED <span>TRADER</span></div>
+    <a href="dashboard.html">← Dashboard</a>
+  </div>
+
   <h1>My Orders</h1>
-  <p class="subtitle">View your challenge purchases, payment details and order status.</p>
+  <p class="subtitle">
+    View your challenge purchases, payment details and order status.
+  </p>
 
   <div class="card">
-    <button id="refreshBtn">Refresh Orders</button>
-    <button class="secondary" id="logoutBtn">Log Out</button>
+    <div class="actions">
+      <button id="refreshBtn">↻ Refresh Orders</button>
+      <button class="secondary" id="logoutBtn">Log Out</button>
+    </div>
+
     <p id="message">Loading your orders...</p>
     <div id="orders"></div>
   </div>
 
-  <p><a href="dashboard.html">← Back to Dashboard</a></p>
-  <p><a href="challenges.html">Explore Challenges →</a></p>
+  <div class="footer-links">
+    <a href="dashboard.html">← Back to Dashboard</a>
+    <a href="challenges.html">Explore Challenges →</a>
+  </div>
 
   <p class="small">
     Pending means your order is awaiting payment review.
     Paid means the payment has been approved by the administrator.
     Trading account activation is a separate step.
   </p>
-</div>
 
+</div>
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -90,8 +279,10 @@ function money(value){
 
 function explorerURL(network,txid){
   if(!txid) return "";
-  if(network==="BEP20") return "https://bscscan.com/tx/"+encodeURIComponent(txid);
-  if(network==="TRC20") return "https://tronscan.org/#/transaction/"+encodeURIComponent(txid);
+  if(network==="BEP20")
+    return "https://bscscan.com/tx/"+encodeURIComponent(txid);
+  if(network==="TRC20")
+    return "https://tronscan.org/#/transaction/"+encodeURIComponent(txid);
   return "";
 }
 
@@ -148,26 +339,32 @@ async function loadOrders(){
           <span class="label">Order ID</span>
           <span>${escapeHTML(order.id)}</span>
         </div>
+
         <div class="row">
           <span class="label">Challenge Type</span>
           <strong>${escapeHTML(order.account_type)}</strong>
         </div>
+
         <div class="row">
           <span class="label">Base Price</span>
           <span>${money(order.base_price)}</span>
         </div>
+
         <div class="row">
           <span class="label">Coupon</span>
           <span>${escapeHTML(order.coupon_code||"None")}</span>
         </div>
+
         <div class="row">
           <span class="label">Discount</span>
           <span>${escapeHTML(order.discount_percent)}%</span>
         </div>
+
         <div class="row">
           <span class="label">Final Price</span>
           <strong>${money(order.final_price)}</strong>
         </div>
+
         <div class="row">
           <span class="label">Order Date</span>
           <span>${escapeHTML(date)}</span>
@@ -175,22 +372,28 @@ async function loadOrders(){
 
         <div class="payment">
           <div class="payment-title">Payment Information</div>
+
           <div class="row">
             <span class="label">Network</span>
             <strong>${escapeHTML(network||"Not submitted")}</strong>
           </div>
+
           <div class="row">
             <span class="label">Transaction ID</span>
             <span class="txid">${txid?escapeHTML(txid):"Not submitted"}</span>
           </div>
+
           ${order.payment_submitted_at?`
           <div class="row">
             <span class="label">Submitted At</span>
             <span>${escapeHTML(new Date(order.payment_submitted_at).toLocaleString())}</span>
           </div>`:""}
+
           ${explorer?`
           <div class="links">
-            <a href="${escapeHTML(explorer)}" target="_blank" rel="noopener noreferrer">Verify Transaction on Explorer ↗</a>
+            <a href="${escapeHTML(explorer)}" target="_blank" rel="noopener noreferrer">
+              Verify Transaction on Explorer ↗
+            </a>
           </div>`:""}
         </div>
       </div>`;
@@ -208,17 +411,19 @@ $("refreshBtn").addEventListener("click",loadOrders);
 
 $("logoutBtn").addEventListener("click",async()=>{
   $("logoutBtn").disabled=true;
+
   const {error}=await supabase.auth.signOut();
+
   if(error){
     $("message").textContent="Logout failed: "+error.message;
     $("logoutBtn").disabled=false;
     return;
   }
+
   window.location.replace("Login.html");
 });
 
 loadOrders();
 </script>
 </body>
-  </html>
-  
+</html>
