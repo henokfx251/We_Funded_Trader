@@ -2,262 +2,313 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Account | We Funded Trader</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account | We Funded Trader</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #07111f;
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
+:root{
+  --bg:#07111f;
+  --panel:#101d30;
+  --gold:#e8b84b;
+  --gold2:#f5d27c;
+  --text:#f4f7fb;
+  --muted:#94a3b8;
+  --line:#26374d;
+}
 
-    .container {
-      width: 100%;
-      max-width: 430px;
-      background: #101e31;
-      border: 1px solid #203a59;
-      border-radius: 16px;
-      padding: 30px 24px;
-      box-shadow: 0 15px 40px #0005;
-    }
+body{
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
 
-    .logo {
-      text-align: center;
-      color: #3195ff;
-      font-size: 25px;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
+.container{
+  width:100%;
+  max-width:450px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:32px 27px;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);
+}
 
-    h2 {
-      text-align: center;
-      margin-bottom: 8px;
-    }
+.logo{
+  text-align:center;
+  font-size:23px;
+  font-weight:800;
+  letter-spacing:.5px;
+}
 
-    .subtitle {
-      text-align: center;
-      color: #9aadc2;
-      font-size: 14px;
-      margin-bottom: 25px;
-    }
+.logo span{color:var(--gold)}
 
-    label {
-      display: block;
-      margin: 15px 0 7px;
-      font-size: 14px;
-    }
+.logo-line{
+  width:55px;
+  height:3px;
+  background:var(--gold);
+  border-radius:5px;
+  margin:13px auto 24px;
+}
 
-    input {
-      width: 100%;
-      padding: 13px;
-      border-radius: 8px;
-      border: 1px solid #294663;
-      background: #091728;
-      color: white;
-      outline: none;
-      font-size: 15px;
-    }
+h2{
+  text-align:center;
+  font-size:26px;
+  margin-bottom:9px;
+}
 
-    input:focus {
-      border-color: #3195ff;
-    }
+.subtitle{
+  text-align:center;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.6;
+  margin-bottom:24px;
+}
 
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 22px;
-      border: none;
-      border-radius: 8px;
-      background: #1684f8;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+label{
+  display:block;
+  margin:16px 0 8px;
+  font-size:14px;
+  color:#cbd5e1;
+}
 
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+input{
+  width:100%;
+  padding:14px;
+  border-radius:9px;
+  border:1px solid var(--line);
+  background:#071525;
+  color:white;
+  outline:none;
+  font-size:15px;
+}
 
-    #message {
-      margin-top: 16px;
-      text-align: center;
-      font-size: 14px;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-    }
+input:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 2px rgba(232,184,75,.12);
+}
 
-    .login-link {
-      text-align: center;
-      margin-top: 22px;
-      color: #9aadc2;
-      font-size: 14px;
-    }
+button{
+  width:100%;
+  padding:15px;
+  margin-top:23px;
+  border:none;
+  border-radius:9px;
+  background:var(--gold);
+  color:#111827;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
 
-    a {
-      color: #3195ff;
-      text-decoration: none;
-    }
-  </style>
+button:hover{background:var(--gold2)}
+button:disabled{opacity:.6;cursor:not-allowed}
+
+#message{
+  margin-top:16px;
+  text-align:center;
+  font-size:14px;
+  line-height:1.6;
+  overflow-wrap:anywhere;
+}
+
+.login-link{
+  text-align:center;
+  margin-top:22px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.8;
+}
+
+a{
+  color:var(--gold);
+  text-decoration:none;
+  font-weight:600;
+}
+
+a:hover{color:var(--gold2)}
+
+.back{
+  display:block;
+  text-align:center;
+  margin-top:19px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.footer{
+  text-align:center;
+  color:#64748b;
+  font-size:11px;
+  margin-top:24px;
+}
+
+@media(max-width:480px){
+  .container{padding:28px 20px}
+  h2{font-size:23px}
+}
+</style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <div class="logo">WE FUNDED TRADER</div>
+  <div class="logo">WE <span>FUNDED</span> TRADER</div>
+  <div class="logo-line"></div>
 
-    <h2>Create Your Account</h2>
-    <p class="subtitle">Join We Funded Trader today</p>
+  <h2>Create Your Account</h2>
+  <p class="subtitle">
+    Join We Funded Trader and start your trading journey.
+  </p>
 
-    <form id="registerForm">
+  <form id="registerForm">
 
-      <label for="fullname">Full Name</label>
-      <input
-        type="text"
-        id="fullname"
-        placeholder="Enter your full name"
-        autocomplete="name"
-        required
-      >
+    <label for="fullname">Full Name</label>
+    <input
+      type="text"
+      id="fullname"
+      placeholder="Enter your full name"
+      autocomplete="name"
+      required
+    >
 
-      <label for="email">Email Address</label>
-      <input
-        type="email"
-        id="email"
-        placeholder="Enter your email"
-        autocomplete="email"
-        required
-      >
+    <label for="email">Email Address</label>
+    <input
+      type="email"
+      id="email"
+      placeholder="Enter your email address"
+      autocomplete="email"
+      required
+    >
 
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        placeholder="Minimum 8 characters"
-        minlength="8"
-        autocomplete="new-password"
-        required
-      >
+    <label for="password">Password</label>
+    <input
+      type="password"
+      id="password"
+      placeholder="Minimum 8 characters"
+      minlength="8"
+      autocomplete="new-password"
+      required
+    >
 
-      <label for="confirmPassword">Confirm Password</label>
-      <input
-        type="password"
-        id="confirmPassword"
-        placeholder="Confirm your password"
-        minlength="8"
-        autocomplete="new-password"
-        required
-      >
+    <label for="confirmPassword">Confirm Password</label>
+    <input
+      type="password"
+      id="confirmPassword"
+      placeholder="Enter password again"
+      minlength="8"
+      autocomplete="new-password"
+      required
+    >
 
-      <button type="submit" id="registerButton">
-        Create Account
-      </button>
+    <button type="submit" id="registerButton">
+      Create Account
+    </button>
 
-      <p id="message" role="status"></p>
+    <p id="message" role="status" aria-live="polite"></p>
 
-    </form>
+  </form>
 
-    <div class="login-link">
-      Already have an account?
-      <a href="Login.html">Login</a>
-    </div>
-
+  <div class="login-link">
+    Already have an account?
+    <a href="Login.html">Login</a>
   </div>
 
-  <script type="module">
-    import { createClient } from
-      "https://esm.sh/@supabase/supabase-js@2";
+  <a class="back" href="index.html">← Back to Homepage</a>
 
-    const SUPABASE_URL =
-      "https://vxcwfirfgxrxafbirnwu.supabase.co";
+  <div class="footer">
+    © 2026 WE FUNDED TRADER. All rights reserved.
+  </div>
 
-    const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+</div>
 
-    const supabase = createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
-    );
+<script type="module">
+import { supabase } from "./supabase.js";
 
-    const form = document.getElementById("registerForm");
-    const message = document.getElementById("message");
-    const button = document.getElementById("registerButton");
+const form = document.getElementById("registerForm");
+const message = document.getElementById("message");
+const button = document.getElementById("registerButton");
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
 
-      const name = document.getElementById("fullname").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const confirmPassword =
-        document.getElementById("confirmPassword").value;
+  const name = document.getElementById("fullname").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const confirmPassword =
+    document.getElementById("confirmPassword").value;
 
-      if (password !== confirmPassword) {
-        message.style.color = "#ff7777";
-        message.textContent = "Passwords do not match!";
-        return;
-      }
+  if (!name) {
+    message.style.color = "#ef4444";
+    message.textContent = "Please enter your full name.";
+    return;
+  }
 
-      if (password.length < 8) {
-        message.style.color = "#ff7777";
-        message.textContent =
-          "Password must be at least 8 characters.";
-        return;
-      }
+  if (password.length < 8) {
+    message.style.color = "#ef4444";
+    message.textContent =
+      "Password must be at least 8 characters.";
+    return;
+  }
 
-      button.disabled = true;
-      button.textContent = "Creating Account...";
-      message.style.color = "#ffffff";
-      message.textContent = "Please wait...";
+  if (password !== confirmPassword) {
+    message.style.color = "#ef4444";
+    message.textContent = "Passwords do not match.";
+    return;
+  }
 
-      try {
-        const { data, error } = await supabase.auth.signUp({
-          email: email,
-          password: password,
-          options: {
-            data: {
-              full_name: name
-            }
-          }
-        });
+  button.disabled = true;
+  button.textContent = "Creating Account...";
+  message.style.color = "#cbd5e1";
+  message.textContent = "Please wait...";
 
-        if (error) {
-          throw error;
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name
         }
-
-        message.style.color = "#42d392";
-        message.textContent =
-          "Account created! Please check your email and confirm your account before logging in.";
-
-        form.reset();
-
-      } catch (error) {
-        message.style.color = "#ff7777";
-        message.textContent =
-          error.message || "Registration failed. Please try again.";
-
-      } finally {
-        button.disabled = false;
-        button.textContent = "Create Account";
       }
     });
-  </script>
+
+    if (error) throw error;
+
+    if (data.session) {
+      message.style.color = "#22c55e";
+      message.textContent =
+        "Account created successfully. Redirecting...";
+
+      window.location.href = "dashboard.html";
+      return;
+    }
+
+    message.style.color = "#22c55e";
+    message.textContent =
+      "Account created! Please check your email and confirm your email address before logging in.";
+
+    form.reset();
+
+  } catch (error) {
+    message.style.color = "#ef4444";
+    message.textContent =
+      error.message || "Registration failed. Please try again.";
+
+  } finally {
+    button.disabled = false;
+    button.textContent = "Create Account";
+  }
+});
+</script>
 
 </body>
-  </html>
-  
+      </html>
+      
