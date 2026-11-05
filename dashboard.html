@@ -729,19 +729,74 @@ hr {
 <section class="page" id="page-reward">
   <div class="welcome">
     <h1>Rewards Center</h1>
-    <p class="muted">Your reward points and redemption requests.</p>
+    <p class="muted">Complete the WFT feedback task to earn 50 points.</p>
   </div>
+
   <div class="stats-grid">
     <div class="stat-card"><span>Available Points</span><h2 id="rewardPoints">0</h2></div>
     <div class="stat-card"><span>Redeemed Points</span><h2 id="redeemedPoints">0</h2></div>
   </div>
+
+  <div class="panel">
+    <h3>WFT Customer Feedback Task</h3>
+    <div class="info-card">
+      <p><strong>Reward: 50 Points</strong> — Submit your honest experience with WE FUNDED TRADER. Feedback must be at least 20 characters. Rating is required; suggestions are optional.</p>
+      <p class="muted small">50 points are awarded after Admin approval. Each user can submit this task once.</p>
+    </div>
+
+    <div id="rewardTaskStatus" class="kyc-status">Checking task status...</div>
+
+    <form id="feedbackTaskForm">
+      <label for="feedbackRating">Your Rating</label>
+      <select id="feedbackRating" required>
+        <option value="">Select rating</option>
+        <option value="5">5 — Excellent</option>
+        <option value="4">4 — Very Good</option>
+        <option value="3">3 — Good</option>
+        <option value="2">2 — Fair</option>
+        <option value="1">1 — Poor</option>
+      </select>
+
+      <label for="feedbackText">Your Honest Feedback (20–2000 characters)</label>
+      <textarea id="feedbackText" minlength="20" maxlength="2000" required></textarea>
+
+      <label for="feedbackSuggestion">Suggestions (Optional)</label>
+      <textarea id="feedbackSuggestion" maxlength="2000"></textarea>
+
+      <div class="btn-row">
+        <button class="btn" id="feedbackSubmitBtn" type="submit">Submit Feedback Task</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h3>Redeem Your Points</h3>
+    <p class="muted small">50 Points = $5,000 1-Step Evaluation Account. One successful redemption per user. $1 activation fee applies.</p>
+    <div id="rewardCatalog" class="empty">Loading available rewards...</div>
+  </div>
+
   <div class="panel">
     <h3>Points History</h3>
-    <div id="rewardHistory" class="empty">Loading rewards...</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Description</th><th>Points</th></tr></thead>
+        <tbody id="rewardHistory">
+          <tr><td colspan="3" class="empty">Loading rewards...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
+
   <div class="panel">
     <h3>My Redemption Requests</h3>
-    <div id="rewardRedemptions" class="empty">Loading redemption requests...</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Account</th><th>Points</th><th>Activation Fee</th><th>Activation</th><th>Status</th></tr></thead>
+        <tbody id="rewardRedemptions">
+          <tr><td colspan="6" class="empty">Loading redemption requests...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
 
