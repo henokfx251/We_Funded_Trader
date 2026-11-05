@@ -249,3 +249,161 @@ button:hover{background:#27d9a5}
   </main>
                                        </body>
   
+<script src="https://s3.tradingview.com/tv.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  // =========================
+  // TRADINGVIEW CHART
+  // =========================
+
+  const symbolSelect = document.getElementById("symbol");
+  const timeframeSelect = document.getElementById("timeframe");
+  const chartContainer = document.getElementById("tradingview_chart");
+  const chartTitle = document.getElementById("chartTitle");
+
+  function loadTradingViewChart() {
+    if (!symbolSelect || !timeframeSelect || !chartContainer) return;
+
+    const symbol = symbolSelect.value;
+    const interval = timeframeSelect.value;
+
+    const marketName = symbol.split(":").pop();
+
+    if (chartTitle) {
+      chartTitle.textContent =
+        marketName + " · " + timeframeSelect.options[timeframeSelect.selectedIndex].text;
+    }
+
+    chartContainer.innerHTML = "";
+
+    new TradingView.widget({
+      autosize: true,
+      symbol: symbol,
+      interval: interval,
+      timezone: "Africa/Addis_Ababa",
+      theme: "dark",
+      style: "1",
+      locale: "en",
+      enable_publishing: false,
+      allow_symbol_change: true,
+      hide_side_toolbar: false,
+      details: true,
+      calendar: false,
+      container_id: "tradingview_chart"
+    });
+  }
+
+  const loadChartButton = document.getElementById("loadChart");
+
+  if (loadChartButton) {
+    loadChartButton.addEventListener("click", loadTradingViewChart);
+  }
+
+  if (symbolSelect) {
+    symbolSelect.addEventListener("change", loadTradingViewChart);
+  }
+
+  if (timeframeSelect) {
+    timeframeSelect.addEventListener("change", loadTradingViewChart);
+  }
+
+  loadTradingViewChart();
+
+
+  // =========================
+  // SAVE ANALYSIS LOCALLY
+  // =========================
+
+  const saveButton = document.getElementById("saveAnalysis");
+
+  if (saveButton) {
+    saveButton.addEventListener("click", function () {
+
+      const analysis = {
+        market: symbolSelect ? symbolSelect.value : "",
+        timeframe: timeframeSelect ? timeframeSelect.value : "",
+        bias: document.getElementById("bias")?.value || "",
+        structure: document.getElementById("structure")?.value || "",
+        liquidity: document.getElementById("liquidity")?.value || "",
+        entry: document.getElementById("entry")?.value || "",
+        stopLoss: document.getElementById("stopLoss")?.value || "",
+        takeProfit: document.getElementById("takeProfit")?.value || "",
+        notes: document.getElementById("notes")?.value || "",
+        savedAt: new Date().toLocaleString()
+      };
+
+      try {
+        const saved = JSON.parse(
+          localStorage.getItem("wft_market_analyses") || "[]"
+        );
+
+        saved.unshift(analysis);
+
+        localStorage.setItem(
+          "wft_market_analyses",
+          JSON.stringify(saved.slice(0, 50))
+        );
+
+        const status = document.getElementById("saveStatus");
+
+        if (status) {
+          status.textContent = "Analysis saved successfully!";
+          status.style.color = "#35d0a0";
+        }
+
+      } catch (error) {
+        alert("Could not save analysis. Please try again.");
+      }
+    });
+  }
+
+
+  // =========================
+  // RISK CALCULATOR
+  // =========================
+
+  const calculateButton = document.getElementById("calculateRisk");
+
+  if (calculateButton) {
+    calculateButton.addEventListener("click", function () {
+
+      const balance = Number(document.getElementById("balance")?.value);
+      const riskPercent = Number(document.getElementById("riskPercent")?.value);
+      const slDistance = Number(document.getElementById("slDistance")?.value);
+
+      const result = document.getElementById("riskResult");
+
+      if (
+        !Number.isFinite(balance) ||
+        !Number.isFinite(riskPercent) ||
+        !Number.isFinite(slDistance) ||
+        balance <= 0 ||
+        riskPercent <= 0 ||
+        riskPercent > 100 ||
+        slDistance <= 0
+      ) {
+        result.textContent = "Please enter valid positive values. Risk must be 100% or less.";
+        result.style.color = "#ff7373";
+        return;
+      }
+
+      const riskAmount = balance * (riskPercent / 100);
+      const riskPerPoint = riskAmount / slDistance;
+
+      result.innerHTML = `
+        <strong>Risk Amount:</strong> $${riskAmount.toFixed(2)}<br>
+        <strong>Stop Loss Distance:</strong> ${slDistance} points<br>
+        <strong>Risk per Point:</strong> $${riskPerPoint.toFixed(4)}
+        <p>Position sizing depends on the instrument's contract specifications and point value.</p>
+      `;
+
+      result.style.color = "#35d0a0";
+    });
+  }
+
+});
+</script>
+  
+  
