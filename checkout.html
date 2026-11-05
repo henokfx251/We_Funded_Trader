@@ -587,19 +587,27 @@ button.addEventListener("click",async()=>{
       }
     );
 
+
     if(error){
 
-      throw new Error(error.message || "Request failed.");
+      let serverMessage = error.message || "Request failed.";
 
-    }
+      try {
+        if(error.context){
+          const errorBody = await error.context.clone().json();
+          serverMessage =
+            errorBody.error ||
+            errorBody.message ||
+            serverMessage;
+        }
+      } catch (e) {
+        // Keep the original error message.
+      }
 
-    if(!data || data.error){
+      throw new Error(serverMessage);
 
-      throw new Error(
-        data?.error || "Order creation failed."
-      );
+  }
 
-    }
 
     currentOrderId =
       data.order?.id || data.order_id;
