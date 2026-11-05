@@ -245,6 +245,10 @@ tr:last-child td{border-bottom:0}
       <button class="nav-btn" data-page="payouts" onclick="goPage('payouts',this)">
         <span class="nav-icon">＄</span> Payout Management
       </button>
+      <button class="nav-btn" data-page="challenge-requests"
+  onclick="goPage('challenge-requests',this)">
+  <span class="nav-icon">🏆</span> Challenge Pass Requests
+      </button>
 
       <div class="sidebar-bottom">
         <button class="nav-btn" onclick="refreshAll()">
@@ -500,6 +504,77 @@ tr:last-child td{border-bottom:0}
             </div>
           </div>
         </section>
+        <!-- CHALLENGE PASS REQUESTS -->
+<section class="page" id="page-challenge-requests">
+  <div class="page-heading">
+    <div>
+      <h1>Challenge Pass Requests</h1>
+      <p>Review automatically generated challenge pass requests.</p>
+    </div>
+    <button class="btn" onclick="loadChallengeRequests()">
+      Refresh Requests
+    </button>
+  </div>
+
+  <div class="notice">
+    Requests are generated automatically when the system marks a
+    trading account as Passed. Approving a request automatically
+    issues the trader's certificate.
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Requests</div>
+      <div class="stat-value" id="challengeRequestTotal">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending</div>
+      <div class="stat-value" id="challengeRequestPending">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Approved</div>
+      <div class="stat-value" id="challengeRequestApproved">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Rejected</div>
+      <div class="stat-value" id="challengeRequestRejected">0</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Automatic Pass Requests</h3>
+      <select id="challengeRequestFilter"
+        onchange="renderChallengeRequests()">
+        <option value="">All statuses</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Request ID</th>
+            <th>Trader ID</th>
+            <th>Trading Account</th>
+            <th>Status</th>
+            <th>Submitted</th>
+            <th>Admin Note</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="challengeRequestsTable">
+          <tr>
+            <td colspan="7" class="empty">No requests loaded.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
         <!-- PAYOUTS -->
         <section class="page" id="page-payouts">
@@ -614,6 +689,7 @@ let kycData = [];
 let accountsData = [];
 let payoutsData = [];
 let dailyProfitData = [];
+let challengeRequestsData = [];
 
 /* ---------- HELPERS ---------- */
 
@@ -718,6 +794,7 @@ function goPage(page, button) {
     create: "Create Trading Account",
     accounts: "Trading Accounts",
     payouts: "Payout Management"
+    "challenge-requests": "Challenge Pass Requests",
   };
 
   $("topTitle").textContent = titles[page] || "Admin Dashboard";
@@ -730,6 +807,7 @@ function goPage(page, button) {
   if (page === "kyc") loadKYC();
   if (page === "accounts") loadTradingAccounts();
   if (page === "payouts") loadPayouts();
+  if (page === "challenge-requests") loadChallengeRequests();
 }
 
 function toggleSidebar() {
@@ -803,6 +881,7 @@ async function refreshAll() {
     loadKYC(),
     loadTradingAccounts(),
     loadPayouts()
+    loadChallengeRequests(),
   ]);
 
   const failed = results.filter(result => result.status === "rejected");
@@ -1504,6 +1583,161 @@ async function reviewPayout(id, action) {
   showToast("Payout " + action + " successfully.");
   await loadPayouts();
 }
+  // ---------- CHALLENGE PASS REQUESTS ----------
+
+async function loadChallengeRequests() {
+  const tbody = $("challengeRequestsTable");
+  if (!tbody) return;
+
+  tbody.innerHTML =
+    '<tr><td colspan="7" class="empty">Loading requests...</td></tr>';
+
+  try {
+    const { data, error } = await sb
+      .from("challenge_pass_requests")
+      .select("*")
+      .order("submitted_at", { ascending: false });
+
+    if (error) throw error;
+
+    challengeRequestsData = data || [];
+
+    if (challengeRequestsData.length) {
+      const ids = [...new Set(
+        challengeRequestsData.map(r => r.trading_account_id).filter(Boolean)
+      )];
+
+      const { data: accounts, error: accountError } = await sb
+        .from("trading_accounts")
+        .select("id,mt_login,platform,account_size,account_type,status")
+        .in("id", ids);
+
+      if (accountError) throw accountError;
+
+      challengeRequestsData = challengeRequestsData.map(r => ({
+        ...r,
+        trading_account: (accounts || []).find(
+          a => a.id === r.trading_account_id
+        )
+      }));
+    }
+
+    renderChallengeRequests();
+
+  } catch (error) {
+    console.error("Challenge requests:", error);
+    tbody.innerHTML =
+      `<tr><td colspan="7" class="empty">Error: ${escapeHTML(error.message)}</td></tr>`;
+    showToast("Could not load challenge requests.");
+  }
+}
+
+function renderChallengeRequests() {
+  const tbody = $("challengeRequestsTable");
+  if (!tbody) return;
+
+  const rows = challengeRequestsData || [];
+
+  const pending = rows.filter(r => r.status === "pending").length;
+  const approved = rows.filter(r => r.status === "approved").length;
+  const rejected = rows.filter(r => r.status === "rejected").length;
+
+  $("challengeRequestTotal").textContent = rows.length;
+  $("challengeRequestPending").textContent = pending;
+  $("challengeRequestApproved").textContent = approved;
+  $("challengeRequestRejected").textContent = rejected;
+
+  const filter = $("challengeRequestFilter")?.value || "";
+  const filtered = rows.filter(r => !filter || r.status === filter);
+
+  if (!filtered.length) {
+    tbody.innerHTML =
+      '<tr><td colspan="7" class="empty">No challenge pass requests found.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(r => {
+    const account = r.trading_account || {};
+    const accountLabel = [
+      account.mt_login || "No login",
+      account.platform || "",
+      account.account_size ? "$" + Number(account.account_size).toLocaleString() : ""
+    ].filter(Boolean).join(" / ");
+
+    const statusClass = r.status === "approved"
+      ? "success"
+      : r.status === "rejected" ? "danger" : "warning";
+
+    const action = r.status === "pending"
+      ? `<button class="btn btn-sm" onclick="reviewChallengeRequest('${r.id}','approved')">Approve</button>
+         <button class="btn btn-sm btn-danger" onclick="reviewChallengeRequest('${r.id}','rejected')">Reject</button>`
+      : "Reviewed";
+
+    return `
+      <tr>
+        <td>${escapeHTML(String(r.id).slice(0, 8))}</td>
+        <td>${escapeHTML(String(r.user_id || "").slice(0, 8))}</td>
+        <td>${escapeHTML(accountLabel)}</td>
+        <td><span class="badge ${statusClass}">${escapeHTML(r.status)}</span></td>
+        <td>${r.submitted_at ? new Date(r.submitted_at).toLocaleString() : "—"}</td>
+        <td>${escapeHTML(r.admin_note || "—")}</td>
+        <td>${action}</td>
+      </tr>`;
+  }).join("");
+}
+
+async function reviewChallengeRequest(id, decision) {
+  if (!["approved", "rejected"].includes(decision)) return;
+
+  let note = "";
+
+  if (decision === "rejected") {
+    note = prompt("Enter the reason for rejecting this request:");
+    if (note === null) return;
+    note = note.trim();
+    if (!note) {
+      showToast("Rejection reason is required.");
+      return;
+    }
+  } else {
+    if (!confirm("Approve this challenge pass request? A certificate will be generated automatically."))
+      return;
+    note = prompt("Optional admin note:") || "";
+  }
+
+  try {
+    const { data, error } = await sb
+      .from("challenge_pass_requests")
+      .update({
+        status: decision,
+        admin_note: note,
+        reviewed_at: new Date().toISOString()
+      })
+      .eq("id", id)
+      .eq("status", "pending")
+      .select("id");
+
+    if (error) throw error;
+
+    if (!data || !data.length) {
+      showToast("Request already reviewed or permission denied.");
+      await loadChallengeRequests();
+      return;
+    }
+
+    showToast(
+      decision === "approved"
+        ? "Approved! Certificate generated automatically."
+        : "Request rejected."
+    );
+
+    await loadChallengeRequests();
+
+  } catch (error) {
+    console.error("Review request:", error);
+    showToast("Review failed: " + error.message);
+  }
+      }
 
 /* ---------- OVERVIEW COUNTERS ---------- */
 
