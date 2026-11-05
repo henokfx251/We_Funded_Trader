@@ -877,12 +877,14 @@ async function refreshAll() {
   showToast("Refreshing dashboard data...");
 
   const results = await Promise.allSettled([
-    loadOrders(),
-    loadKYC(),
-    loadTradingAccounts(),
-    loadPayouts()
-    loadChallengeRequests(),
-  ]);
+  loadOrders(),
+  loadKYC(),
+  loadTradingAccounts(),
+  loadPayouts(),
+  loadChallengeRequests()
+]);
+  
+
 
   const failed = results.filter(result => result.status === "rejected");
 
