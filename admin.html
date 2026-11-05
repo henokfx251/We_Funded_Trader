@@ -1150,23 +1150,6 @@ function renderAccounts() {
 
 async function loadPayouts() {
   const tbody = $("payoutsTable");
-  if (tbody) {
-    tbody.innerHTML = '<tr><td colspan="7" class="empty">Loading payouts...</td></tr>';
-  }
-
-  const { data, error } = await db
-    .from("payout_requests")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("Payouts:", error);
-    if (tbody) tbody.innerHTML =
-      `<tr><td colspan="7" class="empty">${escapeHTML(error.message)}</td></t
-      /* ================= PAYOUTS ================= */
-
-async function loadPayouts() {
-  const tbody = $("payoutsTable");
 
   if (tbody) {
     tbody.innerHTML =
@@ -1398,34 +1381,7 @@ async function reviewChallengeRequest(id, decision) {
   }
 }
 
-/* ================= FINAL INITIALIZATION ================= */
 
-document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    if (!window.supabase || !window.supabase.createClient) {
-      throw new Error("Supabase library failed to load.");
-    }
-
-    db = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-    await loadAdmin();
-
-  } catch (error) {
-    console.error("WFT INITIALIZATION ERROR:", error);
-
-    $("loading")?.classList.add("hidden");
-    $("app")?.classList.add("hidden");
-    $("denied")?.classList.remove("hidden");
-
-    if ($("deniedText")) {
-      $("deniedText").textContent =
-        error?.message || "Dashboard initialization failed.";
-    }
-  }
-});
 
 </script>
 
