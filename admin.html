@@ -953,19 +953,39 @@ async function updateOrder(orderId, action) {
     }
   });
 
-  if (error) {
-    showToast("Order update failed: " + error.message, true);
+  if (error || data?.error) {
+    showToast(error?.message || data.error, true);
     return;
   }
 
-  if (data?.error) {
-    showToast(data.error, true);
-    return;
+  if (action === "paid") {
+    const { data: assignment, error: assignmentError } =
+      await db.functions.invoke("admin-assign-account", {
+        body: { order_id: orderId }
+      });
+
+    if (assignmentError || assignment?.error) {
+      showToast(
+        "Paid, but account linking failed: " +
+        (assignmentError?.message || assignment.error),
+        true
+      );
+    } else {
+      showToast(
+        assignment.already_assigned
+          ? "Paid. Account already linked."
+          : "Paid. Pending Trading Account created."
+      );
+    }
+  } else {
+    showToast("Order rejected.");
   }
 
-  showToast("Order updated.");
-  await loadOrders();
-}
+  await Promise.allSettled([
+    loadOrders(),
+    loadTradingAccounts()
+  ]);
+             }
 
 /* ---------- KYC ---------- */
 
