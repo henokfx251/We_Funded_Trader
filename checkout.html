@@ -301,7 +301,7 @@ a:hover{text-decoration:underline}
 
 <!-- PAYMENT SECTION -->
 
-<div id="paymentSection" class="payment-box hidden">
+<div id="paymentSection" class="payment-box">
 
   <h2>Submit Your Payment</h2>
 
@@ -363,6 +363,8 @@ a:hover{text-decoration:underline}
     Sending funds through the wrong network may result in permanent loss.
   </div>
 
+  <div id="paymentSubmitSection" class="hidden">
+
   <label for="txid">Transaction ID (TXID)</label>
 
   <input
@@ -420,6 +422,8 @@ const message = document.getElementById("message");
 const paymentSection =
   document.getElementById("paymentSection");
 
+const paymentSubmitSection =
+  document.getElementById("paymentSubmitSection");
 const paymentMessage =
   document.getElementById("paymentMessage");
 
@@ -558,6 +562,14 @@ function updateWallet(){
 
   const network = networkInput.value;
 
+  document.getElementById("bep20Address")
+    .closest(".wallet-card")
+    .classList.toggle("hidden", network !== "BEP20");
+
+  document.getElementById("trc20Address")
+    .closest(".wallet-card")
+    .classList.toggle("hidden", network !== "TRC20");
+
   document.getElementById("txidHelp").textContent =
     network === "BEP20"
       ? "Enter the BNB Smart Chain (BEP20) transaction hash."
@@ -567,10 +579,9 @@ function updateWallet(){
     network === "BEP20"
       ? "Paste your BEP20 transaction hash"
       : "Paste your TRC20 transaction hash";
-
 }
 
-networkInput.addEventListener("change",updateWallet);
+networkInput.addEventListener("change", updateWallet);
 
 // ---------------------------------
 // COPY ADDRESS
@@ -895,7 +906,7 @@ button.addEventListener("click",async()=>{
 
     button.textContent = "Order Created";
 
-    paymentSection.classList.remove("hidden");
+    paymentSubmitSection.classList.remove("hidden");
 
     paymentSection.scrollIntoView({
       behavior:"smooth"
