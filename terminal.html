@@ -1,254 +1,464 @@
-  <body>
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WFT TradingView Analysis Terminal</title>
+<title>WE FUNDED TRADER | Trading Terminal</title>
+
 <style>
+:root{
+  --bg:#07111f;
+  --panel:#101d30;
+  --panel2:#14243a;
+  --gold:#e8b84b;
+  --gold2:#f5d27c;
+  --text:#f4f7fb;
+  --muted:#94a3b8;
+  --line:#26374d;
+  --green:#22c55e;
+  --red:#ef4444;
+}
 *{box-sizing:border-box}
 body{
- margin:0;
- background:#080d18;
- color:#e8edf7;
- font-family:Arial,sans-serif;
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
 }
+button,input,select,textarea{font:inherit}
+a{color:var(--gold);text-decoration:none}
+button{cursor:pointer}
+
 .topbar{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:15px;
- padding:18px 5%;
- background:#101827;
- border-bottom:1px solid #26344b;
- flex-wrap:wrap;
+  min-height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:14px 28px;
+  background:#091525;
+  border-bottom:1px solid var(--line);
 }
-.brand{font-size:19px;font-weight:800;color:#35d0a0}
-.terminal-label{font-size:12px;color:#9baac0}
-.back-link{color:#35d0a0;text-decoration:none}
-.terminal-container{max-width:1400px;margin:auto;padding:25px}
-.hero,.chart-panel,.guide-card,.workspace,.risk-section,.terminal-footer{
- background:#111c2d;
- border:1px solid #263650;
- border-radius:12px;
- padding:20px;
- margin-bottom:20px;
+.brand{
+  font-size:20px;
+  font-weight:900;
+  color:var(--gold);
+  line-height:1.35;
 }
-.hero{display:flex;justify-content:space-between;align-items:center;gap:15px}
-h1,h2,h3{color:#f4f7ff}
-p,li{color:#aab8cc;line-height:1.6}
-.analysis-badge{
- background:#123e35;color:#35d0a0;
- padding:8px 13px;border-radius:20px;font-size:12px;
+.brand small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:2px;
+  margin-top:5px;
 }
-.market-toolbar{
- display:flex;gap:15px;align-items:end;
- flex-wrap:wrap;margin:20px 0;
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  font-size:12px;
+  color:var(--muted);
 }
-label{display:block;color:#aab8cc;font-size:13px;margin:12px 0 7px}
-select,input,textarea{
- width:100%;padding:12px;
- background:#091321;color:#fff;
- border:1px solid #34445d;border-radius:7px;
- outline:none;
+.back-link{
+  background:#1b2c43;
+  padding:10px 14px;
+  border-radius:8px;
+  color:var(--gold);
 }
-.market-toolbar>div{min-width:160px;flex:1}
-button{
- background:#16b98b;color:#061b17;
- border:0;padding:12px 18px;
- border-radius:7px;font-weight:bold;cursor:pointer;
+.container{
+  max-width:1500px;
+  margin:auto;
+  padding:25px;
 }
-button:hover{background:#27d9a5}
-.chart-heading{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-#tradingview_chart{width:100%;height:600px}
-.guide-grid{
- display:grid;grid-template-columns:repeat(3,1fr);gap:15px;
+.welcome{margin-bottom:20px}
+.welcome h1{font-size:25px;margin:0 0 8px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:19px;
+  margin-bottom:18px;
 }
-.guide-card{margin:0}
-.workspace,.risk-section{max-width:100%}
-#saveAnalysis,#calculateRisk{margin-top:15px}
-#riskResult{
- margin-top:15px;padding:15px;
- background:#091321;border-radius:8px;color:#35d0a0;
+.panel h2,.panel h3{margin:0 0 15px}
+.toolbar{
+  display:grid;
+  grid-template-columns:minmax(220px,2fr) minmax(150px,1fr) auto;
+  gap:14px;
+  align-items:end;
 }
-.terminal-footer a{color:#35d0a0}
-@media(max-width:750px){
- .terminal-container{padding:12px}
- .guide-grid{grid-template-columns:1fr}
- #tradingview_chart{height:450px}
- .hero{align-items:flex-start;flex-direction:column}
+label{
+  display:block;
+  font-size:12px;
+  color:#cbd5e1;
+  margin:14px 0 7px;
 }
-  </style>
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  background:#091525;
+  color:white;
+  border:1px solid var(--line);
+  border-radius:8px;
+  outline:none;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--gold);
+}
+textarea{min-height:100px;resize:vertical}
+.btn{
+  display:inline-block;
+  padding:12px 18px;
+  border:0;
+  border-radius:8px;
+  background:var(--gold);
+  color:#111827;
+  font-weight:bold;
+  font-size:12px;
+}
+.btn:hover{background:var(--gold2)}
+.btn-secondary{
+  background:#26374d;
+  color:#e2e8f0;
+}
+.btn-danger{
+  background:#7f1d1d;
+  color:white;
+}
+.chart-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-bottom:15px;
+}
+.chart-header h2{margin:0;font-size:18px}
+.live-label{
+  color:var(--green);
+  font-size:11px;
+  font-weight:bold;
+}
+#tradingview_chart{
+  width:100%;
+  height:650px;
+  border-radius:8px;
+  overflow:hidden;
+}
+.grid-2{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+}
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.result-box{
+  background:#091525;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:16px;
+  margin-top:15px;
+  line-height:1.8;
+  color:var(--gold);
+  font-size:13px;
+}
+.table-wrap{width:100%;overflow-x:auto}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:650px;
+}
+th,td{
+  padding:12px 10px;
+  text-align:left;
+  border-bottom:1px solid var(--line);
+  font-size:12px;
+}
+th{color:var(--muted);font-weight:600}
+.empty{
+  padding:22px;
+  text-align:center;
+  color:var(--muted);
+  border:1px dashed var(--line);
+  border-radius:9px;
+  font-size:13px;
+}
+.footer-note{
+  text-align:center;
+  padding:22px;
+  font-size:11px;
+  color:var(--muted);
+}
+.status{
+  font-size:12px;
+  margin-top:10px;
+}
+@media(max-width:760px){
+  .topbar{padding:14px}
+  .container{padding:14px}
+  .top-actions{gap:8px}
+  .brand{font-size:16px}
+  .toolbar{grid-template-columns:1fr}
+  .grid-2,.form-grid{grid-template-columns:1fr}
+  #tradingview_chart{height:480px}
+  .welcome h1{font-size:21px}
+}
 </style>
-  </head>
-  <header class="topbar">
-    <div class="brand">WE FUNDED TRADER</div>
-    <div class="terminal-label">TRADINGVIEW ANALYSIS TERMINAL</div>
-    <a href="dashboard.html" class="back-link">← Dashboard</a>
-  </header>
+</head>
 
-  <main class="terminal-container">
+<body>
 
-    <section class="hero">
+<header class="topbar">
+  <div class="brand">
+    WE FUNDED TRADER
+    <small>TRADING ANALYSIS TERMINAL</small>
+  </div>
+  <div class="top-actions">
+    <span>MARKET ANALYSIS</span>
+    <a class="back-link" href="dashboard.html">← Dashboard</a>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="welcome">
+    <h1>Trading Terminal</h1>
+    <p class="muted">Analyze Forex, Gold and Crypto markets with TradingView.</p>
+  </section>
+
+  <!-- MARKET SELECTOR -->
+  <section class="panel">
+    <div class="toolbar">
+
       <div>
-        <h1>TradingView Analysis Terminal</h1>
-        <p>Professional market analysis workspace for WFT traders.</p>
-      </div>
-      <span class="analysis-badge">ANALYSIS ONLY</span>
-    </section>
-
-    <section class="market-toolbar">
-      <div>
-        <label>Market</label>
+        <label for="symbol">Select Market</label>
         <select id="symbol">
-          <option value="OANDA:XAUUSD">XAUUSD</option>
-          <option value="OANDA:EURUSD">EURUSD</option>
-          <option value="OANDA:GBPUSD">GBPUSD</option>
-          <option value="BINANCE:BTCUSDT">BTCUSDT</option>
-          <option value="OANDA:USDJPY">USDJPY</option>
-          <option value="OANDA:US30USD">US30</option>
+
+          <optgroup label="Major Forex Pairs">
+            <option value="FX:EURUSD">EURUSD</option>
+            <option value="FX:GBPUSD">GBPUSD</option>
+            <option value="FX:USDJPY">USDJPY</option>
+            <option value="FX:USDCHF">USDCHF</option>
+            <option value="FX:AUDUSD">AUDUSD</option>
+            <option value="FX:USDCAD">USDCAD</option>
+            <option value="FX:NZDUSD">NZDUSD</option>
+          </optgroup>
+
+          <optgroup label="Forex Cross Pairs">
+            <option value="FX:EURGBP">EURGBP</option>
+            <option value="FX:EURJPY">EURJPY</option>
+            <option value="FX:EURCHF">EURCHF</option>
+            <option value="FX:EURAUD">EURAUD</option>
+            <option value="FX:EURCAD">EURCAD</option>
+            <option value="FX:EURNZD">EURNZD</option>
+            <option value="FX:GBPJPY">GBPJPY</option>
+            <option value="FX:GBPCHF">GBPCHF</option>
+            <option value="FX:GBPAUD">GBPAUD</option>
+            <option value="FX:GBPCAD">GBPCAD</option>
+            <option value="FX:GBPNZD">GBPNZD</option>
+            <option value="FX:AUDJPY">AUDJPY</option>
+            <option value="FX:AUDNZD">AUDNZD</option>
+            <option value="FX:AUDCAD">AUDCAD</option>
+            <option value="FX:AUDCHF">AUDCHF</option>
+            <option value="FX:NZDJPY">NZDJPY</option>
+            <option value="FX:NZDCAD">NZDCAD</option>
+            <option value="FX:NZDCHF">NZDCHF</option>
+            <option value="FX:CADJPY">CADJPY</option>
+            <option value="FX:CADCHF">CADCHF</option>
+            <option value="FX:CHFJPY">CHFJPY</option>
+          </optgroup>
+
+          <optgroup label="Gold">
+            <option value="OANDA:XAUUSD" selected>XAUUSD - Gold</option>
+          </optgroup>
+
+          <optgroup label="Cryptocurrency">
+            <option value="BINANCE:BTCUSDT">BTCUSDT - Bitcoin</option>
+          </optgroup>
+
         </select>
       </div>
 
       <div>
-        <label>Timeframe</label>
+        <label for="timeframe">Timeframe</label>
         <select id="timeframe">
           <option value="1">1 Minute</option>
           <option value="5">5 Minutes</option>
           <option value="15" selected>15 Minutes</option>
           <option value="30">30 Minutes</option>
           <option value="60">1 Hour</option>
+          <option value="120">2 Hours</option>
           <option value="240">4 Hours</option>
           <option value="D">Daily</option>
           <option value="W">Weekly</option>
+          <option value="M">Monthly</option>
         </select>
       </div>
 
-      <button id="loadChart">Load Chart</button>
-    </section>
+      <button class="btn" id="loadChart" type="button">
+        Load Chart
+      </button>
 
-    <section class="chart-panel">
-      <div class="chart-heading">
-        <h2 id="chartTitle">XAUUSD · 15 Minutes</h2>
-        <span>Powered by TradingView</span>
-      </div>
+    </div>
+  </section>
 
-      <div id="tradingview_chart"></div>
-    </section>
+  <!-- TRADINGVIEW CHART -->
+  <section class="panel">
+    <div class="chart-header">
+      <h2 id="chartTitle">XAUUSD · 15 Minutes</h2>
+      <span class="live-label">● TRADINGVIEW CHART</span>
+    </div>
+    <div id="tradingview_chart"></div>
+  </section>
+  
+  <!-- TRADE ANALYSIS JOURNAL -->
+  <section class="grid-2">
 
-    <section class="guide-section">
-      <h2>ICT Analysis Guide</h2>
-      <p>Follow the top-down analysis process before making a trading decision.</p>
+    <div class="panel">
+      <h2>Market Analysis</h2>
 
-      <div class="guide-grid">
-        <article class="guide-card">
-          <h3>1. Higher Timeframe Bias</h3>
-          <p>Analyze Weekly and Daily structure.</p>
-          <ul>
-            <li>Identify bullish or bearish trend.</li>
-            <li>Mark previous highs and lows.</li>
-            <li>Identify major liquidity pools.</li>
-            <li>Mark Premium and Discount zones.</li>
-          </ul>
-        </article>
-
-        <article class="guide-card">
-          <h3>2. Market Structure</h3>
-          <p>Use 4H and 1H for confirmation.</p>
-          <ul>
-            <li>Identify Order Blocks.</li>
-            <li>Mark Fair Value Gaps.</li>
-            <li>Watch for liquidity sweeps.</li>
-            <li>Confirm BOS or MSS.</li>
-          </ul>
-        </article>
-
-        <article class="guide-card">
-          <h3>3. Entry Confirmation</h3>
-          <p>Use 15M and 5M for execution planning.</p>
-          <ul>
-            <li>Wait for liquidity sweep.</li>
-            <li>Look for displacement.</li>
-            <li>Confirm Market Structure Shift.</li>
-            <li>Plan entry, SL and TP.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <section class="workspace">
-      <h2>My Market Analysis</h2>
-
-      <label>Market Bias</label>
-      <select id="bias">
-        <option value="Neutral">Neutral</option>
-        <option value="Bullish">Bullish</option>
-        <option value="Bearish">Bearish</option>
+      <label for="analysisMarket">Market</label>
+      <select id="analysisMarket">
+        <option>XAUUSD</option>
+        <option>BTCUSDT</option>
+        <option>EURUSD</option>
+        <option>GBPUSD</option>
+        <option>USDJPY</option>
+        <option>USDCHF</option>
+        <option>AUDUSD</option>
+        <option>USDCAD</option>
+        <option>NZDUSD</option>
       </select>
 
-      <label>Market Structure</label>
-      <select id="structure">
-        <option>Range</option>
-        <option>Bullish BOS</option>
-        <option>Bearish BOS</option>
-        <option>Bullish MSS</option>
-        <option>Bearish MSS</option>
+      <label for="tradeDirection">Trade Direction</label>
+      <select id="tradeDirection">
+        <option value="Buy">Buy</option>
+        <option value="Sell">Sell</option>
+        <option value="Wait">Wait</option>
       </select>
 
-      <label>Liquidity Target</label>
-      <input id="liquidity" placeholder="e.g. Previous Day High">
+      <div class="form-grid">
+        <div>
+          <label for="entryPrice">Entry Price</label>
+          <input id="entryPrice" type="number" step="any" placeholder="Entry">
+        </div>
+        <div>
+          <label for="stopLoss">Stop Loss</label>
+          <input id="stopLoss" type="number" step="any" placeholder="Stop Loss">
+        </div>
+        <div>
+          <label for="takeProfit">Take Profit</label>
+          <input id="takeProfit" type="number" step="any" placeholder="Take Profit">
+        </div>
+        <div>
+          <label for="analysisTimeframe">Timeframe</label>
+          <select id="analysisTimeframe">
+            <option>5M</option>
+            <option selected>15M</option>
+            <option>30M</option>
+            <option>1H</option>
+            <option>2H</option>
+            <option>4H</option>
+            <option>1D</option>
+            <option>1W</option>
+          </select>
+        </div>
+      </div>
 
-      <label>Entry Zone</label>
-      <input id="entry" placeholder="Entry price or zone">
+      <label for="analysisNotes">Notes</label>
+      <textarea id="analysisNotes" placeholder="Write your market analysis..."></textarea>
 
-      <label>Stop Loss</label>
-      <input id="stopLoss" type="number" step="any">
+      <div class="btn-row">
+        <button class="btn" id="saveAnalysis" type="button">Save Analysis</button>
+        <button class="btn btn-secondary" id="clearAnalysis" type="button">Clear Form</button>
+      </div>
 
-      <label>Take Profit</label>
-      <input id="takeProfit" type="number" step="any">
+      <p id="saveStatus" class="status muted"></p>
+    </div>
 
-      <label>Analysis Notes</label>
-      <textarea id="notes" rows="4"
-        placeholder="Write your ICT analysis here..."></textarea>
-
-      <button id="saveAnalysis">Save Analysis Locally</button>
-      <p id="saveStatus"></p>
-    </section>
-
-    <section class="risk-section">
+    <!-- RISK CALCULATOR -->
+    <div class="panel">
       <h2>Risk Calculator</h2>
 
-      <label>Account Balance ($)</label>
-      <input id="balance" type="number" value="2500">
+      <label for="balance">Account Balance ($)</label>
+      <input id="balance" type="number" value="2500" min="0" step="any">
 
-      <label>Risk (%)</label>
-      <input id="riskPercent" type="number" value="1" step="0.1">
+      <label for="riskPercent">Risk Percentage (%)</label>
+      <input id="riskPercent" type="number" value="1" min="0.01" max="100" step="0.1">
 
-      <label>Stop Loss Distance (points)</label>
-      <input id="slDistance" type="number" step="any">
+      <label for="slDistance">Stop Loss Distance (Price Units)</label>
+      <input id="slDistance" type="number" min="0" step="any" placeholder="Enter price distance">
 
-      <button id="calculateRisk">Calculate Risk</button>
+      <button class="btn" id="calculateRisk" type="button">Calculate Risk</button>
 
-      <div id="riskResult">
-        Enter values to calculate your risk.
+      <div id="riskResult" class="result-box">
+        Enter your account balance, risk percentage and stop loss distance.
       </div>
-    </section>
 
-    <section class="terminal-footer">
-      <h3>Trading Execution</h3>
-      <p>
-        This terminal is strictly for market analysis.
-        It does not execute trades or connect directly to a broker.
+      <p class="muted small">
+        This calculator shows your dollar risk and risk per price unit.
+        It does not calculate broker-specific lot size.
       </p>
-      <a href="https://play.google.com/store/apps/details?id=net.metaquotes.metatrader5"
+    </div>
+
+  </section>
+
+  <!-- SAVED ANALYSES -->
+  <section class="panel">
+    <h2>My Saved Analyses</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Market</th>
+            <th>Direction</th>
+            <th>Timeframe</th>
+            <th>Entry</th>
+            <th>Stop Loss</th>
+            <th>Take Profit</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="analysisHistory">
+          <tr>
+            <td colspan="8" class="empty">No saved analyses yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- EXECUTION -->
+  <section class="panel">
+    <h2>Trading Execution</h2>
+    <p class="muted">
+      WFT Trading Terminal is for market analysis only.
+      Execute trades separately through your assigned trading platform.
+    </p>
+
+    <div class="btn-row">
+      <a class="btn" href="https://play.google.com/store/apps/details?id=net.metaquotes.metatrader5"
          target="_blank" rel="noopener noreferrer">
         Open MetaTrader 5
       </a>
-    </section>
+    </div>
+  </section>
 
-  </main>
-                                       </body>
-  
+  <footer class="footer-note">
+    WE FUNDED TRADER · TRADING ANALYSIS TERMINAL
+  </footer>
+
+</main>
+
+<!-- TRADINGVIEW SCRIPT -->
 <script src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
@@ -258,30 +468,32 @@ document.addEventListener("DOMContentLoaded", function () {
   // TRADINGVIEW CHART
   // =========================
 
-  const symbolSelect = document.getElementById("symbol");
-  const timeframeSelect = document.getElementById("timeframe");
-  const chartContainer = document.getElementById("tradingview_chart");
+  const symbol = document.getElementById("symbol");
+  const timeframe = document.getElementById("timeframe");
   const chartTitle = document.getElementById("chartTitle");
+  const chartContainer = document.getElementById("tradingview_chart");
 
-  function loadTradingViewChart() {
-    if (!symbolSelect || !timeframeSelect || !chartContainer) return;
+  function loadChart() {
 
-    const symbol = symbolSelect.value;
-    const interval = timeframeSelect.value;
-
-    const marketName = symbol.split(":").pop();
-
-    if (chartTitle) {
-      chartTitle.textContent =
-        marketName + " · " + timeframeSelect.options[timeframeSelect.selectedIndex].text;
+    if (!window.TradingView) {
+      chartContainer.textContent =
+        "TradingView could not load. Check your internet connection.";
+      return;
     }
+
+    const selectedSymbol = symbol.value;
+    const selectedTimeframe = timeframe.value;
+
+    chartTitle.textContent =
+      selectedSymbol.split(":").pop() + " · " +
+      timeframe.options[timeframe.selectedIndex].text;
 
     chartContainer.innerHTML = "";
 
     new TradingView.widget({
       autosize: true,
-      symbol: symbol,
-      interval: interval,
+      symbol: selectedSymbol,
+      interval: selectedTimeframe,
       timezone: "Africa/Addis_Ababa",
       theme: "dark",
       style: "1",
@@ -295,84 +507,142 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  const loadChartButton = document.getElementById("loadChart");
+  document.getElementById("loadChart")
+    .addEventListener("click", loadChart);
 
-  if (loadChartButton) {
-    loadChartButton.addEventListener("click", loadTradingViewChart);
-  }
+  symbol.addEventListener("change", loadChart);
+  timeframe.addEventListener("change", loadChart);
 
-  if (symbolSelect) {
-    symbolSelect.addEventListener("change", loadTradingViewChart);
-  }
-
-  if (timeframeSelect) {
-    timeframeSelect.addEventListener("change", loadTradingViewChart);
-  }
-
-  loadTradingViewChart();
+  loadChart();
 
 
   // =========================
-  // SAVE ANALYSIS LOCALLY
+  // ANALYSIS JOURNAL
   // =========================
+
+  const STORAGE_KEY = "wft_market_analyses";
 
   const saveButton = document.getElementById("saveAnalysis");
+  const clearButton = document.getElementById("clearAnalysis");
+  const historyBody = document.getElementById("analysisHistory");
+  const saveStatus = document.getElementById("saveStatus");
 
-  if (saveButton) {
-    saveButton.addEventListener("click", function () {
+  function getAnalyses() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    } catch (error) {
+      return [];
+    }
+  }
 
-      const analysis = {
-        market: symbolSelect ? symbolSelect.value : "",
-        timeframe: timeframeSelect ? timeframeSelect.value : "",
-        bias: document.getElementById("bias")?.value || "",
-        structure: document.getElementById("structure")?.value || "",
-        liquidity: document.getElementById("liquidity")?.value || "",
-        entry: document.getElementById("entry")?.value || "",
-        stopLoss: document.getElementById("stopLoss")?.value || "",
-        takeProfit: document.getElementById("takeProfit")?.value || "",
-        notes: document.getElementById("notes")?.value || "",
-        savedAt: new Date().toLocaleString()
-      };
+  function renderAnalyses() {
 
-      try {
-        const saved = JSON.parse(
-          localStorage.getItem("wft_market_analyses") || "[]"
-        );
+    const analyses = getAnalyses();
+    historyBody.innerHTML = "";
 
-        saved.unshift(analysis);
+    if (!analyses.length) {
+      const row = historyBody.insertRow();
+      const cell = row.insertCell();
+      cell.colSpan = 8;
+      cell.className = "empty";
+      cell.textContent = "No saved analyses yet.";
+      return;
+    }
 
-        localStorage.setItem(
-          "wft_market_analyses",
-          JSON.stringify(saved.slice(0, 50))
-        );
+    analyses.forEach(function (item, index) {
 
-        const status = document.getElementById("saveStatus");
+      const row = historyBody.insertRow();
 
-        if (status) {
-          status.textContent = "Analysis saved successfully!";
-          status.style.color = "#35d0a0";
-        }
+      const values = [
+        item.market,
+        item.direction,
+        item.timeframe,
+        item.entry || "-",
+        item.stopLoss || "-",
+        item.takeProfit || "-",
+        item.date
+      ];
 
-      } catch (error) {
-        alert("Could not save analysis. Please try again.");
-      }
+      values.forEach(function (value) {
+        const cell = row.insertCell();
+        cell.textContent = value || "-";
+      });
+
+      const actionCell = row.insertCell();
+      const deleteButton = document.createElement("button");
+
+      deleteButton.className = "btn btn-danger";
+      deleteButton.textContent = "Delete";
+
+      deleteButton.addEventListener("click", function () {
+
+        const current = getAnalyses();
+        current.splice(index, 1);
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+        renderAnalyses();
+      });
+
+      actionCell.appendChild(deleteButton);
     });
   }
+
+  saveButton.addEventListener("click", function () {
+
+    const analysis = {
+      market: document.getElementById("analysisMarket").value,
+      direction: document.getElementById("tradeDirection").value,
+      timeframe: document.getElementById("analysisTimeframe").value,
+      entry: document.getElementById("entryPrice").value,
+      stopLoss: document.getElementById("stopLoss").value,
+      takeProfit: document.getElementById("takeProfit").value,
+      notes: document.getElementById("analysisNotes").value,
+      date: new Date().toLocaleString()
+    };
+
+    try {
+      const analyses = getAnalyses();
+      analyses.unshift(analysis);
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(analyses.slice(0, 100))
+      );
+
+      saveStatus.textContent = "Analysis saved successfully.";
+      saveStatus.style.color = "#22c55e";
+
+      renderAnalyses();
+
+    } catch (error) {
+      saveStatus.textContent = "Unable to save analysis in this browser.";
+      saveStatus.style.color = "#ef4444";
+    }
+  });
+
+  clearButton.addEventListener("click", function () {
+
+    document.getElementById("entryPrice").value = "";
+    document.getElementById("stopLoss").value = "";
+    document.getElementById("takeProfit").value = "";
+    document.getElementById("analysisNotes").value = "";
+
+    saveStatus.textContent = "";
+  });
+
+  renderAnalyses();
 
 
   // =========================
   // RISK CALCULATOR
   // =========================
 
-  const calculateButton = document.getElementById("calculateRisk");
+  document.getElementById("calculateRisk")
+    .addEventListener("click", function () {
 
-  if (calculateButton) {
-    calculateButton.addEventListener("click", function () {
-
-      const balance = Number(document.getElementById("balance")?.value);
-      const riskPercent = Number(document.getElementById("riskPercent")?.value);
-      const slDistance = Number(document.getElementById("slDistance")?.value);
-
+      const balance = Number(document.getElementById("balance").value);
+      const riskPercent = Number(document.getElementById("riskPercent").value);
+      const slDistance = Number(document.getElementById("slDistance").value);
       const result = document.getElementById("riskResult");
 
       if (
@@ -384,26 +654,28 @@ document.addEventListener("DOMContentLoaded", function () {
         riskPercent > 100 ||
         slDistance <= 0
       ) {
-        result.textContent = "Please enter valid positive values. Risk must be 100% or less.";
-        result.style.color = "#ff7373";
+        result.textContent = "Please enter valid positive values. Risk must be between 0 and 100%.";
+        result.style.color = "#ef4444";
         return;
       }
 
-      const riskAmount = balance * (riskPercent / 100);
-      const riskPerPoint = riskAmount / slDistance;
+      const riskAmount = balance * riskPercent / 100;
+      const riskPerUnit = riskAmount / slDistance;
 
       result.innerHTML = `
-        <strong>Risk Amount:</strong> $${riskAmount.toFixed(2)}<br>
-        <strong>Stop Loss Distance:</strong> ${slDistance} points<br>
-        <strong>Risk per Point:</strong> $${riskPerPoint.toFixed(4)}
-        <p>Position sizing depends on the instrument's contract specifications and point value.</p>
+        <strong>Account Balance:</strong> $${balance.toFixed(2)}<br>
+        <strong>Risk:</strong> ${riskPercent}%<br>
+        <strong>Maximum Risk Amount:</strong> $${riskAmount.toFixed(2)}<br>
+        <strong>Stop Loss Distance:</strong> ${slDistance}<br>
+        <strong>Risk per Price Unit:</strong> $${riskPerUnit.toFixed(4)}
       `;
 
-      result.style.color = "#35d0a0";
+      result.style.color = "#e8b84b";
     });
-  }
 
 });
 </script>
-  
+
+</body>
+            </html>
   
