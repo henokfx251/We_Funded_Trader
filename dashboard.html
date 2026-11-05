@@ -1470,4 +1470,28 @@ $("logoutBtn")?.addEventListener("click", async () => {
 
 async function startDashboard() {
   try {
-    const { data, error } = awa
+    
+const { data, error } = await supabase.auth.getSession();
+    if (error) throw error;
+
+    currentUser = data.session?.user;
+
+    if (!currentUser) {
+      window.location.href = "Login.html";
+      return;
+    }
+
+    await loadAll();
+    showPage("overview");
+  } catch (err) {
+    console.error("Dashboard startup error:", err);
+    toast("Dashboard error: " + err.message, true);
+  }
+}
+
+startDashboard();
+</script>
+
+</body>
+</html>
+
