@@ -693,21 +693,44 @@ $("kycForm").addEventListener("submit",async event => {
 
     const {error} = await db
       .from("kyc_submissions")
-      .insert({
-        user_id:currentUser.id,
-        full_name:fullName,
-        country,
-        document_type:documentType,
-        front_file:frontFile,
-        back_file:backFile,
-        selfie_file:selfieFile,
-        status:"pending",
-        admin_note:null,
-        reviewed_at:null
-      });
+    const kycPayload = {
+  user_id: currentUser.id,
+  full_name: fullName,
+  country,
+  document_type: documentType,
+  front_file: frontFile,
+  back_file: backFile,
+  selfie_file: selfieFile,
+  status: "pending",
+  admin_note: null,
+  submitted_at: new Date().toISOString(),
+  reviewed_at: null
+};
 
-    if (error) throw error;
+let result;
 
+if (kycRecord && kycRecord.status === "rejected") {
+  result = await db
+    .from("kyc_submissions")
+    .update(kycPayload)
+    .eq("id", kycRecord.id)
+    .eq("user_id", currentUser.id)
+    .eq("status", "rejected")
+    .select("id")
+    .maybeSingle();
+
+  if (!result.data && !result.error) {
+    throw new Error("KYC resubmission was not authorized.");
+  }
+} else {
+  result = await db
+    .from("kyc_submissions")
+    .insert(kycPayload)
+    .select("id")
+    .single();
+}
+
+if (result.error) throw result.error;
     $("kycForm").reset();
     toast("KYC submitted successfully.");
     await loadKYC();
