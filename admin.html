@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +6,6 @@
 <title>WFT | Admin Dashboard</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -272,8 +270,7 @@ tr:last-child td{border-bottom:0}
 
       <div class="content">
         <div id="globalMessage" class="message"></div>
-        
-        <!-- OVERVIEW -->
+                <!-- OVERVIEW -->
         <section class="page active" id="page-overview">
           <div class="page-heading">
             <div>
@@ -503,9 +500,75 @@ tr:last-child td{border-bottom:0}
           </div>
 
           <div class="notice">
-            Trader share: 80% • Company share: 20% • Minimum request: $50.
-            Payout processing: 1–3 business days. Supported networks: USDT TRC20 and BEP20.
-            Mark a payout as Paid only after the real transfer has been sent.
+            <strong>1-Step Evaluation:</strong> Trader 80% / Company 20%,
+            consistency limit 50%, withdrawal range 2%–6%.<br>
+            <strong>Instant Funding:</strong> Trader 70% / Company 30%,
+            consistency limit 30%, withdrawal range 1%–4%.<br>
+            First payout after 14 days, then every 14 days.
+            Processing: 1–3 business days. USDT TRC20 and BEP20.<br>
+            Review the MT4/MT5 account statement manually before approving a payout.
+          </div>
+
+          <!-- DAILY PROFIT VERIFICATION -->
+          <div class="panel">
+            <div class="panel-head">
+              <h3>MT4 / MT5 Daily Profit Verification</h3>
+              <button class="btn small gray" onclick="loadDailyProfitRecords()">Refresh Records</button>
+            </div>
+
+            <div class="notice">
+              Manually review the trader's MT4/MT5 statement before recording
+              verified daily profit. This panel does not automatically import broker data.
+            </div>
+
+            <div id="dailyProfitMessage" class="message"></div>
+
+            <form id="dailyProfitForm" onsubmit="saveDailyProfit(event)">
+              <div class="form-grid">
+                <div class="field full">
+                  <label>Trading Account</label>
+                  <select id="dailyProfitAccount" required>
+                    <option value="">Select trading account</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Profit Date</label>
+                  <input type="date" id="dailyProfitDate" required>
+                </div>
+                <div class="field">
+                  <label>Verified Daily Profit / Loss (USD)</label>
+                  <input type="number" id="dailyProfitAmount"
+                    step="0.01" required placeholder="Example: 125.50 or -25.00">
+                </div>
+                <div class="field full">
+                  <label>Statement Reference / Admin Note</label>
+                  <textarea id="dailyProfitNote" rows="3"
+                    placeholder="Statement reviewed, MT login, reference..."></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn gold" type="submit" id="saveDailyProfitBtn">
+                  Save Verified Daily Profit
+                </button>
+              </div>
+            </form>
+
+            <div class="panel-head" style="margin-top:25px">
+              <h3>Verified Daily Profit Records</h3>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th><th>MT Login</th><th>Platform</th>
+                    <th>Account Size</th><th>Daily Profit</th><th>Admin Note</th>
+                  </tr>
+                </thead>
+                <tbody id="dailyProfitTable">
+                  <tr><td colspan="6" class="empty">No records loaded.</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <div class="stats">
@@ -562,9 +625,7 @@ tr:last-child td{border-bottom:0}
 <div id="toast"></div>
 
 <script>
-
-
-/* =========================================
+  /* =========================================
    WE FUNDED TRADER - ADMIN JAVASCRIPT
 ========================================= */
 
@@ -578,6 +639,7 @@ let ordersData = [];
 let kycData = [];
 let accountsData = [];
 let payoutsData = [];
+let dailyProfitData = [];
 
 /* ---------- HELPERS ---------- */
 
@@ -610,6 +672,12 @@ function displayDate(value) {
   return isNaN(date.getTime()) ? "—" : date.toLocaleString();
 }
 
+function localDateString() {
+  const date = new Date();
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+  return date.toISOString().slice(0, 10);
+}
+
 function statusClass(value) {
   const status = String(value || "").toLowerCase();
   if (["approved", "paid", "active", "completed"].includes(status)) return "approved";
@@ -625,6 +693,7 @@ function statusHTML(value) {
 
 function showToast(message, isError = false) {
   const toast = $("toast");
+  if (!toast) return;
   toast.textContent = message;
   toast.style.borderColor = isError ? "#ff5b6b" : "#20c997";
   toast.classList.add("show");
@@ -776,7 +845,8 @@ async function refreshAll() {
 
 async function loadOrders() {
   const tbody = $("ordersTable");
-  if (tbody) tbody.innerHTML = `<tr><td colspan="7" class="empty">Loading orders...</td></tr>`;
+  if (tbody) tbody.innerHTML =
+    `<tr><td colspan="7" class="empty">Loading orders...</td></tr>`;
 
   const { data, error } = await db
     .from("orders")
@@ -793,7 +863,6 @@ async function loadOrders() {
   renderOrders();
   updateOverviewStats();
 }
-
 
 function renderOrders() {
   const tbody = $("ordersTable");
@@ -862,8 +931,8 @@ function renderOrders() {
   }
 
   updateOverviewStats();
-    }
-       
+}
+
 async function updateOrder(orderId, action) {
   if (!["paid", "rejected"].includes(action)) return;
 
@@ -986,12 +1055,6 @@ async function reviewKYC(id, decision) {
 
   if (!confirm("Confirm KYC " + decision + "?")) return;
 
-  /*
-    This update expects the kyc_submissions table to have:
-    status, admin_note, reviewed_at.
-    If your table uses different column names, the error will be shown.
-  */
-
   const { error } = await db
     .from("kyc_submissions")
     .update({
@@ -1088,6 +1151,7 @@ async function loadTradingAccounts() {
 
   accountsData = data || [];
   renderAccounts();
+  populateDailyProfitAccounts();
   updateOverviewStats();
 }
 
@@ -1123,14 +1187,153 @@ function renderAccounts() {
       <td>${money(account.profit)}</td>
     </tr>
   `).join("");
+  }
+  /* ---------- DAILY PROFIT VERIFICATION ---------- */
+
+function populateDailyProfitAccounts() {
+  const select = $("dailyProfitAccount");
+  if (!select) return;
+
+  const previousValue = select.value;
+
+  select.innerHTML =
+    `<option value="">Select trading account</option>`;
+
+  accountsData.forEach(account => {
+    const option = document.createElement("option");
+
+    option.value = account.id;
+    option.textContent =
+      `${account.mt_login || "No Login"} | ` +
+      `${account.platform || "Unknown"} | ` +
+      `${money(account.account_size)} | ` +
+      `${account.account_type || ""}`;
+
+    select.appendChild(option);
+  });
+
+  if (previousValue) select.value = previousValue;
+}
+
+async function loadDailyProfitRecords() {
+  const tbody = $("dailyProfitTable");
+  if (!tbody || !db) return;
+
+  tbody.innerHTML =
+    `<tr><td colspan="6" class="empty">Loading records...</td></tr>`;
+
+  const { data, error } = await db.rpc(
+    "admin_list_account_daily_profits"
+  );
+
+  if (error) {
+    tbody.innerHTML =
+      `<tr><td colspan="6" class="empty">
+        Error: ${escapeHTML(error.message)}
+      </td></tr>`;
+    return;
+  }
+
+  dailyProfitData = data || [];
+
+  if (!dailyProfitData.length) {
+    tbody.innerHTML =
+      `<tr><td colspan="6" class="empty">No verified records yet.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = dailyProfitData.map(item => `
+    <tr>
+      <td>${escapeHTML(item.profit_date)}</td>
+      <td>${escapeHTML(item.mt_login || "—")}</td>
+      <td>${escapeHTML(item.platform || "—")}</td>
+      <td>${money(item.account_size)}</td>
+      <td>${money(item.daily_profit)}</td>
+      <td>${escapeHTML(item.admin_note || "—")}</td>
+    </tr>
+  `).join("");
+}
+
+async function saveDailyProfit(event) {
+  event.preventDefault();
+
+  const button = $("saveDailyProfitBtn");
+  if (!button) return;
+
+  button.disabled = true;
+  button.textContent = "Saving...";
+
+  try {
+    const accountId = $("dailyProfitAccount").value;
+    const profitDate = $("dailyProfitDate").value;
+    const amountText = $("dailyProfitAmount").value;
+    const amount = Number(amountText);
+    const note = $("dailyProfitNote").value.trim();
+
+    if (!accountId || !profitDate || amountText === "") {
+      throw new Error("Please complete all required fields.");
+    }
+
+    if (!Number.isFinite(amount)) {
+      throw new Error("Enter a valid daily profit amount.");
+    }
+
+    if (profitDate > localDateString()) {
+      throw new Error("Future profit dates are not allowed.");
+    }
+
+    const confirmed = confirm(
+      "Have you reviewed and verified this MT4/MT5 account statement?"
+    );
+
+    if (!confirmed) return;
+
+    const { error } = await db.rpc(
+      "admin_upsert_account_daily_profit",
+      {
+        p_trading_account_id: accountId,
+        p_profit_date: profitDate,
+        p_daily_profit: amount,
+        p_admin_note: note || null
+      }
+    );
+
+    if (error) throw error;
+
+    showMessage(
+      "dailyProfitMessage",
+      "Verified daily profit saved successfully.",
+      "success"
+    );
+
+    $("dailyProfitAmount").value = "";
+    $("dailyProfitNote").value = "";
+
+    await loadDailyProfitRecords();
+
+  } catch (error) {
+    console.error("Daily profit save error:", error);
+
+    showMessage(
+      "dailyProfitMessage",
+      error.message || "Unable to save daily profit.",
+      "error"
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = "Save Verified Daily Profit";
+  }
 }
 
 /* ---------- PAYOUT MANAGEMENT ---------- */
 
 async function loadPayouts() {
   const tbody = $("payoutTable");
-  if (tbody) tbody.innerHTML =
-    `<tr><td colspan="10" class="empty">Loading payouts...</td></tr>`;
+
+  if (tbody) {
+    tbody.innerHTML =
+      `<tr><td colspan="10" class="empty">Loading payouts...</td></tr>`;
+  }
 
   const { data, error } = await db
     .from("payout_requests")
@@ -1138,13 +1341,23 @@ async function loadPayouts() {
     .order("requested_at", { ascending: false });
 
   if (error) {
-    if (tbody) tbody.innerHTML =
-      `<tr><td colspan="10" class="empty">Payout error: ${escapeHTML(error.message)}</td></tr>`;
+    if (tbody) {
+      tbody.innerHTML =
+        `<tr><td colspan="10" class="empty">
+          Payout error: ${escapeHTML(error.message)}
+        </td></tr>`;
+    }
     throw error;
   }
 
   payoutsData = data || [];
+
   renderPayouts();
+  populateDailyProfitAccounts();
+
+  // Daily profit history is independent of payout loading.
+  await loadDailyProfitRecords();
+
   updateOverviewStats();
 }
 
@@ -1159,7 +1372,8 @@ function renderPayouts() {
   );
 
   if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="10" class="empty">No payout requests found.</td></tr>`;
+    tbody.innerHTML =
+      `<tr><td colspan="10" class="empty">No payout requests found.</td></tr>`;
   } else {
     tbody.innerHTML = filtered.map(item => `
       <tr>
@@ -1177,13 +1391,19 @@ function renderPayouts() {
         <td>
           ${item.status === "pending" ? `
             <button class="btn small green"
-              onclick="reviewPayout('${escapeHTML(item.id)}','approved')">Approve</button>
+              onclick="reviewPayout('${escapeHTML(item.id)}','approved')">
+              Approve
+            </button>
             <button class="btn small red"
-              onclick="reviewPayout('${escapeHTML(item.id)}','rejected')">Reject</button>
+              onclick="reviewPayout('${escapeHTML(item.id)}','rejected')">
+              Reject
+            </button>
           ` : ""}
           ${item.status === "approved" ? `
             <button class="btn small gold"
-              onclick="reviewPayout('${escapeHTML(item.id)}','paid')">Mark Paid</button>
+              onclick="reviewPayout('${escapeHTML(item.id)}','paid')">
+              Mark Paid
+            </button>
           ` : ""}
         </td>
       </tr>
@@ -1206,6 +1426,7 @@ async function reviewPayout(id, action) {
   if (!["approved", "rejected", "paid"].includes(action)) return;
 
   const item = payoutsData.find(p => p.id === id);
+
   if (!item) {
     showToast("Payout request not found.", true);
     return;
@@ -1213,37 +1434,28 @@ async function reviewPayout(id, action) {
 
   if (action === "paid") {
     const confirmed = confirm(
-      "IMPORTANT: Have you actually sent the USDT payment to the trader's wallet? " +
-      "Only confirm if the transfer is completed."
+      "Have you actually sent the USDT payment to the trader's wallet?"
     );
 
     if (!confirmed) return;
+
+    showToast(
+      "Paid action is locked until transaction-hash storage is added to the database.",
+      true
+    );
+    return;
   }
 
   const note = prompt(
-    action === "approved" ? "Optional admin note:" :
-    action === "rejected" ? "Reason for rejection:" :
-    "Enter transaction reference / hash if available:"
+    action === "approved"
+      ? "Optional admin note:"
+      : "Reason for rejection:"
   );
 
   if (note === null) return;
 
   if (action === "rejected" && !note.trim()) {
     showToast("Please provide a rejection reason.", true);
-    return;
-  }
-
-  /*
-    The current RPC does not store a transaction hash.
-    Therefore this UI deliberately blocks Paid until the database
-    supports recording and verifying the transfer reference.
-  */
-
-  if (action === "paid") {
-    showToast(
-      "Paid action is locked until transaction-hash storage is added to the database.",
-      true
-    );
     return;
   }
 
@@ -1292,12 +1504,18 @@ function updateOverviewStats() {
   ).length;
 }
 
-
 /* ---------- SAFE INITIALIZATION ---------- */
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     setLoadingText("Connecting to Supabase...");
+
+    const dateInput = $("dailyProfitDate");
+
+    if (dateInput) {
+      dateInput.value = localDateString();
+      dateInput.max = localDateString();
+    }
 
     if (!window.supabase || !window.supabase.createClient) {
       throw new Error(
@@ -1329,17 +1547,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 /* ---------- AUTH SESSION MONITOR ---------- */
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!db) return;
+  // Supabase client is initialized by the first DOMContentLoaded handler.
+  setTimeout(() => {
+    if (!db) return;
 
-  db.auth.onAuthStateChange((event, session) => {
-    if (event === "SIGNED_OUT") {
-      location.href = "Login.html";
-    }
-  });
+    db.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") {
+        location.href = "Login.html";
+      }
+    });
+  }, 0);
 });
 
 </script>
 
 </body>
 </html>
-
