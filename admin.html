@@ -527,16 +527,26 @@ tr:last-child td{border-bottom:0}
             <div class="panel-head"><h3>Payout Requests</h3></div>
             <div class="table-wrap">
               <table>
-                <thead>
-                  <tr>
-                    <th>User ID</th><th>Amount</th><th>Method</th>
-                    <th>Wallet</th><th>Status</th><th>Date</th><th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="payoutsTable">
-                  <tr><td colspan="7" class="empty">Loading payouts...</td></tr>
-                </tbody>
+  <thead>
+    <tr>
+      <th>User ID</th>
+      <th>Account</th>
+      <th>Account Profit</th>
+      <th>Trader Share</th>
+      <th>Company Share</th>
+      <th>Payout Amount</th>
+      <th>Network / Wallet</th>
+      <th>Status</th>
+      <th>Requested</th>
+      <th>Admin Note / TX Hash</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="payoutsTable">
+    <tr><td colspan="11" class="empty">Loading payouts...</td></tr>
+  </tbody>
               </table>
+                  
             </div>
           </div>
         </section>
@@ -1153,20 +1163,46 @@ async function loadPayouts() {
 
   if (tbody) {
     tbody.innerHTML =
-      '<tr><td colspan="7" class="empty">Loading payouts...</td></tr>';
+      '<tr><td colspan="11" class="empty">Loading payouts...</td></tr>';
   }
 
   try {
     const { data, error } = await db
       .from("payout_requests")
       .select("*")
-      .order("created_at", { ascending: false });
+      .order("requested_at", { ascending: false });
 
     if (error) throw error;
 
     payoutsData = data || [];
-    renderPayouts();
 
+    const accountIds = [
+      ...new Set(
+        payoutsData
+          .map(p => p.trading_account_id)
+          .filter(Boolean)
+      )
+    ];
+
+    let accountRows = [];
+
+    if (accountIds.length) {
+      const { data: accounts, error: accountError } = await db
+        .from("trading_accounts")
+        .select("id,mt_login,platform,account_size,account_type,phase")
+        .in("id", accountIds);
+
+      if (accountError) throw accountError;
+      accountRows = accounts || [];
+    }
+
+    payoutsData = payoutsData.map(p => ({
+      ...p,
+      trading_account:
+        accountRows.find(a => a.id === p.trading_account_id) || null
+    }));
+
+    renderPayouts();
     updateOverviewStats();
 
   } catch (error) {
@@ -1174,7 +1210,7 @@ async function loadPayouts() {
 
     if (tbody) {
       tbody.innerHTML =
-        `<tr><td colspan="7" class="empty">Error: ${escapeHTML(error.message)}</td></tr>`;
+        `<tr><td colspan="11" class="empty">Error: ${escapeHTML(error.message)}</td></tr>`;
     }
   }
 }
@@ -1185,22 +1221,156 @@ function renderPayouts() {
 
   if (!payoutsData.length) {
     tbody.innerHTML =
-      '<tr><td colspan="7" class="empty">No payout requests found.</td></tr>';
+      '<tr><td colspan="11" class="empty">No payout requests found.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = payoutsData.map(item => `
-    <tr>
-      <td>${escapeHTML(String(item.user_id || "").slice(0, 12))}</td>
-      <td>${money(item.amount)}</td>
-      <td>${escapeHTML(item.method || item.network || "—")}</td>
-      <td>${escapeHTML(item.wallet_address || item.wallet || "—")}</td>
-      <td>${statusBadge(item.status)}</td>
-      <td>${item.created_at ? new Date(item.created_at).toLocaleDateString() : "—"}</td>
-      <td>${escapeHTML(item.admin_note || "—")}</td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = payoutsData.map(item => {
+    const account = item.trading_account || {};
+
+    const accountLabel = [
+      account.mt_login || "No login",
+      account.platform || "",
+      account.account_size
+        ? "$" + Number(account.account_size).toLocaleString()
+        : ""
+    ].filter(Boolean).join(" / ");
+
+    let actions = "—";
+
+    if (item.status === "pending") {
+      actions = `
+        <button class="btn small green"
+          onclick="reviewPayout('${item.id}','approved')">Approve</button>
+        <button class="btn small red"
+          onclick="reviewPayout('${item.id}','rejected')">Reject</button>
+      `;
+    } else if (item.status === "approved") {
+      actions = `
+        <button class="btn small gold"
+          onclick="reviewPayout('${item.id}','paid')">Mark Paid</button>
+        <button class="btn small red"
+          onclick="reviewPayout('${item.id}','rejected')">Reject</button>
+      `;
+    }
+
+    return `
+      <tr>
+        <td>${escapeHTML(String(item.user_id || "").slice(0, 12))}</td>
+        <td>${escapeHTML(accountLabel || "—")}</td>
+        <td>${money(item.account_profit)}</td>
+        <td>${money(item.trader_share)}</td>
+        <td>${money(item.company_share)}</td>
+        <td><strong>${money(item.payout_amount)}</strong></td>
+        <td>
+          ${escapeHTML(item.network || "—")}<br>
+          <small>${escapeHTML(item.wallet_address || "—")}</small>
+        </td>
+        <td>${statusBadge(item.status)}</td>
+        <td>
+          ${item.requested_at
+            ? new Date(item.requested_at).toLocaleString()
+            : "—"}
+        </td>
+        <td>${escapeHTML(item.admin_note || "—")}</td>
+        <td>${actions}</td>
+      </tr>
+    `;
+  }).join("");
 }
+
+async function reviewPayout(id, action) {
+  if (!["approved", "rejected", "paid"].includes(action)) return;
+
+  const payout = payoutsData.find(p => p.id === id);
+
+  if (!payout) {
+    showToast("Payout request not found. Refresh and try again.");
+    return;
+  }
+
+  let note = payout.admin_note || "";
+
+  if (action === "rejected") {
+    const reason = prompt("Enter the payout rejection reason:");
+
+    if (reason === null) return;
+
+    if (!reason.trim()) {
+      showToast("A rejection reason is required.");
+      return;
+    }
+
+    note = reason.trim();
+
+    if (!confirm("Reject this payout request?")) return;
+
+  } else if (action === "approved") {
+    if (!confirm("Approve this payout request?")) return;
+
+    const adminNote = prompt("Optional admin note:") || "";
+
+    if (adminNote.trim()) {
+      note = [note, adminNote.trim()].filter(Boolean).join("\n");
+    }
+
+  } else if (action === "paid") {
+    if (payout.status !== "approved") {
+      showToast("Only approved payout requests can be marked paid.");
+      return;
+    }
+
+    const txHash = prompt(
+      "Enter the USDT transaction hash before marking this payout paid:"
+    );
+
+    if (txHash === null) return;
+
+    if (txHash.trim().length < 10) {
+      showToast("A valid transaction hash is required.");
+      return;
+    }
+
+    note = [
+      note,
+      "Transaction Hash: " + txHash.trim()
+    ].filter(Boolean).join("\n");
+
+    if (!confirm(
+      "Confirm that the USDT transfer is complete and mark this payout as PAID?"
+    )) return;
+  }
+
+  try {
+    const { data, error } = await db.rpc("admin_review_wft_payout", {
+      p_request_id: id,
+      p_action: action,
+      p_admin_note: note || null
+    });
+
+    if (error) throw error;
+
+    if (data && data.success === false) {
+      throw new Error(
+        data.message || "Payout review was not completed."
+      );
+    }
+
+    showToast(
+      action === "paid"
+        ? "Payout marked paid and transaction hash saved."
+        : action === "approved"
+          ? "Payout approved."
+          : "Payout rejected."
+    );
+
+    await loadPayouts();
+
+  } catch (error) {
+    console.error("Payout review:", error);
+    showToast("Payout update failed: " + error.message);
+  }
+                          }
 
 /* ================= CHALLENGE PASS REQUESTS ================= */
 
