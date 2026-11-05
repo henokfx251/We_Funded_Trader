@@ -730,10 +730,91 @@ if (kycRecord && kycRecord.status === "rejected") {
 if (result.error) throw result.error;
     $("kycForm").reset();
     toast("KYC submitted successfully.");
+/* SUBMIT KYC */
+$("kycForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const button = $("submitKycBtn");
+
+  if (!currentUser) {
+    toast("Please log in again.");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Uploading...";
+
+  try {
+    if (
+      kycRecord &&
+      String(kycRecord.status).toLowerCase() !== "rejected"
+    ) {
+      throw new Error("Your KYC is already submitted and awaiting review.");
+    }
+
+    const fullName = $("kycFullName").value.trim();
+    const country = $("kycCountry").value.trim();
+    const documentType = $("kycDocumentType").value;
+    const front = $("kycFront").files[0];
+    const back = $("kycBack").files[0];
+    const selfie = $("kycSelfie").files[0];
+
+    if (!fullName || !country || !documentType || !front) {
+      throw new Error("Complete all required fields and upload the front ID.");
+    }
+
+    const frontFile = await uploadKycFile(front, "front");
+    const backFile = back ? await uploadKycFile(back, "back") : null;
+    const selfieFile = selfie ? await uploadKycFile(selfie, "selfie") : null;
+
+    const kycPayload = {
+      user_id: currentUser.id,
+      full_name: fullName,
+      country,
+      document_type: documentType,
+      front_file: frontFile,
+      back_file: backFile,
+      selfie_file: selfieFile,
+      status: "pending",
+      admin_note: null,
+      submitted_at: new Date().toISOString(),
+      reviewed_at: null
+    };
+
+    let result;
+
+    if (
+      kycRecord &&
+      String(kycRecord.status).toLowerCase() === "rejected"
+    ) {
+      result = await db
+        .from("kyc_submissions")
+        .update(kycPayload)
+        .eq("id", kycRecord.id)
+        .eq("user_id", currentUser.id)
+        .eq("status", "rejected")
+        .select("id")
+        .maybeSingle();
+
+      if (!result.data && !result.error) {
+        throw new Error("KYC resubmission was not authorized.");
+      }
+    } else {
+      result = await db
+        .from("kyc_submissions")
+        .insert(kycPayload)
+        .select("id")
+        .single();
+    }
+
+    if (result.error) throw result.error;
+
+    $("kycForm").reset();
+    toast("KYC submitted successfully.");
     await loadKYC();
 
-  } catch(error) {
-    console.error("KYC SUBMISSION ERROR:",error);
+  } catch (error) {
+    console.error("KYC SUBMISSION ERROR:", error);
     toast(error.message || "KYC submission failed.");
   } finally {
     button.disabled = false;
