@@ -463,40 +463,85 @@ function orderTable(order) {
 }
 
 /* LOAD ORDERS */
+/* LOAD ORDERS */
 async function loadOrders() {
-  const {data,error} = await db
-    .from("orders")
-    .select("*")
-    .eq("user_id",currentUser.id)
-    .order("created_at",{ascending:false});
+  const table = $("ordersTable");
+  const overview = $("overviewOrders");
 
-  if (error) throw error;
+  try {
+    if (!currentUser?.id) {
+      throw new Error("User session not found. Please login again.");
+    }
 
-  orders = data || [];
+    if (table) {
+      table.innerHTML =
+        '<tr><td colspan="8" class="empty">Loading orders...</td></tr>';
+    }
 
-  $("ordersTable").innerHTML = orders.length
-    ? orders.map(orderTable).join("")
-    : '<tr><td colspan="8" class="empty">No orders found.</td></tr>';
+    const { data, error } = await db
+      .from("orders")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false });
 
-  $("overviewOrders").innerHTML = orders.length
-    ? orders.slice(0,5).map(order => `
-      <tr>
-        <td>${safe(String(order.id || "").slice(0,8))}</td>
-        <td>${safe(order.account_type || "—")}</td>
-        <td>${money(order.account_size)}</td>
-        <td>${money(order.final_price ?? order.base_price)}</td>
-        <td>${badge(order.status)}</td>
-        <td>${displayDate(order.created_at)}</td>
-      </tr>
-    `).join("")
-    : '<tr><td colspan="6" class="empty">No recent orders.</td></tr>';
+    if (error) throw error;
 
-  $("orderCount").textContent = orders.length;
+    orders = data || [];
 
-  $("paidCount").textContent = orders.filter(order =>
-    String(order.status).toLowerCase() === "paid"
-  ).length;
+    if (table) {
+      table.innerHTML = orders.length
+        ? orders.map(order => orderTable(order)).join("")
+        : '<tr><td colspan="8" class="empty">No orders found.</td></tr>';
+    }
+
+    if (overview) {
+      overview.innerHTML = orders.length
+        ? orders.slice(0, 5).map(order => `
+          <tr>
+            <td>${safe(String(order.id || "").slice(0, 8))}</td>
+            <td>${safe(order.account_type || "—")}</td>
+            <td>${money(order.account_size)}</td>
+            <td>${money(order.final_price ?? order.base_price)}</td>
+            <td>${badge(order.status)}</td>
+            <td>${displayDate(order.created_at)}</td>
+          </tr>
+        `).join("")
+        : '<tr><td colspan="6" class="empty">No recent orders.</td></tr>';
+    }
+
+    if ($("orderCount")) {
+      $("orderCount").textContent = orders.length;
+    }
+
+    if ($("paidCount")) {
+      $("paidCount").textContent = orders.filter(order =>
+        String(order.status).toLowerCase() === "paid"
+      ).length;
+    }
+
+  } catch (error) {
+    console.error("LOAD ORDERS ERROR:", error);
+
+    if (table) {
+      table.innerHTML = `
+        <tr>
+          <td colspan="8" class="empty">
+            Orders error: ${safe(error.message || "Unknown error")}
+          </td>
+        </tr>`;
+    }
+
+    if (overview) {
+      overview.innerHTML =
+        '<tr><td colspan="6" class="empty">Could not load recent orders.</td></tr>';
+    }
+
+    throw error;
+  }
 }
+
+/* ACCOUNT CARD */
+  
 
 /* ACCOUNT CARD */
 function accountCard(account) {
@@ -979,7 +1024,15 @@ async function refreshAll() {
 }
 
 /* LOAD DASHBOARD */
-async function loadDashboard() {
+    
+
+/* LOGOUT */
+$("logoutBtn").addEventListener("click",async () => {
+  const button = $("logoutBtn");
+  const label = $("logoutText");
+
+  button.disabled = true;
+  label.textContent = "Loggasync function loadDashboard() {
   try {
     const {data,error} = await db.auth.getSession();
 
@@ -1019,15 +1072,8 @@ async function loadDashboard() {
     console.error("DASHBOARD LOAD ERROR:",error);
     toast(error.message || "Could not load dashboard data.");
   }
-}
-
-/* LOGOUT */
-$("logoutBtn").addEventListener("click",async () => {
-  const button = $("logoutBtn");
-  const label = $("logoutText");
-
-  button.disabled = true;
-  label.textContent = "Logging out...";
+                            }
+    ing out...";
 
   try {
     const {error} = await db.auth.signOut({scope:"local"});
