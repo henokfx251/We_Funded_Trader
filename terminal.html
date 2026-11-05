@@ -1,5 +1,86 @@
-
-<body>
+  <body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WFT TradingView Analysis Terminal</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#080d18;
+ color:#e8edf7;
+ font-family:Arial,sans-serif;
+}
+.topbar{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:15px;
+ padding:18px 5%;
+ background:#101827;
+ border-bottom:1px solid #26344b;
+ flex-wrap:wrap;
+}
+.brand{font-size:19px;font-weight:800;color:#35d0a0}
+.terminal-label{font-size:12px;color:#9baac0}
+.back-link{color:#35d0a0;text-decoration:none}
+.terminal-container{max-width:1400px;margin:auto;padding:25px}
+.hero,.chart-panel,.guide-card,.workspace,.risk-section,.terminal-footer{
+ background:#111c2d;
+ border:1px solid #263650;
+ border-radius:12px;
+ padding:20px;
+ margin-bottom:20px;
+}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:15px}
+h1,h2,h3{color:#f4f7ff}
+p,li{color:#aab8cc;line-height:1.6}
+.analysis-badge{
+ background:#123e35;color:#35d0a0;
+ padding:8px 13px;border-radius:20px;font-size:12px;
+}
+.market-toolbar{
+ display:flex;gap:15px;align-items:end;
+ flex-wrap:wrap;margin:20px 0;
+}
+label{display:block;color:#aab8cc;font-size:13px;margin:12px 0 7px}
+select,input,textarea{
+ width:100%;padding:12px;
+ background:#091321;color:#fff;
+ border:1px solid #34445d;border-radius:7px;
+ outline:none;
+}
+.market-toolbar>div{min-width:160px;flex:1}
+button{
+ background:#16b98b;color:#061b17;
+ border:0;padding:12px 18px;
+ border-radius:7px;font-weight:bold;cursor:pointer;
+}
+button:hover{background:#27d9a5}
+.chart-heading{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#tradingview_chart{width:100%;height:600px}
+.guide-grid{
+ display:grid;grid-template-columns:repeat(3,1fr);gap:15px;
+}
+.guide-card{margin:0}
+.workspace,.risk-section{max-width:100%}
+#saveAnalysis,#calculateRisk{margin-top:15px}
+#riskResult{
+ margin-top:15px;padding:15px;
+ background:#091321;border-radius:8px;color:#35d0a0;
+}
+.terminal-footer a{color:#35d0a0}
+@media(max-width:750px){
+ .terminal-container{padding:12px}
+ .guide-grid{grid-template-columns:1fr}
+ #tradingview_chart{height:450px}
+ .hero{align-items:flex-start;flex-direction:column}
+}
+  </style>
+</style>
+  </head>
   <header class="topbar">
     <div class="brand">WE FUNDED TRADER</div>
     <div class="terminal-label">TRADINGVIEW ANALYSIS TERMINAL</div>
