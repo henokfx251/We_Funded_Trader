@@ -1,52 +1,281 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Challenges | We Funded Trader</title>
+
 <style>
+:root{
+  --bg:#07111f;
+  --panel:#101d30;
+  --panel2:#14243a;
+  --gold:#e8b84b;
+  --gold2:#f5d27c;
+  --text:#f4f7fb;
+  --muted:#94a3b8;
+  --line:#26374d;
+  --green:#4cdb9a;
+  --red:#ff7777;
+}
+
 *{box-sizing:border-box}
-body{margin:0;background:#07111f;color:#fff;font-family:Arial,sans-serif}
-header{padding:20px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1c3048}
-.logo{font-size:21px;font-weight:800;color:#36a3ff}
-nav a{color:#c5d5e8;text-decoration:none;margin-left:15px;font-size:14px}
-main{max-width:1100px;margin:35px auto;padding:0 18px}
-h1{text-align:center;font-size:34px;margin-bottom:8px}
-.sub{text-align:center;color:#9eb1c8;margin-bottom:30px}
-.tabs{display:flex;justify-content:center;gap:10px;margin-bottom:25px;flex-wrap:wrap}
-.tab{background:#14263c;color:#c5d5e8;border:1px solid #29425f;padding:12px 20px;border-radius:9px;cursor:pointer}
-.tab.active{background:#087de0;color:white;border-color:#087de0}
-.panel{background:#0d1c2e;border:1px solid #203a56;border-radius:15px;padding:22px;margin-bottom:25px}
-label{display:block;color:#b9cce0;margin-bottom:9px;font-size:14px}
-select,input{width:100%;padding:14px;background:#071525;border:1px solid #29425f;border-radius:8px;color:white;font-size:16px;margin-bottom:20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}
-.stat{background:#10243a;padding:16px;border-radius:10px}
-.stat small{color:#9eb1c8}
-.stat strong{display:block;font-size:23px;margin-top:8px}
-.price{text-align:center;font-size:34px;font-weight:bold;color:#39a6ff;margin:15px}
-button{background:#087de0;color:white;border:0;border-radius:9px;padding:14px 20px;font-weight:bold;font-size:15px;cursor:pointer}
-button:hover{background:#0068c5}
-.apply{display:flex;gap:8px}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+}
+
+header{
+  padding:19px 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  border-bottom:1px solid var(--line);
+  background:#091525;
+}
+
+.logo{
+  font-size:21px;
+  font-weight:800;
+  color:var(--gold);
+  letter-spacing:.5px;
+}
+
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px;
+}
+
+nav a{
+  color:#c5d5e8;
+  text-decoration:none;
+  font-size:14px;
+  transition:.2s;
+}
+
+nav a:hover{color:var(--gold)}
+
+main{
+  max-width:1100px;
+  margin:38px auto;
+  padding:0 18px;
+}
+
+h1{
+  text-align:center;
+  font-size:35px;
+  margin-bottom:8px;
+}
+
+.sub{
+  text-align:center;
+  color:var(--muted);
+  margin-bottom:28px;
+  line-height:1.6;
+}
+
+.promo{
+  background:linear-gradient(135deg,#33280f,#17243a);
+  border:1px solid var(--gold);
+  border-radius:14px;
+  padding:18px;
+  margin:0 auto 25px;
+  text-align:center;
+}
+
+.promo strong{
+  display:block;
+  color:var(--gold2);
+  font-size:25px;
+  margin-bottom:7px;
+}
+
+.promo p{
+  color:#d5deea;
+  margin:5px 0;
+  line-height:1.5;
+}
+
+.tabs{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:25px;
+  flex-wrap:wrap;
+}
+
+.tab{
+  background:var(--panel2);
+  color:#c5d5e8;
+  border:1px solid var(--line);
+  padding:13px 22px;
+  border-radius:9px;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:14px;
+}
+
+.tab.active{
+  background:var(--gold);
+  color:#101827;
+  border-color:var(--gold);
+}
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:23px;
+  margin-bottom:24px;
+}
+
+label{
+  display:block;
+  color:#c5d5e8;
+  margin-bottom:9px;
+  font-size:14px;
+  font-weight:bold;
+}
+
+select,input{
+  width:100%;
+  padding:14px;
+  background:#071525;
+  border:1px solid #34465d;
+  border-radius:8px;
+  color:white;
+  font-size:16px;
+  margin-bottom:20px;
+  outline:none;
+}
+
+select:focus,input:focus{
+  border-color:var(--gold);
+}
+
+select option{
+  background:#101d30;
+  color:white;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:15px;
+  margin-top:5px;
+}
+
+.stat{
+  background:var(--panel2);
+  padding:17px;
+  border:1px solid #26374d;
+  border-radius:10px;
+}
+
+.stat small{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.stat strong{
+  display:block;
+  font-size:23px;
+  margin-top:9px;
+  color:var(--gold2);
+}
+
+.apply{
+  display:flex;
+  gap:9px;
+  align-items:flex-start;
+}
+
 .apply input{margin:0}
-.apply button{white-space:nowrap}
-.note{color:#9eb1c8;font-size:13px;line-height:1.6}
-.message{font-size:14px;margin-top:10px}
-footer{text-align:center;color:#71869e;padding:30px}
-.coming{opacity:.6}
-@media(max-width:600px){
- header{display:block;text-align:center}
- nav{margin-top:15px}
- nav a{margin:0 7px}
- h1{font-size:27px}
- .apply{display:block}
- .apply button{width:100%;margin-top:10px}
+
+button{
+  background:var(--gold);
+  color:#101827;
+  border:0;
+  border-radius:9px;
+  padding:14px 20px;
+  font-weight:bold;
+  font-size:15px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{
+  background:var(--gold2);
+}
+
+.price{
+  text-align:center;
+  font-size:36px;
+  font-weight:bold;
+  color:var(--gold);
+  margin:22px 0 12px;
+}
+
+.note{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.7;
+}
+
+.message{
+  font-size:14px;
+  margin-top:11px;
+  line-height:1.5;
+}
+
+.success{color:var(--green)}
+.error{color:var(--red)}
+
+footer{
+  text-align:center;
+  color:#71869e;
+  padding:30px 15px;
+  border-top:1px solid var(--line);
+}
+
+@media(max-width:650px){
+  header{
+    display:block;
+    text-align:center;
+  }
+
+  nav{
+    justify-content:center;
+    margin-top:16px;
+    gap:13px;
+  }
+
+  h1{font-size:28px}
+
+  .panel{padding:17px}
+
+  .apply{display:block}
+
+  .apply button{
+    width:100%;
+    margin-top:10px;
+  }
+
+  .price{font-size:32px}
 }
 </style>
 </head>
+
 <body>
+
 <header>
   <div class="logo">WE FUNDED TRADER</div>
+
   <nav>
     <a href="index.html">Home</a>
     <a href="challenges.html">Challenges</a>
@@ -56,16 +285,36 @@ footer{text-align:center;color:#71869e;padding:30px}
 </header>
 
 <main>
+
 <h1>Choose Your Challenge</h1>
-<p class="sub">Select your account size, challenge and trading platform.</p>
+<p class="sub">
+  Select your account size, challenge type and trading platform.
+</p>
+
+<section class="promo">
+  <strong>NEW50 — GET 50% OFF</strong>
+  <p>Use coupon code NEW50 at checkout.</p>
+  <p>MT4 users receive an additional automatic 10% discount.</p>
+  <p><b>NEW50 + MT4 = 60% total discount.</b></p>
+  <p class="note">NEW50 first-time customer eligibility is subject to server verification.</p>
+</section>
 
 <div class="tabs">
-  <button class="tab active" id="evaluationTab" onclick="setType('evaluation')">1-Step Evaluation</button>
-  <button class="tab" id="instantTab" onclick="setType('instant')">Instant Funding</button>
+  <button class="tab active" id="evaluationTab"
+    onclick="setType('evaluation')">
+    1-Step Evaluation
+  </button>
+
+  <button class="tab" id="instantTab"
+    onclick="setType('instant')">
+    Instant Funding
+  </button>
 </div>
 
 <section class="panel">
+
   <label for="accountSize">Select Account Size</label>
+
   <select id="accountSize" onchange="updatePrice()">
     <option value="2500">$2,500 Account</option>
     <option value="5000">$5,000 Account</option>
@@ -76,48 +325,89 @@ footer{text-align:center;color:#71869e;padding:30px}
   </select>
 
   <label for="platform">Trading Platform</label>
+
   <select id="platform" onchange="updatePrice()">
     <option value="MT5">MT5 — Standard Price</option>
-    <option value="MT4">MT4 — 10% Discount</option>
+    <option value="MT4">MT4 — Automatic 10% Discount</option>
     <option value="OTHER" disabled>Other Platform — Coming Soon</option>
   </select>
 
   <div class="grid">
-    <div class="stat"><small>Profit Target</small><strong id="target">10%</strong></div>
-    <div class="stat"><small>Daily Drawdown</small><strong id="daily">3%</strong></div>
-    <div class="stat"><small>Maximum Drawdown</small><strong>5%</strong></div>
-    <div class="stat"><small>Minimum Profitable Days</small><strong id="days">5 Days</strong></div>
-  </div>
-</section>
 
-<section class="panel">
+    <div class="stat">
+      <small>Profit Target</small>
+      <strong id="target">10%</strong>
+    </div>
+
+    <div class="stat">
+      <small>Daily Drawdown</small>
+      <strong id="daily">3%</strong>
+    </div>
+
+    <div class="stat">
+      <small>Maximum Drawdown</small>
+      <strong>5%</strong>
+    </div>
+
+    <div class="stat">
+      <small>Minimum Profitable Days</small>
+      <strong id="days">5 Days</strong>
+    </div>
+
+  </div>
+ </section>
+ <section class="panel">
+
   <label for="coupon">Coupon Code</label>
+
   <div class="apply">
-    <input id="coupon" type="text" placeholder="Enter coupon code">
+    <input
+      id="coupon"
+      type="text"
+      placeholder="Enter coupon code (e.g. NEW50)"
+      autocomplete="off"
+    >
+
     <button onclick="applyCoupon()">Apply Coupon</button>
   </div>
+
   <div class="message" id="couponMessage"></div>
+
   <div class="price" id="price">$10.00</div>
+
   <p class="note" id="discountNote" style="text-align:center">
-    MT4 receives a 10% discount. Additional coupon discounts are not stackable.
+    MT4 receives an automatic 10% discount. Coupon discounts are added to the MT4 discount.
   </p>
-  <button style="width:100%" onclick="checkout()">Continue</button>
+
+  <button style="width:100%" onclick="checkout()">
+    Continue to Checkout
+  </button>
+
   <p class="message" id="checkoutMessage"></p>
+
 </section>
 
 <section class="panel">
-<h3>Challenge Rules</h3>
-<p class="note" id="rules">
-1-Step Evaluation: 10% profit target, 3% static daily drawdown, 5% maximum drawdown, at least 5 profitable days, and minimum 0.5% profit per profitable day.
-</p>
+
+  <h3 style="color:var(--gold)">Challenge Rules</h3>
+
+  <p class="note" id="rules">
+    1-Step Evaluation: 10% profit target, 3% static daily drawdown,
+    5% maximum drawdown, at least 5 profitable days,
+    and minimum 0.5% profit per profitable day.
+  </p>
+
 </section>
+
 </main>
 
-<footer>© 2026 We Funded Trader. All rights reserved.</footer>
+<footer>
+  © 2026 We Funded Trader. All rights reserved.
+</footer>
 
 <script>
+
 let accountType = "evaluation";
-let discount = 0;
 let couponApplied = false;
 
 const prices = {
@@ -129,124 +419,236 @@ const prices = {
   100000:400
 };
 
-function setType(type) {
+function setType(type){
+
   accountType = type;
   couponApplied = false;
-  discount = 0;
+
   document.getElementById("coupon").value = "";
   document.getElementById("couponMessage").textContent = "";
+  document.getElementById("checkoutMessage").textContent = "";
 
-  document.getElementById("evaluationTab").classList.toggle("active",type==="evaluation");
-  document.getElementById("instantTab").classList.toggle("active",type==="instant");
+  document.getElementById("evaluationTab")
+    .classList.toggle("active",type === "evaluation");
 
-  if(type==="evaluation"){
-    document.getElementById("target").textContent="10%";
-    document.getElementById("daily").textContent="3%";
-    document.getElementById("days").textContent="5 Days";
-    document.getElementById("rules").textContent=
+  document.getElementById("instantTab")
+    .classList.toggle("active",type === "instant");
+
+  if(type === "evaluation"){
+
+    document.getElementById("target").textContent = "10%";
+    document.getElementById("daily").textContent = "3%";
+    document.getElementById("days").textContent = "5 Days";
+
+    document.getElementById("rules").textContent =
       "1-Step Evaluation: 10% profit target, 3% static daily drawdown, 5% maximum drawdown, at least 5 profitable days, and minimum 0.5% profit per profitable day.";
+
   }else{
-    document.getElementById("target").textContent="No Evaluation";
-    document.getElementById("daily").textContent="None";
-    document.getElementById("days").textContent="No Evaluation Days";
-    document.getElementById("rules").textContent=
+
+    document.getElementById("target").textContent = "No Evaluation";
+    document.getElementById("daily").textContent = "None";
+    document.getElementById("days").textContent = "No Evaluation Days";
+
+    document.getElementById("rules").textContent =
       "Instant Funding: No evaluation phase and no daily drawdown. Maximum drawdown is 5%, measured on closed positions only.";
   }
+
   updatePrice();
 }
 
 function updatePrice(){
-  couponApplied=false;
-  discount=0;
-  document.getElementById("couponMessage").textContent="";
+
+  document.getElementById("checkoutMessage").textContent = "";
+
   calculateDisplay();
+}
+
+function getCouponPercent(){
+
+  if(!couponApplied) return 0;
+
+  const code = document.getElementById("coupon")
+    .value.trim().toUpperCase();
+
+  if(code === "NEW50") return 50;
+  if(code === "WFT20") return 20;
+  if(code === "WFT10") return 10;
+
+  return 0;
 }
 
 function calculateDisplay(){
-  const size=document.getElementById("accountSize").value;
-  const platform=document.getElementById("platform").value;
-  const basePrice=prices[size];
-  const code=document.getElementById("coupon").value.trim().toUpperCase();
 
-  let percent=platform==="MT4"?10:0;
+  const size = document.getElementById("accountSize").value;
+  const platform = document.getElementById("platform").value;
 
-  if(couponApplied){
-    if(code==="WFT10") percent=10;
-    if(code==="WFT20") percent=20;
-    if(code==="MT4WFT10" && platform==="MT4") percent=10;
+  const basePrice = prices[size];
+
+  // MT4 automatic discount is separate from coupon discount.
+  const mt4Discount = platform === "MT4" ? 10 : 0;
+
+  // Coupon discount.
+  const couponDiscount = getCouponPercent();
+
+  // Add both discounts together.
+  const totalDiscount = mt4Discount + couponDiscount;
+
+  const finalPrice = basePrice * (1 - totalDiscount / 100);
+
+  document.getElementById("price").textContent =
+    "$" + finalPrice.toFixed(2);
+
+  const note = document.getElementById("discountNote");
+
+  if(mt4Discount > 0 && couponDiscount > 0){
+
+    note.textContent =
+      "MT4 automatic 10% + Coupon " +
+      couponDiscount +
+      "% = " +
+      totalDiscount +
+      "% total discount.";
+
+  }else if(mt4Discount > 0){
+
+    note.textContent =
+      "Automatic MT4 10% discount applied.";
+
+  }else if(couponDiscount > 0){
+
+    note.textContent =
+      couponDiscount +
+      "% coupon discount applied.";
+
+  }else{
+
+    note.textContent =
+      "No discount applied. Use NEW50 for 50% off.";
   }
-
-  discount=percent;
-  const finalPrice=basePrice*(1-percent/100);
-  document.getElementById("price").textContent="$"+finalPrice.toFixed(2);
-
-  document.getElementById("discountNote").textContent =
-    percent>0 ? percent+"% discount applied. Discounts cannot be combined."
-    : "MT4 receives a 10% discount. Additional coupon discounts are not stackable.";
 }
 
 function applyCoupon(){
-  const code=document.getElementById("coupon").value.trim().toUpperCase();
-  const platform=document.getElementById("platform").value;
-  const msg=document.getElementById("couponMessage");
 
-  if(code===""){
-    couponApplied=false;
-    msg.style.color="#ff7777";
-    msg.textContent="Enter a coupon code.";
+  const code = document.getElementById("coupon")
+    .value.trim().toUpperCase();
+
+  const msg = document.getElementById("couponMessage");
+
+  document.getElementById("coupon").value = code;
+
+  if(code === ""){
+
+    couponApplied = false;
+
+    msg.className = "message error";
+    msg.textContent = "Please enter a coupon code.";
+
     calculateDisplay();
     return;
   }
 
-  if(code==="MT4WFT10" && platform!=="MT4"){
-    couponApplied=false;
-    msg.style.color="#ff7777";
-    msg.textContent="MT4WFT10 is valid for MT4 only.";
+  if(!["NEW50","WFT10","WFT20"].includes(code)){
+
+    couponApplied = false;
+
+    msg.className = "message error";
+    msg.textContent = "Invalid coupon code.";
+
     calculateDisplay();
     return;
   }
 
-  if(!["WFT10","WFT20","MT4WFT10"].includes(code)){
-    couponApplied=false;
-    msg.style.color="#ff7777";
-    msg.textContent="Invalid coupon code.";
-    calculateDisplay();
-    return;
+  couponApplied = true;
+
+  const platform = document.getElementById("platform").value;
+
+  const couponPercent =
+    code === "NEW50" ? 50 :
+    code === "WFT20" ? 20 : 10;
+
+  const mt4Percent = platform === "MT4" ? 10 : 0;
+
+  const total = couponPercent + mt4Percent;
+
+  msg.className = "message success";
+
+  if(mt4Percent > 0){
+
+    msg.textContent =
+      code + " accepted! Coupon " +
+      couponPercent + "% + MT4 10% = " +
+      total + "% total discount.";
+
+  }else{
+
+    msg.textContent =
+      code + " accepted! " +
+      couponPercent + "% coupon discount.";
   }
 
-  couponApplied=true;
-  msg.style.color="#4cdb9a";
-  msg.textContent="Coupon accepted!";
   calculateDisplay();
 }
+ function checkout(){
 
-function checkout(){
-  const size=document.getElementById("accountSize").value;
-  const platform=document.getElementById("platform").value;
-  const coupon=document.getElementById("coupon").value.trim().toUpperCase();
+  const size = document.getElementById("accountSize").value;
+  const platform = document.getElementById("platform").value;
 
-  if(platform==="OTHER"){
-    document.getElementById("checkoutMessage").textContent="This platform is coming soon.";
+  const coupon = document.getElementById("coupon")
+    .value.trim().toUpperCase();
+
+  const message = document.getElementById("checkoutMessage");
+
+  if(platform === "OTHER"){
+
+    message.className = "message error";
+    message.textContent = "This platform is coming soon.";
     return;
   }
 
-  if(coupon && !couponApplied){
-    document.getElementById("checkoutMessage").textContent="Please apply or remove your coupon before continuing.";
+  if(coupon !== "" && !couponApplied){
+
+    message.className = "message error";
+    message.textContent =
+      "Please apply your coupon code before continuing.";
+
     return;
   }
 
-  const params=new URLSearchParams({
+  if(coupon && !["NEW50","WFT10","WFT20"].includes(coupon)){
+
+    message.className = "message error";
+    message.textContent = "Invalid coupon code.";
+
+    return;
+  }
+
+  const params = new URLSearchParams({
+
     size:size,
     type:accountType,
     platform:platform,
-    coupon:couponApplied?coupon:""
+    coupon:couponApplied ? coupon : ""
+
   });
 
-  window.location.href="checkout.html?"+params.toString();
+  window.location.href = "checkout.html?" + params.toString();
 }
 
+// If the user edits the coupon after applying it,
+// require them to apply it again.
+document.getElementById("coupon").addEventListener("input",function(){
+
+  couponApplied = false;
+
+  document.getElementById("couponMessage").textContent = "";
+  document.getElementById("couponMessage").className = "message";
+
+  calculateDisplay();
+});
+
+// Initial page setup.
 setType("evaluation");
+
 </script>
 </body>
-  </html>
-  
+</html>
