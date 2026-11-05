@@ -1490,31 +1490,191 @@ $("affiliatePayoutForm")?.addEventListener("submit", async e => {
   }
 });
 
+
 async function loadRewards() {
-  const { data, error } = await supabase
-    .from("reward_redemptions")
-    .select("*")
-    .eq("user_id", currentUser.id)
-    .order("requested_at", { ascending: false });
+  const [feedbackResult, ledgerResult, redemptionResult, catalogResult] =
+    await Promise.all([
+      supabase.from("reward_feedback_submissions")
+        .select("*").eq("user_id", currentUser.id).maybeSingle(),
 
-  if (error) throw error;
+      supabase.from("reward_points_ledger")
+        .select("*").eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false }),
 
-  const list = data || [];
-  setText("rewardPoints", "Points managed by WFT");
-  setText("redeemedPoints", list.reduce((s,r) =>
-    s + Number(r.points_spent || 0), 0));
+      supabase.from("reward_redemptions")
+        .select("*").eq("user_id", currentUser.id)
+        .order("requested_at", { ascending: false }),
 
-  const rows = list.map(r => `
-    <tr><td>${date(r.requested_at)}</td>
-    <td>${safe(r.account_size)} USD</td>
-    <td>${safe(r.account_type)}</td>
-    <td>${safe(r.points_spent)}</td>
-    <td>${statusBadge(r.status)}</td></tr>
+      supabase.from("reward_catalog")
+        .select("*").eq("is_active", true)
+    ]);
+
+  if (feedbackResult.error) throw feedbackResult.error;
+  if (ledgerResult.error) throw ledgerResult.error;
+  if (redemptionResult.error) throw redemptionResult.error;
+  if (catalogResult.error) throw catalogResult.error;
+
+  const feedback = feedbackResult.data;
+  const ledger = ledgerResult.data || [];
+  const redemptions = redemptionResult.data || [];
+  const catalog = catalogResult.data || [];
+
+  const redeemed = redemptions
+    .filter(r => r.status !== "rejected")
+    .reduce((sum, r) => sum + Number(r.points_spent || 0), 0);
+
+  const earned = ledger.reduce(
+    (sum, row) => sum + Number(row.points || 0), 0
+  );
+
+  const balance = earned - redeemed;
+
+  setText("rewardPoints", balance);
+  setText("redeemedPoints", redeemed);
+
+  const form = $("feedbackTaskForm");
+  const taskStatus = $("rewardTaskStatus");
+
+  if (feedback) {
+    form.classList.add("hidden");
+
+    taskStatus.textContent =
+      feedback.status === "approved"
+        ? "Approved — 50 points awarded."
+        : feedback.status === "rejected"
+          ? "Rejected — " + (feedback.admin_note || "Contact support.")
+          : "Submitted — waiting for Admin review.";
+  } else {
+    form.classList.remove("hidden");
+    taskStatus.textContent =
+      "Task available — submit your feedback to earn 50 points after approval.";
+  }
+
+  const ledgerRows = ledger.map(row => `
+    <tr>
+      <td>${date(row.created_at)}</td>
+      <td>${safe(row.description || row.entry_type)}</td>
+      <td>${Number(row.points) > 0 ? "+" : ""}${safe(row.points)}</td>
+    </tr>
   `).join("");
 
-  setHTML("rewardHistory", rows || emptyRow(5, "No reward activity yet."));
-  setHTML("rewardRedemptions", rows || emptyRow(5, "No reward redemptions yet."));
+  setHTML("rewardHistory",
+    ledgerRows || emptyRow(3, "No points earned yet.")
+  );
+
+  const redemptionRows = redemptions.map(row => `
+    <tr>
+      <td>${date(row.requested_at)}</td>
+      <td>$${Number(row.account_size).toLocaleString()} ${safe(row.account_type)}</td>
+      <td>${safe(row.points_spent)}</td>
+      <td>${money(row.activation_fee)}</td>
+      <td>${statusBadge(row.activation_status)}</td>
+      <td>${statusBadge(row.status)}</td>
+    </tr>
+  `).join("");
+
+  setHTML("rewardRedemptions",
+    redemptionRows || emptyRow(6, "No redemption requests yet.")
+  );
+
+  const catalogHtml = catalog.map(item => {
+    const existing = redemptions.find(
+      r => r.catalog_id === item.id && r.status !== "rejected"
+    );
+
+    const disabled = Boolean(existing) ||
+      balance < Number(item.points_cost);
+
+    const buttonText = existing
+      ? "Already Redeemed"
+      : balance < Number(item.points_cost)
+        ? "Not Enough Points"
+        : "Redeem Reward";
+
+    return `
+      <div class="info-card">
+        <h3>${safe(item.title)}</h3>
+        <p>${safe(item.description || "")}</p>
+        <p>
+          <strong>${safe(item.points_cost)} Points</strong>
+          · Activation Fee: <strong>${money(item.activation_fee)}</strong>
+        </p>
+        <button class="btn" type="button"
+          data-reward-id="${safe(item.id)}"
+          ${disabled ? "disabled" : ""}>
+          ${buttonText}
+        </button>
+      </div>
+    `;
+  }).join("");
+
+  setHTML("rewardCatalog",
+    catalogHtml || '<div class="empty">No rewards available.</div>'
+  );
+
+  document.querySelectorAll("[data-reward-id]").forEach(button => {
+    button.addEventListener("click", () => {
+      requestRewardRedemption(button.dataset.rewardId);
+    });
+  });
 }
+
+$("feedbackTaskForm")?.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const button = $("feedbackSubmitBtn");
+  button.disabled = true;
+
+  try {
+    const feedback = $("feedbackText").value.trim();
+
+    if (feedback.length < 20) {
+      throw new Error("Feedback must be at least 20 characters.");
+    }
+
+    const { error } = await supabase
+      .from("reward_feedback_submissions")
+      .insert({
+        user_id: currentUser.id,
+        rating: Number($("feedbackRating").value),
+        feedback,
+        suggestion: $("feedbackSuggestion").value.trim() || null
+      });
+
+    if (error) throw error;
+
+    toast("Feedback submitted. Waiting for Admin approval.");
+    $("feedbackTaskForm").reset();
+    await loadRewards();
+
+  } catch (err) {
+    toast(err.message, true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
+async function requestRewardRedemption(catalogId) {
+  if (!confirm(
+    "Redeem 50 points for the $5K 1-Step Evaluation Account? $1 activation fee applies."
+  )) return;
+
+  try {
+    const { error } = await supabase.rpc(
+      "request_reward_redemption",
+      { p_catalog_id: catalogId }
+    );
+
+    if (error) throw error;
+
+    toast("Reward redemption request submitted.");
+    await loadRewards();
+
+  } catch (err) {
+    toast(err.message, true);
+  }
+  }
+  
 
 async function loadAll() {
   const jobs = [
