@@ -162,6 +162,67 @@ a:hover{text-decoration:underline}
   color:var(--gold2)!important;
 }
 
+/* Wallet address cards */
+
+.wallet-card{
+  background:#071525;
+  border:1px solid #34465d;
+  border-radius:10px;
+  padding:15px;
+  margin:15px 0;
+}
+
+.wallet-title{
+  color:var(--gold2);
+  font-weight:bold;
+  font-size:14px;
+}
+
+.wallet-address{
+  display:block;
+  color:var(--gold2);
+  background:#101d30;
+  border:1px solid #26374d;
+  border-radius:7px;
+  padding:12px;
+  margin:12px 0;
+  word-break:break-all;
+  overflow-wrap:anywhere;
+  font-size:13px;
+  line-height:1.7;
+  user-select:all;
+}
+
+.copy-btn{
+  width:100%;
+  padding:12px;
+  margin-top:5px;
+  background:#26374d;
+  color:var(--gold2);
+  border:1px solid var(--gold);
+}
+
+.copy-btn:hover{
+  background:#34465d;
+}
+
+.copy-message{
+  min-height:18px;
+  font-size:12px;
+  margin-top:8px;
+}
+
+.warning-box{
+  background:#241e10;
+  border:1px solid #80652b;
+  border-radius:8px;
+  padding:12px;
+  margin:15px 0;
+  color:#f5d27c;
+  font-size:13px;
+  line-height:1.6;
+}
+
 @media(max-width:500px){
   body{padding:10px}
 
@@ -176,7 +237,6 @@ a:hover{text-decoration:underline}
 }
 </style>
 </head>
-
 <body>
 
 <div class="container">
@@ -238,25 +298,83 @@ a:hover{text-decoration:underline}
 </button>
 
 <div id="message"></div>
+
+<!-- PAYMENT SECTION -->
+
 <div id="paymentSection" class="payment-box hidden">
 
   <h2>Submit Your Payment</h2>
 
-  <p>Send USDT using BEP20 (BNB Smart Chain) only.</p>
+  <p>Select your USDT network and copy the correct receiving address.</p>
 
   <label for="network">Payment Network</label>
 
   <select id="network">
-    <option value="BEP20">USDT BEP20 (BSC)</option>
+    <option value="BEP20">USDT BEP20 (BNB Smart Chain)</option>
+    <option value="TRC20">USDT TRC20 (TRON)</option>
   </select>
+
+  <!-- BEP20 WALLET -->
+
+  <div class="wallet-card">
+
+    <div class="wallet-title">
+      USDT BEP20 Receive Address
+    </div>
+
+    <code class="wallet-address" id="bep20Address">0xc6e6d92df291cd2f48e83dbf656817f1712d8cfa</code>
+
+    <button
+      type="button"
+      class="copy-btn"
+      id="copyBep20"
+    >
+      Copy BEP20 Address
+    </button>
+
+    <div class="copy-message" id="bep20CopyMessage"></div>
+
+  </div>
+
+  <!-- TRC20 WALLET -->
+
+  <div class="wallet-card">
+
+    <div class="wallet-title">
+      USDT TRC20 Receive Address
+    </div>
+
+    <code class="wallet-address" id="trc20Address">TS52ntAQWhtnwFRgSASm5ugD7h35Mow9N4</code>
+
+    <button
+      type="button"
+      class="copy-btn"
+      id="copyTrc20"
+    >
+      Copy TRC20 Address
+    </button>
+
+    <div class="copy-message" id="trc20CopyMessage"></div>
+
+  </div>
+
+  <div class="warning-box">
+    Important: Send USDT only to the address matching your selected network.
+    Sending funds through the wrong network may result in permanent loss.
+  </div>
 
   <label for="txid">Transaction ID (TXID)</label>
 
   <input
     id="txid"
     type="text"
-    placeholder="Paste your BEP20 transaction hash"
+    placeholder="Paste your transaction hash"
+    autocomplete="off"
   >
+
+  <p class="small" id="txidHelp">
+    Select your network before submitting your transaction hash.
+  </p>
 
   <p class="small">
     Your payment will remain pending until the Admin independently verifies it on the blockchain.
@@ -273,9 +391,8 @@ a:hover{text-decoration:underline}
 <p><a href="challenges.html">Back to Challenges</a></p>
 <p><a href="orders.html">My Orders</a></p>
 
-</div>
-
-<script type="module">
+  </div>
+  <script type="module">
 
 import { createClient } from
   "https://esm.sh/@supabase/supabase-js@2";
@@ -291,11 +408,12 @@ const db = createClient(SUPABASE_URL,SUPABASE_KEY);
 const params = new URLSearchParams(location.search);
 
 const size = Number(params.get("size"));
-
 const type = (params.get("type") || "").toLowerCase();
 
 const couponInput = document.getElementById("coupon");
 const platformInput = document.getElementById("platform");
+const networkInput = document.getElementById("network");
+
 const button = document.getElementById("orderButton");
 const message = document.getElementById("message");
 
@@ -308,57 +426,65 @@ const paymentMessage =
 const submitPaymentButton =
   document.getElementById("submitPayment");
 
+const txidInput =
+  document.getElementById("txid");
+
 let basePrice = 0;
 let currentOrderId = null;
 let orderCreated = false;
 
-function showMessage(text,cls=""){
+const walletAddresses = {
+  BEP20: "0xc6e6d92df291cd2f48e83dbf656817f1712d8cfa",
+  TRC20: "TS52ntAQWhtnwFRgSASm5ugD7h35Mow9N4"
+};
 
+function showMessage(text,cls=""){
   message.textContent = text;
   message.className = cls;
-
 }
 
 function showPaymentMessage(text,cls=""){
-
   paymentMessage.textContent = text;
   paymentMessage.className = cls;
-
 }
 
-// Calculate coupon discount.
+// ---------------------------------
+// COUPON AND PRICING
+// ---------------------------------
+
 function getCouponPercent(){
 
-  const code = couponInput.value.trim().toUpperCase();
+  const code =
+    couponInput.value.trim().toUpperCase();
 
   if(code === "NEW50") return 50;
   if(code === "WFT20") return 20;
   if(code === "WFT10") return 10;
 
   return 0;
-
 }
 
-// MT4 discount and coupon discount are added together.
 function getDiscountPercent(){
 
-  const platform = platformInput.value;
+  const mt4Percent =
+    platformInput.value === "MT4" ? 10 : 0;
 
-  const couponPercent = getCouponPercent();
-
-  const mt4Percent = platform === "MT4" ? 10 : 0;
-
-  return Math.min(100,couponPercent + mt4Percent);
-
+  return Math.min(
+    100,
+    getCouponPercent() + mt4Percent
+  );
 }
 
 function calculatePrice(){
 
-  const code = couponInput.value.trim().toUpperCase();
+  const code =
+    couponInput.value.trim().toUpperCase();
 
-  const platform = platformInput.value;
-
-  const validCodes = ["NEW50","WFT20","WFT10"];
+  const validCodes = [
+    "NEW50",
+    "WFT20",
+    "WFT10"
+  ];
 
   const couponValid =
     code === "" || validCodes.includes(code);
@@ -386,12 +512,11 @@ function calculatePrice(){
     note.textContent = "Invalid coupon code.";
     note.className = "small error";
     return;
-
   }
 
   note.className = "small";
 
-  if(code === "NEW50" && platform === "MT4"){
+  if(code === "NEW50" && platformInput.value === "MT4"){
 
     note.textContent =
       "NEW50 50% + MT4 automatic 10% = 60% total discount. First-order eligibility is verified by the server.";
@@ -401,7 +526,7 @@ function calculatePrice(){
     note.textContent =
       "NEW50 50% discount. First-order eligibility is verified by the server.";
 
-  }else if(code && platform === "MT4"){
+  }else if(code && platformInput.value === "MT4"){
 
     note.textContent =
       code + " " + getCouponPercent() +
@@ -414,18 +539,113 @@ function calculatePrice(){
       code + " — " + discountPercent +
       "% coupon discount applied.";
 
-  }else if(platform === "MT4"){
+  }else if(platformInput.value === "MT4"){
 
     note.textContent =
       "Automatic MT4 10% discount applied.";
 
   }else{
 
-    note.textContent =
-      "No discount applied.";
+    note.textContent = "No discount applied.";
   }
+}
+
+// ---------------------------------
+// WALLET ADDRESS DISPLAY
+// ---------------------------------
+
+function updateWallet(){
+
+  const network = networkInput.value;
+
+  document.getElementById("txidHelp").textContent =
+    network === "BEP20"
+      ? "Enter the BNB Smart Chain (BEP20) transaction hash."
+      : "Enter the TRON (TRC20) transaction hash.";
+
+  txidInput.placeholder =
+    network === "BEP20"
+      ? "Paste your BEP20 transaction hash"
+      : "Paste your TRC20 transaction hash";
 
 }
+
+networkInput.addEventListener("change",updateWallet);
+
+// ---------------------------------
+// COPY ADDRESS
+// ---------------------------------
+
+async function copyAddress(network){
+
+  const address = walletAddresses[network];
+
+  const messageElement =
+    document.getElementById(
+      network === "BEP20"
+        ? "bep20CopyMessage"
+        : "trc20CopyMessage"
+    );
+
+  try{
+
+    if(navigator.clipboard && window.isSecureContext){
+
+      await navigator.clipboard.writeText(address);
+
+    }else{
+
+      const temporaryInput =
+        document.createElement("textarea");
+
+      temporaryInput.value = address;
+      temporaryInput.style.position = "fixed";
+      temporaryInput.style.opacity = "0";
+
+      document.body.appendChild(temporaryInput);
+
+      temporaryInput.focus();
+      temporaryInput.select();
+
+      const copied =
+        document.execCommand("copy");
+
+      temporaryInput.remove();
+
+      if(!copied){
+        throw new Error("Copy failed");
+      }
+    }
+
+    messageElement.textContent =
+      "Address copied successfully!";
+
+    messageElement.className =
+      "copy-message success";
+
+  }catch(error){
+
+    messageElement.textContent =
+      "Copy failed. Please select and copy the address manually.";
+
+    messageElement.className =
+      "copy-message error";
+  }
+}
+
+document.getElementById("copyBep20")
+  .addEventListener("click",()=>{
+    copyAddress("BEP20");
+  });
+
+document.getElementById("copyTrc20")
+  .addEventListener("click",()=>{
+    copyAddress("TRC20");
+  });
+
+// ---------------------------------
+// INITIALIZE CHECKOUT
+// ---------------------------------
 
 async function initialize(){
 
@@ -440,19 +660,26 @@ async function initialize(){
 
       location.href = "Login.html";
       return;
-
     }
 
-    if(![2500,5000,10000,25000,50000,100000].includes(size)){
+    if(![
+      2500,
+      5000,
+      10000,
+      25000,
+      50000,
+      100000
+    ].includes(size)){
 
       throw new Error("Invalid account size.");
-
     }
 
-    if(!["evaluation","instant"].includes(type)){
+    if(![
+      "evaluation",
+      "instant"
+    ].includes(type)){
 
       throw new Error("Invalid challenge type.");
-
     }
 
     document.getElementById("size").textContent =
@@ -481,19 +708,22 @@ async function initialize(){
     if(priceError || !price){
 
       throw new Error("Challenge price not found.");
-
     }
 
-    if(type === "evaluation" && !price.evaluation_enabled){
+    if(
+      type === "evaluation" &&
+      !price.evaluation_enabled
+    ){
 
       throw new Error("1-Step Evaluation is unavailable.");
-
     }
 
-    if(type === "instant" && !price.instant_enabled){
+    if(
+      type === "instant" &&
+      !price.instant_enabled
+    ){
 
       throw new Error("Instant Funding is unavailable.");
-
     }
 
     basePrice = Number(price.base_price);
@@ -501,16 +731,18 @@ async function initialize(){
     if(!Number.isFinite(basePrice) || basePrice <= 0){
 
       throw new Error("Invalid challenge price.");
-
     }
 
     document.getElementById("base").textContent =
       "$" + basePrice.toFixed(2);
 
     couponInput.value =
-      (params.get("coupon") || "").trim().toUpperCase();
+      (params.get("coupon") || "")
+        .trim()
+        .toUpperCase();
 
     calculatePrice();
+    updateWallet();
 
     button.disabled = false;
 
@@ -522,13 +754,16 @@ async function initialize(){
       error.message || "Checkout loading failed.",
       "error"
     );
-
   }
-
 }
-  couponInput.addEventListener("input",calculatePrice);
+
+couponInput.addEventListener("input",calculatePrice);
 
 platformInput.addEventListener("change",calculatePrice);
+
+// ---------------------------------
+// CREATE ORDER
+// ---------------------------------
 
 button.addEventListener("click",async()=>{
 
@@ -549,7 +784,6 @@ button.addEventListener("click",async()=>{
     if(sessionError || !session){
 
       throw new Error("Please log in again.");
-
     }
 
     const platform = platformInput.value;
@@ -560,7 +794,6 @@ button.addEventListener("click",async()=>{
     if(!["MT4","MT5"].includes(platform)){
 
       throw new Error("Please select MT4 or MT5.");
-
     }
 
     if(
@@ -569,7 +802,6 @@ button.addEventListener("click",async()=>{
     ){
 
       throw new Error("Invalid coupon code.");
-
     }
 
     const {
@@ -587,27 +819,31 @@ button.addEventListener("click",async()=>{
       }
     );
 
-
     if(error){
 
-      let serverMessage = error.message || "Request failed.";
+      let serverMessage =
+        error.message || "Request failed.";
 
-      try {
+      try{
+
         if(error.context){
-          const errorBody = await error.context.clone().json();
+
+          const errorBody =
+            await error.context.clone().json();
+
           serverMessage =
             errorBody.error ||
             errorBody.message ||
             serverMessage;
         }
-      } catch (e) {
-        // Keep the original error message.
+
+      }catch(e){
+
+        // Keep original error message.
       }
 
       throw new Error(serverMessage);
-
-  }
-
+    }
 
     currentOrderId =
       data.order?.id || data.order_id;
@@ -617,12 +853,12 @@ button.addEventListener("click",async()=>{
       throw new Error(
         "Order ID was not returned. Please contact support before trying again."
       );
-
     }
 
     orderCreated = true;
 
-    // Always display the final price calculated by the server.
+    // Server-calculated price is authoritative.
+
     if(data.pricing){
 
       const pricing = data.pricing;
@@ -648,7 +884,6 @@ button.addEventListener("click",async()=>{
       document.getElementById("discountNote").textContent =
         serverDiscount +
         "% total discount confirmed by server.";
-
     }
 
     showMessage(
@@ -675,16 +910,52 @@ button.addEventListener("click",async()=>{
 
     button.disabled = false;
     button.textContent = "Try Again";
-
   }
 
 });
 
+// ---------------------------------
+// VALIDATE TRANSACTION HASH
+// ---------------------------------
+
+function validateTransactionHash(network,rawHash){
+
+  const hash = rawHash.trim();
+
+  if(network === "BEP20"){
+
+    if(/^0x[a-fA-F0-9]{64}$/.test(hash)){
+      return hash;
+    }
+
+    if(/^[a-fA-F0-9]{64}$/.test(hash)){
+      return "0x" + hash;
+    }
+
+    return null;
+  }
+
+  if(network === "TRC20"){
+
+    if(/^0x[a-fA-F0-9]{64}$/.test(hash)){
+      return hash.slice(2);
+    }
+
+    if(/^[a-fA-F0-9]{64}$/.test(hash)){
+      return hash;
+    }
+
+    return null;
+  }
+
+  return null;
+}
+
+// ---------------------------------
+// SUBMIT PAYMENT DETAILS
+// ---------------------------------
 
 submitPaymentButton.addEventListener("click",async()=>{
-
-  const txid =
-    document.getElementById("txid").value.trim();
 
   if(!currentOrderId){
 
@@ -694,18 +965,25 @@ submitPaymentButton.addEventListener("click",async()=>{
     );
 
     return;
-
   }
 
-  if(!/^0x[a-fA-F0-9]{64}$/.test(txid)){
+  const network = networkInput.value;
+
+  const rawTxid = txidInput.value.trim();
+
+  const txid =
+    validateTransactionHash(network,rawTxid);
+
+  if(!txid){
 
     showPaymentMessage(
-      "Invalid BEP20 transaction hash.",
+      network === "BEP20"
+        ? "Invalid BEP20 transaction hash. Enter 64 hexadecimal characters, with or without 0x."
+        : "Invalid TRC20 transaction hash. Enter 64 hexadecimal characters.",
       "error"
     );
 
     return;
-
   }
 
   submitPaymentButton.disabled = true;
@@ -721,7 +999,6 @@ submitPaymentButton.addEventListener("click",async()=>{
     if(sessionError || !session){
 
       throw new Error("Please log in again.");
-
     }
 
     const {
@@ -730,7 +1007,7 @@ submitPaymentButton.addEventListener("click",async()=>{
     } = await db
       .from("orders")
       .update({
-        payment_network:"BEP20",
+        payment_network:network,
         transaction_hash:txid,
         payment_submitted_at:new Date().toISOString()
       })
@@ -747,18 +1024,19 @@ submitPaymentButton.addEventListener("click",async()=>{
       throw new Error(
         "Payment details were not saved."
       );
-
     }
 
     showPaymentMessage(
-      "Payment details submitted. Awaiting Admin verification.",
+      "Payment details submitted successfully using " +
+      network +
+      ". Awaiting Admin verification.",
       "success"
     );
 
     submitPaymentButton.textContent = "Submitted";
 
-    document.getElementById("network").disabled = true;
-    document.getElementById("txid").disabled = true;
+    networkInput.disabled = true;
+    txidInput.disabled = true;
 
   }catch(error){
 
@@ -769,7 +1047,6 @@ submitPaymentButton.addEventListener("click",async()=>{
 
     submitPaymentButton.disabled = false;
     submitPaymentButton.textContent = "Try Again";
-
   }
 
 });
@@ -777,5 +1054,6 @@ submitPaymentButton.addEventListener("click",async()=>{
 initialize();
 
 </script>
+
 </body>
-</html>
+  </html>
