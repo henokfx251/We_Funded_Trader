@@ -461,9 +461,23 @@ th{color:var(--muted);font-weight:600}
 <!-- TRADINGVIEW SCRIPT -->
 <script src="https://s3.tradingview.com/tv.js"></script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+const SUPABASE_URL = "https://vxcwfirfgxrxafbirnwu.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+document.addEventListener("DOMContentLoaded", async function () {
+  const { data: authData, error: authError } = await db.auth.getSession();
+
+  if (authError || !authData.session) {
+    window.location.replace("Login.html");
+    return;
+  }
+
+  const currentUser = authData.session.user;
+  
   // =========================
   // TRADINGVIEW CHART
   // =========================
@@ -515,32 +529,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
   loadChart();
 
-
   // =========================
-  // ANALYSIS JOURNAL
+  // SUPABASE ANALYSIS JOURNAL
   // =========================
-
-  const STORAGE_KEY = "wft_market_analyses";
 
   const saveButton = document.getElementById("saveAnalysis");
   const clearButton = document.getElementById("clearAnalysis");
   const historyBody = document.getElementById("analysisHistory");
   const saveStatus = document.getElementById("saveStatus");
 
-  function getAnalyses() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    } catch (error) {
-      return [];
-    }
-  }
-
-  function renderAnalyses() {
-
-    const analyses = getAnalyses();
+  async function renderAnalyses() {
     historyBody.innerHTML = "";
 
-    if (!analyses.length) {
+    const { data: analyses, error } = await db
+      .from("trade_analyses")
+      .select("id,market,direction,timeframe,entry_price,stop_loss,take_profit,created_at")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (error) {
+      const row = historyBody.insertRow();
+      const cell = row.insertCell();
+      cell.colSpan = 8;
+      cell.className = "empty";
+      cell.textContent = "Could not load analyses: " + error.message;
+      return;
+    }
+
+    if (!analyses || !analyses.length) {
       const row = historyBody.insertRow();
       const cell = row.insertCell();
       cell.colSpan = 8;
@@ -549,23 +566,23 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    analyses.forEach(function (item, index) {
-
+    analyses.forEach(item => {
       const row = historyBody.insertRow();
 
       const values = [
         item.market,
         item.direction,
         item.timeframe,
-        item.entry || "-",
-        item.stopLoss || "-",
-        item.takeProfit || "-",
-        item.date
+        item.entry_price ?? "—",
+        item.stop_loss ?? "—",
+        item.take_profit ?? "—",
+        item.created_at
+          ? new Date(item.created_at).toLocaleString()
+          : "—"
       ];
 
-      values.forEach(function (value) {
-        const cell = row.insertCell();
-        cell.textContent = value || "-";
+      values.forEach(value => {
+        row.insertCell().textContent = String(value ?? "—");
       });
 
       const actionCell = row.insertCell();
@@ -574,63 +591,85 @@ document.addEventListener("DOMContentLoaded", function () {
       deleteButton.className = "btn btn-danger";
       deleteButton.textContent = "Delete";
 
-      deleteButton.addEventListener("click", function () {
+      deleteButton.addEventListener("click", async () => {
+        deleteButton.disabled = true;
 
-        const current = getAnalyses();
-        current.splice(index, 1);
+        const { error } = await db
+          .from("trade_analyses")
+          .delete()
+          .eq("id", item.id)
+          .eq("user_id", currentUser.id);
 
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
-        renderAnalyses();
+        if (error) {
+          saveStatus.textContent = "Delete failed: " + error.message;
+          saveStatus.style.color = "#ef4444";
+          deleteButton.disabled = false;
+          return;
+        }
+
+        saveStatus.textContent = "Analysis deleted.";
+        saveStatus.style.color = "#22c55e";
+        await renderAnalyses();
       });
 
       actionCell.appendChild(deleteButton);
     });
   }
 
-  saveButton.addEventListener("click", function () {
+  saveButton.addEventListener("click", async () => {
+    const numberValue = id => {
+      const value = document.getElementById(id).value.trim();
+      return value === "" ? null : Number(value);
+    };
 
     const analysis = {
+      user_id: currentUser.id,
       market: document.getElementById("analysisMarket").value,
       direction: document.getElementById("tradeDirection").value,
       timeframe: document.getElementById("analysisTimeframe").value,
-      entry: document.getElementById("entryPrice").value,
-      stopLoss: document.getElementById("stopLoss").value,
-      takeProfit: document.getElementById("takeProfit").value,
-      notes: document.getElementById("analysisNotes").value,
-      date: new Date().toLocaleString()
+      entry_price: numberValue("entryPrice"),
+      stop_loss: numberValue("stopLoss"),
+      take_profit: numberValue("takeProfit"),
+      notes: document.getElementById("analysisNotes").value.trim()
     };
 
-    try {
-      const analyses = getAnalyses();
-      analyses.unshift(analysis);
-
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(analyses.slice(0, 100))
-      );
-
-      saveStatus.textContent = "Analysis saved successfully.";
-      saveStatus.style.color = "#22c55e";
-
-      renderAnalyses();
-
-    } catch (error) {
-      saveStatus.textContent = "Unable to save analysis in this browser.";
-      saveStatus.style.color = "#ef4444";
+    for (const field of ["entry_price", "stop_loss", "take_profit"]) {
+      if (analysis[field] !== null && !Number.isFinite(analysis[field])) {
+        saveStatus.textContent = "Please enter valid prices.";
+        saveStatus.style.color = "#ef4444";
+        return;
+      }
     }
+
+    saveButton.disabled = true;
+    saveButton.textContent = "Saving...";
+
+    const { error } = await db
+      .from("trade_analyses")
+      .insert(analysis);
+
+    if (error) {
+      saveStatus.textContent = "Save failed: " + error.message;
+      saveStatus.style.color = "#ef4444";
+    } else {
+      saveStatus.textContent = "Analysis saved to your WFT account.";
+      saveStatus.style.color = "#22c55e";
+      await renderAnalyses();
+    }
+
+    saveButton.disabled = false;
+    saveButton.textContent = "Save Analysis";
   });
 
-  clearButton.addEventListener("click", function () {
-
+  clearButton.addEventListener("click", () => {
     document.getElementById("entryPrice").value = "";
     document.getElementById("stopLoss").value = "";
     document.getElementById("takeProfit").value = "";
     document.getElementById("analysisNotes").value = "";
-
     saveStatus.textContent = "";
   });
 
-  renderAnalyses();
+  await renderAnalyses();
 
 
   // =========================
