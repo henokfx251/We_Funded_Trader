@@ -377,7 +377,7 @@ tr:last-child td{border-bottom:0}
                 </tr></thead>
                 <tbody id="ordersTable">
                   <tr><td colspan="9" class="empty">Loading orders...</td></tr>
-                  
+
                 </tbody>
               </table>
             </div>
@@ -512,43 +512,8 @@ tr:last-child td{border-bottom:0}
             <strong>1-Step Evaluation:</strong> Trader 80% / Company 20%,
             consistency limit 50%, withdrawal range 2%–6%.<br>
             <strong>Instant Funding:</strong> Trader 70% / Company 30%,
-            consistency limit 30%, withdrawal range 1%–4%.<br>
-            First payout after 14 days, then every 14 days.
-            Processing: 1–3 business days. USDT TRC20 and BEP20.<br>
-            Review the MT4/MT5 account statement manually before approving a payout.
-          </div>
-
-          <!-- DAILY PROFIT VERIFICATION -->
-          <div class="panel">
-            <div class="panel-head">
-              <h3>MT4 / MT5 Daily Profit Verification</h3>
-              <button class="btn small gray" onclick="loadDailyProfitRecords()">Refresh Records</button>
-            </div>
-
-            <div class="notice">
-              Manually review the trader's MT4/MT5 statement before recording
-              verified daily profit. This panel does not automatically import broker data.
-            </div>
-
-            <div id="dailyProfitMessage" class="message"></div>
-
-            <form id="dailyProfitForm" onsubmit="saveDailyProfit(event)">
-              <div class="form-grid">
-                <div class="field full">
-                  <label>Trading Account</label>
-                  <select id="dailyProfitAccount" required>
-                    <option value="">Select trading account</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label>Profit Date</label>
-                  <input type="date" id="dailyProfitDate" required>
-                </div>
-                <div class="field">
-                  <label>Verified Daily Profit / Loss (USD)</label>
-                  <input type="number" id="dailyProfitAmount"
-                    step="0.01" required placeholder="Example: 125.50 or -25.00">
-                </div>
+            consistency limit 30%, withdrawa
+                            </div>
                 <div class="field full">
                   <label>Statement Reference / Admin Note</label>
                   <textarea id="dailyProfitNote" rows="3"
@@ -893,7 +858,7 @@ function renderOrders() {
   });
 
   if (!filtered.length) {
-  tbody.innerHTML = `<tr><td colspan="9" class="empty">No orders found.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" class="empty">No orders found.</td></tr>`;
   } else {
     tbody.innerHTML = filtered.map(order => {
       const finalPrice = Number(
@@ -926,7 +891,7 @@ function renderOrders() {
     Create Pending Account
   </button>
 ` : `<span class="muted">—</span>`}
-            
+
           </td>
         </tr>
       `;
@@ -1099,8 +1064,7 @@ async function openKycFile(path) {
     showToast("Cannot open KYC document: " + error.message, true);
     return;
   }
-
-  window.open(data.signedUrl, "_blank", "noopener");
+    window.open(data.signedUrl, "_blank", "noopener");
 }
 
 async function reviewKYC(id, decision) {
@@ -1186,6 +1150,7 @@ async function createTradingAccount(event) {
 
   } catch (error) {
     console.error("Create account error:", error);
+
     showMessage(
       "createMessage",
       error.message || "Unable to create trading account.",
@@ -1253,8 +1218,9 @@ function renderAccounts() {
       <td>${money(account.profit)}</td>
     </tr>
   `).join("");
-  }
-  /* ---------- DAILY PROFIT VERIFICATION ---------- */
+}
+
+/* ---------- DAILY PROFIT VERIFICATION ---------- */
 
 function populateDailyProfitAccounts() {
   const select = $("dailyProfitAccount");
@@ -1421,7 +1387,6 @@ async function loadPayouts() {
   renderPayouts();
   populateDailyProfitAccounts();
 
-  // Daily profit history is independent of payout loading.
   await loadDailyProfitRecords();
 
   updateOverviewStats();
@@ -1613,7 +1578,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 /* ---------- AUTH SESSION MONITOR ---------- */
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Supabase client is initialized by the first DOMContentLoaded handler.
   setTimeout(() => {
     if (!db) return;
 
