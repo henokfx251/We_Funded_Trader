@@ -524,26 +524,46 @@ hr {
   </div>
 </section>
 
+
 <!-- CHALLENGE -->
 <section class="page" id="page-challenge">
   <div class="welcome">
     <h1>Challenge Center</h1>
     <p class="muted">Track your evaluation progress and challenge status.</p>
   </div>
+
   <div class="stats-grid">
     <div class="stat-card"><span>Challenge Accounts</span><h2 id="challengeCount">0</h2></div>
     <div class="stat-card"><span>Passed</span><h2 id="challengePassed">0</h2></div>
     <div class="stat-card"><span>Failed</span><h2 id="challengeFailed">0</h2></div>
     <div class="stat-card"><span>Pending Review</span><h2 id="challengePending">0</h2></div>
   </div>
+
   <div class="panel">
-    <h3>My Challenge Accounts</h3>
-    <div id="challengeAccounts" class="empty">Loading challenge accounts...</div>
+    <h3>Submit Challenge Pass Request</h3>
+    <form id="challengeForm">
+      <label for="challengeAccounts">Select Trading Account</label>
+      <select id="challengeAccounts" required>
+        <option value="">Loading accounts...</option>
+      </select>
+      <button class="btn" type="submit">Submit Pass Request</button>
+    </form>
   </div>
+
   <div class="panel">
     <h3>Challenge Pass Requests</h3>
-    <div id="challengeRequests" class="empty">Loading requests...</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Account</th><th>Submitted</th><th>Status</th><th>Admin Note</th></tr>
+        </thead>
+        <tbody id="challengeRequests">
+          <tr><td colspan="4" class="empty">Loading requests...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
+
   <div class="info-card">
     <h3>Challenge Rules</h3>
     <p><b>1-Step Evaluation:</b> 10% profit target, 3% daily drawdown, 5% maximum drawdown, at least 5 profitable days and 0.5% minimum profit per profitable day.</p>
@@ -551,6 +571,8 @@ hr {
     <p class="muted">Challenge status and account metrics are based on data recorded in your WFT account.</p>
   </div>
 </section>
+  
+
 
 <!-- MY ACCOUNTS -->
 <section class="page" id="page-accounts">
