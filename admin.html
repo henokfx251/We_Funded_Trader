@@ -900,10 +900,13 @@ function renderOrders() {
           <td>${statusHTML(order.status)}</td>
           <td>${escapeHTML(displayDate(order.created_at))}</td>
           <td>
-            <button class="btn small green"
-              onclick="updateOrder('${escapeHTML(order.id)}','paid')">Paid</button>
-            <button class="btn small red"
-              onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
+  ${String(order.status || "").toLowerCase() === "pending" ? `
+    <button class="btn small green"
+      onclick="updateOrder('${escapeHTML(order.id)}','paid')">Paid</button>
+    <button class="btn small red"
+      onclick="updateOrder('${escapeHTML(order.id)}','rejected')">Reject</button>
+  ` : `<span class="muted">—</span>`}
+            
           </td>
         </tr>
       `;
