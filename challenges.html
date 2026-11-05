@@ -209,9 +209,7 @@ button{
   transition:.2s;
 }
 
-button:hover{
-  background:var(--gold2);
-}
+button:hover{background:var(--gold2)}
 
 .price{
   text-align:center;
@@ -235,6 +233,30 @@ button:hover{
 
 .success{color:var(--green)}
 .error{color:var(--red)}
+
+.rule-card{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:18px;
+  margin-top:14px;
+}
+
+.rule-card h3{
+  color:var(--gold2);
+  margin-top:0;
+}
+
+.rule-card p{
+  color:#cbd5e1;
+  font-size:13px;
+  line-height:1.8;
+}
+
+.rule-highlight{
+  color:var(--gold2);
+  font-weight:bold;
+}
 
 footer{
   text-align:center;
@@ -269,9 +291,8 @@ footer{
   .price{font-size:32px}
 }
 </style>
-</head>
-
-<body>
+  </head>
+  <body>
 
 <header>
   <div class="logo">WE FUNDED TRADER</div>
@@ -296,7 +317,9 @@ footer{
   <p>Use coupon code NEW50 at checkout.</p>
   <p>MT4 users receive an additional automatic 10% discount.</p>
   <p><b>NEW50 + MT4 = 60% total discount.</b></p>
-  <p class="note">NEW50 first-time customer eligibility is subject to server verification.</p>
+  <p class="note">
+    NEW50 first-time customer eligibility is subject to server verification.
+  </p>
 </section>
 
 <div class="tabs">
@@ -355,8 +378,9 @@ footer{
     </div>
 
   </div>
- </section>
- <section class="panel">
+</section>
+
+<section class="panel">
 
   <label for="coupon">Coupon Code</label>
 
@@ -376,7 +400,8 @@ footer{
   <div class="price" id="price">$10.00</div>
 
   <p class="note" id="discountNote" style="text-align:center">
-    MT4 receives an automatic 10% discount. Coupon discounts are added to the MT4 discount.
+    MT4 receives an automatic 10% discount.
+    Coupon discounts are added to the MT4 discount.
   </p>
 
   <button style="width:100%" onclick="checkout()">
@@ -387,15 +412,147 @@ footer{
 
 </section>
 
+<!-- CHALLENGE RULES -->
+
 <section class="panel">
 
-  <h3 style="color:var(--gold)">Challenge Rules</h3>
+  <h2 style="color:var(--gold)">Challenge Rules</h2>
 
-  <p class="note" id="rules">
-    1-Step Evaluation: 10% profit target, 3% static daily drawdown,
-    5% maximum drawdown, at least 5 profitable days,
-    and minimum 0.5% profit per profitable day.
+  <div class="rule-card">
+    <h3>1-Step Evaluation</h3>
+    <p>
+      Profit Target: <span class="rule-highlight">10%</span><br>
+      Daily Drawdown: <span class="rule-highlight">3% Static</span><br>
+      Maximum Drawdown: <span class="rule-highlight">5% Static</span><br>
+      Minimum Profitable Day: <span class="rule-highlight">0.5%</span><br>
+      Required Profitable Days: <span class="rule-highlight">5 Days</span>
+    </p>
+    <p>
+      The account must reach the profit target while respecting
+      all drawdown limits and the required profitable days.
+    </p>
+  </div>
+
+  <div class="rule-card">
+    <h3>Instant Funding</h3>
+    <p>
+      Evaluation Phase: <span class="rule-highlight">None</span><br>
+      Daily Drawdown: <span class="rule-highlight">None</span><br>
+      Maximum Drawdown: <span class="rule-highlight">5%</span><br>
+      Drawdown Measurement:
+      <span class="rule-highlight">Closed Positions Only</span>
+    </p>
+    <p>
+      Instant Funding accounts do not require an evaluation phase.
+      The maximum drawdown rule still applies.
+    </p>
+  </div>
+
+</section>
+
+<!-- PAYOUT CONSISTENCY RULES -->
+
+<section class="panel">
+
+  <h2 style="color:var(--gold)">
+    Funded Account Payout Consistency
+  </h2>
+
+  <p class="note">
+    Consistency is checked when reviewing a funded account's payout
+    eligibility. It is separate from the evaluation pass/fail rules.
   </p>
+
+  <div class="rule-card">
+    <h3>Consistency Formula</h3>
+
+    <p class="rule-highlight">
+      Largest Profitable Day ÷ Total Net Profit × 100
+    </p>
+
+    <p>
+      The percentage of total net profit earned on the trader's
+      largest profitable day must not exceed the account's limit.
+    </p>
+  </div>
+
+  <div class="grid">
+
+    <div class="stat">
+      <small>1-Step Funded Consistency Limit</small>
+      <strong>50%</strong>
+    </div>
+
+    <div class="stat">
+      <small>Instant Funding Consistency Limit</small>
+      <strong>30%</strong>
+    </div>
+
+  </div>
+
+  <div class="rule-card">
+    <h3>Example — $1,000 Total Net Profit</h3>
+
+    <p>
+      1-Step Funded: Largest profitable day must not exceed
+      <span class="rule-highlight">$500</span>.<br><br>
+
+      Instant Funding: Largest profitable day must not exceed
+      <span class="rule-highlight">$300</span>.
+    </p>
+  </div>
+
+  <div class="rule-card">
+    <h3>Profit Split & Withdrawal Limits</h3>
+
+    <p>
+      <b>1-Step Funded:</b><br>
+      Trader: 80% · Company: 20%<br>
+      Minimum Withdrawal: 2%<br>
+      Maximum Withdrawal: 6%
+    </p>
+
+    <p>
+      <b>Instant Funding:</b><br>
+      Trader: 70% · Company: 30%<br>
+      Minimum Withdrawal: 1%<br>
+      Maximum Withdrawal: 4%
+    </p>
+  </div>
+
+  <div class="rule-card">
+    <h3>Payout Schedule</h3>
+    <p>
+      First payout: After 14 days.<br>
+      Following payouts: Every 14 days.<br>
+      Processing time: 1–3 business days.<br>
+      Supported networks: USDT TRC20 and BEP20.
+    </p>
+  </div>
+
+</section>
+
+<!-- BROKER INFORMATION -->
+
+<section class="panel">
+
+  <h2 style="color:var(--gold)">Trading Environment</h2>
+
+  <div class="rule-card">
+    <h3>Headway — MT5 Demo</h3>
+    <p>
+      WFT currently uses the Headway Demo trading environment
+      for testing and demonstration purposes.
+    </p>
+    <p>
+      Platform: MetaTrader 5 (MT5)<br>
+      Broker Environment: Headway Demo
+    </p>
+    <p class="note">
+      Trading account data must be verified before it is used
+      for official challenge evaluation or payout decisions.
+    </p>
+  </div>
 
 </section>
 
@@ -406,8 +563,7 @@ footer{
 </footer>
 
 <script>
-
-let accountType = "evaluation";
+  let accountType = "evaluation";
 let couponApplied = false;
 
 const prices = {
@@ -440,17 +596,12 @@ function setType(type){
     document.getElementById("daily").textContent = "3%";
     document.getElementById("days").textContent = "5 Days";
 
-    document.getElementById("rules").textContent =
-      "1-Step Evaluation: 10% profit target, 3% static daily drawdown, 5% maximum drawdown, at least 5 profitable days, and minimum 0.5% profit per profitable day.";
-
   }else{
 
     document.getElementById("target").textContent = "No Evaluation";
     document.getElementById("daily").textContent = "None";
     document.getElementById("days").textContent = "No Evaluation Days";
 
-    document.getElementById("rules").textContent =
-      "Instant Funding: No evaluation phase and no daily drawdown. Maximum drawdown is 5%, measured on closed positions only.";
   }
 
   updatePrice();
@@ -484,13 +635,13 @@ function calculateDisplay(){
 
   const basePrice = prices[size];
 
-  // MT4 automatic discount is separate from coupon discount.
+  // MT4 automatic discount.
   const mt4Discount = platform === "MT4" ? 10 : 0;
 
   // Coupon discount.
   const couponDiscount = getCouponPercent();
 
-  // Add both discounts together.
+  // Existing discount calculation retained.
   const totalDiscount = mt4Discount + couponDiscount;
 
   const finalPrice = basePrice * (1 - totalDiscount / 100);
@@ -588,7 +739,8 @@ function applyCoupon(){
 
   calculateDisplay();
 }
- function checkout(){
+
+function checkout(){
 
   const size = document.getElementById("accountSize").value;
   const platform = document.getElementById("platform").value;
