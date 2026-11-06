@@ -1163,22 +1163,32 @@ async function reviewKYC(id, decision) {
     return;
   }
 
-  const { error } = await db
-    .from("kyc_submissions")
-    .update({
-      status: decision,
-      admin_note: note,
-      reviewed_at: new Date().toISOString()
-    })
-    .eq("id", id);
+  try {
+    const { data, error } = await db
+      .from("kyc_submissions")
+      .update({
+        status: decision,
+        admin_note: note || null,
+        reviewed_at: new Date().toISOString()
+      })
+      .eq("id", id)
+      .eq("status", "pending")
+      .select("id,status")
+      .maybeSingle();
 
-  if (error) {
-    showToast("KYC review failed: " + error.message);
-    return;
+    if (error) throw error;
+    if (!data) {
+      showToast("KYC was not changed. It may already have been reviewed; refreshing.");
+      await loadKYC();
+      return;
+    }
+
+    showToast("KYC " + decision + ".");
+    await loadKYC();
+  } catch (error) {
+    console.error("KYC review failed:", error);
+    showToast("KYC review failed: " + (error.message || "Unknown error"));
   }
-
-  showToast("KYC " + decision + ".");
-  await loadKYC();
 }
 
 /* ================= CREATE ACCOUNT ================= */
