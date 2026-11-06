@@ -1786,6 +1786,54 @@ async function reviewRewardFeedback(id, decision) {
     showToast("Review failed: " + error.message);
   }
 }
+  async function createRewardTradingAccount(id) {
+  const row = rewardRedemptionsData.find(item => item.id === id);
+
+  if (!row || row.trading_account_id) return;
+
+  if (row.status !== "approved" || row.activation_status !== "paid") {
+    showToast("Reward must be approved and payment verified first.");
+    return;
+  }
+
+  const platform = prompt("Enter broker platform: MT4 or MT5");
+  if (!platform) return;
+
+  const normalizedPlatform = platform.trim().toUpperCase();
+
+  if (!["MT4", "MT5"].includes(normalizedPlatform)) {
+    showToast("Platform must be MT4 or MT5.");
+    return;
+  }
+
+  const mtLogin = prompt("Enter the real Headway DEMO MT login:");
+  if (!mtLogin || !mtLogin.trim()) return;
+
+  const mtServer = prompt("Enter the exact Headway DEMO server:");
+  if (!mtServer || !mtServer.trim()) return;
+
+  if (!confirm("Create the $5,000 1-Step Challenge account using these broker details?")) return;
+
+  try {
+    const { data, error } = await db.rpc("admin_create_reward_trading_account", {
+      p_redemption_id: id,
+      p_platform: normalizedPlatform,
+      p_mt_login: mtLogin.trim(),
+      p_mt_server: mtServer.trim()
+    });
+
+    if (error) throw error;
+    if (!data || !data.success) {
+      throw new Error(data?.message || "Account creation failed.");
+    }
+
+    showToast("Reward $5K account created and linked.");
+    await loadRewardManagement();
+
+  } catch (error) {
+    showToast("Reward account creation failed: " + error.message);
+  }
+      }
 
 async function reviewRewardRedemption(id, decision) {
   if (!["approved", "rejected"].includes(decision)) return;
