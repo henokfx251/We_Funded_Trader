@@ -24,7 +24,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
 .market-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px}.market-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.market-filters button{background:#0b192a;color:var(--muted);border:1px solid var(--line);padding:7px 10px;border-radius:7px;font-size:10px}.market-filters button.active{border-color:var(--gold);color:var(--gold)}.market-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .market{background:#0b192a;border:1px solid var(--line);border-radius:9px;padding:12px;text-align:left;color:var(--text);width:100%}
 .market.selected{border-color:var(--gold);background:#172b43}.market-name{font-weight:800;font-size:13px}.market-price{color:var(--gold2);font-size:15px;font-weight:800;margin-top:7px}.market-meta{color:var(--muted);font-size:10px;margin-top:3px}.market-change{font-size:10px;color:var(--muted);margin-top:5px}.trade-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}.trade-summary .card{padding:10px}.history-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}.history-summary .card{padding:10px}.search-input{min-width:0}
-.chart-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.chart-pair-select{width:auto;min-width:128px;max-width:48%;font-weight:800;color:var(--gold2);padding:8px 10px}.chart-lock{position:absolute;inset:0;z-index:2;background:transparent;touch-action:none;overscroll-behavior:contain}.chart-wrap iframe{pointer-events:none!important;user-select:none;-webkit-user-select:none}.chart-top strong{font-size:14px}.chart-wrap{width:100%;height:540px;background:#091525;border-radius:8px;overflow:hidden}.chart-wrap svg{width:100%;height:100%;display:block}
+.chart-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.chart-pair-select{width:auto;min-width:128px;max-width:48%;font-weight:800;color:var(--gold2);padding:8px 10px}.chart-wrap iframe{pointer-events:auto!important;user-select:auto;-webkit-user-select:auto}.chart-top strong{font-size:14px}.chart-wrap{width:100%;height:540px;background:#091525;border-radius:8px;overflow:hidden}.chart-wrap svg{width:100%;height:100%;display:block}
 .trade-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.field label{display:block;color:#cbd5e1;font-size:10px;margin:10px 0 6px}
 .side-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.btn{border:0;border-radius:8px;padding:11px 14px;font-size:11px;font-weight:800}.buy{background:#15803d;color:white}.sell{background:#b91c1c;color:white}.secondary{background:#26374d;color:#e2e8f0}.close-btn{background:#26374d;color:#fff;padding:7px 10px;border-radius:7px;border:0;font-size:10px}
 .notice{background:#0b192a;border:1px solid var(--line);padding:10px;border-radius:8px;color:var(--muted);font-size:11px;line-height:1.5;margin:10px 0}
@@ -36,7 +36,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
 .nav-btn{background:transparent;border:0;color:var(--muted);font-size:10px;padding:5px 2px;display:flex;flex-direction:column;align-items:center;gap:4px}.nav-btn span{font-size:17px}.nav-btn.active{color:var(--gold)}
 .loading{color:var(--muted);text-align:center;padding:22px;font-size:12px}
 @media(min-width:850px){.container{padding:22px}.tabs{display:flex;gap:7px;margin-bottom:12px}.tabs button{background:#102033;color:var(--muted);border:1px solid var(--line);padding:9px 14px;border-radius:8px;font-size:11px}.tabs button.active{color:var(--gold);border-color:var(--gold)}.bottom-nav{position:static;max-width:1250px;margin:0 auto 20px;border:1px solid var(--line);border-radius:10px;display:none}.market-list{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.view#view-chart{width:100vw;margin-left:calc(50% - 50vw)}.view#view-chart>.panel{border-left:0;border-right:0;border-radius:0;padding:14px clamp(10px,1.4vw,24px);margin-bottom:0}.chart-wrap{height:clamp(620px,76vh,980px);min-height:620px;width:100%;border-radius:0;position:relative;overflow:hidden;background:#091525}.chart-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.chart-order{position:absolute;z-index:3;left:50%;bottom:12px;transform:translateX(-50%);width:min(560px,calc(100% - 22px));margin:0;background:rgba(7,17,31,.94);border:1px solid rgba(232,184,75,.7);border-radius:14px;padding:8px;box-shadow:0 5px 24px #0009;backdrop-filter:blur(8px)}.chart-order .side-toggle{display:flex;justify-content:center;gap:9px;margin:0 0 7px}.chart-order .btn{flex:1;max-width:150px;min-height:36px;padding:7px 15px;font-size:12px;border-radius:24px}.chart-order-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.chart-order-fields label{display:block;color:#e2e8f0;font-size:10px;font-weight:700;margin:0 0 4px}.chart-order-fields input{padding:7px 9px;font-size:11px;min-height:34px}.chart-order .status{font-size:10px;margin-top:3px;min-height:12px}.chart-hint{font-size:10px;color:var(--muted);margin:7px 2px 0}.chart-top{padding:3px 2px}.chart-top strong{font-size:17px}@media(max-width:700px){.chart-wrap{height:68vh;min-height:520px;max-height:760px}.chart-order{width:calc(100% - 14px);bottom:8px;padding:7px}.chart-order .btn{min-height:34px;padding:6px 10px;font-size:11px}.chart-order-fields{gap:5px}.chart-order-fields label{font-size:9px}.chart-order-fields input{padding:7px 5px;font-size:11px;min-width:0;min-height:32px}.chart-order .status{font-size:9px}.account-row{grid-template-columns:repeat(2,minmax(0,1fr))}.account-row .account-select{grid-column:1/-1}.container{padding:11px}.view#view-chart{margin-top:0}.view#view-chart>.panel{padding:12px 0}.view#view-chart .chart-top,.view#view-chart .chart-hint{margin-left:11px;margin-right:11px}.view#view-chart .chart-wrap{width:100vw}.headline h1{font-size:16px}.metric-value{font-size:15px}.topbar{padding:0 11px}.brand{font-size:14px}}
+.view#view-chart{width:100vw;margin-left:calc(50% - 50vw)}.view#view-chart>.panel{border-left:0;border-right:0;border-radius:0;padding:14px clamp(10px,1.4vw,24px);margin-bottom:0}.chart-wrap{height:clamp(620px,76vh,980px);min-height:620px;width:100%;border-radius:0;position:relative;overflow:hidden;background:#091525}.chart-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.chart-order{position:absolute;z-index:20;pointer-events:auto;left:50%;bottom:12px;transform:translateX(-50%);width:min(560px,calc(100% - 22px));margin:0;background:rgba(7,17,31,.94);border:1px solid rgba(232,184,75,.7);border-radius:14px;padding:8px;box-shadow:0 5px 24px #0009;backdrop-filter:blur(8px)}.chart-order .side-toggle{display:flex;justify-content:center;gap:9px;margin:0 0 7px}.chart-order .btn{flex:1;max-width:150px;min-height:36px;padding:7px 15px;font-size:12px;border-radius:24px}.chart-order-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.chart-order-fields label{display:block;color:#e2e8f0;font-size:10px;font-weight:700;margin:0 0 4px}.chart-order-fields input{padding:7px 9px;font-size:11px;min-height:34px}.chart-order .status{font-size:10px;margin-top:3px;min-height:12px}.chart-hint{font-size:10px;color:var(--muted);margin:7px 2px 0}.chart-top{padding:3px 2px}.chart-top strong{font-size:17px}@media(max-width:700px){.chart-wrap{height:68vh;min-height:520px;max-height:760px}.chart-order{width:calc(100% - 14px);bottom:8px;padding:7px}.chart-order .btn{min-height:34px;padding:6px 10px;font-size:11px}.chart-order-fields{gap:5px}.chart-order-fields label{font-size:9px}.chart-order-fields input{padding:7px 5px;font-size:11px;min-width:0;min-height:32px}.chart-order .status{font-size:9px}.account-row{grid-template-columns:repeat(2,minmax(0,1fr))}.account-row .account-select{grid-column:1/-1}.container{padding:11px}.view#view-chart{margin-top:0}.view#view-chart>.panel{padding:12px 0}.view#view-chart .chart-top,.view#view-chart .chart-hint{margin-left:11px;margin-right:11px}.view#view-chart .chart-wrap{width:100vw}.headline h1{font-size:16px}.metric-value{font-size:15px}.topbar{padding:0 11px}.brand{font-size:14px}}
 </style>
 </head>
 <body>
@@ -60,9 +60,9 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
   </section>
   <section class="view active" id="view-chart">
     <div class="panel">
-      <div class="chart-top"><select id="chartPairSelect" class="chart-pair-select" aria-label="Select trading pair"><option value="XAUUSD">XAUUSD</option></select><span class="sub" id="chartQuote">Bid — · Ask —</span></div>
+      <div class="chart-top"><select id="chartPairSelect" class="chart-pair-select" aria-label="Select trading pair"><option value="XAUUSD">XAUUSD</option></select></div>
       <div class="chart-wrap" id="chartWrap"><div class="loading">Loading live market chart…</div>
-      <div class="chart-lock" aria-hidden="true"></div><div class="chart-order" id="chartOrder">
+      <div class="chart-order" id="chartOrder">
         <div class="side-toggle"><button class="btn buy" id="chartBuy">BUY</button><button class="btn sell" id="chartSell">SELL</button></div>
         <div class="chart-order-fields">
           <div><label for="chartVolume">Lots</label><input id="chartVolume" type="number" min="0.01" max="10" step="0.01" value="0.10"></div>
@@ -72,7 +72,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
         <div class="status" id="chartTradeStatus"></div>
       </div>
       </div>
-      <div class="chart-hint">Quick trade · SL/TP can be set before placing an order. Chart timeframe is fixed at 15 minutes.</div>
+      
     </div>
   </section>
   <section class="view" id="view-trade">
@@ -151,13 +151,12 @@ function tvSymbol(symbol){
 function drawChart(){
  const m=quote(selectedSymbol);
  if($("chartPairSelect"))$("chartPairSelect").value=selectedSymbol;
- $("chartQuote").textContent=m?"WFT quote "+fmt(m.bid,m.digits)+" / "+fmt(m.ask,m.digits):"";
  const interval="15";
  const params=new URLSearchParams({symbol:tvSymbol(selectedSymbol),interval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"091525",enable_publishing:"false",hide_top_toolbar:"true",hide_legend:"true",saveimage:"false",studies:"[]",withdateranges:"false",hide_side_toolbar:"true",allow_symbol_change:"false",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
  const embedKey=selectedSymbol+"|15m";
  if(embedKey===chartEmbedKey)return;
  chartEmbedKey=embedKey;
- const orderPanel=$("chartOrder");$("chartWrap").innerHTML='<iframe title="Live TradingView '+esc(selectedSymbol)+' chart" src="https://www.tradingview.com/widgetembed/?'+params.toString()+'" loading="eager" allowfullscreen></iframe>';const lock=document.createElement("div");lock.className="chart-lock";lock.setAttribute("aria-hidden","true");$("chartWrap").appendChild(lock);$("chartWrap").appendChild(orderPanel);
+ const orderPanel=$("chartOrder");$("chartWrap").innerHTML='<iframe title="Live TradingView '+esc(selectedSymbol)+' chart" src="https://www.tradingview.com/widgetembed/?'+params.toString()+'" loading="eager" allowfullscreen></iframe>';$("chartWrap").appendChild(orderPanel);
 }
 function renderPositions(){
  const body=$("positionsBody"),items=state?.positions||[];$("positionCount").textContent=items.length+" positions";body.innerHTML="";
@@ -209,10 +208,10 @@ async function placeOrder(side,fromChart=false){
  if(!selectedAccount){$("tradeStatus").textContent="Select an active account first.";return;}
  const volume=Number(fromChart?$("chartVolume").value:$("volume").value),sl=(fromChart?$("chartSL").value:$("stopLoss").value).trim(),tp=(fromChart?$("chartTP").value:$("takeProfit").value).trim();
  if(!Number.isFinite(volume)||volume<0.01||volume>10){$("tradeStatus").textContent="Lot size must be 0.01–10.";if(fromChart)$("chartTradeStatus").textContent="Lot size must be 0.01–10.";return;}
- $("buyButton").disabled=$("sellButton").disabled=true;
+ $("buyButton").disabled=$("sellButton").disabled=$("chartBuy").disabled=$("chartSell").disabled=true;
  try{await callEngine("open",{symbol:fromChart?selectedSymbol:$("tradeSymbol").value,side,volume,stop_loss:sl===""?null:Number(sl),take_profit:tp===""?null:Number(tp)});$("tradeStatus").textContent=side+" order opened successfully in your WFT account.";$("chartTradeStatus").textContent=fromChart?side+" order opened successfully in your WFT account.":$("chartTradeStatus").textContent;}
  catch(e){$("tradeStatus").textContent=e.message;if(fromChart)$("chartTradeStatus").textContent=e.message;}
- finally{$("buyButton").disabled=$("sellButton").disabled=false;}
+ finally{$("buyButton").disabled=$("sellButton").disabled=$("chartBuy").disabled=$("chartSell").disabled=false;}
 }
 async function closePosition(id,button){
  button.disabled=true;
