@@ -1022,18 +1022,22 @@ async function updateOrderStatus(id, status) {
     ? 'Confirm payment verification and approve this order?'
     : 'Reject this customer order?';
   if (!confirm(promptText)) return;
-  const { data, error } = await db.from('orders')
-    .update({ status })
-    .eq('id', id).eq('status', 'pending')
-    .select('id,status').maybeSingle();
-  if (error) { showToast('Order update failed: ' + error.message); return; }
-  if (!data) {
-    showToast('Order was not changed. It may already have been reviewed; refreshing.');
+  try {
+    const { data, error } = await db.functions.invoke('admin-update-order', {
+      body: { order_id: String(id), decision: status }
+    });
+    if (error) throw error;
+    if (!data || data.success !== true) {
+      throw new Error(data?.error || data?.message || 'Order review was not completed.');
+    }
+    showToast(status === 'paid'
+      ? 'Payment approved. Order marked as PAID.'
+      : 'Order rejected.');
     await loadOrders();
-    return;
+  } catch (error) {
+    console.error('Order review failed:', error);
+    showToast('Order update failed: ' + (error.message || 'Unknown error'));
   }
-  showToast(status === 'paid' ? 'Payment approved. Order marked as PAID.' : 'Order rejected.');
-  await loadOrders();
 }
 function updateOverviewStats() {
   if ($("totalOrders")) $("totalOrders").textContent = ordersData.length;
