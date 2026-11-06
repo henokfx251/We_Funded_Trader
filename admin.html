@@ -977,6 +977,7 @@ async function updateOrderStatus(id, status) {
       ? 'Payment approved. Trading account created automatically.'
       : 'Order rejected.');
     await loadOrders();
+    if (status === 'paid') await loadTradingAccounts();
   } catch (error) {
     console.error('Order review failed:', error);
     showToast('Order update failed: ' + (error.message || 'Unknown error'));
