@@ -492,7 +492,44 @@ tr:last-child td{border-bottom:0}
             </div>
             <button class="btn" onclick="loadTradingAccounts()">Refresh Accounts</button>
           </div>
+          <div class="panel">
+  <div class="panel-head">
+    <h3>MT4 / MT5 Bridge Control</h3>
+  </div>
 
+  <div class="notice">
+    Select a trading account and generate a secure bridge token
+    for its MT4 or MT5 Demo terminal.
+  </div>
+
+  <div class="form-grid">
+    <div class="field full">
+      <label>Select Trading Account</label>
+      <select id="mtBridgeAccountSelect">
+        <option value="">Select account</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button class="btn gold" onclick="generateMtBridgeToken()">
+      Generate Bridge Token
+    </button>
+    <button class="btn red" onclick="revokeMtBridgeToken()">
+      Revoke Token
+    </button>
+  </div>
+
+  <div id="mtBridgeMessage" class="message"></div>
+
+  <div class="field">
+    <label>Generated Token — Copy and Save Securely</label>
+    <textarea id="mtBridgeTokenOutput"
+      rows="3"
+      readonly
+      placeholder="Token will appear here once generated"></textarea>
+  </div>
+          </div>
           <div class="panel">
             <div class="panel-head">
               <h3>All Trading Accounts</h3>
