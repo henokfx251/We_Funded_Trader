@@ -78,9 +78,10 @@
         <div id="referralNote" class="referral-note" hidden></div>
         <button class="submit" id="registerButton" type="submit">CREATE WFT ACCOUNT</button>
         <p class="message" id="message" role="status" aria-live="polite"></p>
+        <button class="toggle-password" id="resendConfirmation" type="button" hidden>RESEND CONFIRMATION EMAIL</button>
       </form>
 
-      <div class="switch">Already have an account? <a href="Login.html">Log in</a></div>
+      <div class="switch">Already have an account? <a href="Login.html">Log in</a> · <a href="forgot-password.html">Forgot Password?</a></div>
     </section>
 
     <a class="back" href="index.html">← Back to Homepage</a>
@@ -95,6 +96,9 @@
     const message = document.getElementById("message");
     const referralCode = (new URLSearchParams(window.location.search).get("ref") || "").trim().toUpperCase();
     const referralNote = document.getElementById("referralNote");
+    const resendButton = document.getElementById("resendConfirmation");
+    let pendingConfirmationEmail = "";
+    const confirmationRedirect = new URL("Login.html", window.location.href).href;
 
     if (referralCode) {
       referralNote.hidden = false;
@@ -138,6 +142,7 @@
           email,
           password,
           options: {
+            emailRedirectTo: confirmationRedirect,
             data: {
               full_name: name,
               referral_code: referralCode
@@ -145,7 +150,18 @@
           }
         });
 
-        if (error) throw error;
+        if (error) {
+          if (error.code === "user_already_exists" || /already registered|user already exists/i.test(error.message || "")) {
+            showMessage("This email is already registered. Please log in or use Forgot Password.", "error");
+            return;
+          }
+          throw error;
+        }
+
+        if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+          showMessage("This email may already be registered. Please log in or use Forgot Password if you already have an account.", "error");
+          return;
+        }
 
         if (data.session) {
           showMessage("Account created successfully. Opening your dashboard...", "success");
@@ -153,7 +169,9 @@
           return;
         }
 
-        showMessage("Account created. Please check your email and confirm your email address, then log in.", "success");
+        pendingConfirmationEmail = email;
+        resendButton.hidden = false;
+        showMessage("Account created. If the confirmation email does not arrive, check Spam or use Resend confirmation email.", "success");
         form.reset();
         referralNote.hidden = !referralCode;
         if (referralCode) referralNote.textContent = "Referral code applied: " + referralCode;
@@ -162,6 +180,24 @@
       } finally {
         button.disabled = false;
         button.textContent = "CREATE WFT ACCOUNT";
+      }
+    });
+
+    resendButton.addEventListener("click", async () => {
+      if (!pendingConfirmationEmail) return;
+      resendButton.disabled = true;
+      try {
+        const { error } = await supabase.auth.resend({
+          type: "signup",
+          email: pendingConfirmationEmail,
+          options: { emailRedirectTo: confirmationRedirect }
+        });
+        if (error) throw error;
+        showMessage("Confirmation request sent. Check Inbox and Spam.", "success");
+      } catch (error) {
+        showMessage(error.message || "Could not resend confirmation email. Please try again later.", "error");
+      } finally {
+        resendButton.disabled = false;
       }
     });
   </script>

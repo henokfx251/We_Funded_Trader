@@ -61,6 +61,7 @@
             <button class="toggle-password" type="button" data-toggle="password" aria-label="Show password">SHOW</button>
           </div>
         </div>
+        <div class="form-row"><a href="forgot-password.html">Forgot Password?</a></div>
         <button class="submit" id="loginButton" type="submit">LOG IN TO ACCOUNT</button>
         <p class="message" id="loginMessage" role="status" aria-live="polite"></p>
       </form>
@@ -109,7 +110,15 @@
 
       try {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        if (error) {
+          if (error.message && /email not confirmed/i.test(error.message)) {
+            throw new Error("Please confirm your email address before logging in. Check your Inbox and Spam folder.");
+          }
+          if (error.message && /invalid login credentials/i.test(error.message)) {
+            throw new Error("Email or password is incorrect. If you forgot your password, use the Forgot Password link.");
+          }
+          throw error;
+        }
         if (!data.session) throw new Error("Your login session could not be created. Please try again.");
 
         showMessage("Login successful. Opening your dashboard...", "success");
