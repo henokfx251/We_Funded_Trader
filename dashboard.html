@@ -1363,10 +1363,11 @@ async function loadAccounts() {
       <td>${money(a.balance)}</td>
       <td>${money(a.equity)}</td>
       <td>${statusBadge(a.status)}</td>
+      <td>${String(a.status).toLowerCase() === "failed" ? safe(a.failure_reason || "Failure reason unavailable — contact WFT support.") : "—"}</td>
     </tr>
   `).join("");
 
-  setHTML("accountsList", rows || emptyRow(8, "No trading accounts found."));
+  setHTML("accountsList", rows || emptyRow(9, "No trading accounts found."));
   setHTML("overviewAccounts", accounts.slice(0,5).map(a => `
     <tr><td>${safe(a.account_name || String(a.id).slice(0,8))}</td>
     <td>${money(a.balance)}</td><td>${money(a.profit)}</td>
