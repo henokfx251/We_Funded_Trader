@@ -78,7 +78,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
   <section class="view" id="view-trade">
     <div class="trade-summary"><div class="card"><div class="metric-label">Balance</div><div class="metric-value" id="tradeBalance">$—</div></div><div class="card"><div class="metric-label">Equity</div><div class="metric-value" id="tradeEquity">$—</div></div><div class="card"><div class="metric-label">Open Trades</div><div class="metric-value" id="tradeOpenCount">0</div></div></div>
     <div class="panel">
-      <h2 class="panel-title">Place Order <span class="pill">WFT Account</span></h2>
+      <h2 class="panel-title">Place Order</h2>
       <div class="field"><label for="tradeSymbol">Trading Pair</label><select id="tradeSymbol"></select></div>
       <div class="field"><label for="volume">Volume (Lots)</label><input id="volume" type="number" min="0.01" max="10" step="0.01" value="0.10"></div>
       <div class="trade-grid">
@@ -94,7 +94,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
     <div class="history-summary"><div class="card"><div class="metric-label">Current Balance</div><div class="metric-value" id="historyBalance">$—</div></div><div class="card"><div class="metric-label">Total Profit</div><div class="metric-value" id="historyProfit">$0.00</div></div><div class="card"><div class="metric-label">Total Loss</div><div class="metric-value" id="historyLoss">$0.00</div></div></div><div class="panel"><h2 class="panel-title">Closed Trade History</h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Close</th><th>Profit/Loss</th><th>Balance</th><th>Closed</th></tr></thead><tbody id="historyBody"><tr><td colspan="8" class="empty">No closed trades</td></tr></tbody></table></div></div>
   </section>
   <section class="view" id="view-settings">
-    <div class="panel"><h2 class="panel-title">Account & Risk Settings</h2><div class="rule-grid" id="riskRules"></div><div class="notice">TradingView provides the live market chart. Orders, balances, risk checks and trade history are processed and recorded by the WFT account engine.</div><div class="status" id="accountStatus"></div></div>
+    <div class="panel"><h2 class="panel-title">Account & Risk Settings</h2><div class="rule-grid" id="riskRules"></div><div class="status" id="accountStatus"></div></div>
   </section>
   <div class="loading" id="globalStatus">Connecting to WFT Trading Engine…</div>
 </main>
@@ -128,7 +128,7 @@ document.querySelectorAll("[data-market-filter]").forEach(b=>b.addEventListener(
 function quote(symbol){return state?.markets?.find(m=>m.symbol===symbol)}
 function marketType(symbol){return symbol.startsWith("X")?"METALS":symbol.startsWith("BTC")?"CRYPTO":"FOREX"}
 function renderMarkets(){
- const list=$("marketList"),select=$("tradeSymbol"),all=state?.markets||[],query=$("pairSearch")?.value.trim().toUpperCase()||"";
+ const list=$("marketList"),select=$("tradeSymbol"),all=(Array.isArray(state?.markets)&&state.markets.length?state.markets:[{symbol:"AUDUSD",name:"Australian Dollar / US Dollar",price:0.65189,bid:0.65183,ask:0.65195,digits:5},{symbol:"EURUSD",name:"Euro / US Dollar",price:1.08556,bid:1.08550,ask:1.08562,digits:5},{symbol:"GBPUSD",name:"Pound / US Dollar",price:1.27468,bid:1.274605,ask:1.274755,digits:5},{symbol:"NZDUSD",name:"New Zealand Dollar / US Dollar",price:0.57126,bid:0.57120,ask:0.57132,digits:5},{symbol:"USDCAD",name:"US Dollar / Canadian Dollar",price:1.40238,bid:1.402305,ask:1.402455,digits:5},{symbol:"USDCHF",name:"US Dollar / Swiss Franc",price:0.80485,bid:0.80479,ask:0.80491,digits:5},{symbol:"USDJPY",name:"US Dollar / Japanese Yen",price:153.308,bid:153.302,ask:153.314,digits:3},{symbol:"XAUUSD",name:"Gold / US Dollar",price:2651.15,bid:2651,ask:2651.3,digits:2},{symbol:"XAGUSD",name:"Silver / US Dollar",price:31.633,bid:31.6155,ask:31.6505,digits:3},{symbol:"XPTUSD",name:"Platinum / US Dollar",price:994.69,bid:994.09,ask:995.29,digits:2},{symbol:"XPDUSD",name:"Palladium / US Dollar",price:1012.35,bid:1011.6,ask:1013.1,digits:2},{symbol:"BTCUSD",name:"Bitcoin / US Dollar",price:67871.61,bid:67865.61,ask:67877.61,digits:2}]),query=$("pairSearch")?.value.trim().toUpperCase()||"";
  list.innerHTML="";select.innerHTML="";
  const sorted=[...all].sort((a,b)=>a.symbol.localeCompare(b.symbol));
  const chartSelect=$("chartPairSelect");if(chartSelect){chartSelect.innerHTML=sorted.map(m=>'<option value="'+esc(m.symbol)+'">'+esc(m.symbol)+'</option>').join("");chartSelect.value=selectedSymbol;}
@@ -152,7 +152,7 @@ function drawChart(){
  const m=quote(selectedSymbol);
  if($("chartPairSelect"))$("chartPairSelect").value=selectedSymbol;
  const interval="15";
- const params=new URLSearchParams({symbol:tvSymbol(selectedSymbol),interval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"091525",enable_publishing:"false",hide_top_toolbar:"true",hide_legend:"true",saveimage:"false",studies:"[]",withdateranges:"false",hide_side_toolbar:"true",allow_symbol_change:"false",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
+ const params=new URLSearchParams({symbol:tvSymbol(selectedSymbol),interval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"091525",enable_publishing:"false",hide_top_toolbar:"false",hide_legend:"false",saveimage:"false",studies:"[]",withdateranges:"true",hide_side_toolbar:"true",allow_symbol_change:"true",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
  const embedKey=selectedSymbol+"|15m";
  if(embedKey===chartEmbedKey)return;
  chartEmbedKey=embedKey;
