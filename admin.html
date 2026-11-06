@@ -774,8 +774,8 @@ function goPage(page, button) {
     create: "Create Trading Account",
     accounts: "Trading Accounts",
     payouts: "Payout Management",
-    "challenge-requests": "Challenge Pass Requests"
-  };
+    "challenge-requests": "Challenge Pass Requests",
+    rewards: "Rewards Management"
 
   $("topTitle").textContent = titles[page] || "Admin Dashboard";
 
@@ -875,7 +875,7 @@ async function refreshAll() {
     loadKYC(),
     loadTradingAccounts(),
     loadPayouts(),
-    loadChallengeRequests()
+        loadChallengeRequests(),
     loadRewardManagement()
   ]);
 
