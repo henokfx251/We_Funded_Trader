@@ -36,7 +36,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
 .nav-btn{background:transparent;border:0;color:var(--muted);font-size:10px;padding:5px 2px;display:flex;flex-direction:column;align-items:center;gap:4px}.nav-btn span{font-size:17px}.nav-btn.active{color:var(--gold)}
 .loading{color:var(--muted);text-align:center;padding:22px;font-size:12px}
 @media(min-width:850px){.container{padding:22px}.tabs{display:flex;gap:7px;margin-bottom:12px}.tabs button{background:#102033;color:var(--muted);border:1px solid var(--line);padding:9px 14px;border-radius:8px;font-size:11px}.tabs button.active{color:var(--gold);border-color:var(--gold)}.bottom-nav{position:static;max-width:1250px;margin:0 auto 20px;border:1px solid var(--line);border-radius:10px;display:none}.market-list{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.view#view-chart{width:100vw;margin-left:calc(50% - 50vw)}.view#view-chart>.panel{border-left:0;border-right:0;border-radius:0;padding:14px clamp(10px,1.4vw,24px);margin-bottom:0}.chart-wrap{height:clamp(620px,76vh,980px);min-height:620px;width:100%;border-radius:0;touch-action:pan-x pan-y}.chart-controls{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0 14px}.chart-controls button{background:#0b192a;color:var(--muted);border:1px solid var(--line);border-radius:9px;padding:13px 22px;min-width:58px;min-height:48px;font-size:15px;font-weight:800}.chart-controls button.active{border-color:var(--gold);color:var(--gold);background:#172b43}.chart-order{margin-top:14px;background:#0b192a;border:1px solid var(--gold);border-radius:12px;padding:14px}.chart-order .side-toggle{margin:0 0 12px;gap:10px}.chart-order .btn{padding:15px;font-size:15px;min-height:52px}.chart-order-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.chart-order-fields label{display:block;color:#e2e8f0;font-size:12px;font-weight:700;margin:0 0 7px}.chart-order-fields input{padding:13px;font-size:14px;min-height:46px}.chart-price-line{stroke-dasharray:4 4}.chart-wrap svg text{font-family:Arial,sans-serif}.chart-wrap svg [data-drag]{cursor:ns-resize;touch-action:none}.chart-hint{font-size:11px;color:var(--muted);margin-top:8px}.chart-top{padding:3px 2px}.chart-top strong{font-size:17px}@media(max-width:700px){.chart-wrap{height:68vh;min-height:520px;max-height:760px}.chart-order-fields{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.chart-order{padding:10px}.chart-order .btn{min-height:48px;padding:12px;font-size:14px}.chart-order-fields label{font-size:11px}.chart-order-fields input{padding:10px 7px;font-size:13px;min-width:0}.chart-controls{gap:7px;margin:10px 0 12px}.chart-controls button{flex:1 1 0;min-width:0;min-height:46px;padding:12px 8px;font-size:14px}.account-row{grid-template-columns:repeat(2,minmax(0,1fr))}.account-row .account-select{grid-column:1/-1}.container{padding:11px}.view#view-chart{margin-top:0}.view#view-chart>.panel{padding:12px 0}.view#view-chart .chart-top,.view#view-chart .chart-controls,.view#view-chart .chart-hint,.view#view-chart .chart-order{margin-left:11px;margin-right:11px}.view#view-chart .chart-wrap{width:100vw}.headline h1{font-size:16px}.metric-value{font-size:15px}.topbar{padding:0 11px}.brand{font-size:14px}}
+.view#view-chart{width:100vw;margin-left:calc(50% - 50vw)}.view#view-chart>.panel{border-left:0;border-right:0;border-radius:0;padding:14px clamp(10px,1.4vw,24px);margin-bottom:0}.chart-wrap{height:clamp(620px,76vh,980px);min-height:620px;width:100%;border-radius:0;position:relative;overflow:hidden;background:#091525}.chart-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.chart-order{position:absolute;z-index:3;left:50%;bottom:12px;transform:translateX(-50%);width:min(560px,calc(100% - 22px));margin:0;background:rgba(7,17,31,.94);border:1px solid rgba(232,184,75,.7);border-radius:14px;padding:8px;box-shadow:0 5px 24px #0009;backdrop-filter:blur(8px)}.chart-order .side-toggle{display:flex;justify-content:center;gap:9px;margin:0 0 7px}.chart-order .btn{flex:1;max-width:150px;min-height:36px;padding:7px 15px;font-size:12px;border-radius:24px}.chart-order-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.chart-order-fields label{display:block;color:#e2e8f0;font-size:10px;font-weight:700;margin:0 0 4px}.chart-order-fields input{padding:7px 9px;font-size:11px;min-height:34px}.chart-order .status{font-size:10px;margin-top:3px;min-height:12px}.chart-hint{font-size:10px;color:var(--muted);margin:7px 2px 0}.chart-top{padding:3px 2px}.chart-top strong{font-size:17px}@media(max-width:700px){.chart-wrap{height:68vh;min-height:520px;max-height:760px}.chart-order{width:calc(100% - 14px);bottom:8px;padding:7px}.chart-order .btn{min-height:34px;padding:6px 10px;font-size:11px}.chart-order-fields{gap:5px}.chart-order-fields label{font-size:9px}.chart-order-fields input{padding:7px 5px;font-size:11px;min-width:0;min-height:32px}.chart-order .status{font-size:9px}.account-row{grid-template-columns:repeat(2,minmax(0,1fr))}.account-row .account-select{grid-column:1/-1}.container{padding:11px}.view#view-chart{margin-top:0}.view#view-chart>.panel{padding:12px 0}.view#view-chart .chart-top,.view#view-chart .chart-hint{margin-left:11px;margin-right:11px}.view#view-chart .chart-wrap{width:100vw}.headline h1{font-size:16px}.metric-value{font-size:15px}.topbar{padding:0 11px}.brand{font-size:14px}}
 </style>
 </head>
 <body>
@@ -61,10 +61,8 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
   <section class="view active" id="view-chart">
     <div class="panel">
       <div class="chart-top"><strong id="chartSymbol">XAUUSD</strong><span class="sub" id="chartQuote">Bid — · Ask —</span></div>
-      <div class="chart-controls" id="timeframes"><button data-tf="1D">D</button><button data-tf="4H">4H</button><button data-tf="1H">1H</button><button class="active" data-tf="15m">15m</button><button data-tf="5m">5m</button><button data-tf="1m">1m</button></div>
-      <div class="chart-wrap" id="chartWrap"><div class="loading">Loading live market chart…</div></div>
-      <div class="chart-hint">Drag the chart left/right or up/down to move through price and time; pinch or scroll to zoom. BUY/SELL and SL/TP controls are directly below the full-width chart. Orders are processed by the WFT account engine.</div>
-      <div class="chart-order">
+      <div class="chart-wrap" id="chartWrap"><div class="loading">Loading live market chart…</div>
+      <div class="chart-order" id="chartOrder">
         <div class="side-toggle"><button class="btn buy" id="chartBuy">BUY</button><button class="btn sell" id="chartSell">SELL</button></div>
         <div class="chart-order-fields">
           <div><label for="chartVolume">Lots</label><input id="chartVolume" type="number" min="0.01" max="10" step="0.01" value="0.10"></div>
@@ -73,9 +71,9 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
         </div>
         <div class="status" id="chartTradeStatus"></div>
       </div>
-      
+      </div>
+      <div class="chart-hint">Quick trade · SL/TP can be set before placing an order. Chart timeframe is fixed at 15 minutes.</div>
     </div>
-    
   </section>
   <section class="view" id="view-trade">
     <div class="trade-summary"><div class="card"><div class="metric-label">Balance</div><div class="metric-value" id="tradeBalance">$—</div></div><div class="card"><div class="metric-label">Equity</div><div class="metric-value" id="tradeEquity">$—</div></div><div class="card"><div class="metric-label">Open Trades</div><div class="metric-value" id="tradeOpenCount">0</div></div></div>
@@ -116,7 +114,7 @@ const $=id=>document.getElementById(id);
 const money=n=>"$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmt=(n,d=5)=>Number(n||0).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let user=null,accounts=[],selectedAccount="",state=null,selectedSymbol="XAUUSD",activeTab="chart",refreshing=false,marketFilter="ALL",timeframe="15m",chartEmbedKey="";
+let user=null,accounts=[],selectedAccount="",state=null,selectedSymbol="XAUUSD",activeTab="chart",refreshing=false,marketFilter="ALL",chartEmbedKey="";
 function showTab(tab){
  activeTab=tab;
  $("accountOverview").style.display=tab==="trade"?"grid":"none";
@@ -153,12 +151,12 @@ function drawChart(){
  const m=quote(selectedSymbol);
  $("chartSymbol").textContent=selectedSymbol;
  $("chartQuote").textContent=m?"WFT quote "+fmt(m.bid,m.digits)+" / "+fmt(m.ask,m.digits):"";
- const interval=({"1D":"1D","4H":"240","1H":"60","15m":"15","5m":"5","1m":"1"})[timeframe]||"15";
+ const interval="15";
  const params=new URLSearchParams({symbol:tvSymbol(selectedSymbol),interval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"091525",enable_publishing:"false",hide_top_toolbar:"false",hide_legend:"false",saveimage:"false",studies:"[]",withdateranges:"true",hide_side_toolbar:"false",allow_symbol_change:"false",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
- const embedKey=selectedSymbol+"|"+timeframe;
+ const embedKey=selectedSymbol+"|15m";
  if(embedKey===chartEmbedKey)return;
  chartEmbedKey=embedKey;
- $("chartWrap").innerHTML='<iframe title="Live TradingView '+esc(selectedSymbol)+' chart" src="https://www.tradingview.com/widgetembed/?'+params.toString()+'" style="width:100%;height:100%;border:0" loading="eager" allowfullscreen></iframe>';
+ const orderPanel=$("chartOrder");$("chartWrap").innerHTML='<iframe title="Live TradingView '+esc(selectedSymbol)+' chart" src="https://www.tradingview.com/widgetembed/?'+params.toString()+'" loading="eager" allowfullscreen></iframe>';$("chartWrap").appendChild(orderPanel);
 }
 function renderPositions(){
  const body=$("positionsBody"),items=state?.positions||[];$("positionCount").textContent=items.length+" positions";body.innerHTML="";
@@ -247,7 +245,6 @@ async function init(){
  $("buyButton").addEventListener("click",()=>placeOrder("BUY"));$("sellButton").addEventListener("click",()=>placeOrder("SELL"));
  $("chartBuy").addEventListener("click",()=>placeOrder("BUY",true));$("chartSell").addEventListener("click",()=>placeOrder("SELL",true));
  $("closeAllButton").addEventListener("click",closeAllPositions);
- document.querySelectorAll("[data-tf]").forEach(b=>b.addEventListener("click",()=>{timeframe=b.dataset.tf;document.querySelectorAll("[data-tf]").forEach(x=>x.classList.toggle("active",x===b));drawChart();}));
  await refreshState();
  setInterval(()=>{if(document.visibilityState==="visible")refreshState();},6000);
 }
