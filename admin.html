@@ -497,11 +497,11 @@ tr:last-child td{border-bottom:0}
                   <tr>
                     <th>User ID</th><th>Account</th><th>Size</th>
                     <th>Type</th><th>Phase</th><th>Platform</th>
-                    <th>Status</th><th>Profit</th>
+                    <th>Status</th><th>Profit</th><th>Failure Reason</th>
                   </tr>
                 </thead>
                 <tbody id="accountsTable">
-                  <tr><td colspan="8" class="empty">Loading accounts...</td></tr>
+                  <tr><td colspan="9" class="empty">Loading accounts...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1304,7 +1304,7 @@ function renderAccounts() {
   );
 
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">No accounts found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="empty">No accounts found.</td></tr>';
     return;
   }
 
@@ -1318,6 +1318,7 @@ function renderAccounts() {
       <td>WFT TradingView</td>
       <td>${statusBadge(account.status)}</td>
       <td>${money(account.profit)}</td>
+      <td>${account.status === "Failed" ? escapeHTML(account.failure_reason || "Failure reason unavailable — contact WFT support.") : "—"}</td>
     </tr>
   `).join("");
 }
