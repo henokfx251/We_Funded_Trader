@@ -1789,7 +1789,7 @@ async function reviewChallengeRequest(id, decision) {
         : "Challenge request rejected."
     );
     await loadChallengeRequests();
-    await loadAccounts();
+    await loadTradingAccounts();
   } catch (error) {
     console.error("Challenge review:", error);
     showToast("Review failed: " + error.message);
