@@ -157,7 +157,7 @@ function drawChart(){
  const embedKey=selectedSymbol+"|15m";
  if(embedKey===chartEmbedKey)return;
  chartEmbedKey=embedKey;
- const orderPanel=$("chartOrder");$("chartWrap").innerHTML='<iframe title="Live TradingView '+esc(selectedSymbol)+' chart" src="https://www.tradingview.com/widgetembed/?'+params.toString()+'" loading="eager" allowfullscreen></iframe>';$("chartWrap").appendChild(orderPanel);
+ const orderPanel=$("chartOrder");$("chartWrap").innerHTML='<iframe title="Live TradingView '+esc(selectedSymbol)+' chart" src="https://www.tradingview.com/widgetembed/?'+params.toString()+'" loading="eager" allowfullscreen></iframe>';const lock=document.createElement("div");lock.className="chart-lock";lock.setAttribute("aria-hidden","true");$("chartWrap").appendChild(lock);$("chartWrap").appendChild(orderPanel);
 }
 function renderPositions(){
  const body=$("positionsBody"),items=state?.positions||[];$("positionCount").textContent=items.length+" positions";body.innerHTML="";
