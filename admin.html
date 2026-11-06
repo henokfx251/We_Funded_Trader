@@ -1758,51 +1758,38 @@ async function reviewChallengeRequest(id, decision) {
 
   if (decision === "rejected") {
     note = prompt("Enter the rejection reason:");
-
     if (note === null) return;
-
     note = note.trim();
-
     if (!note) {
       showToast("Rejection reason is required.");
       return;
     }
   } else {
     if (!confirm(
-      "Approve this request? The certificate will be generated automatically."
+      "Approve only after verifying the passed challenge, five profitable days, 10% target, and funded MT4/MT5 login. The account will be activated as funded and a certificate will be generated."
     )) return;
-
     note = prompt("Optional admin note:") || "";
   }
 
   try {
-    const { data, error } = await db
-      .from("challenge_pass_requests")
-      .update({
-        status: decision,
-        admin_note: note,
-        reviewed_at: new Date().toISOString()
-      })
-      .eq("id", id)
-      .eq("status", "pending")
-      .select("id");
+    const { data, error } = await db.rpc("admin_review_wft_challenge_pass", {
+      p_request_id: id,
+      p_decision: decision,
+      p_admin_note: note
+    });
 
     if (error) throw error;
-
-    if (!data || !data.length) {
-      showToast("Request already reviewed or permission denied.");
-      await loadChallengeRequests();
-      return;
+    if (!data || data.success !== true) {
+      throw new Error(data?.message || "Challenge review was not completed.");
     }
 
     showToast(
       decision === "approved"
-        ? "Approved! Certificate generated automatically."
+        ? "Approved. Funded account activated and certificate generated."
         : "Challenge request rejected."
     );
-
     await loadChallengeRequests();
-
+    await loadTradingAccounts();
   } catch (error) {
     console.error("Challenge review:", error);
     showToast("Review failed: " + error.message);
