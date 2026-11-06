@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07111f">
-<title>WFT | Virtual Trading Terminal</title>
+<title>WFT | TradingView Terminal</title>
 <style>
 :root{--bg:#07111f;--panel:#101d30;--panel2:#14243a;--line:#26374d;--gold:#e8b84b;--gold2:#f5d27c;--text:#f4f7fb;--muted:#94a3b8;--green:#22c55e;--red:#ef4444}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px Arial,Helvetica,sans-serif;padding-bottom:76px}
@@ -41,7 +41,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
 </head>
 <body>
 <header class="topbar">
-  <div class="brand">WE FUNDED TRADER<small>VIRTUAL TRADING TERMINAL</small></div>
+  <div class="brand">WE FUNDED TRADER<small>TRADINGVIEW TERMINAL</small></div>
   <div class="top-actions"><a class="back" href="index.html">Home</a><a class="back" href="challenges.html">Challenges</a><a class="back" href="dashboard.html">Dashboard</a></div>
 </header>
 <main class="container">
@@ -63,7 +63,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
       <div class="chart-top"><strong id="chartSymbol">XAUUSD</strong><span class="sub" id="chartQuote">Bid — · Ask —</span></div>
       <div class="chart-controls" id="timeframes"><button data-tf="1D">D</button><button data-tf="4H">4H</button><button data-tf="1H">1H</button><button class="active" data-tf="15m">15m</button><button data-tf="5m">5m</button><button data-tf="1m">1m</button></div>
       <div class="chart-wrap" id="chartWrap"><div class="loading">Loading live market chart…</div></div>
-      <div class="chart-hint">Live TradingView market chart for analysis. WFT BUY/SELL orders still use the separate virtual execution engine; they do not execute at TradingView or a broker.</div>
+      <div class="chart-hint">Live TradingView chart integrated with WFT trading tools. Orders are processed by the WFT account engine.</div>
       <div class="chart-order">
         <div class="side-toggle"><button class="btn buy" id="chartBuy">BUY</button><button class="btn sell" id="chartSell">SELL</button></div>
         <div class="chart-order-fields">
@@ -80,7 +80,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
   <section class="view" id="view-trade">
     <div class="trade-summary"><div class="card"><div class="metric-label">Balance</div><div class="metric-value" id="tradeBalance">$—</div></div><div class="card"><div class="metric-label">Equity</div><div class="metric-value" id="tradeEquity">$—</div></div><div class="card"><div class="metric-label">Open Trades</div><div class="metric-value" id="tradeOpenCount">0</div></div></div>
     <div class="panel">
-      <h2 class="panel-title">Place Virtual Order <span class="pill">Virtual account</span></h2>
+      <h2 class="panel-title">Place Order <span class="pill">WFT Account</span></h2>
       <div class="field"><label for="tradeSymbol">Trading Pair</label><select id="tradeSymbol"></select></div>
       <div class="field"><label for="volume">Volume (Lots)</label><input id="volume" type="number" min="0.01" max="10" step="0.01" value="0.10"></div>
       <div class="trade-grid">
@@ -96,9 +96,9 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
     <div class="history-summary"><div class="card"><div class="metric-label">Current Balance</div><div class="metric-value" id="historyBalance">$—</div></div><div class="card"><div class="metric-label">Total Profit</div><div class="metric-value" id="historyProfit">$0.00</div></div><div class="card"><div class="metric-label">Total Loss</div><div class="metric-value" id="historyLoss">$0.00</div></div></div><div class="panel"><h2 class="panel-title">Closed Trade History</h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Close</th><th>Profit/Loss</th><th>Balance</th><th>Closed</th></tr></thead><tbody id="historyBody"><tr><td colspan="8" class="empty">No closed trades</td></tr></tbody></table></div></div>
   </section>
   <section class="view" id="view-settings">
-    <div class="panel"><h2 class="panel-title">Account & Risk Settings</h2><div class="rule-grid" id="riskRules"></div><div class="notice">All orders and prices in this terminal are virtual. Challenge and Instant account results are recorded in the WFT database. This is not a real-money broker terminal.</div><div class="status" id="accountStatus"></div></div>
+    <div class="panel"><h2 class="panel-title">Account & Risk Settings</h2><div class="rule-grid" id="riskRules"></div><div class="notice">TradingView provides the live market chart. Orders, balances, risk checks and trade history are processed and recorded by the WFT account engine.</div><div class="status" id="accountStatus"></div></div>
   </section>
-  <div class="loading" id="globalStatus">Connecting to WFT Virtual Engine…</div>
+  <div class="loading" id="globalStatus">Connecting to WFT Trading Engine…</div>
 </main>
 <nav class="bottom-nav" id="bottomNav">
   <button class="nav-btn" data-tab="pairs"><span>☷</span>Pairs</button>
@@ -152,7 +152,7 @@ function tvSymbol(symbol){
 function drawChart(){
  const m=quote(selectedSymbol);
  $("chartSymbol").textContent=selectedSymbol;
- $("chartQuote").textContent=m?"WFT virtual quote "+fmt(m.bid,m.digits)+" / "+fmt(m.ask,m.digits):"";
+ $("chartQuote").textContent=m?"WFT quote "+fmt(m.bid,m.digits)+" / "+fmt(m.ask,m.digits):"";
  const interval=({"1D":"1D","4H":"240","1H":"60","15m":"15","5m":"5","1m":"1"})[timeframe]||"15";
  const params=new URLSearchParams({symbol:tvSymbol(selectedSymbol),interval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"091525",enable_publishing:"false",hide_top_toolbar:"false",hide_legend:"false",saveimage:"false",studies:"[]",withdateranges:"true",hide_side_toolbar:"false",allow_symbol_change:"false",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
  const embedKey=selectedSymbol+"|"+timeframe;
@@ -202,7 +202,7 @@ async function callEngine(action,extra={}){
 }
 async function refreshState(){
  if(!selectedAccount||refreshing)return;refreshing=true;
- try{await callEngine("state");$("globalStatus").textContent="Virtual engine connected · Last update "+new Date().toLocaleTimeString();}
+ try{await callEngine("state");$("globalStatus").textContent="WFT trading engine connected · Last update "+new Date().toLocaleTimeString();}
  catch(e){$("globalStatus").textContent="Engine error: "+e.message;}
  finally{refreshing=false;}
 }
@@ -211,7 +211,7 @@ async function placeOrder(side,fromChart=false){
  const volume=Number(fromChart?$("chartVolume").value:$("volume").value),sl=(fromChart?$("chartSL").value:$("stopLoss").value).trim(),tp=(fromChart?$("chartTP").value:$("takeProfit").value).trim();
  if(!Number.isFinite(volume)||volume<0.01||volume>10){$("tradeStatus").textContent="Lot size must be 0.01–10.";if(fromChart)$("chartTradeStatus").textContent="Lot size must be 0.01–10.";return;}
  $("buyButton").disabled=$("sellButton").disabled=true;
- try{await callEngine("open",{symbol:fromChart?selectedSymbol:$("tradeSymbol").value,side,volume,stop_loss:sl===""?null:Number(sl),take_profit:tp===""?null:Number(tp)});$("tradeStatus").textContent=side+" order opened successfully in the WFT virtual account.";$("chartTradeStatus").textContent=fromChart?side+" order opened successfully.":$("chartTradeStatus").textContent;}
+ try{await callEngine("open",{symbol:fromChart?selectedSymbol:$("tradeSymbol").value,side,volume,stop_loss:sl===""?null:Number(sl),take_profit:tp===""?null:Number(tp)});$("tradeStatus").textContent=side+" order opened successfully in your WFT account.";$("chartTradeStatus").textContent=fromChart?side+" order opened successfully in your WFT account.":$("chartTradeStatus").textContent;}
  catch(e){$("tradeStatus").textContent=e.message;if(fromChart)$("chartTradeStatus").textContent=e.message;}
  finally{$("buyButton").disabled=$("sellButton").disabled=false;}
 }
