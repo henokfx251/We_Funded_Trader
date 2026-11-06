@@ -721,7 +721,7 @@ hr {
       <table>
         <thead>
           <tr>
-            <th>Order</th><th>Account Size</th><th>Type</th><th>Platform</th>
+            <th>Order</th><th>Account Size</th><th>Type</th><th>Trading Platform</th>
             <th>Price</th><th>Status</th><th>Date</th><th>Action</th>
           </tr>
         </thead>
@@ -1308,7 +1308,7 @@ async function loadOrders() {
       <td>${safe(String(o.id).slice(0, 8))}</td>
       <td>${safe(o.account_size)} USD</td>
       <td>${safe(o.account_type)}</td>
-      <td>${safe(o.platform || "—")}</td>
+      <td>WFT TradingView</td>
       <td>${money(o.final_price)}</td>
       <td>${statusBadge(o.status)}</td>
       <td>${date(o.created_at)}</td>
@@ -1349,7 +1349,7 @@ async function loadAccounts() {
       <td>${safe(a.account_name || String(a.id).slice(0,8))}</td>
       <td>${money(a.account_size)}</td>
       <td>${safe(a.account_type)}</td>
-      <td>${safe(a.platform || "—")}</td>
+      <td>WFT TradingView</td>
       <td>${safe(a.phase || "—")}</td>
       <td>${money(a.balance)}</td>
       <td>${money(a.equity)}</td>
