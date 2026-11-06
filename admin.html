@@ -496,7 +496,7 @@ tr:last-child td{border-bottom:0}
               <table>
                 <thead>
                   <tr>
-                    <th>User ID</th><th>MT Login</th><th>Size</th>
+                    <th>User ID</th><th>Account</th><th>Size</th>
                     <th>Type</th><th>Phase</th><th>Platform</th>
                     <th>Status</th><th>Profit</th>
                   </tr>
@@ -1220,7 +1220,6 @@ async function loadTradingAccounts() {
   accountsData = data || [];
   renderAccounts();
   updateOverviewStats();
-  populateMtBridgeAccounts();
   await loadVirtualMonitor();
 }
 
@@ -1262,7 +1261,8 @@ function renderAccounts() {
   const rows = accountsData.filter(account =>
     [
       account.user_id,
-      account.mt_login,
+      account.account_name,
+      account.id,
       account.account_type,
       account.status
     ].join(" ").toLowerCase().includes(search)
@@ -1276,7 +1276,7 @@ function renderAccounts() {
   tbody.innerHTML = rows.map(account => `
     <tr>
       <td>${escapeHTML(String(account.user_id || "").slice(0, 12))}</td>
-      <td>${escapeHTML(account.mt_login || "—")}</td>
+      <td>${escapeHTML(account.account_name || String(account.id || "").slice(0, 8))}</td>
       <td>${money(account.account_size)}</td>
       <td>${escapeHTML(account.account_type || "—")}</td>
       <td>${escapeHTML(account.phase || "—")}</td>
@@ -1320,7 +1320,7 @@ async function loadPayouts() {
     if (accountIds.length) {
       const { data: accounts, error: accountError } = await db
         .from("trading_accounts")
-        .select("id,mt_login,platform,account_size,account_type,phase")
+        .select("id,account_name,platform,account_size,account_type,phase")
         .in("id", accountIds);
 
       if (accountError) throw accountError;
@@ -1360,7 +1360,7 @@ function renderPayouts() {
     const account = item.trading_account || {};
 
     const accountLabel = [
-      account.mt_login || "No login",
+      account.account_name || String(account.id || "").slice(0, 8),
       account.platform || "",
       account.account_size
         ? "$" + Number(account.account_size).toLocaleString()
@@ -1533,7 +1533,7 @@ async function loadChallengeRequests() {
 
       const { data: accounts, error: accountError } = await db
         .from("trading_accounts")
-        .select("id,mt_login,platform,account_size,account_type,status")
+        .select("id,account_name,platform,account_size,account_type,status")
         .in("id", ids);
 
       if (accountError) throw accountError;
