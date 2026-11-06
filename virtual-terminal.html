@@ -153,7 +153,7 @@ function drawChart(){
  if($("chartPairSelect"))$("chartPairSelect").value=selectedSymbol;
  $("chartQuote").textContent=m?"WFT quote "+fmt(m.bid,m.digits)+" / "+fmt(m.ask,m.digits):"";
  const interval="15";
- const params=new URLSearchParams({symbol:tvSymbol(selectedSymbol),interval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"091525",enable_publishing:"false",hide_top_toolbar:"false",hide_legend:"false",saveimage:"false",studies:"[]",withdateranges:"true",hide_side_toolbar:"false",allow_symbol_change:"false",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
+ const params=new URLSearchParams({symbol:tvSymbol(selectedSymbol),interval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"091525",enable_publishing:"false",hide_top_toolbar:"true",hide_legend:"true",saveimage:"false",studies:"[]",withdateranges:"false",hide_side_toolbar:"true",allow_symbol_change:"false",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
  const embedKey=selectedSymbol+"|15m";
  if(embedKey===chartEmbedKey)return;
  chartEmbedKey=embedKey;
