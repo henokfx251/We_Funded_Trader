@@ -1,266 +1,125 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login | We Funded Trader</title>
-
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-
-:root{
-  --bg:#07111f;
-  --panel:#101d30;
-  --panel2:#14243a;
-  --gold:#e8b84b;
-  --gold2:#f5d27c;
-  --text:#f4f7fb;
-  --muted:#94a3b8;
-  --line:#26374d;
-}
-
-body{
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-
-.box{
-  width:100%;
-  max-width:440px;
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:35px 28px;
-  box-shadow:0 20px 60px rgba(0,0,0,.3);
-}
-
-.logo{
-  text-align:center;
-  font-size:23px;
-  font-weight:800;
-  letter-spacing:.5px;
-  color:var(--text);
-}
-
-.logo span{color:var(--gold)}
-
-.logo-line{
-  width:55px;
-  height:3px;
-  background:var(--gold);
-  border-radius:5px;
-  margin:13px auto 25px;
-}
-
-h2{
-  text-align:center;
-  font-size:27px;
-  margin-bottom:9px;
-}
-
-.sub{
-  text-align:center;
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.6;
-  margin-bottom:28px;
-}
-
-label{
-  display:block;
-  margin:17px 0 8px;
-  font-size:14px;
-  color:#cbd5e1;
-}
-
-input{
-  width:100%;
-  padding:15px;
-  background:#071525;
-  border:1px solid var(--line);
-  border-radius:9px;
-  color:white;
-  font-size:15px;
-  outline:none;
-}
-
-input:focus{
-  border-color:var(--gold);
-  box-shadow:0 0 0 2px rgba(232,184,75,.12);
-}
-
-button{
-  width:100%;
-  padding:15px;
-  margin-top:25px;
-  border:0;
-  border-radius:9px;
-  background:var(--gold);
-  color:#111827;
-  font-weight:800;
-  font-size:16px;
-  cursor:pointer;
-  transition:.2s;
-}
-
-button:hover{background:var(--gold2)}
-button:disabled{opacity:.6;cursor:not-allowed}
-
-.links{
-  text-align:center;
-  margin-top:23px;
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.8;
-}
-
-a{
-  color:var(--gold);
-  text-decoration:none;
-  font-weight:600;
-}
-
-a:hover{color:var(--gold2)}
-
-.back{
-  display:block;
-  text-align:center;
-  margin-top:22px;
-  color:var(--muted);
-  font-size:13px;
-}
-
-.message{
-  margin-top:15px;
-  text-align:center;
-  font-size:14px;
-  line-height:1.5;
-  overflow-wrap:anywhere;
-}
-
-.footer{
-  text-align:center;
-  color:#64748b;
-  font-size:11px;
-  margin-top:25px;
-}
-
-@media(max-width:480px){
-  .box{padding:30px 21px}
-  h2{font-size:24px}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Log in to your WE FUNDED TRADER account.">
+  <title>Login | WE FUNDED TRADER</title>
+  <style>
+    :root{color-scheme:dark;--bg:#07111f;--panel:#101d30;--panel2:#14243a;--gold:#e8b84b;--gold2:#f5d27c;--text:#f4f7fb;--muted:#94a3b8;--line:#26374d;--danger:#fb7185;--success:#4ade80}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;padding:24px;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 0%,rgba(232,184,75,.10),transparent 42%),var(--bg);font-family:Inter,Arial,sans-serif;color:var(--text)}
+    a{color:var(--gold);font-weight:700;text-decoration:none}a:hover{color:var(--gold2)}
+    .auth-shell{width:min(100%,460px)}
+    .brand{text-align:center;margin-bottom:22px}
+    .brand-name{font-size:22px;font-weight:900;letter-spacing:.8px}.brand-name span{color:var(--gold)}
+    .brand-caption{margin-top:7px;color:var(--muted);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+    .brand-line{width:52px;height:3px;border-radius:9px;background:var(--gold);margin:15px auto 0}
+    .card{padding:34px;background:linear-gradient(160deg,rgba(20,36,58,.98),rgba(16,29,48,.98));border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.35)}
+    .eyebrow{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--gold);font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase}
+    .eyebrow:before,.eyebrow:after{content:"";width:22px;height:1px;background:rgba(232,184,75,.45)}
+    h1{text-align:center;font-size:29px;line-height:1.2;margin:13px 0 8px}
+    .subtitle{text-align:center;color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 27px}
+    .field{margin-top:18px}.field label{display:block;margin:0 0 8px;color:#d5deea;font-size:13px;font-weight:700}
+    .input-wrap{position:relative}.field input{display:block;width:100%;height:49px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:#081525;color:var(--text);font-size:15px;outline:none;transition:border-color .2s,box-shadow .2s}
+    .field input::placeholder{color:#64748b}.field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,184,75,.12)}
+    .password-input{padding-right:72px!important}
+    .toggle-password{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--gold);font-size:12px;font-weight:800;cursor:pointer;padding:8px}
+    .form-row{display:flex;justify-content:flex-end;margin-top:12px;font-size:12px}
+    .submit{width:100%;min-height:50px;margin-top:24px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#101827;font-size:15px;font-weight:900;letter-spacing:.2px;cursor:pointer;box-shadow:0 8px 22px rgba(232,184,75,.15);transition:transform .2s,filter .2s}
+    .submit:hover{filter:brightness(1.06);transform:translateY(-1px)}.submit:disabled{opacity:.6;cursor:wait;transform:none}
+    .message{min-height:20px;margin:14px 0 0;text-align:center;font-size:13px;line-height:1.55;overflow-wrap:anywhere}.message.error{color:var(--danger)}.message.success{color:var(--success)}.message.info{color:#cbd5e1}
+    .switch{text-align:center;margin-top:22px;color:var(--muted);font-size:13px}
+    .back{display:block;text-align:center;margin-top:20px;color:var(--muted);font-size:12px;font-weight:600}
+    .footer{text-align:center;margin-top:22px;color:#64748b;font-size:11px}
+    @media(max-width:520px){body{padding:16px}.card{padding:28px 21px;border-radius:16px}h1{font-size:26px}}
+  </style>
 </head>
-
 <body>
+  <main class="auth-shell">
+    <header class="brand">
+      <div class="brand-name">WE <span>FUNDED</span> TRADER</div>
+      <div class="brand-caption">Trade with confidence</div>
+      <div class="brand-line"></div>
+    </header>
 
-<div class="box">
+    <section class="card" aria-labelledby="pageTitle">
+      <div class="eyebrow">Member Access</div>
+      <h1 id="pageTitle">Welcome Back</h1>
+      <p class="subtitle">Log in to access your trading dashboard and account.</p>
 
-  <div class="logo">WE <span>FUNDED</span> TRADER</div>
-  <div class="logo-line"></div>
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="email">Email Address</label>
+          <input id="email" name="email" type="email" placeholder="name@example.com" autocomplete="email" inputmode="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <input class="password-input" id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required>
+            <button class="toggle-password" type="button" data-toggle="password" aria-label="Show password">SHOW</button>
+          </div>
+        </div>
+        <button class="submit" id="loginButton" type="submit">LOG IN TO ACCOUNT</button>
+        <p class="message" id="loginMessage" role="status" aria-live="polite"></p>
+      </form>
 
-  <h2>Welcome Back</h2>
-  <p class="sub">Login to access your trading dashboard.</p>
+      <div class="switch">New to WFT? <a href="register.html">Create an account</a></div>
+    </section>
 
-  <form id="loginForm">
+    <a class="back" href="index.html">← Back to Homepage</a>
+    <footer class="footer">© 2026 WE FUNDED TRADER. All rights reserved.</footer>
+  </main>
 
-    <label for="email">Email Address</label>
-    <input
-      type="email"
-      id="email"
-      placeholder="Enter your email address"
-      autocomplete="email"
-      required
-    >
+  <script type="module">
+    import { supabase } from "./supabase.js";
 
-    <label for="password">Password</label>
-    <input
-      type="password"
-      id="password"
-      placeholder="Enter your password"
-      autocomplete="current-password"
-      required
-    >
+    const form = document.getElementById("loginForm");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginButton = document.getElementById("loginButton");
+    const message = document.getElementById("loginMessage");
 
-    <button type="submit" id="loginButton">Log In</button>
-
-    <p class="message" id="loginMessage" role="status"></p>
-
-  </form>
-
-  <div class="links">
-    Don't have an account?
-    <a href="register.html">Create Account</a>
-  </div>
-
-  <a class="back" href="index.html">← Back to Homepage</a>
-
-  <div class="footer">
-    © 2026 WE FUNDED TRADER. All rights reserved.
-  </div>
-
-</div>
-
-<script type="module">
-import { supabase } from "./supabase.js";
-
-const form = document.getElementById("loginForm");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const loginButton = document.getElementById("loginButton");
-const message = document.getElementById("loginMessage");
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
-
-  if (!email || !password) {
-    message.style.color = "#ef4444";
-    message.textContent = "Please enter your email and password.";
-    return;
-  }
-
-  loginButton.disabled = true;
-  loginButton.textContent = "Logging in...";
-  message.style.color = "#cbd5e1";
-  message.textContent = "Please wait...";
-
-  try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) throw error;
-
-    if (data.session) {
-      message.style.color = "#22c55e";
-      message.textContent = "Login successful. Redirecting...";
-
-      window.location.href = "dashboard.html";
-      return;
+    function showMessage(text, type = "info") {
+      message.textContent = text;
+      message.className = "message " + type;
     }
 
-    throw new Error("Login session could not be created.");
+    document.querySelector('[data-toggle="password"]').addEventListener("click", (event) => {
+      const visible = passwordInput.type === "text";
+      passwordInput.type = visible ? "password" : "text";
+      event.currentTarget.textContent = visible ? "SHOW" : "HIDE";
+      event.currentTarget.setAttribute("aria-label", visible ? "Show password" : "Hide password");
+    });
 
-  } catch (error) {
-    message.style.color = "#ef4444";
-    message.textContent = error.message || "Login failed. Please try again.";
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
 
-    loginButton.disabled = false;
-    loginButton.textContent = "Log In";
-  }
-});
-</script>
+      if (!email || !password) {
+        showMessage("Enter your email address and password.", "error");
+        return;
+      }
 
+      loginButton.disabled = true;
+      loginButton.textContent = "SIGNING IN...";
+      showMessage("Please wait while we securely sign you in.");
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        if (!data.session) throw new Error("Your login session could not be created. Please try again.");
+
+        showMessage("Login successful. Opening your dashboard...", "success");
+        window.location.replace("dashboard.html");
+      } catch (error) {
+        showMessage(error.message || "Login failed. Please try again.", "error");
+        loginButton.disabled = false;
+        loginButton.textContent = "LOG IN TO ACCOUNT";
+      }
+    });
+  </script>
 </body>
 </html>
