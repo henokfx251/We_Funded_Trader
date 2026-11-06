@@ -784,6 +784,7 @@ function goPage(page, button) {
   if (page === "accounts") loadTradingAccounts();
   if (page === "payouts") loadPayouts();
   if (page === "challenge-requests") loadChallengeRequests();
+  if (page === "rewards") loadRewardManagement();
 
   $("sidebar")?.classList.remove("open");
 }
@@ -875,6 +876,7 @@ async function refreshAll() {
     loadTradingAccounts(),
     loadPayouts(),
     loadChallengeRequests()
+    loadRewardManagement()
   ]);
 
   results.forEach((result, index) => {
@@ -1606,7 +1608,206 @@ async function reviewChallengeRequest(id, decision) {
   }
 }
 
+/* ================= REWARDS MANAGEMENT ================= */
 
+let rewardFeedbackData = [];
+let rewardRedemptionsData = [];
+
+async function loadRewardManagement() {
+  const feedbackBody = $("rewardFeedbackTable");
+  const redemptionBody = $("rewardRedemptionsTable");
+
+  if (feedbackBody) {
+    feedbackBody.innerHTML =
+      '<tr><td colspan="8">Loading feedback...</td></tr>';
+  }
+
+  if (redemptionBody) {
+    redemptionBody.innerHTML =
+      '<tr><td colspan="8">Loading redemptions...</td></tr>';
+  }
+
+  try {
+    const [feedbackResult, redemptionResult] = await Promise.all([
+      db.from("reward_feedback_submissions")
+        .select("*").order("submitted_at", { ascending: false }),
+
+      db.from("reward_redemptions")
+        .select("*").order("requested_at", { ascending: false })
+    ]);
+
+    if (feedbackResult.error) throw feedbackResult.error;
+    if (redemptionResult.error) throw redemptionResult.error;
+
+    rewardFeedbackData = feedbackResult.data || [];
+    rewardRedemptionsData = redemptionResult.data || [];
+
+    renderRewardManagement();
+
+  } catch (error) {
+    console.error("Rewards:", error);
+    showToast("Rewards loading failed: " + error.message);
+  }
+}
+
+function renderRewardManagement() {
+  const feedbackBody = $("rewardFeedbackTable");
+  const redemptionBody = $("rewardRedemptionsTable");
+
+  if (feedbackBody) {
+    feedbackBody.innerHTML = rewardFeedbackData.length
+      ? rewardFeedbackData.map(row => `
+        <tr>
+          <td>${escapeHTML(String(row.user_id).slice(0, 8))}</td>
+          <td>${escapeHTML(row.rating)}/5</td>
+          <td><details>
+            <summary>Read feedback</summary>
+            <div style="white-space:pre-wrap">
+              ${escapeHTML(row.feedback)}
+            </div>
+          </details></td>
+          <td>${escapeHTML(row.suggestion || "—")}</td>
+          <td>${statusBadge(row.status)}</td>
+          <td>${Number(row.points_awarded || 0)}</td>
+          <td>${row.submitted_at
+            ? new Date(row.submitted_at).toLocaleString() : "—"}</td>
+          <td>${row.status === "pending" ? `
+            <button class="btn small green"
+              onclick="reviewRewardFeedback('${row.id}','approved')">
+              Approve +50
+            </button>
+            <button class="btn small red"
+              onclick="reviewRewardFeedback('${row.id}','rejected')">
+              Reject
+            </button>` : "Reviewed"}
+          </td>
+        </tr>
+      `).join("")
+      : '<tr><td colspan="8" class="empty">No feedback tasks found.</td></tr>';
+  }
+
+  if (redemptionBody) {
+    redemptionBody.innerHTML = rewardRedemptionsData.length
+      ? rewardRedemptionsData.map(row => `
+        <tr>
+          <td>${escapeHTML(String(row.user_id).slice(0, 8))}</td>
+          <td>$${Number(row.account_size).toLocaleString()}
+            ${escapeHTML(row.account_type)}</td>
+          <td>${Number(row.points_spent || 0)}</td>
+          <td>${money(row.activation_fee)}</td>
+          <td>${statusBadge(row.activation_status)}</td>
+          <td>${statusBadge(row.status)}</td>
+          <td>${row.requested_at
+            ? new Date(row.requested_at).toLocaleString() : "—"}</td>
+          <td>${row.status === "pending" ? `
+            <button class="btn small green"
+              onclick="reviewRewardRedemption('${row.id}','approved')">
+              Approve
+            </button>
+            <button class="btn small red"
+              onclick="reviewRewardRedemption('${row.id}','rejected')">
+              Reject
+            </button>` : "Reviewed"}
+          </td>
+        </tr>
+      `).join("")
+      : '<tr><td colspan="8" class="empty">No redemptions found.</td></tr>';
+  }
+}
+
+async function reviewRewardFeedback(id, decision) {
+  if (!["approved", "rejected"].includes(decision)) return;
+
+  let note = "";
+
+  if (decision === "approved") {
+    if (!confirm("Approve feedback and award 50 points?")) return;
+    note = prompt("Optional admin note:") || "";
+  } else {
+    note = prompt("Enter rejection reason:");
+    if (note === null || !note.trim()) return;
+    note = note.trim();
+  }
+
+  try {
+    const { data, error } = await db
+      .from("reward_feedback_submissions")
+      .update({
+        status: decision,
+        admin_note: note || null,
+        reviewed_by: currentUser.id,
+        reviewed_at: new Date().toISOString()
+      })
+      .eq("id", id)
+      .eq("status", "pending")
+      .select("id,points_awarded");
+
+    if (error) throw error;
+    if (!data || !data.length) {
+      showToast("This feedback was already reviewed.");
+      return;
+    }
+
+    showToast(decision === "approved"
+      ? "Approved — 50 points awarded."
+      : "Feedback rejected.");
+
+    await loadRewardManagement();
+
+  } catch (error) {
+    showToast("Review failed: " + error.message);
+  }
+}
+
+async function reviewRewardRedemption(id, decision) {
+  if (!["approved", "rejected"].includes(decision)) return;
+
+  const row = rewardRedemptionsData.find(item => item.id === id);
+  if (!row) return;
+
+  let note = "";
+  let activationStatus = row.activation_status;
+
+  if (decision === "approved") {
+    if (!confirm("Have you verified receipt of the $1 activation fee?")) return;
+    activationStatus = "paid";
+    note = prompt("Optional admin note:") || "";
+  } else {
+    note = prompt("Enter rejection reason:");
+    if (note === null || !note.trim()) return;
+    note = note.trim();
+  }
+
+  try {
+    const { data, error } = await db
+      .from("reward_redemptions")
+      .update({
+        status: decision,
+        activation_status: activationStatus,
+        admin_note: note || null,
+        reviewed_by: currentUser.id,
+        reviewed_at: new Date().toISOString()
+      })
+      .eq("id", id)
+      .eq("status", "pending")
+      .select("id");
+
+    if (error) throw error;
+    if (!data || !data.length) {
+      showToast("This redemption was already reviewed.");
+      return;
+    }
+
+    showToast(decision === "approved"
+      ? "Reward approved. Create the $5K account next."
+      : "Redemption rejected.");
+
+    await loadRewardManagement();
+
+  } catch (error) {
+    showToast("Redemption review failed: " + error.message);
+  }
+      }
 
 </script>
 
