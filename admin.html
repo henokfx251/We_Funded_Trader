@@ -1215,6 +1215,7 @@ async function loadTradingAccounts() {
   accountsData = data || [];
   renderAccounts();
   updateOverviewStats();
+  populateMtBridgeAccounts();
 }
 
 function renderAccounts() {
@@ -1250,6 +1251,133 @@ function renderAccounts() {
     </tr>
   `).join("");
 }
+
+  /* ================= MT4 / MT5 BRIDGE ================= */
+
+function populateMtBridgeAccounts() {
+  const select = $("mtBridgeAccountSelect");
+  if (!select) return;
+
+  const previous = select.value;
+
+  const eligible = accountsData.filter(account =>
+    ["MT4", "MT5"].includes(
+      String(account.platform || "").toUpperCase()
+    ) &&
+    account.mt_login &&
+    account.mt_server
+  );
+
+  select.innerHTML =
+    '<option value="">Select trading account</option>' +
+    eligible.map(account => `
+      <option value="${escapeHTML(account.id)}">
+        ${escapeHTML(account.mt_login)} —
+        ${escapeHTML(account.platform)} —
+        ${escapeHTML(account.status)}
+      </option>
+    `).join("");
+
+  if (eligible.some(account => account.id === previous)) {
+    select.value = previous;
+  }
+}
+
+async function generateMtBridgeToken() {
+  const accountId = $("mtBridgeAccountSelect")?.value;
+
+  if (!accountId) {
+    showMessage("mtBridgeMessage", "Select a trading account first.", "error");
+    return;
+  }
+
+  const account = accountsData.find(a => a.id === accountId);
+  if (!account) return;
+
+  if (!confirm(
+    "Generate a new bridge token for " +
+    account.mt_login + " (" + account.platform + ")?"
+  )) return;
+
+  const output = $("mtBridgeTokenOutput");
+  if (output) output.value = "";
+
+  try {
+    const { data, error } = await db.functions.invoke("mt-bridge", {
+      body: {
+        action: "create-token",
+        trading_account_id: accountId,
+        platform: String(account.platform).toUpperCase()
+      }
+    });
+
+    if (error) throw error;
+    if (!data || !data.success || !data.bridge_token) {
+      throw new Error(data?.error || "Token generation failed.");
+    }
+
+    output.value = data.bridge_token;
+
+    showMessage(
+      "mtBridgeMessage",
+      "Token generated. Copy it now and keep it private. It will not be shown again.",
+      "success"
+    );
+
+  } catch (error) {
+    console.error("Bridge token:", error);
+    showMessage(
+      "mtBridgeMessage",
+      error.message || "Could not generate bridge token.",
+      "error"
+    );
+  }
+}
+
+async function revokeMtBridgeToken() {
+  const accountId = $("mtBridgeAccountSelect")?.value;
+
+  if (!accountId) {
+    showMessage("mtBridgeMessage", "Select a trading account first.", "error");
+    return;
+  }
+
+  if (!confirm(
+    "Revoke the active bridge token for this account? Data syncing will stop."
+  )) return;
+
+  try {
+    const { data, error } = await db.functions.invoke("mt-bridge", {
+      body: {
+        action: "revoke-token",
+        trading_account_id: accountId
+      }
+    });
+
+    if (error) throw error;
+    if (!data || !data.success) {
+      throw new Error(data?.error || "Token revocation failed.");
+    }
+
+    if ($("mtBridgeTokenOutput")) {
+      $("mtBridgeTokenOutput").value = "";
+    }
+
+    showMessage(
+      "mtBridgeMessage",
+      "Bridge token revoked successfully.",
+      "success"
+    );
+
+  } catch (error) {
+    console.error("Bridge revoke:", error);
+    showMessage(
+      "mtBridgeMessage",
+      error.message || "Could not revoke token.",
+      "error"
+    );
+  }
+  }
 
 /* ================= PAYOUTS ================= */
 
