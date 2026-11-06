@@ -45,7 +45,6 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
   <div class="top-actions"><a class="back" href="dashboard.html">Dashboard</a></div>
 </header>
 <main class="container">
-  <div class="headline"><div><h1>WFT Trading Terminal</h1></div></div>
   <section class="account-row" id="accountOverview">
     <div class="card account-select"><div class="metric-label">Trading Account</div><select id="accountSelect"><option value="">Loading accounts…</option></select></div>
     <div class="card"><div class="metric-label">Balance</div><div class="metric-value" id="balance">$—</div></div>
@@ -91,7 +90,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
       <div class="side-toggle"><button class="btn buy" id="buyButton">BUY</button><button class="btn sell" id="sellButton">SELL</button></div>
       <div class="status" id="tradeStatus"></div>
     </div>
-    <div class="panel"><h2 class="panel-title">Open Positions <span class="sub" id="positionCount">0 positions</span></h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Stop Loss</th><th>Take Profit</th><th>Floating P/L</th><th></th></tr></thead><tbody id="positionsBody"><tr><td colspan="8" class="empty">No open positions</td></tr></tbody></table></div></div>
+    <div class="panel"><h2 class="panel-title">Open Positions <span style="display:flex;align-items:center;gap:9px"><span class="sub" id="positionCount">0 positions</span><button class="close-btn" id="closeAllButton" type="button">Close All Positions</button></span></h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Stop Loss</th><th>Take Profit</th><th>Floating P/L</th><th></th></tr></thead><tbody id="positionsBody"><tr><td colspan="8" class="empty">No open positions</td></tr></tbody></table></div></div>
   </section>
   <section class="view" id="view-history">
     <div class="history-summary"><div class="card"><div class="metric-label">Current Balance</div><div class="metric-value" id="historyBalance">$—</div></div><div class="card"><div class="metric-label">Total Profit</div><div class="metric-value" id="historyProfit">$0.00</div></div><div class="card"><div class="metric-label">Total Loss</div><div class="metric-value" id="historyLoss">$0.00</div></div></div><div class="panel"><h2 class="panel-title">Closed Trade History</h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Close</th><th>Profit/Loss</th><th>Balance</th><th>Closed</th></tr></thead><tbody id="historyBody"><tr><td colspan="8" class="empty">No closed trades</td></tr></tbody></table></div></div>
@@ -117,7 +116,7 @@ const $=id=>document.getElementById(id);
 const money=n=>"$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmt=(n,d=5)=>Number(n||0).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let user=null,accounts=[],selectedAccount="",state=null,selectedSymbol="XAUUSD",activeTab="chart",refreshing=false,marketFilter="ALL",timeframe="15m";
+let user=null,accounts=[],selectedAccount="",state=null,selectedSymbol="XAUUSD",activeTab="chart",refreshing=false,marketFilter="ALL",timeframe="15m",chartEmbedKey="";
 function showTab(tab){
  activeTab=tab;
  $("accountOverview").style.display=tab==="trade"?"grid":"none";
@@ -156,6 +155,9 @@ function drawChart(){
  $("chartQuote").textContent=m?"WFT virtual quote "+fmt(m.bid,m.digits)+" / "+fmt(m.ask,m.digits):"";
  const interval=({"1D":"1D","4H":"240","1H":"60","15m":"15","5m":"5","1m":"1"})[timeframe]||"15";
  const params=new URLSearchParams({symbol:tvSymbol(selectedSymbol),interval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"091525",enable_publishing:"false",hide_top_toolbar:"false",hide_legend:"false",saveimage:"false",studies:"[]",withdateranges:"true",hide_side_toolbar:"false",allow_symbol_change:"false",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
+ const embedKey=selectedSymbol+"|"+timeframe;
+ if(embedKey===chartEmbedKey)return;
+ chartEmbedKey=embedKey;
  $("chartWrap").innerHTML='<iframe title="Live TradingView '+esc(selectedSymbol)+' chart" src="https://www.tradingview.com/widgetembed/?'+params.toString()+'" style="width:100%;height:100%;border:0" loading="eager" allowfullscreen></iframe>';
 }
 function renderPositions(){
@@ -218,6 +220,17 @@ async function closePosition(id,button){
  try{await callEngine("close",{position_id:id});$("tradeStatus").textContent="Position closed and saved to history.";}
  catch(e){$("tradeStatus").textContent=e.message;button.disabled=false;}
 }
+async function closeAllPositions(){
+ const ids=(state?.positions||[]).map(p=>p.id);
+ if(!ids.length){$("tradeStatus").textContent="There are no open positions to close.";return;}
+ if(!confirm("Close all "+ids.length+" open positions? This will save them to trade history."))return;
+ const button=$("closeAllButton");button.disabled=true;button.textContent="Closing…";
+ try{
+  for(const id of ids)await callEngine("close",{position_id:id});
+  $("tradeStatus").textContent="All open positions have been closed and saved to history.";
+ }catch(e){$("tradeStatus").textContent="Some positions may remain open: "+e.message;}
+ finally{button.disabled=false;button.textContent="Close All Positions";await refreshState();}
+}
 async function init(){
  const {data,error}=await db.auth.getSession();
  if(error||!data.session){location.replace("Login.html");return;}
@@ -233,6 +246,7 @@ async function init(){
  $("tradeSymbol").addEventListener("change",e=>{selectedSymbol=e.target.value;drawChart();});
  $("buyButton").addEventListener("click",()=>placeOrder("BUY"));$("sellButton").addEventListener("click",()=>placeOrder("SELL"));
  $("chartBuy").addEventListener("click",()=>placeOrder("BUY",true));$("chartSell").addEventListener("click",()=>placeOrder("SELL",true));
+ $("closeAllButton").addEventListener("click",closeAllPositions);
  document.querySelectorAll("[data-tf]").forEach(b=>b.addEventListener("click",()=>{timeframe=b.dataset.tf;document.querySelectorAll("[data-tf]").forEach(x=>x.classList.toggle("active",x===b));drawChart();}));
  await refreshState();
  setInterval(()=>{if(document.visibilityState==="visible")refreshState();},6000);
