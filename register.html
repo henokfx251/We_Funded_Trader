@@ -81,7 +81,7 @@
         <button class="toggle-password" id="resendConfirmation" type="button" hidden>RESEND CONFIRMATION EMAIL</button>
       </form>
 
-      <div class="switch">Already have an account? <a href="Login.html">Log in</a></div>
+      <div class="switch">Already have an account? <a href="Login.html">Log in</a> · <a href="forgot-password.html">Forgot Password?</a></div>
     </section>
 
     <a class="back" href="index.html">← Back to Homepage</a>
@@ -150,7 +150,18 @@
           }
         });
 
-        if (error) throw error;
+        if (error) {
+          if (error.code === "user_already_exists" || /already registered|user already exists/i.test(error.message || "")) {
+            showMessage("This email is already registered. Please log in or use Forgot Password.", "error");
+            return;
+          }
+          throw error;
+        }
+
+        if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+          showMessage("This email may already be registered. Please log in or use Forgot Password if you already have an account.", "error");
+          return;
+        }
 
         if (data.session) {
           showMessage("Account created successfully. Opening your dashboard...", "success");
