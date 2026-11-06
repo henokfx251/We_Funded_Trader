@@ -621,6 +621,57 @@ tr:last-child td{border-bottom:0}
             </div>
           </div>
         </section>
+        <!-- REWARDS MANAGEMENT -->
+<section class="page" id="page-rewards">
+  <div class="page-heading">
+    <div>
+      <h1>Rewards Management</h1>
+      <p>Review customer feedback and reward redemption requests.</p>
+    </div>
+    <button class="btn" onclick="loadRewardManagement()">Refresh</button>
+  </div>
+
+  <div class="notice">
+    Approving genuine feedback awards 50 points.
+    Verify the $1 activation fee before approving a reward.
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3>Customer Feedback Tasks</h3></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Trader ID</th><th>Rating</th><th>Feedback</th>
+            <th>Suggestion</th><th>Status</th><th>Points</th>
+            <th>Submitted</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="rewardFeedbackTable">
+          <tr><td colspan="8" class="empty">No feedback loaded.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3>$5K 1-Step Reward Redemptions</h3></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Trader ID</th><th>Account</th><th>Points</th>
+            <th>Activation Fee</th><th>Payment</th><th>Status</th>
+            <th>Requested</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="rewardRedemptionsTable">
+          <tr><td colspan="8" class="empty">No redemptions loaded.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
       </div>
 
