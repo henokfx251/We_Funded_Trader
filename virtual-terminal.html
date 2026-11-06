@@ -21,9 +21,9 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
 .tabs{display:none}.view{display:none}.view.active{display:block}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px;margin-bottom:12px}
 .panel-title{font-size:13px;font-weight:800;margin:0 0 11px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.market-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.market-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px}.market-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.market-filters button{background:#0b192a;color:var(--muted);border:1px solid var(--line);padding:7px 10px;border-radius:7px;font-size:10px}.market-filters button.active{border-color:var(--gold);color:var(--gold)}.market-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .market{background:#0b192a;border:1px solid var(--line);border-radius:9px;padding:12px;text-align:left;color:var(--text);width:100%}
-.market.selected{border-color:var(--gold);background:#172b43}.market-name{font-weight:800;font-size:13px}.market-price{color:var(--gold2);font-size:15px;font-weight:800;margin-top:7px}.market-meta{color:var(--muted);font-size:10px;margin-top:3px}
+.market.selected{border-color:var(--gold);background:#172b43}.market-name{font-weight:800;font-size:13px}.market-price{color:var(--gold2);font-size:15px;font-weight:800;margin-top:7px}.market-meta{color:var(--muted);font-size:10px;margin-top:3px}.market-change{font-size:10px;color:var(--muted);margin-top:5px}.trade-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}.trade-summary .card{padding:10px}.history-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}.history-summary .card{padding:10px}.search-input{min-width:0}
 .chart-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.chart-top strong{font-size:14px}.chart-wrap{width:100%;height:330px;background:#091525;border-radius:8px;overflow:hidden}.chart-wrap svg{width:100%;height:100%;display:block}
 .trade-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.field label{display:block;color:#cbd5e1;font-size:10px;margin:10px 0 6px}
 .side-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.btn{border:0;border-radius:8px;padding:11px 14px;font-size:11px;font-weight:800}.buy{background:#15803d;color:white}.sell{background:#b91c1c;color:white}.secondary{background:#26374d;color:#e2e8f0}.close-btn{background:#26374d;color:#fff;padding:7px 10px;border-radius:7px;border:0;font-size:10px}
@@ -46,7 +46,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
 </header>
 <main class="container">
   <div class="headline"><div><h1>WFT Trading Terminal</h1><div class="sub">Independent virtual execution · No MT5 or broker connection</div></div><span class="pill">SIMULATED</span></div>
-  <section class="account-row">
+  <section class="account-row" id="accountOverview">
     <div class="card account-select"><div class="metric-label">Trading Account</div><select id="accountSelect"><option value="">Loading accounts…</option></select></div>
     <div class="card"><div class="metric-label">Balance</div><div class="metric-value" id="balance">$—</div></div>
     <div class="card"><div class="metric-label">Equity</div><div class="metric-value" id="equity">$—</div></div>
@@ -57,7 +57,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
     <button class="active" data-tab="pairs">Pairs</button><button data-tab="chart">Chart</button><button data-tab="trade">Trade</button><button data-tab="history">History</button><button data-tab="settings">Settings</button>
   </div>
   <section class="view" id="view-pairs">
-    <div class="panel"><h2 class="panel-title">Market Watch <span class="sub">Simulated prices</span></h2><div class="market-list" id="marketList"><div class="loading">Loading markets…</div></div></div>
+    <div class="panel"><h2 class="panel-title">Market Watch <span class="sub">Forex · Metals · Crypto</span></h2><div class="market-tools"><input class="search-input" id="pairSearch" type="search" placeholder="Search pair (e.g. EURUSD, Gold, BTC)"><span class="sub" id="pairCount"></span></div><div class="market-filters" id="marketFilters"><button class="active" data-market-filter="ALL">All</button><button data-market-filter="FOREX">Forex Major</button><button data-market-filter="METALS">Metals</button><button data-market-filter="CRYPTO">Crypto</button></div><div class="market-list" id="marketList"><div class="loading">Loading markets…</div></div></div>
   </section>
   <section class="view active" id="view-chart">
     <div class="panel">
@@ -65,9 +65,10 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
       <div class="chart-wrap" id="chartWrap"><div class="loading">Loading chart…</div></div>
       <div class="sub" style="margin-top:8px">Candles are generated by the WFT Virtual Engine and are not real market data.</div>
     </div>
-    <div class="panel"><h2 class="panel-title">Market Quote</h2><div class="trade-grid"><div><div class="metric-label">Bid</div><div class="metric-value" id="chartBid">—</div></div><div><div class="metric-label">Ask</div><div class="metric-value" id="chartAsk">—</div></div></div></div>
+    
   </section>
   <section class="view" id="view-trade">
+    <div class="trade-summary"><div class="card"><div class="metric-label">Balance</div><div class="metric-value" id="tradeBalance">$—</div></div><div class="card"><div class="metric-label">Equity</div><div class="metric-value" id="tradeEquity">$—</div></div><div class="card"><div class="metric-label">Open Trades</div><div class="metric-value" id="tradeOpenCount">0</div></div></div>
     <div class="panel">
       <h2 class="panel-title">Place Virtual Order <span class="pill">Demo funds</span></h2>
       <div class="field"><label for="tradeSymbol">Trading Pair</label><select id="tradeSymbol"></select></div>
@@ -82,7 +83,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
     <div class="panel"><h2 class="panel-title">Open Positions <span class="sub" id="positionCount">0 positions</span></h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Floating P/L</th><th></th></tr></thead><tbody id="positionsBody"><tr><td colspan="6" class="empty">No open positions</td></tr></tbody></table></div></div>
   </section>
   <section class="view" id="view-history">
-    <div class="panel"><h2 class="panel-title">Trade History</h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Close</th><th>Profit</th><th>Closed</th></tr></thead><tbody id="historyBody"><tr><td colspan="7" class="empty">No closed trades</td></tr></tbody></table></div></div>
+    <div class="history-summary"><div class="card"><div class="metric-label">Current Balance</div><div class="metric-value" id="historyBalance">$—</div></div><div class="card"><div class="metric-label">Total Profit</div><div class="metric-value" id="historyProfit">$0.00</div></div><div class="card"><div class="metric-label">Total Loss</div><div class="metric-value" id="historyLoss">$0.00</div></div></div><div class="panel"><h2 class="panel-title">Closed Trade History</h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Close</th><th>Profit/Loss</th><th>Balance</th><th>Closed</th></tr></thead><tbody id="historyBody"><tr><td colspan="8" class="empty">No closed trades</td></tr></tbody></table></div></div>
   </section>
   <section class="view" id="view-settings">
     <div class="panel"><h2 class="panel-title">Account & Risk Settings</h2><div class="rule-grid" id="riskRules"></div><div class="notice">All orders and prices in this terminal are virtual. Challenge and Instant account results are recorded in the WFT database. This is not a real-money broker terminal.</div><div class="status" id="accountStatus"></div></div>
@@ -105,25 +106,33 @@ const $=id=>document.getElementById(id);
 const money=n=>"$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmt=(n,d=5)=>Number(n||0).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let user=null,accounts=[],selectedAccount="",state=null,selectedSymbol="XAUUSD",activeTab="chart",refreshing=false;
+let user=null,accounts=[],selectedAccount="",state=null,selectedSymbol="XAUUSD",activeTab="chart",refreshing=false,marketFilter="ALL";
 function showTab(tab){
  activeTab=tab;
+ $("accountOverview").style.display=tab==="trade"?"grid":"none";
  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+tab));
  document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
  if(tab==="chart") drawChart();
 }
 document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+$("pairSearch").addEventListener("input",renderMarkets);
+document.querySelectorAll("[data-market-filter]").forEach(b=>b.addEventListener("click",()=>{marketFilter=b.dataset.marketFilter;document.querySelectorAll("[data-market-filter]").forEach(x=>x.classList.toggle("active",x===b));renderMarkets();}));
 function quote(symbol){return state?.markets?.find(m=>m.symbol===symbol)}
+function marketType(symbol){return symbol.startsWith("X")?"METALS":symbol.startsWith("BTC")?"CRYPTO":"FOREX"}
 function renderMarkets(){
- const list=$("marketList"),select=$("tradeSymbol");
+ const list=$("marketList"),select=$("tradeSymbol"),all=state?.markets||[],query=$("pairSearch")?.value.trim().toUpperCase()||"";
  list.innerHTML="";select.innerHTML="";
- (state?.markets||[]).forEach(m=>{
-  const opt=document.createElement("option");opt.value=m.symbol;opt.textContent=m.symbol;select.appendChild(opt);
+ const sorted=[...all].sort((a,b)=>a.symbol.localeCompare(b.symbol));
+ sorted.forEach(m=>{const opt=document.createElement("option");opt.value=m.symbol;opt.textContent=m.symbol;select.appendChild(opt);});
+ const visible=sorted.filter(m=>(marketFilter==="ALL"||marketType(m.symbol)===marketFilter)&&(!query||(m.symbol+" "+m.name).toUpperCase().includes(query)));
+ $("pairCount").textContent=visible.length+" / "+all.length;
+ visible.forEach(m=>{
   const button=document.createElement("button");button.className="market"+(m.symbol===selectedSymbol?" selected":"");
-  button.innerHTML='<div class="market-name">'+esc(m.symbol)+'</div><div class="market-price">'+fmt(m.price,m.digits)+'</div><div class="market-meta">Bid '+fmt(m.bid,m.digits)+' · Ask '+fmt(m.ask,m.digits)+'</div>';
-  button.addEventListener("click",()=>{selectedSymbol=m.symbol;showTab("chart");renderMarkets();drawChart();});
-  list.appendChild(button);
+  const category=marketType(m.symbol)==="FOREX"?"FOREX MAJOR":marketType(m.symbol);
+  button.innerHTML='<div class="market-name">'+esc(m.symbol)+' <span class="sub">'+category+'</span></div><div class="market-price">'+fmt(m.price,m.digits)+'</div><div class="market-meta">Bid '+fmt(m.bid,m.digits)+' · Ask '+fmt(m.ask,m.digits)+'</div>';
+  button.addEventListener("click",async()=>{selectedSymbol=m.symbol;$("tradeSymbol").value=m.symbol;showTab("chart");await refreshState();});list.appendChild(button);
  });
+ if(!visible.length)list.innerHTML='<div class="empty">No matching pair found</div>';
  select.value=selectedSymbol;
 }
 function drawChart(){
@@ -145,14 +154,19 @@ function renderPositions(){
  body.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closePosition(b.dataset.close,b)));
 }
 function renderHistory(){
- const body=$("historyBody"),items=state?.history||[];body.innerHTML="";
- if(!items.length){body.innerHTML='<tr><td colspan="7" class="empty">No closed trades</td></tr>';return;}
- items.forEach(p=>{const row=document.createElement("tr"),pnl=Number(p.profit||0);row.innerHTML='<td>'+esc(p.symbol)+'</td><td>'+esc(p.side)+'</td><td>'+esc(p.volume)+'</td><td>'+fmt(p.entry_price,5)+'</td><td>'+fmt(p.close_price,5)+'</td><td style="color:'+(pnl>=0?"#22c55e":"#ef4444")+'">'+money(pnl)+'</td><td>'+new Date(p.closed_at).toLocaleString()+'</td>';body.appendChild(row);});
+ const body=$("historyBody"),items=[...(state?.history||[])].sort((a,b)=>new Date(a.closed_at)-new Date(b.closed_at));body.innerHTML="";
+ const initial=Number(state?.account?.initial_balance||0);let running=initial,totalProfit=0,totalLoss=0;
+ items.forEach(p=>{const pnl=Number(p.profit||0);running+=pnl;if(pnl>=0)totalProfit+=pnl;else totalLoss+=Math.abs(pnl);});
+ $("historyBalance").textContent=money(state?.account?.balance);$("historyProfit").textContent=money(totalProfit);$("historyLoss").textContent=money(totalLoss);
+ $("historyProfit").style.color="#22c55e";$("historyLoss").style.color="#ef4444";
+ if(!items.length){body.innerHTML='<tr><td colspan="8" class="empty">No closed trades</td></tr>';return;}
+ running=initial;items.forEach(p=>{const row=document.createElement("tr"),pnl=Number(p.profit||0);running+=pnl;row.innerHTML='<td>'+esc(p.symbol)+'</td><td>'+esc(p.side)+'</td><td>'+esc(p.volume)+'</td><td>'+fmt(p.entry_price,5)+'</td><td>'+fmt(p.close_price,5)+'</td><td style="color:'+(pnl>=0?"#22c55e":"#ef4444")+'">'+money(pnl)+'</td><td>'+money(running)+'</td><td>'+new Date(p.closed_at).toLocaleString()+'</td>';body.appendChild(row);});
 }
 function renderSummary(){
  const a=state?.account;if(!a)return;
  $("balance").textContent=money(a.balance);$("equity").textContent=money(a.equity);$("floating").textContent=money(a.unrealized_pnl);$("freeMargin").textContent=money(a.free_margin);
  $("floating").style.color=Number(a.unrealized_pnl)>=0?"#22c55e":"#ef4444";
+ $("tradeBalance").textContent=money(a.balance);$("tradeEquity").textContent=money(a.equity);$("tradeOpenCount").textContent=(state?.positions||[]).length;
  $("accountStatus").textContent="Account status: "+a.status;
  const isChallenge=a.account_type==="1-Step Challenge";
  $("riskRules").innerHTML=[
@@ -203,6 +217,7 @@ async function init(){
  if(!accounts.length){$("accountSelect").innerHTML='<option value="">No active accounts available</option>';$("globalStatus").textContent="You need an Active WFT Challenge or Instant Funding account to use the terminal.";return;}
  $("accountSelect").innerHTML=accounts.map(a=>'<option value="'+esc(a.id)+'">$'+Number(a.account_size).toLocaleString()+" · "+esc(a.account_type)+" · "+esc(a.status)+'</option>').join("");
  selectedAccount=accounts[0].id;$("accountSelect").value=selectedAccount;
+ showTab("pairs");
  $("accountSelect").addEventListener("change",async()=>{selectedAccount=$("accountSelect").value;await refreshState();});
  $("tradeSymbol").addEventListener("change",e=>{selectedSymbol=e.target.value;});
  $("buyButton").addEventListener("click",()=>placeOrder("BUY"));$("sellButton").addEventListener("click",()=>placeOrder("SELL"));
