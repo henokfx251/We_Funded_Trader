@@ -1588,7 +1588,7 @@ function renderChallengeRequests() {
     const account = r.trading_account || {};
 
     const accountLabel = [
-      account.mt_login || "No login",
+      account.account_name || String(account.id || "").slice(0, 8),
       account.platform || "",
       account.account_size
         ? "$" + Number(account.account_size).toLocaleString()
