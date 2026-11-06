@@ -240,9 +240,6 @@ tr:last-child td{border-bottom:0}
       <button class="nav-btn" data-page="kyc" onclick="goPage('kyc',this)">
         <span class="nav-icon">▣</span> KYC Review
       </button>
-      <button class="nav-btn" data-page="create" onclick="goPage('create',this)">
-        <span class="nav-icon">＋</span> Create Account
-      </button>
       <button class="nav-btn" data-page="accounts" onclick="goPage('accounts',this)">
         <span class="nav-icon">▥</span> Trading Accounts
       </button>
@@ -424,62 +421,8 @@ tr:last-child td{border-bottom:0}
         <!-- CREATE ACCOUNT -->
         <section class="page" id="page-create">
           <div class="page-heading">
-            <div><h1>Create Trading Account</h1><p>Assign a trading account to a customer.</p></div>
-          </div>
-          <div class="notice">
-            This form uses the existing admin-create-trading-account Edge Function.
-            Confirm the customer and order details before submitting.
-          </div>
-          <div class="panel">
-            <div id="createMessage" class="message"></div>
-            <form id="createAccountForm" onsubmit="createTradingAccount(event)">
-              <div class="form-grid">
-                <div class="field full">
-                  <label>Customer User ID</label>
-                  <input id="newUserId" required placeholder="Supabase Auth User UUID">
-                </div>
-                <div class="field full">
-                  <label>Order ID</label>
-                  <input id="newOrderId" required placeholder="Customer order UUID">
-                </div>
-                <div class="field">
-                  <label>Account Size</label>
-                  <select id="newAccountSize" required>
-                    <option value="">Select account size</option>
-                    <option value="2500">$2,500</option>
-                    <option value="5000">$5,000</option>
-                    <option value="10000">$10,000</option>
-                    <option value="25000">$25,000</option>
-                    <option value="50000">$50,000</option>
-                    <option value="100000">$100,000</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label>Account Type</label>
-                  <select id="newAccountType" required>
-                    <option value="">Select type</option>
-                    <option value="evaluation">1-Step Evaluation</option>
-                    <option value="instant">Instant Funding</option>
-                  </select>
-                </div>
-                <input type="hidden" id="newPlatform" value="WFT TRADINGVIEW">
-                <div class="field full">
-                  <label>Trading Platform</label>
-                  <input value="WFT TradingView Terminal" readonly>
-                </div>
-              </div>
-              <div class="form-actions">
-                <button class="btn gold" type="submit" id="createAccountBtn">Create Trading Account</button>
-                <button class="btn gray" type="reset">Clear Form</button>
-              </div>
-            </form>
-          </div>
-  </section>
-          <!-- TRADING ACCOUNTS -->
-        <section class="page" id="page-accounts">
-          <div class="page-heading">
-            <div>
-              <h1>Trading Accounts</h1>
+            <div><h1>Create Trading         <!-- Trading accounts are provisioned automatically when an order is approved. -->
+  <h1>Trading Accounts</h1>
               <p>Manage customer trading accounts.</p>
             </div>
             <button class="btn" onclick="loadTradingAccounts()">Refresh Accounts</button>
@@ -809,7 +752,6 @@ function goPage(page, button) {
     overview: "Overview",
     orders: "Orders Management",
     kyc: "KYC Review",
-    create: "Create Trading Account",
     accounts: "Trading Accounts",
     payouts: "Payout Management",
     "challenge-requests": "Challenge Pass Requests",
@@ -1031,7 +973,7 @@ async function updateOrderStatus(id, status) {
       throw new Error(data?.error || data?.message || 'Order review was not completed.');
     }
     showToast(status === 'paid'
-      ? 'Payment approved. Order marked as PAID.'
+      ? 'Payment approved. Trading account created automatically.'
       : 'Order rejected.');
     await loadOrders();
   } catch (error) {
@@ -1188,47 +1130,6 @@ async function reviewKYC(id, decision) {
   } catch (error) {
     console.error("KYC review failed:", error);
     showToast("KYC review failed: " + (error.message || "Unknown error"));
-  }
-}
-
-/* ================= CREATE ACCOUNT ================= */
-
-async function createTradingAccount(event) {
-  event.preventDefault();
-
-  const button = $("createAccountBtn");
-  button.disabled = true;
-  button.textContent = "Creating...";
-
-  try {
-    const payload = {
-      user_id: $("newUserId").value.trim(),
-      order_id: $("newOrderId").value.trim(),
-      account_size: Number($("newAccountSize").value),
-      account_type: $("newAccountType").value,
-      platform: $("newPlatform").value,
-      mt_login: null,
-      mt_server: null
-    };
-
-    const { data, error } = await db.functions.invoke(
-      "admin-create-trading-account",
-      { body: payload }
-    );
-
-    if (error) throw error;
-    if (data?.error) throw new Error(data.error);
-
-    showMessage("createMessage", "Trading account created successfully.", "success");
-    $("createAccountForm").reset();
-    await loadTradingAccounts();
-
-  } catch (error) {
-    console.error("Create account:", error);
-    showMessage("createMessage", error.message || "Could not create account.", "error");
-  } finally {
-    button.disabled = false;
-    button.textContent = "Create Trading Account";
   }
 }
 
