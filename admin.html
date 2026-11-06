@@ -462,21 +462,10 @@ tr:last-child td{border-bottom:0}
                     <option value="instant">Instant Funding</option>
                   </select>
                 </div>
-                <div class="field">
-                  <label>Platform</label>
-                  <select id="newPlatform" required>
-                    <option value="">Select platform</option>
-                    <option value="MT4">MT4</option>
-                    <option value="MT5">MT5</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label>MT Login</label>
-                  <input id="newMtLogin" required placeholder="Trading account login">
-                </div>
+                <input type="hidden" id="newPlatform" value="WFT TRADINGVIEW">
                 <div class="field full">
-                  <label>MT Server</label>
-                  <input id="newMtServer" required placeholder="Broker server name">
+                  <label>Trading Platform</label>
+                  <input value="WFT TradingView Terminal" readonly>
                 </div>
               </div>
               <div class="form-actions">
@@ -496,44 +485,7 @@ tr:last-child td{border-bottom:0}
             <button class="btn" onclick="loadTradingAccounts()">Refresh Accounts</button>
           </div>
           <div class="panel">
-  <div class="panel-head">
-    <h3>MT4 / MT5 Bridge Control</h3>
-  </div>
-
-  <div class="notice">
-    Select a trading account and generate a secure bridge token
-    for its MT4 or MT5 Demo terminal.
-  </div>
-
-  <div class="form-grid">
-    <div class="field full">
-      <label>Select Trading Account</label>
-      <select id="mtBridgeAccountSelect">
-        <option value="">Select account</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="form-actions">
-    <button class="btn gold" onclick="generateMtBridgeToken()">
-      Generate Bridge Token
-    </button>
-    <button class="btn red" onclick="revokeMtBridgeToken()">
-      Revoke Token
-    </button>
-  </div>
-
-  <div id="mtBridgeMessage" class="message"></div>
-
-  <div class="field">
-    <label>Generated Token — Copy and Save Securely</label>
-    <textarea id="mtBridgeTokenOutput"
-      rows="3"
-      readonly
-      placeholder="Token will appear here once generated"></textarea>
-  </div>
-          </div>
-          <div class="panel">
+            <div class="panel">
             <div class="panel-head">
               <h3>All Trading Accounts</h3>
               <div class="toolbar">
@@ -1328,139 +1280,12 @@ function renderAccounts() {
       <td>${money(account.account_size)}</td>
       <td>${escapeHTML(account.account_type || "—")}</td>
       <td>${escapeHTML(account.phase || "—")}</td>
-      <td>${escapeHTML(account.platform || "—")}</td>
+      <td>WFT TradingView</td>
       <td>${statusBadge(account.status)}</td>
       <td>${money(account.profit)}</td>
     </tr>
   `).join("");
 }
-
-  /* ================= MT4 / MT5 BRIDGE ================= */
-
-function populateMtBridgeAccounts() {
-  const select = $("mtBridgeAccountSelect");
-  if (!select) return;
-
-  const previous = select.value;
-
-  const eligible = accountsData.filter(account =>
-    ["MT4", "MT5"].includes(
-      String(account.platform || "").toUpperCase()
-    ) &&
-    account.mt_login &&
-    account.mt_server
-  );
-
-  select.innerHTML =
-    '<option value="">Select trading account</option>' +
-    eligible.map(account => `
-      <option value="${escapeHTML(account.id)}">
-        ${escapeHTML(account.mt_login)} —
-        ${escapeHTML(account.platform)} —
-        ${escapeHTML(account.status)}
-      </option>
-    `).join("");
-
-  if (eligible.some(account => account.id === previous)) {
-    select.value = previous;
-  }
-}
-
-async function generateMtBridgeToken() {
-  const accountId = $("mtBridgeAccountSelect")?.value;
-
-  if (!accountId) {
-    showMessage("mtBridgeMessage", "Select a trading account first.", "error");
-    return;
-  }
-
-  const account = accountsData.find(a => a.id === accountId);
-  if (!account) return;
-
-  if (!confirm(
-    "Generate a new bridge token for " +
-    account.mt_login + " (" + account.platform + ")?"
-  )) return;
-
-  const output = $("mtBridgeTokenOutput");
-  if (output) output.value = "";
-
-  try {
-    const { data, error } = await db.functions.invoke("mt-bridge", {
-      body: {
-        action: "create-token",
-        trading_account_id: accountId,
-        platform: String(account.platform).toUpperCase()
-      }
-    });
-
-    if (error) throw error;
-    if (!data || !data.success || !data.bridge_token) {
-      throw new Error(data?.error || "Token generation failed.");
-    }
-
-    output.value = data.bridge_token;
-
-    showMessage(
-      "mtBridgeMessage",
-      "Token generated. Copy it now and keep it private. It will not be shown again.",
-      "success"
-    );
-
-  } catch (error) {
-    console.error("Bridge token:", error);
-    showMessage(
-      "mtBridgeMessage",
-      error.message || "Could not generate bridge token.",
-      "error"
-    );
-  }
-}
-
-async function revokeMtBridgeToken() {
-  const accountId = $("mtBridgeAccountSelect")?.value;
-
-  if (!accountId) {
-    showMessage("mtBridgeMessage", "Select a trading account first.", "error");
-    return;
-  }
-
-  if (!confirm(
-    "Revoke the active bridge token for this account? Data syncing will stop."
-  )) return;
-
-  try {
-    const { data, error } = await db.functions.invoke("mt-bridge", {
-      body: {
-        action: "revoke-token",
-        trading_account_id: accountId
-      }
-    });
-
-    if (error) throw error;
-    if (!data || !data.success) {
-      throw new Error(data?.error || "Token revocation failed.");
-    }
-
-    if ($("mtBridgeTokenOutput")) {
-      $("mtBridgeTokenOutput").value = "";
-    }
-
-    showMessage(
-      "mtBridgeMessage",
-      "Bridge token revoked successfully.",
-      "success"
-    );
-
-  } catch (error) {
-    console.error("Bridge revoke:", error);
-    showMessage(
-      "mtBridgeMessage",
-      error.message || "Could not revoke token.",
-      "error"
-    );
-  }
-  }
 
 /* ================= PAYOUTS ================= */
 
@@ -1814,7 +1639,7 @@ async function reviewChallengeRequest(id, decision) {
     }
   } else {
     if (!confirm(
-      "Approve only after verifying the passed challenge, five profitable days, 10% target, and funded MT4/MT5 login. The account will be activated as funded and a certificate will be generated."
+      "Approve only after verifying the passed challenge, five profitable days, and 10% target. The account will be activated as funded and a certificate will be generated."
     )) return;
     note = prompt("Optional admin note:") || "";
   }
@@ -2113,30 +1938,14 @@ async function reviewRewardFeedback(id, decision) {
     return;
   }
 
-  const platform = prompt("Enter broker platform: MT4 or MT5");
-  if (!platform) return;
-
-  const normalizedPlatform = platform.trim().toUpperCase();
-
-  if (!["MT4", "MT5"].includes(normalizedPlatform)) {
-    showToast("Platform must be MT4 or MT5.");
-    return;
-  }
-
-  const mtLogin = prompt("Enter the real Headway DEMO MT login:");
-  if (!mtLogin || !mtLogin.trim()) return;
-
-  const mtServer = prompt("Enter the exact Headway DEMO server:");
-  if (!mtServer || !mtServer.trim()) return;
-
-  if (!confirm("Create the $5,000 1-Step Challenge account using these broker details?")) return;
+  if (!confirm("Create the $5,000 1-Step Challenge account on WFT TradingView Terminal?")) return;
 
   try {
     const { data, error } = await db.rpc("admin_create_reward_trading_account", {
       p_redemption_id: id,
-      p_platform: normalizedPlatform,
-      p_mt_login: mtLogin.trim(),
-      p_mt_server: mtServer.trim()
+      p_platform: "WFT TRADINGVIEW",
+      p_mt_login: null,
+      p_mt_server: null
     });
 
     if (error) throw error;
