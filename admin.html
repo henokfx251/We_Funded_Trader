@@ -1672,16 +1672,27 @@ function renderRewardManagement() {
           <td>${Number(row.points_awarded || 0)}</td>
           <td>${row.submitted_at
             ? new Date(row.submitted_at).toLocaleString() : "—"}</td>
-          <td>${row.status === "pending" ? `
-            <button class="btn small green"
-              onclick="reviewRewardFeedback('${row.id}','approved')">
-              Approve +50
-            </button>
-            <button class="btn small red"
-              onclick="reviewRewardFeedback('${row.id}','rejected')">
-              Reject
-            </button>` : "Reviewed"}
-          </td>
+          
+          <td>
+  ${row.trading_account_id
+    ? `Account linked: ${escapeHTML(String(row.trading_account_id).slice(0, 8))}`
+    : row.status === "approved" && row.activation_status === "paid"
+      ? `<button class="btn small green"
+          onclick="createRewardTradingAccount('${row.id}')">
+          Create $5K Account
+        </button>`
+      : row.status === "pending"
+        ? `
+          <button class="btn small green"
+            onclick="reviewRewardRedemption('${row.id}','approved')">
+            Approve
+          </button>
+          <button class="btn small red"
+            onclick="reviewRewardRedemption('${row.id}','rejected')">
+            Reject
+          </button>`
+        : "Reviewed"}
+</td>
         </tr>
       `).join("")
       : '<tr><td colspan="8" class="empty">No feedback tasks found.</td></tr>';
