@@ -249,6 +249,9 @@ tr:last-child td{border-bottom:0}
       <button class="nav-btn" data-page="payouts" onclick="goPage('payouts',this)">
         <span class="nav-icon">＄</span> Payout Management
       </button>
+      <button class="nav-btn" data-page="support-tickets" onclick="goPage('support-tickets',this)">
+        <span class="nav-icon">✉</span> Support Tickets
+      </button>
       <button class="nav-btn" data-page="challenge-requests"
   onclick="goPage('challenge-requests',this)">
   <span class="nav-icon">🏆</span> Challenge Pass Requests
@@ -592,6 +595,34 @@ tr:last-child td{border-bottom:0}
           </div>
         </section>
 
+        <!-- SUPPORT TICKETS -->
+        <section class="page" id="page-support-tickets">
+          <div class="page-heading">
+            <div><h1>Support Tickets</h1><p>Read customer questions, reply and manage ticket status.</p></div>
+            <button class="btn" onclick="loadSupportTickets()">Refresh Tickets</button>
+          </div>
+          <div class="stats">
+            <div class="stat-card"><div class="stat-label">Total Tickets</div><div class="stat-value" id="supportTotal">0</div></div>
+            <div class="stat-card"><div class="stat-label">Open</div><div class="stat-value" id="supportOpen">0</div></div>
+            <div class="stat-card"><div class="stat-label">In Progress</div><div class="stat-value" id="supportInProgress">0</div></div>
+            <div class="stat-card"><div class="stat-label">Resolved</div><div class="stat-value" id="supportResolved">0</div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Customer Tickets</h3>
+              <div class="toolbar">
+                <input id="supportTicketSearch" placeholder="Search ticket / subject / user..." oninput="renderSupportTickets()">
+                <select id="supportTicketFilter" onchange="renderSupportTickets()">
+                  <option value="">All statuses</option>
+                  <option value="open">Open</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="resolved">Resolved</option>
+                </select>
+              </div>
+            </div>
+            <div id="supportTicketsList"><div class="empty">Loading support tickets...</div></div>
+          </div>
+        </section>
+
         <!-- CHALLENGE PASS REQUESTS -->
         <section class="page" id="page-challenge-requests">
           <div class="page-heading">
@@ -735,6 +766,7 @@ let kycData = [];
 let accountsData = [];
 let payoutsData = [];
 let challengeRequestsData = [];
+let supportTicketsData = [];
 
 /* ================= HELPERS ================= */
 
@@ -812,7 +844,8 @@ function goPage(page, button) {
     accounts: "Trading Accounts",
     payouts: "Payout Management",
     "challenge-requests": "Challenge Pass Requests",
-    rewards: "Rewards Management"
+    rewards: "Rewards Management",
+    "support-tickets": "Support Tickets"
   };
 
   $("topTitle").textContent = titles[page] || "Admin Dashboard";
@@ -823,6 +856,7 @@ function goPage(page, button) {
   if (page === "payouts") loadPayouts();
   if (page === "challenge-requests") loadChallengeRequests();
   if (page === "rewards") loadRewardManagement();
+  if (page === "support-tickets") loadSupportTickets();
 
   $("sidebar")?.classList.remove("open");
 }
@@ -914,7 +948,8 @@ async function refreshAll() {
     loadTradingAccounts(),
     loadPayouts(),
         loadChallengeRequests(),
-    loadRewardManagement()
+    loadRewardManagement(),
+    loadSupportTickets()
   ]);
 
   results.forEach((result, index) => {
@@ -1772,6 +1807,88 @@ async function reviewChallengeRequest(id, decision) {
     console.error("Challenge review:", error);
     showToast("Review failed: " + error.message);
   }
+}
+
+
+/* ================= SUPPORT TICKETS ================= */
+async function loadSupportTickets() {
+  const container = $("supportTicketsList");
+  if (container) container.innerHTML = '<div class="empty">Loading support tickets...</div>';
+  const { data, error } = await db.from("support_tickets")
+    .select("*").order("created_at", { ascending: false });
+  if (error) {
+    console.error("Support tickets:", error);
+    if (container) container.innerHTML = '<div class="empty">' + escapeHTML(error.message) + '</div>';
+    return;
+  }
+  supportTicketsData = data || [];
+  renderSupportTickets();
+}
+function renderSupportTickets() {
+  const container = $("supportTicketsList");
+  if (!container) return;
+  $("supportTotal").textContent = supportTicketsData.length;
+  $("supportOpen").textContent = supportTicketsData.filter(t => t.status === "open").length;
+  $("supportInProgress").textContent = supportTicketsData.filter(t => t.status === "in_progress").length;
+  $("supportResolved").textContent = supportTicketsData.filter(t => t.status === "resolved").length;
+  const search = ($("supportTicketSearch")?.value || "").toLowerCase();
+  const filter = $("supportTicketFilter")?.value || "";
+  const rows = supportTicketsData.filter(t =>
+    [t.id,t.user_id,t.subject,t.question,t.difficulty].join(" ").toLowerCase().includes(search) &&
+    (!filter || t.status === filter)
+  );
+  if (!rows.length) {
+    container.innerHTML = '<div class="empty">No support tickets found.</div>';
+    return;
+  }
+  container.innerHTML = rows.map(t => `
+    <article class="panel" style="margin-bottom:14px">
+      <div class="panel-head">
+        <div><h3>${escapeHTML(t.subject)}</h3>
+          <div class="small" style="color:var(--muted);margin-top:6px">Ticket #${escapeHTML(t.id.slice(0,8).toUpperCase())} · User: ${escapeHTML(t.user_id)} · ${escapeHTML(new Date(t.created_at).toLocaleString())}</div>
+        </div>
+        ${statusBadge(t.status)}
+      </div>
+      <div class="toolbar" style="margin-bottom:12px">
+        <span class="status">${escapeHTML(String(t.difficulty).replace("_"," "))} difficulty</span>
+      </div>
+      <div style="white-space:pre-wrap;line-height:1.7;font-size:13px;background:#0a1322;padding:14px;border-radius:8px">${escapeHTML(t.question)}</div>
+      <div class="form-grid" style="margin-top:14px">
+        <div class="field">
+          <label for="ticketStatus_${t.id}">Ticket Status</label>
+          <select id="ticketStatus_${t.id}">
+            <option value="open" ${t.status==="open"?"selected":""}>Open</option>
+            <option value="in_progress" ${t.status==="in_progress"?"selected":""}>In Progress</option>
+            <option value="resolved" ${t.status==="resolved"?"selected":""}>Resolved</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="ticketReply_${t.id}">Admin Reply</label>
+          <textarea id="ticketReply_${t.id}" rows="3" placeholder="Write your response to the customer...">${escapeHTML(t.admin_reply || "")}</textarea>
+        </div>
+      </div>
+      ${t.replied_at ? '<div class="small" style="color:var(--muted);margin-top:8px">Last replied: '+escapeHTML(new Date(t.replied_at).toLocaleString())+'</div>' : ""}
+      <div class="form-actions"><button class="btn gold" onclick="saveSupportTicket('${t.id}')">Save Reply &amp; Status</button></div>
+    </article>
+  `).join("");
+}
+async function saveSupportTicket(id) {
+  const reply = $("ticketReply_" + id)?.value.trim() || "";
+  const status = $("ticketStatus_" + id)?.value || "open";
+  const payload = {
+    admin_reply: reply || null,
+    status,
+    updated_at: new Date().toISOString(),
+    replied_at: reply ? new Date().toISOString() : null
+  };
+  const { error } = await db.from("support_tickets").update(payload).eq("id", id);
+  if (error) {
+    console.error("Save support ticket:", error);
+    showToast("Could not save ticket: " + error.message);
+    return;
+  }
+  showToast("Support ticket updated.");
+  await loadSupportTickets();
 }
 
 /* ================= REWARDS MANAGEMENT ================= */
