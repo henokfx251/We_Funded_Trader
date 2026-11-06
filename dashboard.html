@@ -1568,8 +1568,8 @@ const redemptionRows = redemptions.map(row => {
   const paymentForm = row.status === "pending" &&
       row.activation_status === "unpaid" && !paymentSubmitted
     ? `
-      <div class="info-card">
-        <p><strong>Pay $1 USDT activation fee</strong></p>
+      <div class="info-card" id="reward-activation-${row.id}">
+  <p><strong>Pay $1 USDT activation fee</strong></p>
         <select id="rewardNetwork-${row.id}">
           <option value="BEP20">USDT BEP20</option>
           <option value="TRC20">USDT TRC20</option>
@@ -1744,8 +1744,28 @@ async function requestRewardRedemption(catalogId) {
 
     if (error) throw error;
 
-    toast("Reward redemption request submitted.");
+    toast("Reward redeemed. Complete your $1 activation payment.");
+
     await loadRewards();
+
+    const { data: latest } = await supabase
+      .from("reward_redemptions")
+      .select("id")
+      .eq("user_id", currentUser.id)
+      .order("requested_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (latest) {
+      const paymentBox = $("reward-activation-" + latest.id);
+
+      paymentBox?.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+      paymentBox?.querySelector("select")?.focus();
+    }
 
   } catch (err) {
     toast(err.message, true);
