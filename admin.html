@@ -555,6 +555,24 @@ tr:last-child td{border-bottom:0}
               </table>
             </div>
           </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h3>WFT Virtual Trading Monitor</h3>
+              <button class="btn" type="button" onclick="loadVirtualMonitor()">Refresh Monitor</button>
+            </div>
+            <div class="notice">Live view of simulated WFT trades, balances and risk limits. These are virtual trades, not broker executions.</div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr>
+                  <th>Trader User ID</th><th>Account</th><th>Type</th><th>Status</th>
+                  <th>Balance</th><th>Equity</th><th>Open Trades</th><th>Floating P/L</th>
+                  <th>Daily DD</th><th>Max DD</th>
+                </tr></thead>
+                <tbody id="virtualMonitorTable"><tr><td colspan="10" class="empty">Open Trading Accounts to load virtual monitoring data.</td></tr></tbody>
+              </table>
+            </div>
+            <div id="virtualMonitorMessage" class="message"></div>
+          </div>
         </section>
 
         <!-- PAYOUTS -->
@@ -1251,6 +1269,36 @@ async function loadTradingAccounts() {
   renderAccounts();
   updateOverviewStats();
   populateMtBridgeAccounts();
+  await loadVirtualMonitor();
+}
+
+async function loadVirtualMonitor() {
+  const tbody = $("virtualMonitorTable");
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="10" class="empty">Loading WFT virtual accounts...</td></tr>';
+  const { data, error } = await db.rpc("wft_virtual_admin_list");
+  if (error) {
+    tbody.innerHTML = '<tr><td colspan="10" class="empty">' + escapeHTML(error.message) + '</td></tr>';
+    return;
+  }
+  if (!Array.isArray(data) || !data.length) {
+    tbody.innerHTML = '<tr><td colspan="10" class="empty">No customers have opened the WFT Virtual Terminal yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(item => `
+    <tr>
+      <td>${escapeHTML(String(item.user_id || "").slice(0, 12))}</td>
+      <td>${money(item.account_size)}</td>
+      <td>${escapeHTML(item.account_type || "—")}</td>
+      <td>${statusBadge(item.status)}</td>
+      <td>${money(item.balance)}</td>
+      <td>${money(item.equity)}</td>
+      <td>${Number(item.open_positions || 0)}</td>
+      <td>${money(item.unrealized_pnl)}</td>
+      <td>${Number(item.daily_drawdown_percent || 0).toFixed(2)}%</td>
+      <td>${Number(item.max_drawdown_percent || 0).toFixed(2)}%</td>
+    </tr>
+  `).join("");
 }
 
 function renderAccounts() {
