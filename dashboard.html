@@ -570,6 +570,51 @@ hr {
   .top-right { gap:7px; }
   #profileEmailTop { max-width:125px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 }
+
+/* PREMIUM CUSTOMER DASHBOARD REFRESH */
+.dashboard-welcome{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:25px 26px;margin:0 0 22px;border:1px solid rgba(232,184,75,.28);
+  border-radius:18px;background:
+    radial-gradient(ellipse at 88% 10%,rgba(56,189,248,.13),transparent 38%),
+    linear-gradient(115deg,#13253b 0%,#0c192b 65%,#101d30 100%);
+  box-shadow:0 18px 42px rgba(0,0,0,.18);
+}
+.welcome-kicker,.account-overline{font-size:10px;letter-spacing:1.8px;font-weight:800;color:var(--gold);margin-bottom:9px}
+.dashboard-welcome h1{font-size:clamp(23px,3vw,31px);margin:0 0 8px}
+.dashboard-welcome p{margin:0;line-height:1.6}
+.welcome-actions{display:flex;gap:9px;flex-wrap:wrap}
+.stats-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}
+.stat-card{position:relative;overflow:hidden;min-height:118px;padding:18px;border-radius:15px;background:linear-gradient(145deg,#14243a,#0d192a);box-shadow:0 10px 28px rgba(0,0,0,.13)}
+.stat-card:after{content:"";position:absolute;width:82px;height:82px;right:-35px;top:-38px;border-radius:50%;background:rgba(232,184,75,.08)}
+.stat-card h2{font-size:clamp(19px,2vw,25px);font-variant-numeric:tabular-nums}
+.stat-card small{display:block;margin-top:7px;color:#71839a;font-size:10px}
+.balance-stat{border-color:rgba(232,184,75,.38)}
+.client-account-card{margin:0;padding:20px;border-radius:16px;background:linear-gradient(145deg,#14243a,#0b1727);box-shadow:0 12px 30px rgba(0,0,0,.15)}
+.accounts-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.account-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.account-card-top h3{font-size:16px;overflow-wrap:anywhere}
+.client-account-card .account-details{grid-template-columns:repeat(4,minmax(0,1fr));padding-top:13px;border-top:1px solid var(--line)}
+.positive-value{color:#4ade80}.negative-value{color:#f87171}
+.client-account-card.is-failed{border-color:rgba(239,68,68,.42)}
+.failure-explanation{margin-top:17px;padding:13px 14px;border-radius:11px;background:rgba(127,29,29,.18);border:1px solid rgba(239,68,68,.3)}
+.failure-explanation strong{font-size:12px;color:#fca5a5}
+.failure-explanation p{font-size:12px;line-height:1.65;color:#e2c4c4;margin:7px 0}
+.failure-explanation small{color:#aeb9c8;font-size:10px}
+.overview-account-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--line)}
+.overview-account-row:last-child{border-bottom:0}
+.overview-account-row strong{display:block;font-size:12px}
+.overview-account-row small{display:block;color:var(--muted);font-size:10px;margin-top:5px}
+.overview-account-values{text-align:right}
+@media(max-width:1250px){.stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){
+ .dashboard-welcome{align-items:flex-start;flex-direction:column;padding:20px 17px}
+ .welcome-actions{width:100%}.welcome-actions .btn{flex:1;text-align:center}
+ .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .accounts-grid{grid-template-columns:1fr}
+ .client-account-card .account-details{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+}
+
 </style>
 </head>
 
@@ -619,16 +664,24 @@ hr {
   
 <!-- OVERVIEW -->
 <section class="page active" id="page-overview">
-  <div class="welcome">
-    <h1>Welcome back, <span class="gold-text" id="welcomeName">Trader</span></h1>
-    <p class="muted">Your trading performance and account overview.</p>
+  <div class="welcome dashboard-welcome">
+    <div>
+      <div class="welcome-kicker">WE FUNDED TRADER · CLIENT PORTAL</div>
+      <h1>Welcome back, <span class="gold-text" id="welcomeName">Trader</span></h1>
+      <p class="muted">Your trading journey, accounts and performance — all in one place.</p>
+    </div>
+    <div class="welcome-actions">
+      <a class="btn" href="challenges.html">＋ Buy Challenge</a>
+      <a class="btn btn-secondary" href="virtual-terminal.html">Open Terminal ↗</a>
+    </div>
   </div>
 
   <div class="stats-grid">
-    <div class="stat-card"><span>Total Accounts</span><h2 id="statAccounts">0</h2></div>
-    <div class="stat-card"><span>Active Accounts</span><h2 id="statActive">0</h2></div>
-    <div class="stat-card"><span>Total Balance</span><h2 id="statBalance">$0.00</h2></div>
-    <div class="stat-card"><span>Total Profit</span><h2 id="statProfit">$0.00</h2></div>
+    <div class="stat-card"><span>Total Accounts</span><h2 id="statAccounts">0</h2><small>All account records</small></div>
+    <div class="stat-card"><span>Active Accounts</span><h2 id="statActive">0</h2><small>Currently tradable</small></div>
+    <div class="stat-card balance-stat"><span>Total Balance</span><h2 id="statBalance">$0.00</h2><small>Failed accounts excluded</small></div>
+    <div class="stat-card"><span>Total Equity</span><h2 id="statEquity">$0.00</h2><small>Active account equity</small></div>
+    <div class="stat-card"><span>Total Profit</span><h2 id="statProfit">$0.00</h2><small>All account results</small></div>
   </div>
 
   <div class="grid-2">
@@ -707,7 +760,7 @@ hr {
     <h1>My Trading Accounts</h1>
     <p class="muted">View your account credentials, balance, equity and performance.</p>
   </div>
-  <div id="accountsList" class="empty">Loading accounts...</div>
+  <div class="accounts-grid" id="accountsList"><div class="empty">Loading accounts...</div></div>
 </section>
 
 <!-- MY ORDERS -->
@@ -1347,32 +1400,48 @@ async function loadAccounts() {
   const active = accounts.filter(a =>
     ["active","funded"].includes(String(a.status).toLowerCase())
   );
+  const balanceEligible = accounts.filter(a =>
+    !["failed","breached","disabled"].includes(String(a.status || "").toLowerCase())
+  );
+  const totalBalance = balanceEligible.reduce((sum,a) => sum + Number(a.balance || 0), 0);
+  const totalEquity = balanceEligible.reduce((sum,a) => sum + Number(a.equity ?? a.balance ?? 0), 0);
+  const totalProfit = accounts.reduce((sum,a) => sum + Number(a.profit || 0), 0);
 
   setText("statAccounts", accounts.length);
   setText("statActive", active.length);
-  setText("statBalance", money(accounts.reduce((s,a) => s + Number(a.balance || 0), 0)));
-  setText("statProfit", money(accounts.reduce((s,a) => s + Number(a.profit || 0), 0)));
+  setText("statBalance", money(totalBalance));
+  setText("statEquity", money(totalEquity));
+  setText("statProfit", money(totalProfit));
 
-  const rows = accounts.map(a => `
-    <tr>
-      <td>${safe(a.account_name || String(a.id).slice(0,8))}</td>
-      <td>${money(a.account_size)}</td>
-      <td>${safe(a.account_type)}</td>
-      <td>WFT TradingView</td>
-      <td>${safe(a.phase || "—")}</td>
-      <td>${money(a.balance)}</td>
-      <td>${money(a.equity)}</td>
-      <td>${statusBadge(a.status)}</td>
-      <td>${String(a.status).toLowerCase() === "failed" ? safe(a.failure_reason || "Failure reason unavailable — contact WFT support.") : "—"}</td>
-    </tr>
-  `).join("");
+  const cards = accounts.map(a => {
+    const status = String(a.status || "").toLowerCase();
+    const failed = ["failed","breached"].includes(status);
+    const label = safe(a.account_name || String(a.id).slice(0,8));
+    return `
+      <article class="account-card client-account-card ${failed ? "is-failed" : ""}">
+        <div class="account-card-top">
+          <div><div class="account-overline">WFT TRADING ACCOUNT</div><h3>${label}</h3>
+          <div class="muted small">${safe(a.account_type || "Trading Account")} · ${safe(a.phase || "—")}</div></div>
+          ${statusBadge(a.status)}
+        </div>
+        <div class="account-details">
+          <div><div class="detail-label">Account Size</div><div class="detail-value">${money(a.account_size)}</div></div>
+          <div><div class="detail-label">Balance</div><div class="detail-value">${money(a.balance)}</div></div>
+          <div><div class="detail-label">Equity</div><div class="detail-value">${money(a.equity)}</div></div>
+          <div><div class="detail-label">Profit</div><div class="detail-value ${Number(a.profit || 0) >= 0 ? "positive-value" : "negative-value"}">${money(a.profit)}</div></div>
+        </div>
+        ${failed ? `<div class="failure-explanation"><strong>Account failed — excluded from Total Balance</strong><p>${safe(a.failure_reason || "Failure reason unavailable — contact WFT support.")}</p>${a.failed_at ? `<small>Failed on ${date(a.failed_at)}</small>` : ""}</div>` : ""}
+      </article>
+    `;
+  }).join("");
+  setHTML("accountsList", cards || '<div class="empty">No trading accounts found.</div>');
 
-  setHTML("accountsList", rows || emptyRow(9, "No trading accounts found."));
   setHTML("overviewAccounts", accounts.slice(0,5).map(a => `
-    <tr><td>${safe(a.account_name || String(a.id).slice(0,8))}</td>
-    <td>${money(a.balance)}</td><td>${money(a.profit)}</td>
-    <td>${statusBadge(a.status)}</td></tr>
-  `).join("") || emptyRow(4, "No accounts yet."));
+    <div class="overview-account-row">
+      <div><strong>${safe(a.account_name || String(a.id).slice(0,8))}</strong><small>${safe(a.account_type || "Account")}</small></div>
+      <div class="overview-account-values"><strong>${money(a.balance)}</strong><small>${statusBadge(a.status)}</small></div>
+    </div>
+  `).join("") || '<div class="empty">No accounts yet.</div>');
 
   setHTML("challengeAccounts", accounts.map(a => `
     <option value="${safe(a.id)}">${safe(a.account_name || String(a.id).slice(0,8))} — ${safe(a.account_size)} USD</option>
