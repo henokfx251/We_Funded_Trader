@@ -722,7 +722,7 @@ hr {
         <thead>
           <tr>
             <th>Order</th><th>Account Size</th><th>Type</th><th>Trading Platform</th>
-            <th>Price</th><th>Status</th><th>Date</th><th>Action</th>
+            <th>Price</th><th>Payment Status</th><th>Network</th><th>Transaction ID</th><th>Date</th>
           </tr>
         </thead>
         <tbody id="ordersTable">
@@ -1295,36 +1295,45 @@ $("passwordForm")?.addEventListener("submit", async e => {
 
 async function loadOrders() {
   const { data, error } = await supabase
-    .from("orders")
-    .select("*")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false });
+    .from('orders')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false });
 
   if (error) throw error;
   orders = data || [];
 
-  const rows = orders.map(o => `
-    <tr>
-      <td>${safe(String(o.id).slice(0, 8))}</td>
-      <td>${safe(o.account_size)} USD</td>
-      <td>${safe(o.account_type)}</td>
-      <td>WFT TradingView</td>
-      <td>${money(o.final_price)}</td>
-      <td>${statusBadge(o.status)}</td>
-      <td>${date(o.created_at)}</td>
-    </tr>
-  `).join("");
+  const rows = orders.map(o => {
+    const paymentSubmitted = Boolean(o.transaction_hash && o.payment_network);
+    const displayStatus = o.status === 'pending' && paymentSubmitted
+      ? 'Payment Submitted' : (o.status || 'Pending');
+    const tx = o.transaction_hash
+      ? '<span title="' + safe(o.transaction_hash) + '">' +
+        safe(o.transaction_hash.slice(0, 12)) + '…' + safe(o.transaction_hash.slice(-8)) + '</span>'
+      : '—';
+    return '<tr>' +
+      '<td>' + safe(String(o.id).slice(0, 8)) + '</td>' +
+      '<td>' + safe(o.account_size) + ' USD</td>' +
+      '<td>' + safe(o.account_type) + '</td>' +
+      '<td>WFT TradingView</td>' +
+      '<td>' + money(o.final_price) + '</td>' +
+      '<td>' + statusBadge(displayStatus) + '</td>' +
+      '<td>' + safe(o.payment_network || '—') + '</td>' +
+      '<td>' + tx + '</td>' +
+      '<td>' + date(o.payment_submitted_at || o.created_at) + '</td>' +
+      '</tr>';
+  }).join('');
 
-  setHTML("ordersTable", rows || emptyRow(7, "No orders found."));
-  setHTML("overviewOrders", rows
-    ? orders.slice(0, 5).map(o => `
-      <tr><td>${safe(o.account_size)} USD</td>
-      <td>${safe(o.account_type)}</td>
-      <td>${money(o.final_price)}</td>
-      <td>${statusBadge(o.status)}</td></tr>`).join("")
-    : emptyRow(4, "No orders yet."));
+  setHTML('ordersTable', rows || emptyRow(9, 'No orders found.'));
+  const overviewRows = orders.slice(0, 5).map(o => {
+    const submitted = o.status === 'pending' && o.transaction_hash && o.payment_network;
+    return '<tr><td>' + safe(o.account_size) + ' USD</td>' +
+      '<td>' + safe(o.account_type) + '</td>' +
+      '<td>' + money(o.final_price) + '</td>' +
+      '<td>' + statusBadge(submitted ? 'Payment Submitted' : o.status) + '</td></tr>';
+  }).join('');
+  setHTML('overviewOrders', overviewRows || emptyRow(4, 'No orders yet.'));
 }
-
 async function loadAccounts() {
   const { data, error } = await supabase
     .from("trading_accounts")
