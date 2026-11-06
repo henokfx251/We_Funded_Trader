@@ -1714,8 +1714,9 @@ function renderRewardManagement() {
 </td>
 
           <td>${statusBadge(row.status)}</td>
-          <td>
-  ${row.trading_account_id
+          <td>${row.requested_at
+  ? new Date(row.requested_at).toLocaleString() : "—"}</td>
+
     ? `Account linked: ${escapeHTML(String(row.trading_account_id).slice(0, 8))}`
     : row.status === "approved" && row.activation_status === "paid"
       ? `<button class="btn small green"
