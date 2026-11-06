@@ -509,10 +509,10 @@ tr:last-child td{border-bottom:0}
           </div>
           <div class="panel">
             <div class="panel-head">
-              <h3>WFT Virtual Trading Monitor</h3>
+              <h3>WFT Trading Monitor</h3>
               <button class="btn" type="button" onclick="loadVirtualMonitor()">Refresh Monitor</button>
             </div>
-            <div class="notice">Live view of simulated WFT trades, balances and risk limits. These are virtual trades, not broker executions.</div>
+            <div class="notice">Live view of WFT TradingView Terminal trades, account balances and challenge risk limits.</div>
             <div class="table-wrap">
               <table>
                 <thead><tr>
@@ -1227,14 +1227,14 @@ async function loadTradingAccounts() {
 async function loadVirtualMonitor() {
   const tbody = $("virtualMonitorTable");
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="10" class="empty">Loading WFT virtual accounts...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="10" class="empty">Loading WFT trading accounts...</td></tr>';
   const { data, error } = await db.rpc("wft_virtual_admin_list");
   if (error) {
     tbody.innerHTML = '<tr><td colspan="10" class="empty">' + escapeHTML(error.message) + '</td></tr>';
     return;
   }
   if (!Array.isArray(data) || !data.length) {
-    tbody.innerHTML = '<tr><td colspan="10" class="empty">No customers have opened the WFT Virtual Terminal yet.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" class="empty">No WFT TradingView Terminal accounts found yet.</td></tr>';
     return;
   }
   tbody.innerHTML = data.map(item => `
