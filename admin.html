@@ -373,7 +373,8 @@ tr:last-child td{border-bottom:0}
                 <input id="orderSearch" placeholder="Search order / user..." oninput="renderOrders()">
                 <select id="orderFilter" onchange="renderOrders()">
                   <option value="">All statuses</option>
-                  <option value="pending">Pending</option>
+                  <option value="pending">Awaiting Payment</option>
+                  <option value="payment_submitted">Payment Submitted</option>
                   <option value="paid">Paid</option>
                   <option value="completed">Completed</option>
                   <option value="rejected">Rejected</option>
@@ -383,11 +384,10 @@ tr:last-child td{border-bottom:0}
             <div class="table-wrap">
               <table>
                 <thead><tr>
-                  <th>Order</th><th>User ID</th><th>Type</th><th>Amount</th>
-                  <th>Status</th><th>Date</th><th>Action</th>
+                  <th>Order</th><th>User ID</th><th>Size</th><th>Type</th><th>Amount</th><th>Network</th><th>Transaction Hash</th><th>Payment Status</th><th>Submitted</th><th>Date</th><th>Action</th>
                 </tr></thead>
                 <tbody id="ordersTable">
-                  <tr><td colspan="9" class="empty">Loading orders...</td></tr>
+                  <tr><td colspan="11" class="empty">Loading orders...</td></tr>
 
                 </tbody>
               </table>
@@ -961,58 +961,80 @@ function renderOrders() {
 
   const search = ($("orderSearch")?.value || "").toLowerCase();
   const filter = $("orderFilter")?.value || "";
-
   const rows = ordersData.filter(order => {
-    const text = [
-      order.id,
-      order.user_id,
-      order.status,
-      order.account_type
-    ].join(" ").toLowerCase();
-
-    return text.includes(search) && (!filter || order.status === filter);
+    const paymentSubmitted = Boolean(order.transaction_hash && order.payment_network);
+    const searchable = [order.id, order.user_id, order.status, order.account_type,
+      order.account_size, order.payment_network, order.transaction_hash].join(" ").toLowerCase();
+    const matchesFilter = !filter ||
+      (filter === "payment_submitted" ? paymentSubmitted && order.status === "pending" :
+       filter === "pending" ? order.status === "pending" && !paymentSubmitted :
+       order.status === filter);
+    return searchable.includes(search) && matchesFilter;
   });
 
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="7" class="empty">No orders found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="11" class="empty">No orders found.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = rows.map(order => `
-    <tr>
-      <td>${escapeHTML(String(order.id).slice(0, 8))}</td>
-      <td>${escapeHTML(String(order.user_id || "").slice(0, 12))}</td>
-      <td>${escapeHTML(order.account_type || order.challenge_type || "—")}</td>
-      <td>${money(order.final_price ?? order.amount)}</td>
-      <td>${statusBadge(order.status)}</td>
-      <td>${order.created_at ? new Date(order.created_at).toLocaleDateString() : "—"}</td>
-      <td>
-        ${order.status === "pending"
-          ? `<button class="btn small green" onclick="updateOrderStatus('${order.id}','paid')">Mark Paid</button>
-             <button class="btn small red" onclick="updateOrderStatus('${order.id}','rejected')">Reject</button>`
-          : "—"}
-      </td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = rows.map(order => {
+    const submitted = Boolean(order.transaction_hash && order.payment_network);
+    const paymentStatus = order.status === "pending" && submitted
+      ? '<span class="status pending">Payment Submitted</span>'
+      : statusBadge(order.status);
+    const tx = order.transaction_hash
+      ? '<span title="' + escapeHTML(order.transaction_hash) + '">' +
+        escapeHTML(order.transaction_hash.slice(0, 12)) + '…' +
+        escapeHTML(order.transaction_hash.slice(-8)) + '</span>'
+      : 'Not submitted';
+    let actions = '—';
+    if (order.status === "pending") {
+      actions = (submitted
+        ? '<button class="btn small green" onclick="updateOrderStatus(\'' + order.id + '\',\'paid\')">Approve Payment</button>'
+        : '<span class="status pending">Awaiting Payment</span>') +
+        ' <button class="btn small red" onclick="updateOrderStatus(\'' + order.id + '\',\'rejected\')">Reject</button>';
+    }
+    return '<tr>' +
+      '<td>' + escapeHTML(String(order.id).slice(0, 8)) + '</td>' +
+      '<td>' + escapeHTML(String(order.user_id || '').slice(0, 12)) + '</td>' +
+      '<td>' + escapeHTML(String(order.account_size || '—')) + '</td>' +
+      '<td>' + escapeHTML(order.account_type || order.challenge_type || '—') + '</td>' +
+      '<td>' + money(order.final_price ?? order.amount) + '</td>' +
+      '<td>' + escapeHTML(order.payment_network || '—') + '</td>' +
+      '<td>' + tx + '</td>' +
+      '<td>' + paymentStatus + '</td>' +
+      '<td>' + (order.payment_submitted_at ? new Date(order.payment_submitted_at).toLocaleString() : '—') + '</td>' +
+      '<td>' + (order.created_at ? new Date(order.created_at).toLocaleDateString() : '—') + '</td>' +
+      '<td>' + actions + '</td>' +
+      '</tr>';
+  }).join('');
 }
 
 async function updateOrderStatus(id, status) {
-  if (!confirm("Change this order status to " + status + "?")) return;
-
-  const { error } = await db
-    .from("orders")
-    .update({ status })
-    .eq("id", id);
-
-  if (error) {
-    showToast("Order update failed: " + error.message);
+  const order = ordersData.find(item => String(item.id) === String(id));
+  if (!order) { showToast('Order not found. Refresh the order list.'); return; }
+  if (!['paid', 'rejected'].includes(status)) return;
+  if (status === 'paid' && (!order.transaction_hash || !['BEP20', 'TRC20'].includes(order.payment_network))) {
+    showToast('Cannot approve: customer payment proof is missing.');
     return;
   }
-
-  showToast("Order updated.");
+  const promptText = status === 'paid'
+    ? 'Confirm payment verification and approve this order?'
+    : 'Reject this customer order?';
+  if (!confirm(promptText)) return;
+  const { data, error } = await db.from('orders')
+    .update({ status })
+    .eq('id', id).eq('status', 'pending')
+    .select('id,status').maybeSingle();
+  if (error) { showToast('Order update failed: ' + error.message); return; }
+  if (!data) {
+    showToast('Order was not changed. It may already have been reviewed; refreshing.');
+    await loadOrders();
+    return;
+  }
+  showToast(status === 'paid' ? 'Payment approved. Order marked as PAID.' : 'Order rejected.');
   await loadOrders();
 }
-
 function updateOverviewStats() {
   if ($("totalOrders")) $("totalOrders").textContent = ordersData.length;
   if ($("pendingOrders")) {
@@ -1047,7 +1069,7 @@ function updateOverviewStats() {
         <td>${escapeHTML(String(order.user_id || "").slice(0, 10))}</td>
         <td>${escapeHTML(order.account_type || "—")}</td>
         <td>${money(order.final_price ?? order.amount)}</td>
-        <td>${escapeHTML(order.network || "—")}</td>
+        <td>${escapeHTML(order.payment_network || "—")}</td>
         <td>${escapeHTML(order.transaction_hash || "—")}</td>
         <td>${statusBadge(order.status)}</td>
         <td>${order.created_at ? new Date(order.created_at).toLocaleDateString() : "—"}</td>
