@@ -1562,7 +1562,39 @@ async function loadRewards() {
     ledgerRows || emptyRow(3, "No points earned yet.")
   );
 
-  const redemptionRows = redemptions.map(row => `
+  
+const redemptionRows = redemptions.map(row => {
+  const paymentSubmitted = Boolean(row.activation_tx_hash);
+  const paymentForm = row.status === "pending" &&
+      row.activation_status === "unpaid" && !paymentSubmitted
+    ? `
+      <div class="info-card">
+        <p><strong>Pay $1 USDT activation fee</strong></p>
+        <select id="rewardNetwork-${row.id}">
+          <option value="BEP20">USDT BEP20</option>
+          <option value="TRC20">USDT TRC20</option>
+        </select>
+        <p class="small">BEP20 wallet:</p>
+        <code>0xc6e6d92df291cd2f48e83dbf656817f1712d8cfa</code>
+        <button type="button" class="btn small"
+          onclick="copyRewardWallet('BEP20')">Copy BEP20</button>
+        <p class="small">TRC20 wallet:</p>
+        <code>TS52ntAQWhtnwFRgSASm5ugD7h35Mow9N4</code>
+        <button type="button" class="btn small"
+          onclick="copyRewardWallet('TRC20')">Copy TRC20</button>
+        <input id="rewardTx-${row.id}" type="text"
+          placeholder="Paste transaction hash">
+        <button class="btn" type="button"
+          onclick="submitRewardActivation('${row.id}')">
+          Submit $1 Payment
+        </button>
+      </div>`
+    : paymentSubmitted
+      ? `<span>Submitted: ${safe(row.activation_network)}
+          <br>TX: ${safe(row.activation_tx_hash)}</span>`
+      : "—";
+
+  return `
     <tr>
       <td>${date(row.requested_at)}</td>
       <td>$${Number(row.account_size).toLocaleString()} ${safe(row.account_type)}</td>
@@ -1571,11 +1603,14 @@ async function loadRewards() {
       <td>${statusBadge(row.activation_status)}</td>
       <td>${statusBadge(row.status)}</td>
     </tr>
-  `).join("");
+    <tr><td colspan="6">${paymentForm}</td></tr>
+  `;
+}).join("");
 
-  setHTML("rewardRedemptions",
-    redemptionRows || emptyRow(6, "No redemption requests yet.")
-  );
+setHTML("rewardRedemptions",
+  redemptionRows || emptyRow(6, "No redemption requests yet.")
+);
+  
 
   const catalogHtml = catalog.map(item => {
     const existing = redemptions.find(
@@ -1653,6 +1688,48 @@ $("feedbackTaskForm")?.addEventListener("submit", async event => {
     button.disabled = false;
   }
 });
+  
+function copyRewardWallet(network) {
+  const wallets = {
+    BEP20: "0xc6e6d92df291cd2f48e83dbf656817f1712d8cfa",
+    TRC20: "TS52ntAQWhtnwFRgSASm5ugD7h35Mow9N4"
+  };
+
+  navigator.clipboard.writeText(wallets[network])
+    .then(() => toast(network + " wallet copied."))
+    .catch(() => toast("Copy failed. Copy the address manually.", true));
+}
+
+async function submitRewardActivation(id) {
+  const network = $("rewardNetwork-" + id).value;
+  const txHash = $("rewardTx-" + id).value.trim();
+
+  if (!txHash) {
+    toast("Enter your transaction hash.", true);
+    return;
+  }
+
+  if (!confirm("Submit your $1 USDT " + network + " payment details?")) return;
+
+  try {
+    const { error } = await supabase.rpc(
+      "submit_reward_activation_payment",
+      {
+        p_redemption_id: id,
+        p_network: network,
+        p_tx_hash: txHash
+      }
+    );
+
+    if (error) throw error;
+
+    toast("Payment submitted. Waiting for Admin verification.");
+    await loadRewards();
+  } catch (err) {
+    toast(err.message, true);
+  }
+  }
+  
 
 async function requestRewardRedemption(catalogId) {
   if (!confirm(
