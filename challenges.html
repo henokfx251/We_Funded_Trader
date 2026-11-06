@@ -310,14 +310,13 @@ footer{
 
 <h1>Choose Your Challenge</h1>
 <p class="sub">
-  Select your account size, challenge type and trading platform.
+  Select your account size and funding program.
 </p>
 
 <section class="promo">
   <strong>NEW50 — GET 50% OFF</strong>
   <p>Use coupon code NEW50 at checkout.</p>
-  <p>MT4 users receive an additional automatic 10% discount.</p>
-  <p><b>NEW50 + MT4 = 60% total discount.</b></p>
+  <p>Use NEW50 for the eligible first-time customer discount.</p>
   <p class="note">
     NEW50 first-time customer eligibility is subject to server verification.
   </p>
@@ -348,13 +347,7 @@ footer{
     <option value="100000">$100,000 Account</option>
   </select>
 
-  <label for="platform">Trading Platform</label>
-
-  <select id="platform" onchange="updatePrice()">
-    <option value="MT5">MT5 — Standard Price</option>
-    <option value="MT4">MT4 — Automatic 10% Discount</option>
-    <option value="OTHER" disabled>Other Platform — Coming Soon</option>
-  </select>
+  <input type="hidden" id="platform" value="WFT TRADINGVIEW">
 
   <div class="grid">
 
@@ -401,8 +394,8 @@ footer{
   <div class="price" id="price">$10.00</div>
 
   <p class="note" id="discountNote" style="text-align:center">
-    MT4 receives an automatic 10% discount.
-    Coupon discounts are added to the MT4 discount.
+    WFT TradingView Terminal is the platform for all WFT accounts.
+    Coupon discounts are applied to the account base price.
   </p>
 
   <button style="width:100%" onclick="checkout()">
@@ -531,30 +524,7 @@ footer{
 
 </section>
 
-<!-- BROKER INFORMATION -->
 
-<section class="panel">
-
-  <h2 style="color:var(--gold)">Trading Environment</h2>
-
-  <div class="rule-card">
-    <h3>Headway — MT5 Demo</h3>
-    <p>
-      WFT currently uses the Headway Demo trading environment
-      for testing and demonstration purposes.
-    </p>
-    <p>
-      Platform: MetaTrader 5 (MT5)<br>
-      Broker Environment: Headway Demo
-    </p>
-    <p class="note">
-      Trading account data must be verified before it is used
-      for official challenge evaluation or payout decisions.
-    </p>
-    <p class="note">WFT Virtual Terminal is a separate simulated trading engine. Its trades do not execute on the Headway MT5 broker account. <a href="virtual-terminal.html">Open WFT Virtual Terminal</a>.</p>
-  </div>
-
-</section>
 
 </main>
 
@@ -644,18 +614,9 @@ function getCouponPercent(){
 function calculateDisplay(){
 
   const size = document.getElementById("accountSize").value;
-  const platform = document.getElementById("platform").value;
-
+  const platform = "WFT TRADINGVIEW";
   const basePrice = prices[size];
-
-  // MT4 automatic discount.
-  const mt4Discount = platform === "MT4" ? 10 : 0;
-
-  // Coupon discount.
-  const couponDiscount = getCouponPercent();
-
-  // Existing discount calculation retained.
-  const totalDiscount = mt4Discount + couponDiscount;
+  const totalDiscount = getCouponPercent();
 
   const finalPrice = basePrice * (1 - totalDiscount / 100);
 
@@ -664,21 +625,7 @@ function calculateDisplay(){
 
   const note = document.getElementById("discountNote");
 
-  if(mt4Discount > 0 && couponDiscount > 0){
-
-    note.textContent =
-      "MT4 automatic 10% + Coupon " +
-      couponDiscount +
-      "% = " +
-      totalDiscount +
-      "% total discount.";
-
-  }else if(mt4Discount > 0){
-
-    note.textContent =
-      "Automatic MT4 10% discount applied.";
-
-  }else if(couponDiscount > 0){
+  if(couponDiscount > 0){
 
     note.textContent =
       couponDiscount +
@@ -724,31 +671,17 @@ function applyCoupon(){
 
   couponApplied = true;
 
-  const platform = document.getElementById("platform").value;
+  const platform = "WFT TRADINGVIEW";
 
   const couponPercent =
     code === "NEW50" ? 50 :
     code === "WFT20" ? 20 : 10;
 
-  const mt4Percent = platform === "MT4" ? 10 : 0;
-
-  const total = couponPercent + mt4Percent;
+  const total = couponPercent;
 
   msg.className = "message success";
 
-  if(mt4Percent > 0){
-
-    msg.textContent =
-      code + " accepted! Coupon " +
-      couponPercent + "% + MT4 10% = " +
-      total + "% total discount.";
-
-  }else{
-
-    msg.textContent =
-      code + " accepted! " +
-      couponPercent + "% coupon discount.";
-  }
+  msg.textContent = code + " accepted! " + couponPercent + "% coupon discount.";
 
   calculateDisplay();
 }
@@ -756,19 +689,13 @@ function applyCoupon(){
 function checkout(){
 
   const size = document.getElementById("accountSize").value;
-  const platform = document.getElementById("platform").value;
+  const platform = "WFT TRADINGVIEW";
 
   const coupon = document.getElementById("coupon")
     .value.trim().toUpperCase();
 
   const message = document.getElementById("checkoutMessage");
 
-  if(platform === "OTHER"){
-
-    message.className = "message error";
-    message.textContent = "This platform is coming soon.";
-    return;
-  }
 
   if(coupon !== "" && !couponApplied){
 
