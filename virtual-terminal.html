@@ -24,7 +24,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
 .market-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px}.market-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.market-filters button{background:#0b192a;color:var(--muted);border:1px solid var(--line);padding:7px 10px;border-radius:7px;font-size:10px}.market-filters button.active{border-color:var(--gold);color:var(--gold)}.market-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .market{background:#0b192a;border:1px solid var(--line);border-radius:9px;padding:12px;text-align:left;color:var(--text);width:100%}
 .market.selected{border-color:var(--gold);background:#172b43}.market-name{font-weight:800;font-size:13px}.market-price{color:var(--gold2);font-size:15px;font-weight:800;margin-top:7px}.market-meta{color:var(--muted);font-size:10px;margin-top:3px}.market-change{font-size:10px;color:var(--muted);margin-top:5px}.trade-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}.trade-summary .card{padding:10px}.history-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}.history-summary .card{padding:10px}.search-input{min-width:0}
-.chart-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.chart-top strong{font-size:14px}.chart-wrap{width:100%;height:330px;background:#091525;border-radius:8px;overflow:hidden}.chart-wrap svg{width:100%;height:100%;display:block}
+.chart-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.chart-top strong{font-size:14px}.chart-wrap{width:100%;height:540px;background:#091525;border-radius:8px;overflow:hidden}.chart-wrap svg{width:100%;height:100%;display:block}
 .trade-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.field label{display:block;color:#cbd5e1;font-size:10px;margin:10px 0 6px}
 .side-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.btn{border:0;border-radius:8px;padding:11px 14px;font-size:11px;font-weight:800}.buy{background:#15803d;color:white}.sell{background:#b91c1c;color:white}.secondary{background:#26374d;color:#e2e8f0}.close-btn{background:#26374d;color:#fff;padding:7px 10px;border-radius:7px;border:0;font-size:10px}
 .notice{background:#0b192a;border:1px solid var(--line);padding:10px;border-radius:8px;color:var(--muted);font-size:11px;line-height:1.5;margin:10px 0}
@@ -36,7 +36,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
 .nav-btn{background:transparent;border:0;color:var(--muted);font-size:10px;padding:5px 2px;display:flex;flex-direction:column;align-items:center;gap:4px}.nav-btn span{font-size:17px}.nav-btn.active{color:var(--gold)}
 .loading{color:var(--muted);text-align:center;padding:22px;font-size:12px}
 @media(min-width:850px){.container{padding:22px}.tabs{display:flex;gap:7px;margin-bottom:12px}.tabs button{background:#102033;color:var(--muted);border:1px solid var(--line);padding:9px 14px;border-radius:8px;font-size:11px}.tabs button.active{color:var(--gold);border-color:var(--gold)}.bottom-nav{position:static;max-width:1250px;margin:0 auto 20px;border:1px solid var(--line);border-radius:10px;display:none}.market-list{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:700px){.account-row{grid-template-columns:repeat(2,minmax(0,1fr))}.account-row .account-select{grid-column:1/-1}.container{padding:11px}.chart-wrap{height:280px}.headline h1{font-size:16px}.metric-value{font-size:15px}.topbar{padding:0 11px}.brand{font-size:14px}}
+.chart-wrap{height:420px}.chart-controls{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}.chart-controls button{background:#0b192a;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:10px}.chart-controls button.active{border-color:var(--gold);color:var(--gold)}.chart-order{margin-top:10px;background:#0b192a;border:1px solid var(--line);border-radius:9px;padding:10px}.chart-order .side-toggle{margin:0 0 8px}.chart-order .btn{padding:9px;font-size:10px}.chart-order-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.chart-order-fields label{display:block;color:var(--muted);font-size:9px;margin:0 0 4px}.chart-order-fields input{padding:7px;font-size:10px}.chart-price-line{stroke-dasharray:4 4}.chart-wrap svg text{font-family:Arial,sans-serif}.chart-wrap svg [data-drag]{cursor:ns-resize;touch-action:none}.chart-hint{font-size:9px;color:var(--muted);margin-top:6px}@media(max-width:700px){.chart-wrap{height:390px}.chart-order-fields{grid-template-columns:repeat(3,minmax(0,1fr))}.account-row{grid-template-columns:repeat(2,minmax(0,1fr))}.account-row .account-select{grid-column:1/-1}.container{padding:11px}.chart-wrap{height:280px}.headline h1{font-size:16px}.metric-value{font-size:15px}.topbar{padding:0 11px}.brand{font-size:14px}}
 </style>
 </head>
 <body>
@@ -61,9 +61,20 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
   </section>
   <section class="view active" id="view-chart">
     <div class="panel">
-      <div class="chart-top"><strong id="chartSymbol">XAUUSD</strong><span class="sub">15-minute simulated candles</span></div>
+      <div class="chart-top"><strong id="chartSymbol">XAUUSD</strong><span class="sub" id="chartQuote">Bid — · Ask —</span></div>
+      <div class="chart-controls" id="timeframes"><button data-tf="1D">D</button><button data-tf="4H">4H</button><button data-tf="1H">1H</button><button class="active" data-tf="15m">15m</button><button data-tf="5m">5m</button><button data-tf="1m">1m</button></div>
       <div class="chart-wrap" id="chartWrap"><div class="loading">Loading chart…</div></div>
-      <div class="sub" style="margin-top:8px">Candles are generated by the WFT Virtual Engine and are not real market data.</div>
+      <div class="chart-hint">SL / TP መስመሮችን በChart ላይ በመጎተት ማንቀሳቀስ ይቻላል።</div>
+      <div class="chart-order">
+        <div class="side-toggle"><button class="btn buy" id="chartBuy">BUY</button><button class="btn sell" id="chartSell">SELL</button></div>
+        <div class="chart-order-fields">
+          <div><label for="chartVolume">Lots</label><input id="chartVolume" type="number" min="0.01" max="10" step="0.01" value="0.10"></div>
+          <div><label for="chartSL">Stop Loss</label><input id="chartSL" type="number" step="any" placeholder="Optional"></div>
+          <div><label for="chartTP">Take Profit</label><input id="chartTP" type="number" step="any" placeholder="Optional"></div>
+        </div>
+        <div class="status" id="chartTradeStatus"></div>
+      </div>
+      <div class="sub" style="margin-top:8px">Virtual simulated candles · Not live market data.</div>
     </div>
     
   </section>
@@ -106,7 +117,7 @@ const $=id=>document.getElementById(id);
 const money=n=>"$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmt=(n,d=5)=>Number(n||0).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let user=null,accounts=[],selectedAccount="",state=null,selectedSymbol="XAUUSD",activeTab="chart",refreshing=false,marketFilter="ALL";
+let user=null,accounts=[],selectedAccount="",state=null,selectedSymbol="XAUUSD",activeTab="chart",refreshing=false,marketFilter="ALL",timeframe="15m",dragState=null;
 function showTab(tab){
  activeTab=tab;
  $("accountOverview").style.display=tab==="trade"?"grid":"none";
@@ -137,15 +148,31 @@ function renderMarkets(){
 }
 function drawChart(){
  const m=quote(selectedSymbol);$("chartSymbol").textContent=selectedSymbol;
- $("chartBid").textContent=m?fmt(m.bid,m.digits):"—";$("chartAsk").textContent=m?fmt(m.ask,m.digits):"—";
- const data=state?.candles||[];if(!data.length){$("chartWrap").innerHTML='<div class="loading">No candle data available</div>';return;}
- const W=900,H=330,L=12,R=70,T=12,B=20,vals=data.flatMap(c=>[Number(c.high),Number(c.low)]);
- const max=Math.max(...vals),min=Math.min(...vals),range=max-min||1,step=(W-L-R)/data.length,cw=Math.max(4,step*.52);
- const y=v=>T+(max-v)/range*(H-T-B);
- let svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Simulated candlestick chart">';
- for(let i=0;i<5;i++){const yy=T+i*(H-T-B)/4;const value=max-i*range/4;svg+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R+4)+'" y2="'+yy+'" stroke="#233449" stroke-width="1"/><text x="'+(W-R+9)+'" y="'+(yy+4)+'" fill="#91a4bb" font-size="11">'+fmt(value, m?.digits||2)+'</text>';}
- data.forEach((c,i)=>{const x=L+i*step+step/2,up=Number(c.close)>=Number(c.open),color=up?"#22c55e":"#ef4444",top=Math.min(y(c.open),y(c.close)),height=Math.max(2,Math.abs(y(c.open)-y(c.close)));svg+='<line x1="'+x+'" y1="'+y(c.high)+'" x2="'+x+'" y2="'+y(c.low)+'" stroke="'+color+'" stroke-width="1.5"/><rect x="'+(x-cw/2)+'" y="'+top+'" width="'+cw+'" height="'+height+'" rx="1" fill="'+color+'"/>';});
+ $("chartQuote").textContent=m?"Bid "+fmt(m.bid,m.digits)+" · Ask "+fmt(m.ask,m.digits):"Bid — · Ask —";
+ if(!m){$("chartWrap").innerHTML='<div class="loading">Waiting for market data…</div>';return;}
+ const W=1100,H=540,L=18,R=105,T=18,B=24,N=64;
+ const digits=Number(m.digits||2),scale=Math.max(Math.abs(Number(m.price))*0.00035,Math.pow(10,-digits)*5);
+ const seed=Number(m.price),data=[];let prev=seed-scale*.1;
+ const stepMs=({"1D":86400000,"4H":14400000,"1H":3600000,"15m":900000,"5m":300000,"1m":60000})[timeframe];
+ for(let i=0;i<N;i++){
+   const drift=(Math.random()-.5)*scale*.72,open=prev,close=open+drift;
+   const high=Math.max(open,close)+Math.random()*scale*.24,low=Math.min(open,close)-Math.random()*scale*.24;
+   data.push({open,close,high,low,time:Date.now()-(N-i)*stepMs});prev=close;
+ }
+ const values=data.flatMap(x=>[x.high,x.low]);const pos=(state?.positions||[]).filter(p=>p.symbol===selectedSymbol);
+ pos.forEach(p=>{if(p.stop_loss!=null)values.push(Number(p.stop_loss));if(p.take_profit!=null)values.push(Number(p.take_profit));});
+ values.push(Number(m.price));let max=Math.max(...values),min=Math.min(...values),pad=Math.max((max-min)*.12,scale*.25);max+=pad;min-=pad;
+ const range=max-min||1,step=(W-L-R)/N,cw=Math.max(4,step*.62),y=v=>T+(max-Number(v))/range*(H-T-B);
+ let svg='<svg id="candleSvg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="'+esc(selectedSymbol)+' '+timeframe+' candlestick chart">';
+ for(let i=0;i<6;i++){const yy=T+i*(H-T-B)/5,value=max-i*range/5;svg+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="#233449" stroke-width="1"/><text x="'+(W-R+8)+'" y="'+(yy+4)+'" fill="#91a4bb" font-size="12">'+fmt(value,digits)+'</text>';}
+ data.forEach((c,i)=>{const x=L+i*step+step/2,up=c.close>=c.open,color=up?"#22c55e":"#ef4444",top=Math.min(y(c.open),y(c.close)),height=Math.max(2,Math.abs(y(c.open)-y(c.close)));svg+='<line x1="'+x+'" y1="'+y(c.high)+'" x2="'+x+'" y2="'+y(c.low)+'" stroke="'+color+'" stroke-width="2"/><rect x="'+(x-cw/2)+'" y="'+top+'" width="'+cw+'" height="'+height+'" rx="1" fill="'+color+'"/>';});
+ const currentY=y(m.price);svg+='<line x1="'+L+'" y1="'+currentY+'" x2="'+(W-R)+'" y2="'+currentY+'" stroke="#e8b84b" stroke-dasharray="5 5"/><text x="'+(W-R+8)+'" y="'+(currentY-7)+'" fill="#f5d27c" font-size="12">'+fmt(m.price,digits)+'</text>';
+ pos.forEach(p=>{[["SL",p.stop_loss,"#ef4444"],["TP",p.take_profit,"#22c55e"]].forEach(([kind,value,color])=>{if(value==null)return;const yy=y(value);svg+='<line data-drag="1" data-pos="'+esc(p.id)+'" data-kind="'+kind+'" x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="'+color+'" stroke-width="2" stroke-dasharray="8 4"/><rect data-drag="1" data-pos="'+esc(p.id)+'" data-kind="'+kind+'" x="'+(W-R+2)+'" y="'+(yy-12)+'" width="'+(R-4)+'" height="24" rx="4" fill="'+color+'"/><text data-drag="1" data-pos="'+esc(p.id)+'" data-kind="'+kind+'" x="'+(W-R+8)+'" y="'+(yy+4)+'" fill="#fff" font-size="11">'+kind+' '+fmt(value,digits)+'</text>';});});
  svg+='</svg>';$("chartWrap").innerHTML=svg;
+ const chart=$("candleSvg");
+ chart.addEventListener("pointerdown",e=>{const el=e.target.closest("[data-drag]");if(!el)return;e.preventDefault();dragState={id:el.dataset.pos,kind:el.dataset.kind,chart,svg:chart,top:T,bottom:H-B,min,max,digits};chart.setPointerCapture?.(e.pointerId);});
+ chart.addEventListener("pointermove",e=>{if(!dragState)return;const rect=chart.getBoundingClientRect(),py=(e.clientY-rect.top)/rect.height*H;const price=max-(py-T)/(H-T-B)*range;dragState.price=Number(price.toFixed(digits));});
+ chart.addEventListener("pointerup",async()=>{if(!dragState)return;const d=dragState;dragState=null;const p=(state?.positions||[]).find(x=>x.id===d.id);if(!p||d.price==null)return;const sl=d.kind==="SL"?d.price:p.stop_loss,tp=d.kind==="TP"?d.price:p.take_profit;try{const {error}=await db.rpc("wft_virtual_modify_position",{p_position_id:d.id,p_stop_loss:sl,p_take_profit:tp});if(error)throw error;$("chartTradeStatus").textContent=d.kind+" moved to "+fmt(d.price,d.digits);await refreshState();}catch(err){$("chartTradeStatus").textContent=err.message;await refreshState();}});
 }
 function renderPositions(){
  const body=$("positionsBody"),items=state?.positions||[];$("positionCount").textContent=items.length+" positions";body.innerHTML="";
@@ -193,13 +220,13 @@ async function refreshState(){
  catch(e){$("globalStatus").textContent="Engine error: "+e.message;}
  finally{refreshing=false;}
 }
-async function placeOrder(side){
+async function placeOrder(side,fromChart=false){
  if(!selectedAccount){$("tradeStatus").textContent="Select an active account first.";return;}
- const volume=Number($("volume").value),sl=$("stopLoss").value.trim(),tp=$("takeProfit").value.trim();
- if(!Number.isFinite(volume)||volume<0.01||volume>10){$("tradeStatus").textContent="Lot size must be 0.01–10.";return;}
+ const volume=Number(fromChart?$("chartVolume").value:$("volume").value),sl=(fromChart?$("chartSL").value:$("stopLoss").value).trim(),tp=(fromChart?$("chartTP").value:$("takeProfit").value).trim();
+ if(!Number.isFinite(volume)||volume<0.01||volume>10){$("tradeStatus").textContent="Lot size must be 0.01–10.";if(fromChart)$("chartTradeStatus").textContent="Lot size must be 0.01–10.";return;}
  $("buyButton").disabled=$("sellButton").disabled=true;
- try{await callEngine("open",{symbol:$("tradeSymbol").value,side,volume,stop_loss:sl===""?null:Number(sl),take_profit:tp===""?null:Number(tp)});$("tradeStatus").textContent=side+" order opened successfully in the WFT virtual account.";}
- catch(e){$("tradeStatus").textContent=e.message;}
+ try{await callEngine("open",{symbol:fromChart?selectedSymbol:$("tradeSymbol").value,side,volume,stop_loss:sl===""?null:Number(sl),take_profit:tp===""?null:Number(tp)});$("tradeStatus").textContent=side+" order opened successfully in the WFT virtual account.";$("chartTradeStatus").textContent=fromChart?side+" order opened successfully.":$("chartTradeStatus").textContent;}
+ catch(e){$("tradeStatus").textContent=e.message;if(fromChart)$("chartTradeStatus").textContent=e.message;}
  finally{$("buyButton").disabled=$("sellButton").disabled=false;}
 }
 async function closePosition(id,button){
@@ -219,8 +246,10 @@ async function init(){
  selectedAccount=accounts[0].id;$("accountSelect").value=selectedAccount;
  showTab("pairs");
  $("accountSelect").addEventListener("change",async()=>{selectedAccount=$("accountSelect").value;await refreshState();});
- $("tradeSymbol").addEventListener("change",e=>{selectedSymbol=e.target.value;});
+ $("tradeSymbol").addEventListener("change",e=>{selectedSymbol=e.target.value;drawChart();});
  $("buyButton").addEventListener("click",()=>placeOrder("BUY"));$("sellButton").addEventListener("click",()=>placeOrder("SELL"));
+ $("chartBuy").addEventListener("click",()=>placeOrder("BUY",true));$("chartSell").addEventListener("click",()=>placeOrder("SELL",true));
+ document.querySelectorAll("[data-tf]").forEach(b=>b.addEventListener("click",()=>{timeframe=b.dataset.tf;document.querySelectorAll("[data-tf]").forEach(x=>x.classList.toggle("active",x===b));drawChart();}));
  await refreshState();
  setInterval(()=>{if(document.visibilityState==="visible")refreshState();},6000);
 }
