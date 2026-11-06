@@ -257,13 +257,7 @@ a:hover{text-decoration:underline}
   <strong id="type">Loading...</strong>
 </div>
 
-<label for="platform">Trading Platform</label>
-
-<select id="platform">
-  <option value="MT5">MT5 — Standard Price</option>
-  <option value="MT4">MT4 — Automatic 10% Discount</option>
-  <option value="OTHER" disabled>Other Platform — Coming Soon</option>
-</select>
+<input type="hidden" id="platform" value="WFT TRADINGVIEW">
 
 <div class="item">
   <span>Base Price</span>
@@ -290,7 +284,7 @@ a:hover{text-decoration:underline}
 </div>
 
 <p class="small" id="discountNote">
-  Select your platform and enter a coupon code to calculate your discount.
+  Enter a coupon code to calculate your discount.
 </p>
 
 <button id="orderButton" disabled>
@@ -470,13 +464,7 @@ function getCouponPercent(){
 
 function getDiscountPercent(){
 
-  const mt4Percent =
-    platformInput.value === "MT4" ? 10 : 0;
-
-  return Math.min(
-    100,
-    getCouponPercent() + mt4Percent
-  );
+  return Math.min(100, getCouponPercent());
 }
 
 function calculatePrice(){
@@ -520,22 +508,10 @@ function calculatePrice(){
 
   note.className = "small";
 
-  if(code === "NEW50" && platformInput.value === "MT4"){
-
-    note.textContent =
-      "NEW50 50% + MT4 automatic 10% = 60% total discount. First-order eligibility is verified by the server.";
-
-  }else if(code === "NEW50"){
+  if(code === "NEW50"){
 
     note.textContent =
       "NEW50 50% discount. First-order eligibility is verified by the server.";
-
-  }else if(code && platformInput.value === "MT4"){
-
-    note.textContent =
-      code + " " + getCouponPercent() +
-      "% + MT4 automatic 10% = " +
-      discountPercent + "% total discount.";
 
   }else if(code){
 
@@ -543,13 +519,7 @@ function calculatePrice(){
       code + " — " + discountPercent +
       "% coupon discount applied.";
 
-  }else if(platformInput.value === "MT4"){
-
-    note.textContent =
-      "Automatic MT4 10% discount applied.";
-
   }else{
-
     note.textContent = "No discount applied.";
   }
 }
@@ -701,11 +671,7 @@ async function initialize(){
         ? "1-Step Evaluation"
         : "Instant Funding";
 
-    const selectedPlatform =
-      params.get("platform");
-
-    platformInput.value =
-      selectedPlatform === "MT4" ? "MT4" : "MT5";
+    platformInput.value = "WFT TRADINGVIEW";
 
     const {
       data:price,
@@ -770,7 +736,7 @@ async function initialize(){
 
 couponInput.addEventListener("input",calculatePrice);
 
-platformInput.addEventListener("change",calculatePrice);
+
 
 // ---------------------------------
 // CREATE ORDER
@@ -802,10 +768,7 @@ button.addEventListener("click",async()=>{
     const couponCode =
       couponInput.value.trim().toUpperCase();
 
-    if(!["MT4","MT5"].includes(platform)){
-
-      throw new Error("Please select MT4 or MT5.");
-    }
+    if(platform !== "WFT TRADINGVIEW") throw new Error("Invalid WFT trading platform.");
 
     if(
       couponCode &&
