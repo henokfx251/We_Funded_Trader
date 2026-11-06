@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>WFT | Virtual Trading Terminal</title>
+<style>
+:root{--bg:#07111f;--panel:#101d30;--panel2:#14243a;--line:#26374d;--gold:#e8b84b;--gold2:#f5d27c;--text:#f4f7fb;--muted:#94a3b8;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px Arial,Helvetica,sans-serif;padding-bottom:76px}
+button,input,select{font:inherit}button{cursor:pointer}
+.topbar{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#091525;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.brand{color:var(--gold);font-weight:900;font-size:16px;letter-spacing:.4px}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:1.7px;margin-top:3px}
+.top-actions{display:flex;align-items:center;gap:10px}.back{color:var(--gold);text-decoration:none;background:#1b2c43;padding:9px 11px;border-radius:8px;font-size:11px}
+.container{max-width:1250px;margin:auto;padding:15px}.headline{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:4px 0 13px}.headline h1{font-size:17px;margin:0 0 4px}.sub{color:var(--muted);font-size:11px}
+.pill{display:inline-flex;padding:5px 8px;border-radius:20px;background:#153528;color:#70e3a0;font-size:10px;font-weight:700}
+.account-row{display:grid;grid-template-columns:minmax(180px,1.4fr) repeat(4,minmax(100px,1fr));gap:9px;margin-bottom:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;min-width:0}
+.metric-label{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px}.metric-value{font-size:17px;font-weight:800;margin-top:7px;overflow-wrap:anywhere}
+select,input{width:100%;background:#091525;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:10px;outline:none}select:focus,input:focus{border-color:var(--gold)}
+.tabs{display:none}.view{display:none}.view.active{display:block}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px;margin-bottom:12px}
+.panel-title{font-size:13px;font-weight:800;margin:0 0 11px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.market-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.market{background:#0b192a;border:1px solid var(--line);border-radius:9px;padding:12px;text-align:left;color:var(--text);width:100%}
+.market.selected{border-color:var(--gold);background:#172b43}.market-name{font-weight:800;font-size:13px}.market-price{color:var(--gold2);font-size:15px;font-weight:800;margin-top:7px}.market-meta{color:var(--muted);font-size:10px;margin-top:3px}
+.chart-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.chart-top strong{font-size:14px}.chart-wrap{width:100%;height:330px;background:#091525;border-radius:8px;overflow:hidden}.chart-wrap svg{width:100%;height:100%;display:block}
+.trade-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.field label{display:block;color:#cbd5e1;font-size:10px;margin:10px 0 6px}
+.side-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.btn{border:0;border-radius:8px;padding:11px 14px;font-size:11px;font-weight:800}.buy{background:#15803d;color:white}.sell{background:#b91c1c;color:white}.secondary{background:#26374d;color:#e2e8f0}.close-btn{background:#26374d;color:#fff;padding:7px 10px;border-radius:7px;border:0;font-size:10px}
+.notice{background:#0b192a;border:1px solid var(--line);padding:10px;border-radius:8px;color:var(--muted);font-size:11px;line-height:1.5;margin:10px 0}
+.status{font-size:11px;color:var(--gold2);margin-top:9px;min-height:15px}
+.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:580px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);font-size:11px;white-space:nowrap}th{color:var(--muted);font-weight:600}
+.empty{padding:22px;text-align:center;color:var(--muted);background:#0b192a;border-radius:8px}
+.rule-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.rule{background:#0b192a;border:1px solid var(--line);border-radius:8px;padding:11px}.rule b{display:block;margin-bottom:5px}.rule span{color:var(--muted);font-size:10px}
+.bottom-nav{position:fixed;z-index:20;bottom:0;left:0;right:0;background:#091525;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:7px 5px calc(7px + env(safe-area-inset-bottom))}
+.nav-btn{background:transparent;border:0;color:var(--muted);font-size:10px;padding:5px 2px;display:flex;flex-direction:column;align-items:center;gap:4px}.nav-btn span{font-size:17px}.nav-btn.active{color:var(--gold)}
+.loading{color:var(--muted);text-align:center;padding:22px;font-size:12px}
+@media(min-width:850px){.container{padding:22px}.tabs{display:flex;gap:7px;margin-bottom:12px}.tabs button{background:#102033;color:var(--muted);border:1px solid var(--line);padding:9px 14px;border-radius:8px;font-size:11px}.tabs button.active{color:var(--gold);border-color:var(--gold)}.bottom-nav{position:static;max-width:1250px;margin:0 auto 20px;border:1px solid var(--line);border-radius:10px;display:none}.market-list{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:700px){.account-row{grid-template-columns:repeat(2,minmax(0,1fr))}.account-row .account-select{grid-column:1/-1}.container{padding:11px}.chart-wrap{height:280px}.headline h1{font-size:16px}.metric-value{font-size:15px}.topbar{padding:0 11px}.brand{font-size:14px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">WE FUNDED TRADER<small>VIRTUAL TRADING TERMINAL</small></div>
+  <div class="top-actions"><span class="pill">DEMO</span><a class="back" href="dashboard.html">Dashboard</a></div>
+</header>
+<main class="container">
+  <div class="headline"><div><h1>WFT Trading Terminal</h1><div class="sub">Independent virtual execution · No MT5 or broker connection</div></div><span class="pill">SIMULATED</span></div>
+  <section class="account-row">
+    <div class="card account-select"><div class="metric-label">Trading Account</div><select id="accountSelect"><option value="">Loading accounts…</option></select></div>
+    <div class="card"><div class="metric-label">Balance</div><div class="metric-value" id="balance">$—</div></div>
+    <div class="card"><div class="metric-label">Equity</div><div class="metric-value" id="equity">$—</div></div>
+    <div class="card"><div class="metric-label">Floating P/L</div><div class="metric-value" id="floating">$—</div></div>
+    <div class="card"><div class="metric-label">Free Margin</div><div class="metric-value" id="freeMargin">$—</div></div>
+  </section>
+  <div class="tabs" id="desktopTabs">
+    <button class="active" data-tab="pairs">Pairs</button><button data-tab="chart">Chart</button><button data-tab="trade">Trade</button><button data-tab="history">History</button><button data-tab="settings">Settings</button>
+  </div>
+  <section class="view" id="view-pairs">
+    <div class="panel"><h2 class="panel-title">Market Watch <span class="sub">Simulated prices</span></h2><div class="market-list" id="marketList"><div class="loading">Loading markets…</div></div></div>
+  </section>
+  <section class="view active" id="view-chart">
+    <div class="panel">
+      <div class="chart-top"><strong id="chartSymbol">XAUUSD</strong><span class="sub">15-minute simulated candles</span></div>
+      <div class="chart-wrap" id="chartWrap"><div class="loading">Loading chart…</div></div>
+      <div class="sub" style="margin-top:8px">Candles are generated by the WFT Virtual Engine and are not real market data.</div>
+    </div>
+    <div class="panel"><h2 class="panel-title">Market Quote</h2><div class="trade-grid"><div><div class="metric-label">Bid</div><div class="metric-value" id="chartBid">—</div></div><div><div class="metric-label">Ask</div><div class="metric-value" id="chartAsk">—</div></div></div></div>
+  </section>
+  <section class="view" id="view-trade">
+    <div class="panel">
+      <h2 class="panel-title">Place Virtual Order <span class="pill">Demo funds</span></h2>
+      <div class="field"><label for="tradeSymbol">Trading Pair</label><select id="tradeSymbol"></select></div>
+      <div class="field"><label for="volume">Volume (Lots)</label><input id="volume" type="number" min="0.01" max="10" step="0.01" value="0.10"></div>
+      <div class="trade-grid">
+        <div class="field"><label for="stopLoss">Stop Loss (optional)</label><input id="stopLoss" type="number" step="any" placeholder="Price"></div>
+        <div class="field"><label for="takeProfit">Take Profit (optional)</label><input id="takeProfit" type="number" step="any" placeholder="Price"></div>
+      </div>
+      <div class="side-toggle"><button class="btn buy" id="buyButton">BUY</button><button class="btn sell" id="sellButton">SELL</button></div>
+      <div class="status" id="tradeStatus"></div>
+    </div>
+    <div class="panel"><h2 class="panel-title">Open Positions <span class="sub" id="positionCount">0 positions</span></h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Floating P/L</th><th></th></tr></thead><tbody id="positionsBody"><tr><td colspan="6" class="empty">No open positions</td></tr></tbody></table></div></div>
+  </section>
+  <section class="view" id="view-history">
+    <div class="panel"><h2 class="panel-title">Trade History</h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Close</th><th>Profit</th><th>Closed</th></tr></thead><tbody id="historyBody"><tr><td colspan="7" class="empty">No closed trades</td></tr></tbody></table></div></div>
+  </section>
+  <section class="view" id="view-settings">
+    <div class="panel"><h2 class="panel-title">Account & Risk Settings</h2><div class="rule-grid" id="riskRules"></div><div class="notice">All orders and prices in this terminal are virtual. Challenge and Instant account results are recorded in the WFT database. This is not a real-money broker terminal.</div><div class="status" id="accountStatus"></div></div>
+  </section>
+  <div class="loading" id="globalStatus">Connecting to WFT Virtual Engine…</div>
+</main>
+<nav class="bottom-nav" id="bottomNav">
+  <button class="nav-btn" data-tab="pairs"><span>☷</span>Pairs</button>
+  <button class="nav-btn active" data-tab="chart"><span>▥</span>Chart</button>
+  <button class="nav-btn" data-tab="trade"><span>⇄</span>Trade</button>
+  <button class="nav-btn" data-tab="history"><span>◷</span>History</button>
+  <button class="nav-btn" data-tab="settings"><span>⚙</span>Settings</button>
+</nav>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+const SUPABASE_URL="https://vxcwfirfgxrxafbirnwu.supabase.co";
+const SUPABASE_KEY="sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+const db=createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+const money=n=>"$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt=(n,d=5)=>Number(n||0).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let user=null,accounts=[],selectedAccount="",state=null,selectedSymbol="XAUUSD",activeTab="chart",refreshing=false;
+function showTab(tab){
+ activeTab=tab;
+ document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+tab));
+ document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
+ if(tab==="chart") drawChart();
+}
+document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+function quote(symbol){return state?.markets?.find(m=>m.symbol===symbol)}
+function renderMarkets(){
+ const list=$("marketList"),select=$("tradeSymbol");
+ list.innerHTML="";select.innerHTML="";
+ (state?.markets||[]).forEach(m=>{
+  const opt=document.createElement("option");opt.value=m.symbol;opt.textContent=m.symbol;select.appendChild(opt);
+  const button=document.createElement("button");button.className="market"+(m.symbol===selectedSymbol?" selected":"");
+  button.innerHTML='<div class="market-name">'+esc(m.symbol)+'</div><div class="market-price">'+fmt(m.price,m.digits)+'</div><div class="market-meta">Bid '+fmt(m.bid,m.digits)+' · Ask '+fmt(m.ask,m.digits)+'</div>';
+  button.addEventListener("click",()=>{selectedSymbol=m.symbol;showTab("chart");renderMarkets();drawChart();});
+  list.appendChild(button);
+ });
+ select.value=selectedSymbol;
+}
+function drawChart(){
+ const m=quote(selectedSymbol);$("chartSymbol").textContent=selectedSymbol;
+ $("chartBid").textContent=m?fmt(m.bid,m.digits):"—";$("chartAsk").textContent=m?fmt(m.ask,m.digits):"—";
+ const data=state?.candles||[];if(!data.length){$("chartWrap").innerHTML='<div class="loading">No candle data available</div>';return;}
+ const W=900,H=330,L=12,R=70,T=12,B=20,vals=data.flatMap(c=>[Number(c.high),Number(c.low)]);
+ const max=Math.max(...vals),min=Math.min(...vals),range=max-min||1,step=(W-L-R)/data.length,cw=Math.max(4,step*.52);
+ const y=v=>T+(max-v)/range*(H-T-B);
+ let svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Simulated candlestick chart">';
+ for(let i=0;i<5;i++){const yy=T+i*(H-T-B)/4;const value=max-i*range/4;svg+='<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R+4)+'" y2="'+yy+'" stroke="#233449" stroke-width="1"/><text x="'+(W-R+9)+'" y="'+(yy+4)+'" fill="#91a4bb" font-size="11">'+fmt(value, m?.digits||2)+'</text>';}
+ data.forEach((c,i)=>{const x=L+i*step+step/2,up=Number(c.close)>=Number(c.open),color=up?"#22c55e":"#ef4444",top=Math.min(y(c.open),y(c.close)),height=Math.max(2,Math.abs(y(c.open)-y(c.close)));svg+='<line x1="'+x+'" y1="'+y(c.high)+'" x2="'+x+'" y2="'+y(c.low)+'" stroke="'+color+'" stroke-width="1.5"/><rect x="'+(x-cw/2)+'" y="'+top+'" width="'+cw+'" height="'+height+'" rx="1" fill="'+color+'"/>';});
+ svg+='</svg>';$("chartWrap").innerHTML=svg;
+}
+function renderPositions(){
+ const body=$("positionsBody"),items=state?.positions||[];$("positionCount").textContent=items.length+" positions";body.innerHTML="";
+ if(!items.length){body.innerHTML='<tr><td colspan="6" class="empty">No open positions</td></tr>';return;}
+ items.forEach(p=>{const row=document.createElement("tr");const pnl=Number(p.unrealized_pnl||0);row.innerHTML='<td>'+esc(p.symbol)+'</td><td style="color:'+(p.side==="BUY"?"#22c55e":"#ef4444")+'">'+esc(p.side)+'</td><td>'+esc(p.volume)+'</td><td>'+fmt(p.entry_price,5)+'</td><td style="color:'+(pnl>=0?"#22c55e":"#ef4444")+'">'+money(pnl)+'</td><td><button class="close-btn" data-close="'+esc(p.id)+'">Close</button></td>';body.appendChild(row);});
+ body.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closePosition(b.dataset.close,b)));
+}
+function renderHistory(){
+ const body=$("historyBody"),items=state?.history||[];body.innerHTML="";
+ if(!items.length){body.innerHTML='<tr><td colspan="7" class="empty">No closed trades</td></tr>';return;}
+ items.forEach(p=>{const row=document.createElement("tr"),pnl=Number(p.profit||0);row.innerHTML='<td>'+esc(p.symbol)+'</td><td>'+esc(p.side)+'</td><td>'+esc(p.volume)+'</td><td>'+fmt(p.entry_price,5)+'</td><td>'+fmt(p.close_price,5)+'</td><td style="color:'+(pnl>=0?"#22c55e":"#ef4444")+'">'+money(pnl)+'</td><td>'+new Date(p.closed_at).toLocaleString()+'</td>';body.appendChild(row);});
+}
+function renderSummary(){
+ const a=state?.account;if(!a)return;
+ $("balance").textContent=money(a.balance);$("equity").textContent=money(a.equity);$("floating").textContent=money(a.unrealized_pnl);$("freeMargin").textContent=money(a.free_margin);
+ $("floating").style.color=Number(a.unrealized_pnl)>=0?"#22c55e":"#ef4444";
+ $("accountStatus").textContent="Account status: "+a.status;
+ const isChallenge=a.account_type==="1-Step Challenge";
+ $("riskRules").innerHTML=[
+  ["Account type",a.account_type],
+  ["Initial balance",money(a.initial_balance)],
+  ["Max drawdown","5% · static"],
+  ...(isChallenge?[["Daily drawdown","3% · static"],["Profit target","10%"],["Profitable days",a.profitable_days+" / 5"],["Profitable day target","0.5% of initial balance"]]:[["Daily drawdown","Not applied"],["Consistency",Number(a.consistency_percent||0).toFixed(1)+"% of positive-day profit"]])
+ ].map(x=>'<div class="rule"><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div>').join("");
+}
+function renderAll(){
+ renderSummary();renderMarkets();renderPositions();renderHistory();if(activeTab==="chart")drawChart();
+}
+async function callEngine(action,extra={}){
+ const {data,error}=await db.rpc("wft_virtual_terminal_action",{
+  p_action:action,p_trading_account_id:selectedAccount,p_symbol:extra.symbol||selectedSymbol,
+  p_side:extra.side??null,p_volume:extra.volume??null,p_stop_loss:extra.stop_loss??null,
+  p_take_profit:extra.take_profit??null,p_position_id:extra.position_id??null
+ });
+ if(error)throw error;state=data;renderAll();return data;
+}
+async function refreshState(){
+ if(!selectedAccount||refreshing)return;refreshing=true;
+ try{await callEngine("state");$("globalStatus").textContent="Virtual engine connected · Last update "+new Date().toLocaleTimeString();}
+ catch(e){$("globalStatus").textContent="Engine error: "+e.message;}
+ finally{refreshing=false;}
+}
+async function placeOrder(side){
+ if(!selectedAccount){$("tradeStatus").textContent="Select an active account first.";return;}
+ const volume=Number($("volume").value),sl=$("stopLoss").value.trim(),tp=$("takeProfit").value.trim();
+ if(!Number.isFinite(volume)||volume<0.01||volume>10){$("tradeStatus").textContent="Lot size must be 0.01–10.";return;}
+ $("buyButton").disabled=$("sellButton").disabled=true;
+ try{await callEngine("open",{symbol:$("tradeSymbol").value,side,volume,stop_loss:sl===""?null:Number(sl),take_profit:tp===""?null:Number(tp)});$("tradeStatus").textContent=side+" order opened successfully in the WFT virtual account.";}
+ catch(e){$("tradeStatus").textContent=e.message;}
+ finally{$("buyButton").disabled=$("sellButton").disabled=false;}
+}
+async function closePosition(id,button){
+ button.disabled=true;
+ try{await callEngine("close",{position_id:id});$("tradeStatus").textContent="Position closed and saved to history.";}
+ catch(e){$("tradeStatus").textContent=e.message;button.disabled=false;}
+}
+async function init(){
+ const {data,error}=await db.auth.getSession();
+ if(error||!data.session){location.replace("Login.html");return;}
+ user=data.session.user;
+ const {data:rows,error:loadError}=await db.from("trading_accounts").select("id,account_size,account_type,status,initial_balance,phase,created_at").eq("user_id",user.id).in("status",["Active","Passed"]).order("created_at",{ascending:false});
+ if(loadError){$("globalStatus").textContent="Could not load accounts: "+loadError.message;return;}
+ accounts=rows||[];
+ if(!accounts.length){$("accountSelect").innerHTML='<option value="">No active accounts available</option>';$("globalStatus").textContent="You need an Active WFT Challenge or Instant Funding account to use the terminal.";return;}
+ $("accountSelect").innerHTML=accounts.map(a=>'<option value="'+esc(a.id)+'">$'+Number(a.account_size).toLocaleString()+" · "+esc(a.account_type)+" · "+esc(a.status)+'</option>').join("");
+ selectedAccount=accounts[0].id;$("accountSelect").value=selectedAccount;
+ $("accountSelect").addEventListener("change",async()=>{selectedAccount=$("accountSelect").value;await refreshState();});
+ $("tradeSymbol").addEventListener("change",e=>{selectedSymbol=e.target.value;});
+ $("buyButton").addEventListener("click",()=>placeOrder("BUY"));$("sellButton").addEventListener("click",()=>placeOrder("SELL"));
+ await refreshState();
+ setInterval(()=>{if(document.visibilityState==="visible")refreshState();},6000);
+}
+init();
+</script>
+</body>
+</html>
