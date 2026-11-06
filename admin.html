@@ -1717,6 +1717,8 @@ function renderRewardManagement() {
           <td>${row.requested_at
   ? new Date(row.requested_at).toLocaleString() : "—"}</td>
 
+<td>
+  ${row.trading_account_id
     ? `Account linked: ${escapeHTML(String(row.trading_account_id).slice(0, 8))}`
     : row.status === "approved" && row.activation_status === "paid"
       ? `<button class="btn small green"
@@ -1735,16 +1737,6 @@ function renderRewardManagement() {
           </button>`
         : "Reviewed"}
 </td>
-          <td>${row.status === "pending" ? `
-            <button class="btn small green"
-              onclick="reviewRewardRedemption('${row.id}','approved')">
-              Approve
-            </button>
-            <button class="btn small red"
-              onclick="reviewRewardRedemption('${row.id}','rejected')">
-              Reject
-            </button>` : "Reviewed"}
-          </td>
         </tr>
       `).join("")
       : '<tr><td colspan="8" class="empty">No redemptions found.</td></tr>';
