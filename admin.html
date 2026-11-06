@@ -1782,12 +1782,26 @@ async function reviewRewardRedemption(id, decision) {
   if (!row) return;
 
   let note = "";
-  let activationStatus = row.activation_status;
+  const now = new Date().toISOString();
 
   if (decision === "approved") {
-    if (!confirm("Have you verified receipt of the $1 activation fee?")) return;
-    activationStatus = "paid";
-    note = prompt("Optional admin note:") || "";
+    if (!row.activation_tx_hash || !row.activation_network) {
+      showToast("Cannot approve: payment details are missing.");
+      return;
+    }
+
+    const verified = confirm(
+      "Before approval, confirm ALL:\n\n" +
+      "1. Received exactly $1 USDT.\n" +
+      "2. Correct WFT wallet address.\n" +
+      "3. Correct network: " + row.activation_network + ".\n" +
+      "4. Transaction confirmed on blockchain.\n\n" +
+      "Have you verified these?"
+    );
+
+    if (!verified) return;
+
+    note = prompt("Optional admin verification note:") || "";
   } else {
     note = prompt("Enter rejection reason:");
     if (note === null || !note.trim()) return;
@@ -1795,36 +1809,45 @@ async function reviewRewardRedemption(id, decision) {
   }
 
   try {
+    const updateData = {
+      status: decision,
+      admin_note: note || null,
+      reviewed_by: currentUser.id,
+      reviewed_at: now
+    };
+
+    if (decision === "approved") {
+      updateData.activation_status = "paid";
+      updateData.activation_verified_at = now;
+      updateData.activation_verified_by = currentUser.id;
+    }
+
     const { data, error } = await db
       .from("reward_redemptions")
-      .update({
-        status: decision,
-        activation_status: activationStatus,
-        admin_note: note || null,
-        reviewed_by: currentUser.id,
-        reviewed_at: new Date().toISOString()
-      })
+      .update(updateData)
       .eq("id", id)
       .eq("status", "pending")
       .select("id");
 
     if (error) throw error;
+
     if (!data || !data.length) {
       showToast("This redemption was already reviewed.");
       return;
     }
 
-    showToast(decision === "approved"
-      ? "Reward approved. Create the $5K account next."
-      : "Redemption rejected.");
+    showToast(
+      decision === "approved"
+        ? "Payment verified and reward approved. Create the $5K account next."
+        : "Redemption rejected."
+    );
 
     await loadRewardManagement();
 
   } catch (error) {
     showToast("Redemption review failed: " + error.message);
   }
-      }
-
+  }
 </script>
 
 </body>
