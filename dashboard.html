@@ -1390,10 +1390,11 @@ async function loadChallengeRequests() {
   if (error) throw error;
   const list = data || [];
 
+  const accountStatuses = accounts.map(a => String(a.status || "").toLowerCase());
   setText("challengeCount", accounts.length);
-  setText("challengePassed", list.filter(x => x.status === "approved").length);
-  setText("challengeFailed", list.filter(x => x.status === "rejected").length);
-  setText("challengePending", list.filter(x => x.status === "pending").length);
+  setText("challengePassed", accountStatuses.filter(s => ["passed", "funded"].includes(s)).length);
+  setText("challengeFailed", accountStatuses.filter(s => ["failed", "breached"].includes(s)).length);
+  setText("challengePending", list.filter(x => String(x.status || "").toLowerCase() === "pending").length);
 
   setHTML("challengeRequests", list.map(x => `
     <tr><td>${safe(String(x.trading_account_id).slice(0,8))}</td>
