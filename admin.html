@@ -353,7 +353,7 @@ tr:last-child td{border-bottom:0}
 <th>Action</th>
                 </tr></thead>
                 <tbody id="recentOrdersTable">
-                  <tr><td colspan="5" class="empty">Loading...</td></tr>
+                  <tr><td colspan="9" class="empty">Loading...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1071,9 +1071,9 @@ function updateOverviewStats() {
         <td>${money(order.final_price ?? order.amount)}</td>
         <td>${escapeHTML(order.payment_network || "—")}</td>
         <td>${escapeHTML(order.transaction_hash || "—")}</td>
-        <td>${statusBadge(order.status)}</td>
+        <td>${order.status === "pending" && order.transaction_hash && order.payment_network ? "<span class=\"status pending\">Payment Submitted</span>" : statusBadge(order.status)}</td>
         <td>${order.created_at ? new Date(order.created_at).toLocaleDateString() : "—"}</td>
-        <td>—</td>
+        <td>${order.status === "pending" && order.transaction_hash && order.payment_network ? "<button class=\"btn small gray\" onclick=\"goPage(&quot;orders&quot;)\">Review</button>" : "—"}</td>
       </tr>
     `).join("") : '<tr><td colspan="9" class="empty">No orders yet.</td></tr>';
   }
