@@ -575,6 +575,19 @@ const prices = {
   100000:400
 };
 
+// Keep the displayed price synchronized with the public challenge_prices table.
+window.wftApplyLivePrices = function(rows){
+  if(!Array.isArray(rows)) return;
+  rows.forEach(row => {
+    const size = Number(row.account_size);
+    const price = Number(row.base_price);
+    if([2500,5000,10000,25000,50000,100000].includes(size) && Number.isFinite(price) && price >= 0){
+      prices[size] = price;
+    }
+  });
+  updatePrice();
+};
+
 function setType(type){
 
   accountType = type;
@@ -801,6 +814,31 @@ document.getElementById("coupon").addEventListener("input",function(){
 // Initial page setup.
 setType("evaluation");
 
+</script>
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
+try {
+  const { data, error } = await supabase
+    .from("challenge_prices")
+    .select("account_size,base_price,evaluation_enabled,instant_enabled")
+    .order("account_size", { ascending: true });
+
+  if (error) throw error;
+  if (!Array.isArray(data) || data.length === 0) {
+    throw new Error("No live challenge prices are available.");
+  }
+
+  window.wftApplyLivePrices?.(data);
+} catch (error) {
+  console.error("Live challenge pricing:", error);
+  const message = document.getElementById("checkoutMessage");
+  if (message) {
+    message.className = "message error";
+    message.textContent = "Live prices could not be loaded. Checkout will verify the current price before payment.";
+  }
+}
 </script>
 </body>
 </html>
