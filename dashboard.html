@@ -973,12 +973,18 @@ hr {
 <!-- SUPPORT -->
 <section class="page" id="page-support">
   <div class="welcome">
-    <h1>Live Support Center</h1>
-    <p class="muted">Create a support ticket and track replies from the WFT team.</p>
+    <h1>Support & FAQ</h1>
+    <p class="muted">Get help from the WFT team, submit a support ticket, and follow its progress.</p>
+  </div>
+  <div class="info-card" style="margin-bottom:16px">
+    <h3>Contact WFT Support by Email</h3>
+    <p>Prefer email? You can contact our support team directly:</p>
+    <p style="margin:8px 0 0"><a class="gold-text" href="mailto:fxhenok11@gmail.com">fxhenok11@gmail.com</a></p>
+    <p class="muted small" style="margin-top:8px">You can also submit a ticket below and track the reply from your dashboard.</p>
   </div>
   <div class="panel">
     <h3>Submit a Support Ticket</h3>
-    <p class="muted small">Choose how difficult your issue is, then explain your question clearly.</p>
+    <p class="muted small">Select the difficulty level and provide a clear description of the issue you need help with.</p>
     <form id="supportTicketForm">
       <label for="ticketDifficulty">Ticket Difficulty</label>
       <select id="ticketDifficulty" required>
@@ -992,9 +998,9 @@ hr {
       <label for="ticketQuestion">Your Question</label>
       <textarea id="ticketQuestion" minlength="10" maxlength="5000" required placeholder="Describe your issue and include any useful details..."></textarea>
       <div class="info-card" style="margin-top:14px">
-        <div class="small muted">Submission date &amp; time (your device time)</div>
+        <div class="small muted">Date and time on your device</div>
         <strong id="ticketDatePreview">—</strong>
-        <div class="small muted" style="margin-top:5px">The official submitted time is also saved automatically by the server.</div>
+        <div class="small muted" style="margin-top:5px">The official submission time is recorded automatically by our server.</div>
       </div>
       <div class="btn-row">
         <button class="btn" id="submitTicketBtn" type="submit">Submit Ticket</button>
@@ -1011,6 +1017,7 @@ hr {
   </div>
   <div class="panel">
     <h3>Frequently Asked Questions</h3>
+    <p class="muted small">Find quick answers to common questions about your WFT account.</p>
     <details class="faq-item"><summary>When can I request a payout?</summary><p>First payout eligibility begins 14 days after the account start date. Subsequent payouts are available every 14 days after the previous completed payout, subject to eligibility checks.</p></details>
     <details class="faq-item"><summary>Which payout networks are supported?</summary><p>USDT TRC20 and BEP20 are supported. Always verify your wallet network before submitting.</p></details>
     <details class="faq-item"><summary>How long does payout processing take?</summary><p>Normally 1–3 business days after approval.</p></details>
