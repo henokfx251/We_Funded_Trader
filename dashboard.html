@@ -838,7 +838,7 @@ hr {
       <label for="payoutWallet">USDT Wallet Address</label>
       <input id="payoutWallet" required minlength="20" maxlength="120" placeholder="Enter your USDT wallet address">
 
-      <p class="muted small">Payout eligibility is checked securely by the server. First payout after 14 days, then every 14 days. Processing normally takes 1–3 business days.</p>
+      <p class="muted small">Payout eligibility is verified securely by WFT. Minimum payout: $50. First payout after 14 days, then every 14 days. 1-Step: 80% trader share; Instant: 70% trader share. Processing normally takes 1–3 business days.</p>
       <button class="btn" id="payoutSubmitBtn" type="submit">Submit Payout Request</button>
     </form>
   </div>
@@ -1369,9 +1369,13 @@ async function loadAccounts() {
   `).join("") || `<option value="">No accounts available</option>`);
 
   if ($("payoutAccount")) {
-    $("payoutAccount").innerHTML = accounts.map(a => `
-      <option value="${safe(a.id)}">${safe(a.account_name || String(a.id).slice(0,8))} — ${safe(a.account_size)} USD</option>
-    `).join("") || `<option value="">No accounts available</option>`;
+    const eligiblePayoutAccounts = accounts.filter(isPayoutAccountEligible);
+    $("payoutAccount").innerHTML = `
+      <option value="">Select eligible account</option>
+      ${eligiblePayoutAccounts.map(a => `
+        <option value="${safe(a.id)}">${safe(a.account_name || String(a.id).slice(0,8))} — ${Number(a.account_size || 0).toLocaleString()} — ${String(a.account_type).toLowerCase() === "instant" ? "Instant (70/30)" : "1-Step (80/20)"}</option>
+      `).join("")}
+    ` || `<option value="">No eligible accounts available</option>`;
   }
   updatePayoutPreview();
 }
@@ -1637,22 +1641,31 @@ async function loadPayouts() {
   updatePayoutPreview();
 }
 
+function isPayoutAccountEligible(account) {
+  const status = String(account?.status || "").toLowerCase();
+  const type = String(account?.account_type || "").toLowerCase();
+  const phase = String(account?.phase || "").toLowerCase();
+  return status === "active" &&
+    (type === "instant" || (type === "evaluation" && phase === "funded"));
+}
+
 function updatePayoutPreview() {
-  const account = accounts.find(a => a.id === $("payoutAccount")?.value);
+  const eligible = accounts.filter(isPayoutAccountEligible);
+  const account = eligible.find(a => a.id === $("payoutAccount")?.value);
+  setText("payoutEligibleCount", eligible.length);
+  setText("payoutTotalProfit", money(eligible.reduce((s,a) => s + Math.max(0, Number(a.profit || 0)), 0)));
+  setText("payoutAvailable", "Verified securely on request");
+
   if (!account) {
     setText("payoutAccountProfit", money(0));
-    setText("payoutTraderShare", "Calculated by server");
-    setText("payoutEligibleCount", "0");
-    setText("payoutTotalProfit", money(0));
-    setText("payoutAvailable", "Calculated by server");
+    setText("payoutTraderShare", "Select an eligible account");
     return;
   }
 
+  const shareRate = String(account.account_type).toLowerCase() === "instant" ? 0.70 : 0.80;
+  const estimate = Math.max(0, Number(account.profit || 0)) * shareRate;
   setText("payoutAccountProfit", money(account.profit));
-  setText("payoutTraderShare", "Calculated by server");
-  setText("payoutEligibleCount", accounts.length);
-  setText("payoutTotalProfit", money(accounts.reduce((s,a) => s + Number(a.profit || 0), 0)));
-  setText("payoutAvailable", "Eligibility verified on submission");
+  setText("payoutTraderShare", money(estimate) + (estimate < 50 ? " · $50 minimum" : ""));
 }
 $("payoutAccount")?.addEventListener("change", updatePayoutPreview);
 

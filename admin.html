@@ -1530,7 +1530,7 @@ function renderPayouts() {
             ? new Date(item.requested_at).toLocaleString()
             : "—"}
         </td>
-        <td>${escapeHTML(item.admin_note || "—")}</td>
+        <td>${item.transaction_hash ? `<strong>TX:</strong> ${escapeHTML(item.transaction_hash)}` : "—"}<br><small>${escapeHTML(item.admin_note || "—")}</small></td>
         <td>${actions}</td>
       </tr>
     `;
@@ -1579,13 +1579,13 @@ async function reviewPayout(id, action) {
     }
 
     const txHash = prompt(
-      "Enter the USDT transaction hash before marking this payout paid:"
+      "Verify the USDT transfer on the correct block explorer first (token, amount, recipient, network and confirmations). Then enter its 64-character transaction hash:"
     );
 
     if (txHash === null) return;
 
-    if (txHash.trim().length < 10) {
-      showToast("A valid transaction hash is required.");
+    if (!/^(0x)?[a-fA-F0-9]{64}$/.test(txHash.trim())) {
+      showToast("Enter a valid 64-character hexadecimal transaction hash.");
       return;
     }
 
