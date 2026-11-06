@@ -24,7 +24,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
 .market-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px}.market-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.market-filters button{background:#0b192a;color:var(--muted);border:1px solid var(--line);padding:7px 10px;border-radius:7px;font-size:10px}.market-filters button.active{border-color:var(--gold);color:var(--gold)}.market-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .market{background:#0b192a;border:1px solid var(--line);border-radius:9px;padding:12px;text-align:left;color:var(--text);width:100%}
 .market.selected{border-color:var(--gold);background:#172b43}.market-name{font-weight:800;font-size:13px}.market-price{color:var(--gold2);font-size:15px;font-weight:800;margin-top:7px}.market-meta{color:var(--muted);font-size:10px;margin-top:3px}.market-change{font-size:10px;color:var(--muted);margin-top:5px}.trade-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}.trade-summary .card{padding:10px}.history-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}.history-summary .card{padding:10px}.search-input{min-width:0}
-.chart-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.chart-top strong{font-size:14px}.chart-wrap{width:100%;height:540px;background:#091525;border-radius:8px;overflow:hidden}.chart-wrap svg{width:100%;height:100%;display:block}
+.chart-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.chart-pair-select{width:auto;min-width:128px;max-width:48%;font-weight:800;color:var(--gold2);padding:8px 10px}.chart-lock{position:absolute;inset:0;z-index:2;background:transparent;touch-action:none;overscroll-behavior:contain}.chart-wrap iframe{pointer-events:none!important;user-select:none;-webkit-user-select:none}.chart-top strong{font-size:14px}.chart-wrap{width:100%;height:540px;background:#091525;border-radius:8px;overflow:hidden}.chart-wrap svg{width:100%;height:100%;display:block}
 .trade-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.field label{display:block;color:#cbd5e1;font-size:10px;margin:10px 0 6px}
 .side-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.btn{border:0;border-radius:8px;padding:11px 14px;font-size:11px;font-weight:800}.buy{background:#15803d;color:white}.sell{background:#b91c1c;color:white}.secondary{background:#26374d;color:#e2e8f0}.close-btn{background:#26374d;color:#fff;padding:7px 10px;border-radius:7px;border:0;font-size:10px}
 .notice{background:#0b192a;border:1px solid var(--line);padding:10px;border-radius:8px;color:var(--muted);font-size:11px;line-height:1.5;margin:10px 0}
@@ -60,9 +60,9 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
   </section>
   <section class="view active" id="view-chart">
     <div class="panel">
-      <div class="chart-top"><strong id="chartSymbol">XAUUSD</strong><span class="sub" id="chartQuote">Bid — · Ask —</span></div>
+      <div class="chart-top"><select id="chartPairSelect" class="chart-pair-select" aria-label="Select trading pair"><option value="XAUUSD">XAUUSD</option></select><span class="sub" id="chartQuote">Bid — · Ask —</span></div>
       <div class="chart-wrap" id="chartWrap"><div class="loading">Loading live market chart…</div>
-      <div class="chart-order" id="chartOrder">
+      <div class="chart-lock" aria-hidden="true"></div><div class="chart-order" id="chartOrder">
         <div class="side-toggle"><button class="btn buy" id="chartBuy">BUY</button><button class="btn sell" id="chartSell">SELL</button></div>
         <div class="chart-order-fields">
           <div><label for="chartVolume">Lots</label><input id="chartVolume" type="number" min="0.01" max="10" step="0.01" value="0.10"></div>
@@ -131,6 +131,7 @@ function renderMarkets(){
  const list=$("marketList"),select=$("tradeSymbol"),all=state?.markets||[],query=$("pairSearch")?.value.trim().toUpperCase()||"";
  list.innerHTML="";select.innerHTML="";
  const sorted=[...all].sort((a,b)=>a.symbol.localeCompare(b.symbol));
+ const chartSelect=$("chartPairSelect");if(chartSelect){chartSelect.innerHTML=sorted.map(m=>'<option value="'+esc(m.symbol)+'">'+esc(m.symbol)+'</option>').join("");chartSelect.value=selectedSymbol;}
  sorted.forEach(m=>{const opt=document.createElement("option");opt.value=m.symbol;opt.textContent=m.symbol;select.appendChild(opt);});
  const visible=sorted.filter(m=>(marketFilter==="ALL"||marketType(m.symbol)===marketFilter)&&(!query||(m.symbol+" "+m.name).toUpperCase().includes(query)));
  $("pairCount").textContent=visible.length+" / "+all.length;
@@ -149,7 +150,7 @@ function tvSymbol(symbol){
 }
 function drawChart(){
  const m=quote(selectedSymbol);
- $("chartSymbol").textContent=selectedSymbol;
+ if($("chartPairSelect"))$("chartPairSelect").value=selectedSymbol;
  $("chartQuote").textContent=m?"WFT quote "+fmt(m.bid,m.digits)+" / "+fmt(m.ask,m.digits):"";
  const interval="15";
  const params=new URLSearchParams({symbol:tvSymbol(selectedSymbol),interval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"091525",enable_publishing:"false",hide_top_toolbar:"false",hide_legend:"false",saveimage:"false",studies:"[]",withdateranges:"true",hide_side_toolbar:"false",allow_symbol_change:"false",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
@@ -239,9 +240,10 @@ async function init(){
  if(!accounts.length){$("accountSelect").innerHTML='<option value="">No active accounts available</option>';$("globalStatus").textContent="You need an Active WFT Challenge or Instant Funding account to use the terminal.";return;}
  $("accountSelect").innerHTML=accounts.map(a=>'<option value="'+esc(a.id)+'">$'+Number(a.account_size).toLocaleString()+" · "+esc(a.account_type)+" · "+esc(a.status)+'</option>').join("");
  selectedAccount=accounts[0].id;$("accountSelect").value=selectedAccount;
- showTab("pairs");
+ showTab("chart");
  $("accountSelect").addEventListener("change",async()=>{selectedAccount=$("accountSelect").value;await refreshState();});
  $("tradeSymbol").addEventListener("change",e=>{selectedSymbol=e.target.value;drawChart();});
+ $("chartPairSelect").addEventListener("change",e=>{selectedSymbol=e.target.value;$("tradeSymbol").value=selectedSymbol;renderMarkets();drawChart();});
  $("buyButton").addEventListener("click",()=>placeOrder("BUY"));$("sellButton").addEventListener("click",()=>placeOrder("SELL"));
  $("chartBuy").addEventListener("click",()=>placeOrder("BUY",true));$("chartSell").addEventListener("click",()=>placeOrder("SELL",true));
  $("closeAllButton").addEventListener("click",closeAllPositions);
