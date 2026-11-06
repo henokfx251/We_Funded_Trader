@@ -767,7 +767,7 @@ function goPage(page, button) {
     if (nav) nav.classList.add("active");
   }
 
-  const titles = {
+    const titles = {
     overview: "Overview",
     orders: "Orders Management",
     kyc: "KYC Review",
@@ -776,9 +776,10 @@ function goPage(page, button) {
     payouts: "Payout Management",
     "challenge-requests": "Challenge Pass Requests",
     rewards: "Rewards Management"
+  };
 
   $("topTitle").textContent = titles[page] || "Admin Dashboard";
-
+  
   if (page === "orders") loadOrders();
   if (page === "kyc") loadKYC();
   if (page === "accounts") loadTradingAccounts();
