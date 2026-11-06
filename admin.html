@@ -1696,18 +1696,22 @@ function renderRewardManagement() {
             ${escapeHTML(row.account_type)}</td>
           <td>${Number(row.points_spent || 0)}</td>
           <td>${money(row.activation_fee)}</td>
-          rewardRedemptionsData.map(row => `
-  <tr>
-    <td>${escapeHTML(String(row.user_id).slice(0, 8))}</td>
-    <td>$${Number(row.account_size).toLocaleString()}
-      ${escapeHTML(row.account_type)}</td>
-    <td>${Number(row.points_spent || 0)}</td>
-    <td>${money(row.activation_fee)}</td>
+          <td>
+  ${statusBadge(row.activation_status)}
+  <br>
+  <strong>${escapeHTML(row.activation_network || "No network")}</strong>
+  <br>
+  <small style="word-break:break-all">
+    ${escapeHTML(row.activation_tx_hash || "No transaction submitted")}
+  </small>
+  <br>
+  <small>
+    ${row.activation_payment_submitted_at
+      ? new Date(row.activation_payment_submitted_at).toLocaleString()
+      : ""}
+  </small>
+</td>
 
-    <!-- ይህን መቀየር ነው -->
-    <td>${statusBadge(row.activation_status)}</td>
-
-    <td>${statusBadge(row.status)}</td>
           <td>${statusBadge(row.status)}</td>
           <td>${row.requested_at
             ? new Date(row.requested_at).toLocaleString() : "—"}</td>
