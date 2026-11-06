@@ -42,7 +42,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
 <body>
 <header class="topbar">
   <div class="brand">WE FUNDED TRADER<small>VIRTUAL TRADING TERMINAL</small></div>
-  <div class="top-actions"><a class="back" href="dashboard.html">Dashboard</a></div>
+  <div class="top-actions"><a class="back" href="index.html">Home</a><a class="back" href="challenges.html">Challenges</a><a class="back" href="dashboard.html">Dashboard</a></div>
 </header>
 <main class="container">
   <section class="account-row" id="accountOverview">
@@ -235,9 +235,9 @@ async function init(){
  const {data,error}=await db.auth.getSession();
  if(error||!data.session){location.replace("Login.html");return;}
  user=data.session.user;
- const {data:rows,error:loadError}=await db.from("trading_accounts").select("id,account_size,account_type,status,initial_balance,phase,created_at").eq("user_id",user.id).in("status",["Active","Passed"]).order("created_at",{ascending:false});
+ const {data:rows,error:loadError}=await db.from("trading_accounts").select("id,account_size,account_type,status,initial_balance,phase,created_at").eq("user_id",user.id).order("created_at",{ascending:false});
  if(loadError){$("globalStatus").textContent="Could not load accounts: "+loadError.message;return;}
- accounts=rows||[];
+ accounts=(rows||[]).filter(a=>["active","passed","funded"].includes(String(a.status||"").toLowerCase()));
  if(!accounts.length){$("accountSelect").innerHTML='<option value="">No active accounts available</option>';$("globalStatus").textContent="You need an Active WFT Challenge or Instant Funding account to use the terminal.";return;}
  $("accountSelect").innerHTML=accounts.map(a=>'<option value="'+esc(a.id)+'">$'+Number(a.account_size).toLocaleString()+" · "+esc(a.account_type)+" · "+esc(a.status)+'</option>').join("");
  selectedAccount=accounts[0].id;$("accountSelect").value=selectedAccount;
