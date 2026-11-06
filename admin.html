@@ -489,7 +489,7 @@ tr:last-child td{border-bottom:0}
             <div class="panel-head">
               <h3>All Trading Accounts</h3>
               <div class="toolbar">
-                <input id="accountSearch" placeholder="Search login / user..." oninput="renderAccounts()">
+                <input id="accountSearch" placeholder="Search account / user..." oninput="renderAccounts()">
               </div>
             </div>
             <div class="table-wrap">
@@ -1172,8 +1172,8 @@ async function createTradingAccount(event) {
       account_size: Number($("newAccountSize").value),
       account_type: $("newAccountType").value,
       platform: $("newPlatform").value,
-      mt_login: $("newMtLogin").value.trim(),
-      mt_server: $("newMtServer").value.trim()
+      mt_login: null,
+      mt_server: null
     };
 
     const { data, error } = await db.functions.invoke(
