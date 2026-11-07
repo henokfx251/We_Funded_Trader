@@ -1996,7 +1996,7 @@ async function loadRewards() {
     const taskUrl = /^https?:\/\//i.test(task.task_url || "") ? task.task_url : "";
     const status = prior
       ? prior.status === "approved"
-        ? '<span class="badge approved">Approved · ${money(task.reward_amount || 0)} credited</span>'
+        ? `<span class="badge approved">Approved · ${money(task.reward_amount || 0)} credited</span>`
         : prior.status === "pending"
           ? '<span class="badge pending">Pending Review</span>'
           : '<span class="badge rejected">Rejected</span>'
