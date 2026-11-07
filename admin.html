@@ -607,47 +607,38 @@ tr:last-child td{border-bottom:0}
   <div class="page-heading">
     <div>
       <h1>Rewards Management</h1>
-      <p>Review customer feedback and reward redemption requests.</p>
+      <p>Review social task proof and manage the WFT Reward Balance program.</p>
     </div>
     <button class="btn" onclick="loadRewardManagement()">Refresh</button>
   </div>
 
   <div class="notice">
-    Approving genuine feedback awards 50 points.
-    Verify the $1 activation fee before approving a reward.
+    Approving a valid social task automatically credits its configured reward to the customer's Reward Balance.
+    Reward Balance is checkout credit, not withdrawable cash.
   </div>
 
   <div class="panel">
-    <div class="panel-head"><h3>Customer Feedback Tasks</h3></div>
+    <div class="panel-head"><h3>Social Media Task Proofs</h3></div>
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr>
-            <th>Trader ID</th><th>Rating</th><th>Feedback</th>
-            <th>Suggestion</th><th>Status</th><th>Points</th>
-            <th>Submitted</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="rewardFeedbackTable">
-          <tr><td colspan="8" class="empty">No feedback loaded.</td></tr>
+        <thead><tr>
+          <th>Trader ID</th><th>Task</th><th>Platform</th><th>Proof</th>
+          <th>Submitted</th><th>Status</th><th>Admin Note</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="rewardTaskReviewTable">
+          <tr><td colspan="8" class="empty">No task proofs loaded.</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
   <div class="panel">
-    <div class="panel-head"><h3>$5K 1-Step Reward Redemptions</h3></div>
+    <div class="panel-head"><h3>Recent Reward Balance Ledger</h3></div>
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr>
-            <th>Trader ID</th><th>Account</th><th>Points</th>
-            <th>Activation Fee</th><th>Payment</th><th>Status</th>
-            <th>Requested</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="rewardRedemptionsTable">
-          <tr><td colspan="8" class="empty">No redemptions loaded.</td></tr>
+        <thead><tr><th>Trader ID</th><th>Date</th><th>Description</th><th>Amount</th></tr></thead>
+        <tbody id="adminRewardBalanceLedger">
+          <tr><td colspan="4" class="empty">Loading reward ledger...</td></tr>
         </tbody>
       </table>
     </div>
@@ -1692,155 +1683,123 @@ async function saveSupportTicket(id) {
 
 /* ================= REWARDS MANAGEMENT ================= */
 
-let rewardFeedbackData = [];
-let rewardRedemptionsData = [];
+let rewardTaskSubmissionsData = [];
+let rewardTaskCatalogData = [];
+let rewardBalanceLedgerData = [];
 
 async function loadRewardManagement() {
-  const feedbackBody = $("rewardFeedbackTable");
-  const redemptionBody = $("rewardRedemptionsTable");
-
-  if (feedbackBody) {
-    feedbackBody.innerHTML =
-      '<tr><td colspan="8">Loading feedback...</td></tr>';
-  }
-
-  if (redemptionBody) {
-    redemptionBody.innerHTML =
-      '<tr><td colspan="8">Loading redemptions...</td></tr>';
-  }
+  const taskBody = $("rewardTaskReviewTable");
+  const ledgerBody = $("adminRewardBalanceLedger");
+  if (taskBody) taskBody.innerHTML = '<tr><td colspan="8">Loading social task proofs...</td></tr>';
+  if (ledgerBody) ledgerBody.innerHTML = '<tr><td colspan="4">Loading Reward Balance history...</td></tr>';
 
   try {
-    const [feedbackResult, redemptionResult] = await Promise.all([
-      db.from("reward_feedback_submissions")
-        .select("*").order("submitted_at", { ascending: false }),
-
-      db.from("reward_redemptions")
-        .select("*").order("requested_at", { ascending: false })
+    const [submissionResult, catalogResult, ledgerResult] = await Promise.all([
+      db.from("reward_task_submissions")
+        .select("id,user_id,task_id,platform,proof_path,proof_url,status,admin_note,submitted_at,reviewed_at")
+        .order("submitted_at", { ascending: false }),
+      db.from("reward_task_catalog")
+        .select("id,title,category,reward_amount")
+        .order("sort_order", { ascending: true }),
+      db.from("reward_balance_ledger")
+        .select("user_id,amount,description,created_at")
+        .order("created_at", { ascending: false })
+        .limit(100)
     ]);
 
-    if (feedbackResult.error) throw feedbackResult.error;
-    if (redemptionResult.error) throw redemptionResult.error;
+    if (submissionResult.error) throw submissionResult.error;
+    if (catalogResult.error) throw catalogResult.error;
+    if (ledgerResult.error) throw ledgerResult.error;
 
-    rewardFeedbackData = feedbackResult.data || [];
-    rewardRedemptionsData = redemptionResult.data || [];
+    rewardTaskSubmissionsData = submissionResult.data || [];
+    rewardTaskCatalogData = catalogResult.data || [];
+    rewardBalanceLedgerData = ledgerResult.data || [];
 
-    renderRewardManagement();
+    const signedProofs = await Promise.all(rewardTaskSubmissionsData.map(async row => {
+      if (!row.proof_path) return [row.id, null];
+      const { data, error } = await db.storage
+        .from("reward-proofs")
+        .createSignedUrl(row.proof_path, 3600);
+      if (error) {
+        console.warn("Could not sign reward proof:", error.message);
+        return [row.id, null];
+      }
+      return [row.id, data?.signedUrl || null];
+    }));
 
+    renderRewardManagement(new Map(signedProofs));
   } catch (error) {
     console.error("Rewards:", error);
     showToast("Rewards loading failed: " + error.message);
+    if (taskBody) taskBody.innerHTML = '<tr><td colspan="8" class="empty">Could not load reward task proofs.</td></tr>';
   }
 }
 
-function renderRewardManagement() {
-  const feedbackBody = $("rewardFeedbackTable");
-  const redemptionBody = $("rewardRedemptionsTable");
+function renderRewardManagement(signedProofs = new Map()) {
+  const taskBody = $("rewardTaskReviewTable");
+  const ledgerBody = $("adminRewardBalanceLedger");
 
-  if (feedbackBody) {
-    feedbackBody.innerHTML = rewardFeedbackData.length
-      ? rewardFeedbackData.map(row => `
-        <tr>
-          <td>${escapeHTML(String(row.user_id).slice(0, 8))}</td>
-          <td>${escapeHTML(row.rating)}/5</td>
-          <td><details>
-            <summary>Read feedback</summary>
-            <div style="white-space:pre-wrap">
-              ${escapeHTML(row.feedback)}
-            </div>
-          </details></td>
-          <td>${escapeHTML(row.suggestion || "—")}</td>
-          <td>${statusBadge(row.status)}</td>
-          <td>${Number(row.points_awarded || 0)}</td>
-          <td>${row.submitted_at
-            ? new Date(row.submitted_at).toLocaleString() : "—"}</td>
-          <td>${row.status === "pending" ? `
-  <button class="btn small green"
-    onclick="reviewRewardFeedback('${row.id}','approved')">
-    Approve +50
-  </button>
-  <button class="btn small red"
-    onclick="reviewRewardFeedback('${row.id}','rejected')">
-    Reject
-  </button>` : "Reviewed"}
-</td>
-          
-        </tr>
-      `).join("")
-      : '<tr><td colspan="8" class="empty">No feedback tasks found.</td></tr>';
+  if (taskBody) {
+    taskBody.innerHTML = rewardTaskSubmissionsData.length
+      ? rewardTaskSubmissionsData.map(row => {
+          const task = rewardTaskCatalogData.find(item => item.id === row.task_id);
+          const screenshotUrl = signedProofs.get(row.id);
+          const proofLinks = [
+            screenshotUrl ? `<a href="${escapeHTML(screenshotUrl)}" target="_blank" rel="noopener">View Screenshot ↗</a>` : "",
+            row.proof_url ? `<a href="${escapeHTML(row.proof_url)}" target="_blank" rel="noopener">Open Post URL ↗</a>` : ""
+          ].filter(Boolean).join("<br>");
+          return `
+            <tr>
+              <td>${escapeHTML(String(row.user_id).slice(0,8))}</td>
+              <td><strong>${escapeHTML(task?.title || "WFT Reward Task")}</strong><br><small>${money(task?.reward_amount || 0)} reward</small></td>
+              <td>${escapeHTML(row.platform || "—")}</td>
+              <td>${proofLinks || "No proof link available"}</td>
+              <td>${row.submitted_at ? new Date(row.submitted_at).toLocaleString() : "—"}</td>
+              <td>${statusBadge(row.status)}</td>
+              <td>${escapeHTML(row.admin_note || "—")}</td>
+              <td>${row.status === "pending" ? `
+                <button class="btn small green" onclick="reviewRewardTask('${row.id}','approved')">Approve +${money(task?.reward_amount || 0)}</button>
+                <button class="btn small red" onclick="reviewRewardTask('${row.id}','rejected')">Reject</button>
+              ` : "Reviewed"}</td>
+            </tr>`;
+        }).join("")
+      : '<tr><td colspan="8" class="empty">No social task proofs have been submitted.</td></tr>';
   }
 
-  if (redemptionBody) {
-    redemptionBody.innerHTML = rewardRedemptionsData.length
-      ? rewardRedemptionsData.map(row => `
+  if (ledgerBody) {
+    ledgerBody.innerHTML = rewardBalanceLedgerData.length
+      ? rewardBalanceLedgerData.map(row => `
         <tr>
-          <td>${escapeHTML(String(row.user_id).slice(0, 8))}</td>
-          <td>$${Number(row.account_size).toLocaleString()}
-            ${escapeHTML(row.account_type)}</td>
-          <td>${Number(row.points_spent || 0)}</td>
-          <td>${money(row.activation_fee)}</td>
-          <td>
-  ${statusBadge(row.activation_status)}
-  <br>
-  <strong>${escapeHTML(row.activation_network || "No network")}</strong>
-  <br>
-  <small style="word-break:break-all">
-    ${escapeHTML(row.activation_tx_hash || "No transaction submitted")}
-  </small>
-  <br>
-  <small>
-    ${row.activation_payment_submitted_at
-      ? new Date(row.activation_payment_submitted_at).toLocaleString()
-      : ""}
-  </small>
-</td>
-
-          <td>${statusBadge(row.status)}</td>
-          <td>${row.requested_at
-  ? new Date(row.requested_at).toLocaleString() : "—"}</td>
-
-<td>
-  ${row.trading_account_id
-    ? `Account linked: ${escapeHTML(String(row.trading_account_id).slice(0, 8))}`
-    : row.status === "approved" && row.activation_status === "paid"
-      ? `<button class="btn small green"
-          onclick="createRewardTradingAccount('${row.id}')">
-          Create $5K Account
-        </button>`
-      : row.status === "pending"
-        ? `
-          <button class="btn small green"
-            onclick="reviewRewardRedemption('${row.id}','approved')">
-            Approve
-          </button>
-          <button class="btn small red"
-            onclick="reviewRewardRedemption('${row.id}','rejected')">
-            Reject
-          </button>`
-        : "Reviewed"}
-</td>
-        </tr>
-      `).join("")
-      : '<tr><td colspan="8" class="empty">No redemptions found.</td></tr>';
+          <td>${escapeHTML(String(row.user_id).slice(0,8))}</td>
+          <td>${row.created_at ? new Date(row.created_at).toLocaleString() : "—"}</td>
+          <td>${escapeHTML(row.description || "Reward Balance activity")}</td>
+          <td style="color:${Number(row.amount) >= 0 ? "#4ade80" : "#f87171"};font-weight:700">${Number(row.amount) > 0 ? "+" : ""}${money(row.amount)}</td>
+        </tr>`).join("")
+      : '<tr><td colspan="4" class="empty">No Reward Balance activity yet.</td></tr>';
   }
 }
 
-async function reviewRewardFeedback(id, decision) {
-  if (!["approved", "rejected"].includes(decision)) return;
+async function reviewRewardTask(id, decision) {
+  if (!["approved","rejected"].includes(decision)) return;
+  const row = rewardTaskSubmissionsData.find(item => item.id === id);
+  if (!row || row.status !== "pending") {
+    showToast("This task has already been reviewed.");
+    return;
+  }
 
+  const task = rewardTaskCatalogData.find(item => item.id === row.task_id);
   let note = "";
-
   if (decision === "approved") {
-    if (!confirm("Approve feedback and award 50 points?")) return;
+    if (!confirm("Approve this task and add " + money(task?.reward_amount || 0) + " to the customer's Reward Balance?")) return;
     note = prompt("Optional admin note:") || "";
   } else {
-    note = prompt("Enter rejection reason:");
+    note = prompt("Enter the reason for rejecting this proof:");
     if (note === null || !note.trim()) return;
     note = note.trim();
   }
 
   try {
-    const { data, error } = await db
-      .from("reward_feedback_submissions")
+    const { data, error } = await db.from("reward_task_submissions")
       .update({
         status: decision,
         admin_note: note || null,
@@ -1849,130 +1808,23 @@ async function reviewRewardFeedback(id, decision) {
       })
       .eq("id", id)
       .eq("status", "pending")
-      .select("id,points_awarded");
+      .select("id");
 
     if (error) throw error;
     if (!data || !data.length) {
-      showToast("This feedback was already reviewed.");
+      showToast("This task was already reviewed.");
       return;
     }
 
     showToast(decision === "approved"
-      ? "Approved — 50 points awarded."
-      : "Feedback rejected.");
-
+      ? "Task approved. Reward Balance credited automatically."
+      : "Task proof rejected.");
     await loadRewardManagement();
-
   } catch (error) {
-    showToast("Review failed: " + error.message);
+    showToast("Task review failed: " + error.message);
   }
 }
-  async function createRewardTradingAccount(id) {
-  const row = rewardRedemptionsData.find(item => item.id === id);
 
-  if (!row || row.trading_account_id) return;
-
-  if (row.status !== "approved" || row.activation_status !== "paid") {
-    showToast("Reward must be approved and payment verified first.");
-    return;
-  }
-
-  if (!confirm("Create the $5,000 1-Step Challenge account on WFT TradingView Terminal?")) return;
-
-  try {
-    const { data, error } = await db.rpc("admin_create_reward_trading_account", {
-      p_redemption_id: id,
-      p_platform: "WFT TRADINGVIEW",
-      p_mt_login: null,
-      p_mt_server: null
-    });
-
-    if (error) throw error;
-    if (!data || !data.success) {
-      throw new Error(data?.message || "Account creation failed.");
-    }
-
-    showToast("Reward $5K account created and linked.");
-    await loadRewardManagement();
-
-  } catch (error) {
-    showToast("Reward account creation failed: " + error.message);
-  }
-      }
-
-async function reviewRewardRedemption(id, decision) {
-  if (!["approved", "rejected"].includes(decision)) return;
-
-  const row = rewardRedemptionsData.find(item => item.id === id);
-  if (!row) return;
-
-  let note = "";
-  const now = new Date().toISOString();
-
-  if (decision === "approved") {
-    if (!row.activation_tx_hash || !row.activation_network) {
-      showToast("Cannot approve: payment details are missing.");
-      return;
-    }
-
-    const verified = confirm(
-      "Before approval, confirm ALL:\n\n" +
-      "1. Received exactly $1 USDT.\n" +
-      "2. Correct WFT wallet address.\n" +
-      "3. Correct network: " + row.activation_network + ".\n" +
-      "4. Transaction confirmed on blockchain.\n\n" +
-      "Have you verified these?"
-    );
-
-    if (!verified) return;
-
-    note = prompt("Optional admin verification note:") || "";
-  } else {
-    note = prompt("Enter rejection reason:");
-    if (note === null || !note.trim()) return;
-    note = note.trim();
-  }
-
-  try {
-    const updateData = {
-      status: decision,
-      admin_note: note || null,
-      reviewed_by: currentUser.id,
-      reviewed_at: now
-    };
-
-    if (decision === "approved") {
-      updateData.activation_status = "paid";
-      updateData.activation_verified_at = now;
-      updateData.activation_verified_by = currentUser.id;
-    }
-
-    const { data, error } = await db
-      .from("reward_redemptions")
-      .update(updateData)
-      .eq("id", id)
-      .eq("status", "pending")
-      .select("id");
-
-    if (error) throw error;
-
-    if (!data || !data.length) {
-      showToast("This redemption was already reviewed.");
-      return;
-    }
-
-    showToast(
-      decision === "approved"
-        ? "Payment verified and reward approved. Create the $5K account next."
-        : "Redemption rejected."
-    );
-
-    await loadRewardManagement();
-
-  } catch (error) {
-    showToast("Redemption review failed: " + error.message);
-  }
-  }
 </script>
 
 </body>
