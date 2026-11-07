@@ -1018,42 +1018,55 @@ submitPaymentButton.addEventListener("click",async()=>{
       throw new Error("Please log in again.");
     }
 
-    const {
-      data,
-      error
-    } = await db
-      .from("orders")
-      .update({
-        payment_network:network,
-        transaction_hash:txid,
-        payment_submitted_at:new Date().toISOString()
-      })
-      .eq("id",currentOrderId)
-      .eq("user_id",session.user.id)
-      .eq("status","pending")
-      .select("id")
-      .single();
+    const { data, error } = await db.functions.invoke("verify-payment", {
+      body: {
+        order_id: currentOrderId,
+        network,
+        transaction_hash: txid
+      }
+    });
 
-    if(error) throw error;
-
-    if(!data){
-
-      throw new Error(
-        "Payment details were not saved."
-      );
+    if (error) {
+      let serverMessage = error.message || "Blockchain verification failed.";
+      try {
+        if (error.context) {
+          const body = await error.context.clone().json();
+          serverMessage = body.error || body.message || serverMessage;
+        }
+      } catch (_) {}
+      throw new Error(serverMessage);
     }
 
-    showPaymentMessage(
-      "Payment details submitted successfully using " +
-      network +
-      ". Awaiting Admin verification.",
-      "success"
-    );
+    if (!data || data.success !== true) {
+      throw new Error(data?.error || "Blockchain verification could not be completed.");
+    }
 
-    submitPaymentButton.textContent = "Submitted";
+    const verification = data.verification || {};
+    const confirmations = Number(verification.confirmations || 0);
 
-    networkInput.disabled = true;
-    txidInput.disabled = true;
+    if (verification.status === "verified") {
+      showPaymentMessage(
+        "✓ Blockchain payment verified: " + network +
+        " · $" + Number(verification.amount || 0).toFixed(2) +
+        " · " + confirmations + " confirmations. Admin approval is next.",
+        "success"
+      );
+      submitPaymentButton.textContent = "Payment Verified";
+      submitPaymentButton.disabled = true;
+      networkInput.disabled = true;
+      txidInput.disabled = true;
+    } else {
+      showPaymentMessage(
+        verification.message +
+        (confirmations ? " (" + confirmations + " confirmations)." : "") +
+        " Tap Check Confirmations again after a short wait.",
+        "success"
+      );
+      submitPaymentButton.textContent = "Check Confirmations";
+      submitPaymentButton.disabled = false;
+      networkInput.disabled = true;
+      txidInput.disabled = true;
+    }
 
   }catch(error){
 
