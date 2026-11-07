@@ -1027,7 +1027,7 @@ function renderOrders() {
     let actions = '—';
     if (order.status === "pending") {
       actions = (submitted && order.payment_verification_status === "verified"
-        ? '<button class="btn small green" onclick="updateOrderStatus(\\'' + order.id + '\\',\\'paid\\')">Approve Verified Payment</button>'
+        ? '<button class="btn small green" onclick="updateOrderStatus(\'' + order.id + '\',\'paid\')">Approve Verified Payment</button>'
         : submitted
           ? '<span class="status pending">Awaiting Blockchain Verification</span>'
           : '<span class="status pending">Awaiting Payment</span>') +
