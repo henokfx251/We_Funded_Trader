@@ -63,7 +63,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
       <div class="chart-top"><select id="chartPairSelect" class="chart-pair-select" aria-label="Select trading pair"><option value="XAUUSD">XAUUSD</option></select></div>
       <div class="chart-wrap" id="chartWrap"><div class="loading">Loading live market chart…</div>
       <div class="chart-order" id="chartOrder">
-        <div class="side-toggle"><button class="btn buy" id="chartBuy">BUY</button><button class="btn sell" id="chartSell">SELL</button></div>
+        <div class="chart-order-fields"><div><label for="chartOrderType">Order Type</label><select id="chartOrderType"><option value="MARKET">Market</option><option value="BUY_LIMIT">Buy Limit</option><option value="SELL_LIMIT">Sell Limit</option></select></div><div id="chartLimitWrap" style="display:none"><label for="chartLimitPrice">Limit Price</label><input id="chartLimitPrice" type="number" step="any" placeholder="Entry price"></div></div><div class="side-toggle"><button class="btn buy" id="chartBuy">BUY</button><button class="btn sell" id="chartSell">SELL</button></div>
         <div class="chart-order-fields">
           <div><label for="chartVolume">Lots</label><input id="chartVolume" type="number" min="0.01" max="10" step="0.01" value="0.10"></div>
           <div><label for="chartSL">Stop Loss</label><input id="chartSL" type="number" step="any" placeholder="Optional"></div>
@@ -85,10 +85,10 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
         <div class="field"><label for="stopLoss">Stop Loss (optional)</label><input id="stopLoss" type="number" step="any" placeholder="Price"></div>
         <div class="field"><label for="takeProfit">Take Profit (optional)</label><input id="takeProfit" type="number" step="any" placeholder="Price"></div>
       </div>
-      <div class="side-toggle"><button class="btn buy" id="buyButton">BUY</button><button class="btn sell" id="sellButton">SELL</button></div>
+      <div class="trade-grid"><div class="field"><label for="tradeOrderType">Order Type</label><select id="tradeOrderType"><option value="MARKET">Market</option><option value="BUY_LIMIT">Buy Limit</option><option value="SELL_LIMIT">Sell Limit</option></select></div><div class="field" id="tradeLimitWrap" style="display:none"><label for="tradeLimitPrice">Limit Price</label><input id="tradeLimitPrice" type="number" step="any" placeholder="Entry price"></div></div><div class="side-toggle"><button class="btn buy" id="buyButton">BUY</button><button class="btn sell" id="sellButton">SELL</button></div>
       <div class="status" id="tradeStatus"></div>
     </div>
-    <div class="panel"><h2 class="panel-title">Open Positions <span style="display:flex;align-items:center;gap:9px"><span class="sub" id="positionCount">0 positions</span><button class="close-btn" id="closeAllButton" type="button">Close All Positions</button></span></h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Stop Loss</th><th>Take Profit</th><th>Floating P/L</th><th></th></tr></thead><tbody id="positionsBody"><tr><td colspan="8" class="empty">No open positions</td></tr></tbody></table></div></div>
+    <div class="panel"><h2 class="panel-title">Pending Limit Orders <span class="sub" id="pendingCount">0 orders</span></h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Type</th><th>Lots</th><th>Limit Price</th><th>Stop Loss</th><th>Take Profit</th><th></th></tr></thead><tbody id="pendingOrdersBody"><tr><td colspan="7" class="empty">No pending orders</td></tr></tbody></table></div></div><div class="panel"><h2 class="panel-title">Open Positions <span style="display:flex;align-items:center;gap:9px"><span class="sub" id="positionCount">0 positions</span><button class="close-btn" id="closeAllButton" type="button">Close All Positions</button></span></h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Stop Loss</th><th>Take Profit</th><th>Floating P/L</th><th></th></tr></thead><tbody id="positionsBody"><tr><td colspan="8" class="empty">No open positions</td></tr></tbody></table></div></div>
   </section>
   <section class="view" id="view-history">
     <div class="history-summary"><div class="card"><div class="metric-label">Current Balance</div><div class="metric-value" id="historyBalance">$—</div></div><div class="card"><div class="metric-label">Total Profit</div><div class="metric-value" id="historyProfit">$0.00</div></div><div class="card"><div class="metric-label">Total Loss</div><div class="metric-value" id="historyLoss">$0.00</div></div></div><div class="panel"><h2 class="panel-title">Closed Trade History</h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Close</th><th>Profit/Loss</th><th>Balance</th><th>Closed</th></tr></thead><tbody id="historyBody"><tr><td colspan="8" class="empty">No closed trades</td></tr></tbody></table></div></div>
@@ -189,7 +189,7 @@ function renderSummary(){
  ].map(x=>'<div class="rule"><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div>').join("");
 }
 function renderAll(){
- renderSummary();renderMarkets();renderPositions();renderHistory();if(activeTab==="chart")drawChart();
+ renderSummary();renderMarkets();renderPositions();renderPendingOrders();renderHistory();if(activeTab==="chart")drawChart();
 }
 async function callEngine(action,extra={}){
  const {data,error}=await db.rpc("wft_virtual_terminal_action",{
@@ -205,6 +205,20 @@ async function refreshState(){
  catch(e){$("globalStatus").textContent="Engine error: "+e.message;}
  finally{refreshing=false;}
 }
+async function placeLimitOrder(side,fromChart=false){
+ const status=fromChart?$("chartTradeStatus"):$("tradeStatus");
+ const vol=Number(fromChart?$("chartVolume").value:$("volume").value);
+ const raw=fromChart?$("chartLimitPrice").value:$("tradeLimitPrice").value;const price=Number(raw);
+ const sl=(fromChart?$("chartSL").value:$("stopLoss").value).trim();const tp=(fromChart?$("chartTP").value:$("takeProfit").value).trim();
+ if(!selectedAccount){status.textContent="Select an active account first.";return;}
+ if(!Number.isFinite(vol)||vol<0.01||vol>10){status.textContent="Lot size must be 0.01–10.";return;}
+ if(!raw||!Number.isFinite(price)||price<=0){status.textContent="Enter a valid limit price.";return;}
+ status.textContent="Submitting pending limit order…";
+ try{const result=await db.rpc("wft_virtual_place_limit",{p_trading_account_id:selectedAccount,p_symbol:fromChart?selectedSymbol:$("tradeSymbol").value,p_side:side,p_volume:vol,p_pending_price:price,p_stop_loss:sl===""?null:Number(sl),p_take_profit:tp===""?null:Number(tp)});if(result.error)throw result.error;status.textContent=(side==="BUY"?"Buy Limit":"Sell Limit")+" placed. It activates automatically when price reaches your limit.";await refreshState();}catch(e){status.textContent=e.message;}
+}
+function submitOrder(side,fromChart=false){const type=fromChart?$("chartOrderType").value:$("tradeOrderType").value;if(type==="MARKET"){placeOrder(side,fromChart);return;}if((type==="BUY_LIMIT"&&side!=="BUY")||(type==="SELL_LIMIT"&&side!=="SELL")){(fromChart?$("chartTradeStatus"):$("tradeStatus")).textContent="Select the matching BUY or SELL button for this limit type.";return;}placeLimitOrder(side,fromChart);}
+async function cancelPendingOrder(id,button){button.disabled=true;try{const r=await db.rpc("wft_virtual_cancel_limit",{p_trading_account_id:selectedAccount,p_order_id:id});if(r.error)throw r.error;await refreshState();}catch(e){$("tradeStatus").textContent=e.message;button.disabled=false;}}
+function renderPendingOrders(){const body=$("pendingOrdersBody");if(!body)return;const rows=state?.pending_orders||[];$("pendingCount").textContent=rows.length+" orders";if(!rows.length){body.innerHTML='<tr><td colspan="7" class="empty">No pending orders</td></tr>';return;}body.innerHTML=rows.map(p=>'<tr><td>'+esc(p.symbol)+'</td><td>'+esc(p.order_type.replace("_"," "))+'</td><td>'+Number(p.volume).toFixed(2)+'</td><td>'+money(p.pending_price)+'</td><td>'+(p.stop_loss==null?"—":money(p.stop_loss))+'</td><td>'+(p.take_profit==null?"—":money(p.take_profit))+'</td><td><button class="close-btn" type="button" onclick="cancelPendingOrder(\''+p.id+'\',this)">Cancel</button></td></tr>').join("");}
 async function placeOrder(side,fromChart=false){
  if(!selectedAccount){$("tradeStatus").textContent="Select an active account first.";return;}
  const volume=Number(fromChart?$("chartVolume").value:$("volume").value),sl=(fromChart?$("chartSL").value:$("stopLoss").value).trim(),tp=(fromChart?$("chartTP").value:$("takeProfit").value).trim();
@@ -244,8 +258,9 @@ async function init(){
  $("accountSelect").addEventListener("change",async()=>{selectedAccount=$("accountSelect").value;await refreshState();});
  $("tradeSymbol").addEventListener("change",e=>{selectedSymbol=e.target.value;drawChart();});
  $("chartPairSelect").addEventListener("change",e=>{selectedSymbol=e.target.value;$("tradeSymbol").value=selectedSymbol;renderMarkets();drawChart();});
- $("buyButton").addEventListener("click",()=>placeOrder("BUY"));$("sellButton").addEventListener("click",()=>placeOrder("SELL"));
- $("chartBuy").addEventListener("click",()=>placeOrder("BUY",true));$("chartSell").addEventListener("click",()=>placeOrder("SELL",true));
+ $("buyButton").addEventListener("click",()=>submitOrder("BUY"));$("sellButton").addEventListener("click",()=>submitOrder("SELL"));
+ $("chartBuy").addEventListener("click",()=>submitOrder("BUY",true));$("chartSell").addEventListener("click",()=>submitOrder("SELL",true));
+ const toggleLimit=(sid,wid)=>$(sid).addEventListener("change",()=>{$(wid).style.display=$(sid).value==="MARKET"?"none":"block";});toggleLimit("chartOrderType","chartLimitWrap");toggleLimit("tradeOrderType","tradeLimitWrap");
  $("closeAllButton").addEventListener("click",closeAllPositions);
  await refreshState();
  setInterval(()=>{if(document.visibilityState==="visible")refreshState();},6000);
