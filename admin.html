@@ -202,6 +202,20 @@ tr:last-child td{border-bottom:0}
   .form-grid{grid-template-columns:1fr}
   .field.full{grid-column:auto}
 }
+
+/* WFT real-time risk alerts */
+.risk-alert-panel{background:linear-gradient(135deg,#111e32,#101827);border:1px solid #344967;border-radius:16px;padding:18px;margin:0 0 20px}
+.risk-alert-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.risk-alert-head h3{margin:0;font-size:16px}
+.risk-alert-list{display:grid;gap:9px}
+.risk-alert-item{display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #263650;border-radius:12px;background:#0b1422}
+.risk-alert-icon{font-size:19px;line-height:1.2}
+.risk-alert-copy{min-width:0;flex:1}
+.risk-alert-copy strong{display:block;font-size:13px;margin-bottom:4px}
+.risk-alert-copy span{display:block;color:#91a1ba;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.risk-alert-time{color:#91a1ba;font-size:11px;white-space:nowrap}
+.risk-alert-empty{color:#91a1ba;font-size:13px;padding:12px}
+
 </style>
 </head>
 
@@ -281,6 +295,14 @@ tr:last-child td{border-bottom:0}
 
       <div class="content">
         <div id="globalMessage" class="message"></div>
+
+        <section class="risk-alert-panel" id="riskAlertPanel">
+          <div class="risk-alert-head">
+            <h3>⚡ Live Trader Risk Alerts <span id="riskAlertCount" class="top-meta">0</span></h3>
+            <button class="btn" type="button" onclick="loadRiskAlerts()">Refresh Alerts</button>
+          </div>
+          <div id="riskAlertList" class="risk-alert-list"><div class="risk-alert-empty">Loading live alerts...</div></div>
+        </section>
                 <!-- OVERVIEW -->
         <section class="page active" id="page-overview">
           <div class="page-heading">
@@ -729,6 +751,7 @@ const SUPABASE_KEY = "sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
 
 let db = null;
 let currentUser = null;
+let wftRiskAlertsChannel = null;
 
 let ordersData = [];
 let kycData = [];
@@ -892,6 +915,7 @@ async function loadAdmin() {
   $("app").classList.remove("hidden");
 
   await refreshAll();
+  await startAdminRiskAlerts();
 }
 
 async function logout() {
@@ -1220,6 +1244,60 @@ async function loadTradingAccounts() {
   renderAccounts();
   updateOverviewStats();
   await loadVirtualMonitor();
+}
+
+
+async function loadRiskAlerts() {
+  const list = $("riskAlertList");
+  const count = $("riskAlertCount");
+  if (!list) return;
+  list.innerHTML = '<div class="risk-alert-empty">Loading live alerts...</div>';
+  const { data, error } = await db.from("admin_notifications")
+    .select("id,event_type,trading_account_id,user_id,account_type,account_size,old_status,new_status,message,created_at")
+    .order("created_at", { ascending: false }).limit(8);
+  if (error) {
+    list.innerHTML = '<div class="risk-alert-empty">Could not load alerts: ' + escapeHTML(error.message) + '</div>';
+    return;
+  }
+  const rows = data || [];
+  if (count) count.textContent = String(rows.length);
+  if (!rows.length) {
+    list.innerHTML = '<div class="risk-alert-empty">No trader pass/fail alerts yet. New events will appear here instantly.</div>';
+    return;
+  }
+  list.innerHTML = rows.map(row => {
+    const passed = row.event_type === "challenge_passed";
+    const title = passed ? "Trader Passed" : "Trader Failed";
+    const detail = (row.account_type || "Trading account") + " • " + money(row.account_size) +
+      " • " + (row.old_status || "—") + " → " + (row.new_status || "—");
+    return '<div class="risk-alert-item"><div class="risk-alert-icon">' + (passed ? "✅" : "🚨") +
+      '</div><div class="risk-alert-copy"><strong>' + title + '</strong><span>' +
+      escapeHTML(detail) + ' • Account: ' + escapeHTML(String(row.trading_account_id || "").slice(0,8)) +
+      '</span></div><div class="risk-alert-time">' +
+      escapeHTML(row.created_at ? new Date(row.created_at).toLocaleString() : "") +
+      '</div></div>';
+  }).join("");
+}
+
+async function startAdminRiskAlerts() {
+  await loadRiskAlerts();
+  if (wftRiskAlertsChannel) {
+    await db.removeChannel(wftRiskAlertsChannel);
+    wftRiskAlertsChannel = null;
+  }
+  wftRiskAlertsChannel = db.channel("wft-admin-risk-alerts")
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "admin_notifications" }, payload => {
+      const row = payload.new || {};
+      const passed = row.event_type === "challenge_passed";
+      showToast(passed ? "⚡ Trader passed a challenge!" : "🚨 Trader failed risk limits!");
+      loadRiskAlerts();
+      if (typeof loadTradingAccounts === "function") loadTradingAccounts();
+    })
+    .subscribe(status => {
+      if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+        console.warn("WFT realtime risk alerts:", status);
+      }
+    });
 }
 
 async function loadVirtualMonitor() {
