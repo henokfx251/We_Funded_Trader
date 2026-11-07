@@ -1031,7 +1031,7 @@ function renderOrders() {
         : submitted
           ? '<span class="status pending">Awaiting Blockchain Verification</span>'
           : '<span class="status pending">Awaiting Payment</span>') +
-        ' <button class="btn small red" onclick="updateOrderStatus(\\'' + order.id + '\\',\\'rejected\\')">Reject</button>';
+        ' <button class="btn small red" onclick="updateOrderStatus(\'' + order.id + '\',\'rejected\')">Reject</button>';
     }
     return '<tr>' +
       '<td>' + escapeHTML(String(order.id).slice(0, 8)) + '</td>' +
