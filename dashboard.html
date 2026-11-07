@@ -1633,7 +1633,7 @@ async function loadCertificates() {
 
   const { data, error } = await supabase
     .from("certificates")
-    .select("id,user_id,certificate_number,issued_at,challenge_request_id,challenge_pass_requests(trading_account_id,trading_accounts(account_size,account_type))")
+    .select("id,user_id,certificate_number,issued_at,challenge_request_id,recipient_name,certificate_title,certificate_description,challenge_pass_requests(trading_account_id,trading_accounts(account_size,account_type))")
     .eq("user_id", currentUser.id)
     .order("issued_at", { ascending: false });
 
@@ -1645,7 +1645,7 @@ async function loadCertificates() {
     .eq("id", currentUser.id)
     .maybeSingle();
 
-  const recipient = profile?.full_name ||
+  const defaultRecipient = profile?.full_name ||
     currentUser.user_metadata?.full_name ||
     currentUser.email ||
     "WFT Trader";
@@ -1661,22 +1661,24 @@ async function loadCertificates() {
     const accountSize = Number(account.account_size || 0);
     const accountLabel = accountSize
       ? "$" + accountSize.toLocaleString("en-US") + " " + (account.account_type || "Evaluation")
-      : (account.account_type || "1-Step Evaluation");
+      : (account.account_type || "");
+    const recipient = c.recipient_name || defaultRecipient;
+    const certificateTitle = c.certificate_title || "Certificate of Achievement";
+    const certificateCopy = c.certificate_description ||
+      (accountLabel
+        ? "In recognition of successfully completing the applicable WE FUNDED TRADER " + accountLabel +
+          " challenge requirements and receiving official approval from the WFT review team."
+        : "In recognition of the achievement described by WE FUNDED TRADER and officially awarded to the recipient.");
 
     return `
       <article class="certificate-paper" id="certificate-${safe(c.id)}">
         <div class="certificate-kicker">WE FUNDED TRADER · OFFICIAL RECOGNITION</div>
-        <h2 class="certificate-title">Certificate of Achievement</h2>
+        <h2 class="certificate-title">${safe(certificateTitle)}</h2>
         <p class="certificate-copy">
           This certificate is proudly presented to
         </p>
         <div class="certificate-recipient">${safe(recipient)}</div>
-        <p class="certificate-copy">
-          In recognition of successfully completing the applicable
-          <strong>WE FUNDED TRADER ${safe(accountLabel)}</strong>
-          challenge requirements and receiving official approval from the WFT review team.
-          This certificate confirms the approved challenge achievement recorded by WE FUNDED TRADER.
-        </p>
+        <p class="certificate-copy">${safe(certificateCopy)}</p>
         <div class="certificate-meta">
           <div><small>Certificate Number</small><strong>${safe(c.certificate_number)}</strong></div>
           <div><small>Date Issued</small><strong>${safe(date(c.issued_at))}</strong></div>
