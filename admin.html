@@ -1252,8 +1252,8 @@ async function loadRiskAlerts() {
   const count = $("riskAlertCount");
   if (!list) return;
   list.innerHTML = '<div class="risk-alert-empty">Loading live alerts...</div>';
-  const { data, error } = await db.from("admin_notifications")
-    .select("id,event_type,trading_account_id,user_id,account_type,account_size,old_status,new_status,message,created_at")
+  const { data, error } = await db.from("admin_trading_alerts")
+    .select("id,event_type,trading_account_id,user_id,account_type,account_size,account_name,message,metadata,created_at,read_at")
     .order("created_at", { ascending: false }).limit(8);
   if (error) {
     list.innerHTML = '<div class="risk-alert-empty">Could not load alerts: ' + escapeHTML(error.message) + '</div>';
@@ -1268,11 +1268,12 @@ async function loadRiskAlerts() {
   list.innerHTML = rows.map(row => {
     const passed = row.event_type === "challenge_passed";
     const title = passed ? "Trader Passed" : "Trader Failed";
+    const meta = row.metadata || {};
     const detail = (row.account_type || "Trading account") + " • " + money(row.account_size) +
-      " • " + (row.old_status || "—") + " → " + (row.new_status || "—");
+      " • " + (meta.previous_status || "—") + " → " + (meta.new_status || (passed ? "Passed" : "Failed"));
     return '<div class="risk-alert-item"><div class="risk-alert-icon">' + (passed ? "✅" : "🚨") +
       '</div><div class="risk-alert-copy"><strong>' + title + '</strong><span>' +
-      escapeHTML(detail) + ' • Account: ' + escapeHTML(String(row.trading_account_id || "").slice(0,8)) +
+      escapeHTML(detail) + ' • Account: ' + escapeHTML(row.account_name || String(row.trading_account_id || "").slice(0,8)) +
       '</span></div><div class="risk-alert-time">' +
       escapeHTML(row.created_at ? new Date(row.created_at).toLocaleString() : "") +
       '</div></div>';
@@ -1286,7 +1287,7 @@ async function startAdminRiskAlerts() {
     wftRiskAlertsChannel = null;
   }
   wftRiskAlertsChannel = db.channel("wft-admin-risk-alerts")
-    .on("postgres_changes", { event: "INSERT", schema: "public", table: "admin_notifications" }, payload => {
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "admin_trading_alerts" }, payload => {
       const row = payload.new || {};
       const passed = row.event_type === "challenge_passed";
       showToast(passed ? "⚡ Trader passed a challenge!" : "🚨 Trader failed risk limits!");
