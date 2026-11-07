@@ -38,17 +38,30 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
 @media(min-width:850px){.container{padding:22px}.tabs{display:flex;gap:7px;margin-bottom:12px}.tabs button{background:#102033;color:var(--muted);border:1px solid var(--line);padding:9px 14px;border-radius:8px;font-size:11px}.tabs button.active{color:var(--gold);border-color:var(--gold)}.bottom-nav{position:static;max-width:1250px;margin:0 auto 20px;border:1px solid var(--line);border-radius:10px;display:none}.market-list{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .view#view-chart{width:100%;margin:0}
 .view#view-chart>.panel{border-left:0;border-right:0;border-radius:0;padding:12px clamp(10px,1.4vw,24px);margin-bottom:0}
-#view-chart .chart-wrap{position:relative;width:100%;height:clamp(440px,68vh,760px);min-height:440px;max-height:760px;border-radius:0;overflow:hidden;background:#091525}
+#view-chart .chart-wrap{position:relative;width:100%;height:clamp(460px,72vh,780px);min-height:460px;max-height:780px;border-radius:8px;overflow:hidden;background:#091525}
 #view-chart .chart-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;pointer-events:auto!important}
-#view-chart .chart-order{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important;display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;max-width:none!important;margin:10px 0 0!important;padding:10px!important;z-index:2!important;pointer-events:auto!important;background:rgba(7,17,31,.98);border:1px solid rgba(232,184,75,.7);border-radius:12px;box-shadow:0 5px 18px #0006}
-#view-chart .chart-order .side-toggle{display:flex;gap:9px;margin:8px 0}
-#view-chart .chart-order .btn{flex:1;max-width:none;min-height:40px;padding:8px 12px;font-size:12px;border-radius:22px}
-#view-chart .chart-order-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
-#view-chart .chart-order-fields label{display:block;color:#e2e8f0;font-size:10px;font-weight:700;margin:0 0 4px}
-#view-chart .chart-order-fields input,#view-chart .chart-order-fields select{width:100%;min-width:0;padding:8px 7px;font-size:11px;min-height:36px}
-#view-chart .chart-order .status{font-size:10px;margin-top:5px;min-height:12px}
-@media(max-width:700px){#view-chart .chart-wrap{height:60vh;min-height:400px;max-height:620px}#view-chart .chart-order{padding:9px!important;margin-top:8px!important}#view-chart .chart-order .btn{min-height:38px;padding:7px 10px;font-size:11px}#view-chart .chart-order-fields{gap:5px}#view-chart .chart-order-fields label{font-size:9px}#view-chart .chart-order-fields input,#view-chart .chart-order-fields select{padding:7px 5px;font-size:10px}.account-row{grid-template-columns:repeat(2,minmax(0,1fr))}.account-row .account-select{grid-column:1/-1}.container{padding:11px}.view#view-chart>.panel{padding:10px 0}.view#view-chart .chart-top{margin:0 11px 8px}}
-</style>
+#view-chart .chart-order-panel{margin:12px 0 18px!important}
+#view-chart .chart-order{display:block;width:100%;margin:0;padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;position:static;transform:none;z-index:auto;overflow:visible}
+#view-chart .chart-order .side-toggle{display:flex;gap:9px;margin:10px 0}
+#view-chart .chart-order .btn{flex:1;max-width:none;min-height:44px;padding:9px 12px;font-size:13px;border-radius:9px}
+#view-chart .chart-order-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#view-chart .chart-order-fields label{display:block;color:#e2e8f0;font-size:10px;font-weight:700;margin:0 0 5px}
+#view-chart .chart-order-fields input,#view-chart .chart-order-fields select{width:100%;min-width:0;padding:9px 8px;font-size:12px;min-height:38px}
+#view-chart .chart-order .status{font-size:11px;margin-top:7px;min-height:15px}
+@media(max-width:700px){
+ #view-chart .chart-wrap{height:62vh;min-height:440px;max-height:680px}
+ #view-chart .chart-order-panel{margin:10px 0 16px!important}
+ #view-chart .chart-order{padding:11px}
+ #view-chart .chart-order .btn{min-height:42px}
+ #view-chart .chart-order-fields{gap:6px}
+ #view-chart .chart-order-fields label{font-size:9px}
+ #view-chart .chart-order-fields input,#view-chart .chart-order-fields select{padding:8px 6px;font-size:11px}
+ .account-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .account-row .account-select{grid-column:1/-1}
+ .container{padding:11px}
+ .view#view-chart>.panel{padding:10px 0}
+ .view#view-chart .chart-top{margin:0 11px 8px}
+}</style>
 </head>
 <body>
 <header class="topbar">
@@ -73,6 +86,8 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
     <div class="panel">
       <div class="chart-top"><select id="chartPairSelect" class="chart-pair-select" aria-label="Select trading pair"><option value="XAUUSD">XAUUSD</option></select></div>
       <div class="chart-wrap" id="chartWrap"><div class="loading">Loading live market chart…</div></div>
+    </div>
+    <div class="panel chart-order-panel">
       <div class="chart-order" id="chartOrder">
         <div class="chart-order-fields"><div><label for="chartOrderType">Order Type</label><select id="chartOrderType"><option value="MARKET">Market</option><option value="BUY_LIMIT">Buy Limit</option><option value="SELL_LIMIT">Sell Limit</option></select></div><div id="chartLimitWrap" style="display:none"><label for="chartLimitPrice">Limit Price</label><input id="chartLimitPrice" type="number" step="any" placeholder="Entry price"></div></div><div class="side-toggle"><button class="btn buy" id="chartBuy">BUY</button><button class="btn sell" id="chartSell">SELL</button></div>
         <div class="chart-order-fields">
@@ -133,6 +148,14 @@ function showTab(tab){
 }
 document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
 $("pairSearch").addEventListener("input",renderMarkets);
+$("chartPairSelect").addEventListener("change",()=>{
+ selectedSymbol=$("chartPairSelect").value;
+ $("tradeSymbol").value=selectedSymbol;
+ chartEmbedKey="";
+ renderMarkets();
+ drawChart();
+ refreshState();
+});
 $("refreshMarketsBtn").addEventListener("click",async()=>{const b=$("refreshMarketsBtn");if(refreshing)return;b.disabled=true;b.textContent="Refreshing…";await refreshState();b.disabled=false;b.textContent="↻ Refresh";});
 document.querySelectorAll("[data-market-filter]").forEach(b=>b.addEventListener("click",()=>{marketFilter=b.dataset.marketFilter;document.querySelectorAll("[data-market-filter]").forEach(x=>x.classList.toggle("active",x===b));renderMarkets();}));
 function quote(symbol){return state?.markets?.find(m=>m.symbol===symbol)}
@@ -170,7 +193,7 @@ function drawChart(){
 }
 function renderPositions(){
  const body=$("positionsBody"),items=state?.positions||[];$("positionCount").textContent=items.length+" positions";body.innerHTML="";
- if(!items.length){body.innerHTML='<tr><td colspan="6" class="empty">No open positions</td></tr>';return;}
+ if(!items.length){body.innerHTML='<tr><td colspan="8" class="empty">No open positions</td></tr>';return;}
  items.forEach(p=>{const row=document.createElement("tr");const pnl=Number(p.unrealized_pnl||0);row.innerHTML='<td>'+esc(p.symbol)+'</td><td style="color:'+(p.side==="BUY"?"#22c55e":"#ef4444")+'">'+esc(p.side)+'</td><td>'+esc(p.volume)+'</td><td>'+fmt(p.entry_price,5)+'</td><td style="color:#ef4444">'+(p.stop_loss==null?"—":fmt(p.stop_loss,5))+'</td><td style="color:#22c55e">'+(p.take_profit==null?"—":fmt(p.take_profit,5))+'</td><td style="color:'+(pnl>=0?"#22c55e":"#ef4444")+'">'+money(pnl)+'</td><td><button class="close-btn" data-close="'+esc(p.id)+'">Close</button></td>';body.appendChild(row);});
  body.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closePosition(b.dataset.close,b)));
 }
@@ -227,7 +250,17 @@ async function placeLimitOrder(side,fromChart=false){
 }
 function submitOrder(side,fromChart=false){const type=fromChart?$("chartOrderType").value:$("tradeOrderType").value;if(type==="MARKET"){placeOrder(side,fromChart);return;}if((type==="BUY_LIMIT"&&side!=="BUY")||(type==="SELL_LIMIT"&&side!=="SELL")){(fromChart?$("chartTradeStatus"):$("tradeStatus")).textContent="Select the matching BUY or SELL button for this limit type.";return;}placeLimitOrder(side,fromChart);}
 async function cancelPendingOrder(id,button){button.disabled=true;try{const r=await db.rpc("wft_virtual_cancel_limit",{p_trading_account_id:selectedAccount,p_order_id:id});if(r.error)throw r.error;await refreshState();}catch(e){$("tradeStatus").textContent=e.message;button.disabled=false;}}
-function renderPendingOrders(){const body=$("pendingOrdersBody");if(!body)return;const rows=state?.pending_orders||[];$("pendingCount").textContent=rows.length+" orders";if(!rows.length){body.innerHTML='<tr><td colspan="7" class="empty">No pending orders</td></tr>';return;}body.innerHTML=rows.map(p=>'<tr><td>'+esc(p.symbol)+'</td><td>'+esc(p.order_type.replace("_"," "))+'</td><td>'+Number(p.volume).toFixed(2)+'</td><td>'+money(p.pending_price)+'</td><td>'+(p.stop_loss==null?"—":money(p.stop_loss))+'</td><td>'+(p.take_profit==null?"—":money(p.take_profit))+'</td><td><button class="close-btn" type="button" onclick="cancelPendingOrder(\''+p.id+'\',this)">Cancel</button></td></tr>').join("");}
+function renderPendingOrders(){
+ const body=$("pendingOrdersBody");if(!body)return;
+ const rows=state?.pending_orders||[];$("pendingCount").textContent=rows.length+" orders";body.innerHTML="";
+ if(!rows.length){body.innerHTML='<tr><td colspan="7" class="empty">No pending orders</td></tr>';return;}
+ rows.forEach(p=>{
+  const row=document.createElement("tr");
+  row.innerHTML='<td>'+esc(p.symbol)+'</td><td>'+esc(String(p.order_type||"").replace("_"," "))+'</td><td>'+Number(p.volume).toFixed(2)+'</td><td>'+fmt(p.pending_price,5)+'</td><td>'+(p.stop_loss==null?"—":fmt(p.stop_loss,5))+'</td><td>'+(p.take_profit==null?"—":fmt(p.take_profit,5))+'</td><td></td>';
+  const button=document.createElement("button");button.className="close-btn";button.type="button";button.textContent="Cancel";
+  button.addEventListener("click",()=>cancelPendingOrder(p.id,button));row.lastElementChild.appendChild(button);body.appendChild(row);
+ });
+}
 async function placeOrder(side,fromChart=false){
  if(!selectedAccount){$("tradeStatus").textContent="Select an active account first.";return;}
  const volume=Number(fromChart?$("chartVolume").value:$("volume").value),sl=(fromChart?$("chartSL").value:$("stopLoss").value).trim(),tp=(fromChart?$("chartTP").value:$("takeProfit").value).trim();
