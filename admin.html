@@ -1007,8 +1007,17 @@ function renderOrders() {
 
   tbody.innerHTML = rows.map(order => {
     const submitted = Boolean(order.transaction_hash && order.payment_network);
+    const verificationStatus = order.payment_verification_status === "verified"
+      ? '<span class="status success">Blockchain Verified · ' + Number(order.payment_confirmations || 0) + ' conf</span>'
+      : order.payment_verification_status === "pending_confirmations"
+        ? '<span class="status pending">Waiting Confirmations · ' + Number(order.payment_confirmations || 0) + '</span>'
+        : order.payment_verification_status === "failed"
+          ? '<span class="status rejected">Verification Failed</span>'
+          : submitted
+            ? '<span class="status pending">Not Verified</span>'
+            : statusBadge(order.status);
     const paymentStatus = order.status === "pending" && submitted
-      ? '<span class="status pending">Payment Submitted</span>'
+      ? verificationStatus
       : statusBadge(order.status);
     const tx = order.transaction_hash
       ? '<span title="' + escapeHTML(order.transaction_hash) + '">' +
@@ -1017,10 +1026,12 @@ function renderOrders() {
       : 'Not submitted';
     let actions = '—';
     if (order.status === "pending") {
-      actions = (submitted
-        ? '<button class="btn small green" onclick="updateOrderStatus(\'' + order.id + '\',\'paid\')">Approve Payment</button>'
-        : '<span class="status pending">Awaiting Payment</span>') +
-        ' <button class="btn small red" onclick="updateOrderStatus(\'' + order.id + '\',\'rejected\')">Reject</button>';
+      actions = (submitted && order.payment_verification_status === "verified"
+        ? '<button class="btn small green" onclick="updateOrderStatus(\\'' + order.id + '\\',\\'paid\\')">Approve Verified Payment</button>'
+        : submitted
+          ? '<span class="status pending">Awaiting Blockchain Verification</span>'
+          : '<span class="status pending">Awaiting Payment</span>') +
+        ' <button class="btn small red" onclick="updateOrderStatus(\\'' + order.id + '\\',\\'rejected\\')">Reject</button>';
     }
     return '<tr>' +
       '<td>' + escapeHTML(String(order.id).slice(0, 8)) + '</td>' +
@@ -1044,6 +1055,10 @@ async function updateOrderStatus(id, status) {
   if (!['paid', 'rejected'].includes(status)) return;
   if (status === 'paid' && (!order.transaction_hash || !['BEP20', 'TRC20'].includes(order.payment_network))) {
     showToast('Cannot approve: customer payment proof is missing.');
+    return;
+  }
+  if (status === 'paid' && order.payment_verification_status !== 'verified') {
+    showToast('Cannot approve: blockchain verification is not complete.');
     return;
   }
   const promptText = status === 'paid'
