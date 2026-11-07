@@ -625,7 +625,7 @@ hr {
 
 
 /* WFT REWARDS */
-.reward-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.reward-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
 .reward-credit-note{border:1px solid rgba(232,184,75,.28);background:linear-gradient(120deg,rgba(232,184,75,.08),#0c1a2b)}
 .reward-credit-note h3{color:var(--gold);margin:0 0 8px}
 .reward-credit-note p{margin:0;font-size:13px;line-height:1.75;color:#d5deea}
@@ -958,6 +958,7 @@ hr {
 
   <div class="stats-grid reward-stats">
     <div class="stat-card balance-stat"><span>Available Reward Balance</span><h2 id="rewardBalance">$0.00</h2><small>Available at Challenge Checkout</small></div>
+    <div class="stat-card"><span>Reward Used at Checkout</span><h2 id="rewardUsed">$0.00</h2><small>Total Reward Balance applied to orders</small></div>
     <div class="stat-card"><span>Approved Tasks</span><h2 id="rewardApproved">0</h2><small>Tasks and milestones completed</small></div>
     <div class="stat-card"><span>Pending Reviews</span><h2 id="rewardPending">0</h2><small>Waiting for WFT Admin</small></div>
   </div>
@@ -1959,10 +1960,13 @@ async function loadRewards() {
   const approvedMilestones = new Set(milestones.map(row => row.task_key));
 
   const balance = ledger.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+  const usedBalance = ledger.filter(row => row.entry_type === "checkout_credit" && Number(row.amount) < 0)
+    .reduce((sum, row) => sum + Math.abs(Number(row.amount || 0)), 0);
   const approvedCount = submissions.filter(row => row.status === "approved").length + milestones.length;
   const pendingCount = submissions.filter(row => row.status === "pending").length;
 
   setText("rewardBalance", money(Math.max(0, balance)));
+  setText("rewardUsed", money(usedBalance));
   setText("rewardApproved", approvedCount);
   setText("rewardPending", pendingCount);
 
