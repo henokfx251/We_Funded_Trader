@@ -985,10 +985,26 @@ hr {
 
   <div class="panel reward-category-panel">
     <div class="reward-heading">
-      <div><h3>③ WFT Tasks</h3><p class="muted small">Purchase, challenge-pass, and payout milestones are tracked automatically from your WFT account.</p></div>
-      <span class="reward-rate">$0.50 each</span>
+      <div><h3>③ Challenge Passed Tasks</h3><p class="muted small">Each approved challenge pass counts automatically. Higher milestones add only the remaining amount to reach the displayed total.</p></div>
+      <span class="reward-rate">$1 per pass</span>
     </div>
-    <div id="rewardWftTasks" class="reward-task-grid"><div class="empty">Loading WFT milestones...</div></div>
+    <div id="rewardPassedTasks" class="reward-task-grid"><div class="empty">Loading passed milestones...</div></div>
+  </div>
+
+  <div class="panel reward-category-panel">
+    <div class="reward-heading">
+      <div><h3>④ Buy Challenges Tasks</h3><p class="muted small">Verified paid challenge purchases count automatically. Rewards increase with each purchase milestone.</p></div>
+      <span class="reward-rate">$1 per purchase</span>
+    </div>
+    <div id="rewardBuyTasks" class="reward-task-grid"><div class="empty">Loading purchase milestones...</div></div>
+  </div>
+
+  <div class="panel reward-category-panel">
+    <div class="reward-heading">
+      <div><h3>⑤ Payout Tasks</h3><p class="muted small">Payout requests and successfully received payouts are tracked separately.</p></div>
+      <span class="reward-rate">$1 per milestone unit</span>
+    </div>
+    <div id="rewardPayoutTasks" class="reward-task-grid"><div class="empty">Loading payout milestones...</div></div>
   </div>
 
   <div class="panel">
@@ -1980,7 +1996,7 @@ async function loadRewards() {
     const taskUrl = /^https?:\/\//i.test(task.task_url || "") ? task.task_url : "";
     const status = prior
       ? prior.status === "approved"
-        ? '<span class="badge approved">Approved · $0.50 credited</span>'
+        ? '<span class="badge approved">Approved · ${money(task.reward_amount || 0)} credited</span>'
         : prior.status === "pending"
           ? '<span class="badge pending">Pending Review</span>'
           : '<span class="badge rejected">Rejected</span>'
@@ -2021,6 +2037,7 @@ async function loadRewards() {
         <div class="reward-task-top"><span class="reward-platform">${safe(task.platform || "WFT Community")}</span>${status}</div>
         <h4>${safe(task.title)}</h4>
         <p>${safe(task.description || "")}</p>
+        <div class="reward-milestone-footer"><strong>Reward Balance: ${money(task.reward_amount || 0)}</strong><span>Credited after Admin approval</span></div>
         <div class="reward-task-actions">${openLink}</div>
         ${rejection}
         ${form}
@@ -2036,11 +2053,18 @@ async function loadRewards() {
   setHTML("rewardPostedTasks", postedTasks.map(renderProofTask).join("") ||
     '<div class="empty">No social posting tasks are available right now.</div>');
 
+  const milestoneByTask = new Map(milestones.map(row => [row.task_key, row]));
   const renderMilestone = task => {
     const current = Number(counts[task.milestone_type] || 0);
     const target = Number(task.threshold || 0);
     const done = approvedMilestones.has(task.task_key);
     const progress = target ? Math.min(100, Math.round(current / target * 100)) : 0;
+    const previousTotal = Math.max(0, ...tasks
+      .filter(item => item.milestone_type === task.milestone_type && Number(item.threshold) < target)
+      .map(item => Number(item.reward_amount || 0)));
+    const nextCredit = Math.max(0, Number(task.reward_amount || 0) - previousTotal);
+    const award = milestoneByTask.get(task.task_key);
+    const creditedAmount = Number(award?.award_amount ?? nextCredit);
     return `
       <article class="reward-task-card reward-milestone-card ${done ? "is-complete" : ""}">
         <div class="reward-task-top"><span class="reward-platform">AUTOMATIC MILESTONE</span>
@@ -2050,11 +2074,23 @@ async function loadRewards() {
         <p>${safe(task.description || "")}</p>
         <div class="reward-progress-label"><span>Progress</span><strong>${Math.min(current,target)} / ${target}</strong></div>
         <div class="reward-progress"><span style="width:${progress}%"></span></div>
-        <div class="reward-milestone-footer"><strong>$${Number(task.reward_amount || 0).toFixed(2)}</strong><span>${done ? "Added to Reward Balance" : "Awarded automatically when completed"}</span></div>
+        <div class="reward-milestone-footer">
+          <strong>Reward: ${money(task.reward_amount || 0)}</strong>
+          <span>Reward Balance: ${done ? "Credited " + money(creditedAmount) : "+" + money(nextCredit) + " when reached"}</span>
+        </div>
       </article>`;
   };
-  setHTML("rewardWftTasks", wftTasks.map(renderMilestone).join("") ||
-    '<div class="empty">No WFT milestones are available right now.</div>');
+  const passedTasks = wftTasks.filter(task => task.milestone_type === "challenge_pass");
+  const buyTasks = wftTasks.filter(task => task.milestone_type === "purchase");
+  const payoutTasks = wftTasks.filter(task =>
+    task.milestone_type === "payout_request" || task.milestone_type === "payout_received"
+  );
+  setHTML("rewardPassedTasks", passedTasks.map(renderMilestone).join("") ||
+    '<div class="empty">No challenge-pass milestones are available.</div>');
+  setHTML("rewardBuyTasks", buyTasks.map(renderMilestone).join("") ||
+    '<div class="empty">No purchase milestones are available.</div>');
+  setHTML("rewardPayoutTasks", payoutTasks.map(renderMilestone).join("") ||
+    '<div class="empty">No payout milestones are available.</div>');
 
   setHTML("rewardBalanceHistory", ledger.map(row => `
     <tr><td>${date(row.created_at)}</td>
