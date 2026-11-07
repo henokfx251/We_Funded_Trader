@@ -812,7 +812,9 @@ async function loadAdmin() {
   const session = sessionData?.session;
 
   if (!session?.user) {
-    throw new Error("Please sign in with your administrator account.");
+    // Auth sessions are stored per site origin. Start login on this same WFT domain.
+    window.location.replace("Login.html?next=admin.html");
+    return;
   }
 
   currentUser = session.user;
