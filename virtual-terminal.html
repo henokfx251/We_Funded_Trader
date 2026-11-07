@@ -56,7 +56,7 @@ select,input{width:100%;background:#091525;color:var(--text);border:1px solid va
     <button class="active" data-tab="pairs">Pairs</button><button data-tab="chart">Chart</button><button data-tab="trade">Trade</button><button data-tab="history">History</button><button data-tab="settings">Settings</button>
   </div>
   <section class="view" id="view-pairs">
-    <div class="panel"><h2 class="panel-title">Market Watch <span class="sub">Forex · Metals · Crypto</span></h2><div class="market-tools"><input class="search-input" id="pairSearch" type="search" placeholder="Search pair (e.g. EURUSD, Gold, BTC)"><span class="sub" id="pairCount"></span></div><div class="market-filters" id="marketFilters"><button class="active" data-market-filter="ALL">All</button><button data-market-filter="FOREX">Forex Major</button><button data-market-filter="METALS">Metals</button><button data-market-filter="CRYPTO">Crypto</button></div><div class="market-list" id="marketList"><div class="loading">Loading markets…</div></div></div>
+    <div class="panel"><h2 class="panel-title">Market Watch <span style="display:flex;align-items:center;gap:8px"><span class="sub">Forex · Metals · Crypto</span><button class="close-btn" id="refreshMarketsBtn" type="button">↻ Refresh</button></span></h2><div class="market-tools"><input class="search-input" id="pairSearch" type="search" placeholder="Search pair (e.g. EURUSD, Gold, BTC)"><span class="sub" id="pairCount"></span></div><div class="market-filters" id="marketFilters"><button class="active" data-market-filter="ALL">All</button><button data-market-filter="FOREX">Forex Major</button><button data-market-filter="METALS">Metals</button><button data-market-filter="CRYPTO">Crypto</button></div><div class="market-list" id="marketList"><div class="loading">Loading markets…</div></div></div>
   </section>
   <section class="view active" id="view-chart">
     <div class="panel">
@@ -124,6 +124,7 @@ function showTab(tab){
 }
 document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
 $("pairSearch").addEventListener("input",renderMarkets);
+$("refreshMarketsBtn").addEventListener("click",async()=>{const b=$("refreshMarketsBtn");if(refreshing)return;b.disabled=true;b.textContent="Refreshing…";await refreshState();b.disabled=false;b.textContent="↻ Refresh";});
 document.querySelectorAll("[data-market-filter]").forEach(b=>b.addEventListener("click",()=>{marketFilter=b.dataset.marketFilter;document.querySelectorAll("[data-market-filter]").forEach(x=>x.classList.toggle("active",x===b));renderMarkets();}));
 function quote(symbol){return state?.markets?.find(m=>m.symbol===symbol)}
 function marketType(symbol){return symbol.startsWith("X")?"METALS":symbol.startsWith("BTC")?"CRYPTO":"FOREX"}
@@ -139,7 +140,7 @@ function renderMarkets(){
   const button=document.createElement("button");button.className="market"+(m.symbol===selectedSymbol?" selected":"");
   const category=marketType(m.symbol)==="FOREX"?"FOREX MAJOR":marketType(m.symbol);
   button.innerHTML='<div class="market-name">'+esc(m.symbol)+' <span class="sub">'+category+'</span></div><div class="market-price">'+fmt(m.price,m.digits)+'</div><div class="market-meta">Bid '+fmt(m.bid,m.digits)+' · Ask '+fmt(m.ask,m.digits)+'</div>';
-  button.addEventListener("click",async()=>{selectedSymbol=m.symbol;$("tradeSymbol").value=m.symbol;showTab("chart");await refreshState();});list.appendChild(button);
+  button.addEventListener("click",()=>{selectedSymbol=m.symbol;$("tradeSymbol").value=m.symbol;renderMarkets();showTab("chart");refreshState();});list.appendChild(button);
  });
  if(!visible.length)list.innerHTML='<div class="empty">No matching pair found</div>';
  select.value=selectedSymbol;
@@ -152,7 +153,7 @@ function drawChart(){
  const m=quote(selectedSymbol);
  if($("chartPairSelect"))$("chartPairSelect").value=selectedSymbol;
  const interval="15";
- const params=new URLSearchParams({symbol:tvSymbol(selectedSymbol),interval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"091525",enable_publishing:"false",hide_top_toolbar:"false",hide_legend:"false",saveimage:"false",studies:"[]",withdateranges:"true",hide_side_toolbar:"true",allow_symbol_change:"true",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
+ const params=new URLSearchParams({symbol:tvSymbol(selectedSymbol),interval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"091525",enable_publishing:"false",hide_top_toolbar:"false",hide_legend:"false",saveimage:"false",studies:"[]",withdateranges:"true",hide_side_toolbar:"false",allow_symbol_change:"true",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
  const embedKey=selectedSymbol+"|15m";
  if(embedKey===chartEmbedKey)return;
  chartEmbedKey=embedKey;
