@@ -253,6 +253,9 @@ tr:last-child td{border-bottom:0}
   onclick="goPage('challenge-requests',this)">
   <span class="nav-icon">🏆</span> Challenge Pass Requests
       </button>
+      <button class="nav-btn" data-page="certificates" onclick="goPage('certificates',this)">
+        <span class="nav-icon">📜</span> Certificate Management
+      </button>
 
       <div class="sidebar-bottom">
         <button class="nav-btn" onclick="refreshAll()">
@@ -602,6 +605,57 @@ tr:last-child td{border-bottom:0}
             </div>
           </div>
         </section>
+        <!-- CERTIFICATE MANAGEMENT -->
+        <section class="page" id="page-certificates">
+          <div class="page-heading">
+            <div>
+              <h1>Certificate Management</h1>
+              <p>Issue official WFT certificates directly to registered traders.</p>
+            </div>
+            <button class="btn" onclick="loadIssuedCertificates()">Refresh Certificates</button>
+          </div>
+
+          <div class="notice">
+            Certificates issued here are delivered to the matching customer's Dashboard automatically.
+            Challenge pass certificates continue to be generated after an approved pass request.
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h3>Issue New Certificate</h3></div>
+            <form id="issueCertificateForm" class="form-grid" onsubmit="issueWftCertificate(event)">
+              <div class="form-group">
+                <label for="certificateEmail">Customer Account Email</label>
+                <input id="certificateEmail" type="email" required placeholder="customer@example.com">
+              </div>
+              <div class="form-group">
+                <label for="certificateRecipient">Recipient Full Name</label>
+                <input id="certificateRecipient" type="text" required maxlength="120" placeholder="Full name as shown on certificate">
+              </div>
+              <div class="form-group">
+                <label for="certificateTitle">Certificate Title</label>
+                <input id="certificateTitle" type="text" required maxlength="120" value="Certificate of Achievement">
+              </div>
+              <div class="form-group">
+                <label for="certificateDescription">Achievement / Description</label>
+                <textarea id="certificateDescription" rows="3" maxlength="1000" placeholder="Describe the achievement being recognized"></textarea>
+              </div>
+              <div class="form-actions">
+                <button class="btn" id="issueCertificateButton" type="submit">Issue Certificate</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h3>Recently Issued Certificates</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Certificate No.</th><th>Trader ID</th><th>Recipient</th><th>Title</th><th>Issued</th></tr></thead>
+                <tbody id="issuedCertificatesTable"><tr><td colspan="5" class="empty">Loading certificates...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
         <!-- REWARDS MANAGEMENT -->
 <section class="page" id="page-rewards">
   <div class="page-heading">
@@ -758,6 +812,7 @@ function goPage(page, button) {
     accounts: "Trading Accounts",
     payouts: "Payout Management",
     "challenge-requests": "Challenge Pass Requests",
+    certificates: "Certificate Management",
     rewards: "Rewards Management",
     "support-tickets": "Support Tickets"
   };
@@ -769,6 +824,7 @@ function goPage(page, button) {
   if (page === "accounts") loadTradingAccounts();
   if (page === "payouts") loadPayouts();
   if (page === "challenge-requests") loadChallengeRequests();
+  if (page === "certificates") loadIssuedCertificates();
   if (page === "rewards") loadRewardManagement();
   if (page === "support-tickets") loadSupportTickets();
 
@@ -864,6 +920,7 @@ async function refreshAll() {
     loadTradingAccounts(),
     loadPayouts(),
         loadChallengeRequests(),
+    loadIssuedCertificates(),
     loadRewardManagement(),
     loadSupportTickets()
   ]);
@@ -1445,6 +1502,73 @@ async function reviewPayout(id, action) {
     showToast("Payout update failed: " + error.message);
   }
                           }
+
+/* ================= CERTIFICATE MANAGEMENT ================= */
+
+async function loadIssuedCertificates() {
+  const tbody = $("issuedCertificatesTable");
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="5" class="empty">Loading certificates...</td></tr>';
+  try {
+    const { data, error } = await db.from("certificates")
+      .select("id,user_id,certificate_number,recipient_name,certificate_title,issued_at")
+      .order("issued_at", { ascending: false })
+      .limit(100);
+    if (error) throw error;
+    if (!data || !data.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty">No certificates issued yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.map(c => `
+      <tr>
+        <td>${escapeHTML(c.certificate_number || "—")}</td>
+        <td>${escapeHTML(String(c.user_id || "").slice(0, 8))}</td>
+        <td>${escapeHTML(c.recipient_name || "Challenge Pass")}</td>
+        <td>${escapeHTML(c.certificate_title || "Certificate of Achievement")}</td>
+        <td>${c.issued_at ? new Date(c.issued_at).toLocaleString() : "—"}</td>
+      </tr>
+    `).join("");
+  } catch (error) {
+    console.error("Issued certificates:", error);
+    tbody.innerHTML = `<tr><td colspan="5" class="empty">Error: ${escapeHTML(error.message)}</td></tr>`;
+  }
+}
+
+async function issueWftCertificate(event) {
+  event.preventDefault();
+  const button = $("issueCertificateButton");
+  const email = $("certificateEmail").value.trim();
+  const recipient = $("certificateRecipient").value.trim();
+  const title = $("certificateTitle").value.trim();
+  const description = $("certificateDescription").value.trim();
+  if (!email || !recipient || !title) {
+    showToast("Email, recipient name, and certificate title are required.");
+    return;
+  }
+  if (!confirm("Issue this certificate to " + recipient + " (" + email + ")? It will appear in their customer Dashboard.")) return;
+  button.disabled = true;
+  button.textContent = "ISSUING...";
+  try {
+    const { data, error } = await db.rpc("admin_issue_wft_certificate", {
+      p_email: email,
+      p_recipient_name: recipient,
+      p_certificate_title: title,
+      p_certificate_description: description || null
+    });
+    if (error) throw error;
+    if (!data || data.success !== true) throw new Error(data?.message || "Certificate could not be issued.");
+    showToast("Certificate issued successfully: " + data.certificate_number);
+    $("issueCertificateForm").reset();
+    $("certificateTitle").value = "Certificate of Achievement";
+    await loadIssuedCertificates();
+  } catch (error) {
+    console.error("Issue certificate:", error);
+    showToast("Certificate issue failed: " + error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Issue Certificate";
+  }
+}
 
 /* ================= CHALLENGE PASS REQUESTS ================= */
 
