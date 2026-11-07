@@ -121,8 +121,12 @@
         }
         if (!data.session) throw new Error("Your login session could not be created. Please try again.");
 
-        showMessage("Login successful. Opening your dashboard...", "success");
-        window.location.replace("dashboard.html");
+        showMessage("Login successful. Opening your account...", "success");
+        const requestedNext = new URLSearchParams(window.location.search).get("next");
+        const safeNext = ["admin.html", "dashboard.html"].includes(requestedNext)
+          ? requestedNext
+          : "dashboard.html";
+        window.location.replace(safeNext);
       } catch (error) {
         showMessage(error.message || "Login failed. Please try again.", "error");
         loginButton.disabled = false;
