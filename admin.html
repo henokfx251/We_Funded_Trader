@@ -618,6 +618,17 @@ tr:last-child td{border-bottom:0}
   </div>
 
   <div class="panel">
+    <div class="panel-head"><h3>Official Social Profile Links</h3></div>
+    <p class="small">Add the exact official WFT profile URL for each platform. Saved links appear as the Open Official Account button in the customer Rewards page.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Platform</th><th>Official Profile URL</th><th>Action</th></tr></thead>
+        <tbody id="rewardSocialLinksTable"><tr><td colspan="3">Loading social links...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
     <div class="panel-head"><h3>Social Media Task Proofs</h3></div>
     <div class="table-wrap">
       <table>
@@ -1699,7 +1710,7 @@ async function loadRewardManagement() {
         .select("id,user_id,task_id,platform,proof_path,proof_url,status,admin_note,submitted_at,reviewed_at")
         .order("submitted_at", { ascending: false }),
       db.from("reward_task_catalog")
-        .select("id,title,category,reward_amount")
+        .select("id,task_key,title,category,platform,task_url,reward_amount")
         .order("sort_order", { ascending: true }),
       db.from("reward_balance_ledger")
         .select("user_id,amount,description,created_at")
@@ -1738,6 +1749,17 @@ async function loadRewardManagement() {
 function renderRewardManagement(signedProofs = new Map()) {
   const taskBody = $("rewardTaskReviewTable");
   const ledgerBody = $("adminRewardBalanceLedger");
+  const socialBody = $("rewardSocialLinksTable");
+
+  if (socialBody) {
+    const followTasks = rewardTaskCatalogData.filter(item => item.category === "follow");
+    socialBody.innerHTML = followTasks.map(item => `
+      <tr>
+        <td><strong>${escapeHTML(item.platform || item.title)}</strong></td>
+        <td><input type="url" id="reward-task-url-${item.id}" value="${escapeHTML(item.task_url || "")}" placeholder="https://official-profile-link"></td>
+        <td><button class="btn small" onclick="saveRewardTaskLink('${item.id}')">Save Link</button></td>
+      </tr>`).join("") || '<tr><td colspan="3">No follow tasks configured.</td></tr>';
+  }
 
   if (taskBody) {
     taskBody.innerHTML = rewardTaskSubmissionsData.length
@@ -1776,6 +1798,33 @@ function renderRewardManagement(signedProofs = new Map()) {
           <td style="color:${Number(row.amount) >= 0 ? "#4ade80" : "#f87171"};font-weight:700">${Number(row.amount) > 0 ? "+" : ""}${money(row.amount)}</td>
         </tr>`).join("")
       : '<tr><td colspan="4" class="empty">No Reward Balance activity yet.</td></tr>';
+  }
+}
+
+async function saveRewardTaskLink(id) {
+  const input = $("reward-task-url-" + id);
+  if (!input) return;
+  const url = input.value.trim();
+
+  if (url) {
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== "https:") throw new Error();
+    } catch {
+      showToast("Enter a valid https:// profile URL.");
+      return;
+    }
+  }
+
+  try {
+    const { error } = await db.from("reward_task_catalog")
+      .update({ task_url: url || null, updated_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) throw error;
+    showToast("Official social profile link saved.");
+    await loadRewardManagement();
+  } catch (error) {
+    showToast("Could not save profile link: " + error.message);
   }
 }
 
