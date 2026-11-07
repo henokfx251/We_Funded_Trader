@@ -279,14 +279,6 @@ a:hover{text-decoration:underline}
   autocomplete="off"
 >
 
-<div class="reward-credit-box">
-  <label class="reward-credit-toggle" for="applyRewardBalance">
-    <input id="applyRewardBalance" type="checkbox">
-    <span>Apply my Reward Balance</span>
-  </label>
-  <p class="small" id="rewardBalanceInfo">Checking available Reward Balance...</p>
-</div>
-
 <div class="item">
   <span>Coupon Discount</span>
   <strong id="discount" class="discount-highlight">$0.00</strong>
@@ -295,6 +287,14 @@ a:hover{text-decoration:underline}
 <div class="item">
   <span>Reward Balance Applied</span>
   <strong id="rewardCredit" class="discount-highlight">$0.00</strong>
+</div>
+
+<div class="reward-credit-box">
+  <label class="reward-credit-toggle" for="applyRewardBalance">
+    <input id="applyRewardBalance" type="checkbox">
+    <span>Apply my Reward</span>
+  </label>
+  <p class="small" id="rewardBalanceInfo">Checking available Reward Balance...</p>
 </div>
 
 <div class="item">
@@ -661,7 +661,7 @@ async function initialize(){
       (sum, row) => sum + Number(row.amount || 0), 0
     );
     rewardBalance = Math.max(0, rewardBalance);
-    applyRewardBalanceInput.checked = rewardBalance > 0;
+    applyRewardBalanceInput.checked = false;
 
     if(![
       2500,
