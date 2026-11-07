@@ -1954,7 +1954,18 @@ async function loadRewards() {
   });
 
   const counts = {
-    purchase: (orders || []).filter(row => String(row.status).toLowerCase() === "paid").length,
+    purchase: (orders || []).filter(row =>
+      String(row.status).toLowerCase() === "paid" &&
+      row.is_test !== true &&
+      (
+        Number(row.final_price || 0) === 0 ||
+        (
+          Boolean(row.payment_submitted_at) &&
+          Boolean(String(row.transaction_hash || "").trim()) &&
+          ["BEP20", "TRC20"].includes(String(row.payment_network || "").toUpperCase())
+        )
+      )
+    ).length,
     challenge_pass: (passResult.data || []).filter(row => row.status === "approved").length,
     payout_request: (payouts || []).length,
     payout_received: (payouts || []).filter(row => String(row.status).toLowerCase() === "paid").length
