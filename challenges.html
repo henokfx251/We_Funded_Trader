@@ -43,7 +43,7 @@ footer{text-align:center;color:#fff;padding:28px;border-top:1px solid var(--line
 <section class="panel" id="selectedRulesPanel"><h2 style="color:#fff;margin-top:0">Selected Program Rules</h2><p class="note" style="margin-top:-5px">Review the rules for your selected challenge before continuing.</p><div class="rules" id="allRules"></div></section>
 </main><footer>© 2026 We Funded Trader. All rights reserved.</footer>
 <script>
-const programs=[
+let programs=[
 {code:"1step_standard",name:"1-Step Standard",family:"1-Step",price:30,max:"5% Static",daily:"3% Static",reset:"Daily reset",target:"10%",consistency:"50% consistency rule applies to funded payouts",note:"All account types require at least 3 profitable days, each with a minimum 0.25% profit."},
 {code:"instant_plus",name:"Instant Plus",family:"Instant",price:30,max:"3% Static",daily:"1% Static",reset:"Daily reset",target:"No evaluation",consistency:"30% consistency rule applies to funded payouts",note:"Minimum profitable-day rule: 3 days, each at least 0.25%. Daily loss reference resets once per broker server day."},
 {code:"2step_pro",name:"2-Step Pro",family:"2-Step",price:25,max:"6% Static",daily:"3% Static",reset:"Daily reset",target:"Phase 1: 6% · Phase 2: 6%",consistency:"No consistency rule",note:"Daily loss reference resets once per broker server day."},
@@ -57,9 +57,9 @@ const sizes=[2500,5000,10000,25000,50000,100000,200000,300000];
 let selected=programs[0],selectedSize=2500,couponApplied=false,livePrograms={},rulesAgreed=false;
 const money=n=>"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 function basePrice(){const p=livePrograms[selected.code]||selected.price;return p*selectedSize/2500}
-function drawPrograms(){document.getElementById("programs").innerHTML=programs.map(p=>'<button type="button" class="program '+(p.code===selected.code?'active':'')+'" data-code="'+p.code+'"><h3>'+p.name+'</h3><p><span>Max Loss: '+p.max+'</span><span>Daily Loss: '+p.daily+'</span><span>Profit Target: '+p.target+'</span><span>Consistency: '+p.consistency+'</span></p><div class="starting">From '+money(p.price)+'</div></button>').join("");document.querySelectorAll(".program").forEach(b=>b.addEventListener("click",()=>{selected=programs.find(p=>p.code===b.dataset.code);couponApplied=false;rulesAgreed=false;document.getElementById("agreeRules").checked=false;document.getElementById("coupon").value="";document.getElementById("couponMessage").textContent="";document.getElementById("checkoutMessage").textContent="";drawPrograms();renderRules();updateAgreement();update();}));}
+function drawPrograms(){document.getElementById("programs").innerHTML=programs.map(p=>'<button type="button" class="program '+(p.code===selected.code?'active':'')+'" data-code="'+p.code+'"><h3>'+p.name+'</h3><p><span>Max Loss: '+p.max+'</span><span>Daily Loss: '+p.daily+'</span><span>Profit Target: '+p.target+'</span><span>Profitable days: 3 × 0.25%</span><span>Consistency: '+p.consistency+'</span></p><div class="starting">From '+money(livePrograms[p.code]||p.price)+'</div></button>').join("");document.querySelectorAll(".program").forEach(b=>b.addEventListener("click",()=>{selected=programs.find(p=>p.code===b.dataset.code);couponApplied=false;rulesAgreed=false;document.getElementById("agreeRules").checked=false;document.getElementById("coupon").value="";document.getElementById("couponMessage").textContent="";document.getElementById("checkoutMessage").textContent="";drawPrograms();renderRules();updateAgreement();update();}));}
 function drawSizes(){document.getElementById("sizeOptions").innerHTML=sizes.map(s=>`<button type="button" class="size-btn ${s===selectedSize?"active":""}" data-size="${s}">${s.toLocaleString("en-US")}</button>`).join("");document.querySelectorAll(".size-btn").forEach(b=>b.addEventListener("click",()=>{selectedSize=Number(b.dataset.size);drawSizes();update()}))}
-function renderRules(){const p=selected;let extra='<br>Minimum profitable days: 3<br>Minimum profit per counted day: 0.25%';if(p.code==="instant_standard")extra+='<br>Trading rule: Closed positions only<br>Restart: Not available';if(p.code==="1step_pro"||p.code==="instant_pro")extra+='<br>Equity rule: Trailing drawdown follows the highest recorded equity';if(p.code==="2step_standard")extra+='<br>Daily reset: Rolling 24 hours from account start';if(p.reset==="Daily reset")extra+='<br>Daily reset: Broker server day';document.getElementById("allRules").innerHTML='<article class="rule"><h3>'+p.name+' — Trading Rules</h3><p><b>Profit target:</b> '+p.target+'<br><b>Maximum loss:</b> '+p.max+'<br><b>Daily loss:</b> '+p.daily+'<br><b>Daily reset:</b> '+p.reset+'<br><b>Consistency:</b> '+p.consistency+extra+'<br><b>Starting price ($2,500):</b> '+money(p.price)+'</p></article>';}
+function renderRules(){const p=selected;let extra='<br>Minimum profitable days: '+(p.profitableDays||3)+'<br>Minimum profit per counted day: '+(p.minDailyProfit||"0.25%")+'';if(p.closedPositionsOnly||p.code==="instant_standard")extra+='<br>Trading rule: Closed positions only';if(p.restartAllowed===false||p.code==="instant_standard")extra+='<br>Restart: Not available';if(p.code==="1step_pro"||p.code==="instant_pro")extra+='<br>Equity rule: Trailing drawdown follows the highest recorded equity';if(p.code==="2step_standard")extra+='<br>Daily reset: Rolling 24 hours from account start';if(p.reset==="Daily reset")extra+='<br>Daily reset: Broker server day';document.getElementById("allRules").innerHTML='<article class="rule"><h3>'+p.name+' — Trading Rules</h3><p><b>Profit target:</b> '+p.target+'<br><b>Maximum loss:</b> '+p.max+'<br><b>Daily loss:</b> '+p.daily+'<br><b>Daily reset:</b> '+p.reset+'<br><b>Consistency:</b> '+p.consistency+extra+'<br><b>Starting price ($2,500):</b> '+money(p.price)+'</p></article>';}
 function update(){const code=document.getElementById("coupon").value.trim().toUpperCase();const pct=couponApplied?(code==="NEW50"?50:code==="WFT20"?20:code==="WFT10"?10:0):0;document.getElementById("price").textContent=money(basePrice()*(1-pct/100));document.getElementById("discountNote").textContent=pct?pct+"% coupon discount shown. Final eligibility is checked securely at checkout.":"Price scales proportionally with account size. Final price is verified by WFT."}
 function applyCoupon(){const c=document.getElementById("coupon").value.trim().toUpperCase();const m=document.getElementById("couponMessage");document.getElementById("coupon").value=c;if(!["NEW50","WFT20","WFT10"].includes(c)){couponApplied=false;m.className="message error";m.textContent="Invalid coupon code.";update();return;}couponApplied=true;m.className="message success";m.textContent=c+" accepted for checkout. Eligibility is verified by server.";update()}
 document.getElementById("coupon").addEventListener("input",()=>{couponApplied=false;document.getElementById("couponMessage").textContent="";update()});
@@ -71,5 +71,29 @@ drawPrograms();drawSizes();renderRules();updateAgreement();update();
 </script>
 <script type="module">
 import {supabase} from "./supabase.js";
-try{const {data,error}=await supabase.from("challenge_programs").select("code,base_price_2500,enabled").eq("enabled",true);if(error)throw error;for(const p of data||[])livePrograms[p.code]=Number(p.base_price_2500);update();}catch(e){console.warn("Using published program prices until live prices load",e)}
+const pct=(v,mode)=>v==null?"None":Number(v)+"% "+(mode==="equity_trailing"||mode==="equity"?"Equity":"Static");
+const familyName=f=>f==="instant"?"Instant":f==="1-step"?"1-Step":"2-Step";
+function fromDatabase(row){
+ const targets=Array.isArray(row.profit_targets)?row.profit_targets:[];
+ const target=targets.length?targets.map((v,i)=>(targets.length>1?"Phase "+(i+1)+": ":"")+Number(v)+"%").join(" · "):"No evaluation";
+ return {code:row.code,name:row.name,family:familyName(row.family),price:Number(row.base_price_2500),
+ max:pct(row.max_loss_percent,row.max_loss_mode),daily:pct(row.daily_loss_percent,row.daily_loss_mode),
+ reset:row.daily_reset_mode==="rolling_24h"?"Rolling 24h":row.daily_reset_mode==="none"?"None":"Daily reset",
+ target,consistency:row.consistency_percent==null?"No consistency rule":Number(row.consistency_percent)+"% consistency rule applies to funded payouts",
+ profitableDays:Number(row.min_profitable_days??3),minDailyProfit:(Number(row.min_profitable_day_percent??0.25))+"%",
+ closedPositionsOnly:!!row.closed_positions_only,restartAllowed:row.restart_allowed!==false,sortOrder:Number(row.sort_order??100)};
+}
+try{
+ const {data,error}=await supabase.from("challenge_programs")
+ .select("code,name,family,base_price_2500,max_loss_percent,max_loss_mode,daily_loss_percent,daily_loss_mode,daily_reset_mode,profit_targets,min_profitable_days,min_profitable_day_percent,closed_positions_only,enabled,consistency_percent,restart_allowed,sort_order")
+ .eq("enabled",true);
+ if(error)throw error;
+ if(Array.isArray(data)&&data.length){
+  const previousCode=selected?.code;
+  programs=data.map(fromDatabase).sort((a,b)=>a.sortOrder-b.sortOrder||a.price-b.price||a.name.localeCompare(b.name));
+  livePrograms={};programs.forEach(p=>livePrograms[p.code]=p.price);
+  selected=programs.find(p=>p.code===previousCode)||programs[0];
+  drawPrograms();renderRules();update();
+ }
+}catch(e){console.warn("Using published challenge program fallback",e)}
 </script></body></html>
