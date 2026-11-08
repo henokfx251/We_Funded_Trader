@@ -308,7 +308,7 @@ async function loadOrders(){
 
     const {data,error}=await supabase
       .from("orders")
-      .select("id,account_size,account_type,base_price,coupon_code,discount_percent,final_price,status,created_at,payment_network,transaction_hash,payment_submitted_at")
+      .select("id,account_size,account_type,base_price,coupon_code,discount_percent,final_price,status,created_at,payment_network,transaction_hash,payment_submitted_at,payment_verification_status,payment_verification_message,payment_confirmations")
       .eq("user_id",userData.user.id)
       .order("created_at",{ascending:false});
 
@@ -326,6 +326,12 @@ async function loadOrders(){
       const network=order.payment_network;
       const explorer=explorerURL(network,txid);
       const status=String(order.status||"pending").toLowerCase();
+      const verification=String(order.payment_verification_status||"").toLowerCase();
+      const displayStatus=status==="pending"
+        ? verification==="verified"?"BLOCKCHAIN VERIFIED · AWAITING ADMIN"
+        : verification==="pending_confirmations"?"WAITING FOR CONFIRMATIONS"
+        : txid?"PAYMENT SUBMITTED":"AWAITING PAYMENT"
+        : status.toUpperCase();
       const date=order.created_at
         ?new Date(order.created_at).toLocaleString():"—";
 
@@ -333,7 +339,7 @@ async function loadOrders(){
       <div class="order">
         <div class="row">
           <strong>${escapeHTML(Number(order.account_size).toLocaleString())} Account</strong>
-          <span class="status ${statusClass(status)}">${escapeHTML(status.toUpperCase())}</span>
+          <span class="status ${statusClass(status)}">${escapeHTML(displayStatus)}</span>
         </div>
 
         <div class="row">
@@ -382,6 +388,10 @@ async function loadOrders(){
           <div class="row">
             <span class="label">Transaction ID</span>
             <span class="txid">${txid?escapeHTML(txid):"Not submitted"}</span>
+          </div>
+          <div class="row">
+            <span class="label">Verification</span>
+            <span>${escapeHTML(order.payment_verification_message || (verification==="verified" ? "Blockchain payment verified; awaiting WFT Admin approval." : verification==="pending_confirmations" ? "Correct transfer found; waiting for network confirmations." : verification==="failed" ? "Verification failed. Check the transaction details or contact support." : "Not verified yet."))}</span>
           </div>
 
           ${order.payment_submitted_at?`
