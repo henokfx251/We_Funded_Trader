@@ -146,7 +146,7 @@ tr:last-child td{border-bottom:0}
 .form-grid{
   display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;
 }
-.field{display:flex;flex-direction:column;gap:7px}
+.field,.form-group{display:flex;flex-direction:column;gap:7px}
 .field.full{grid-column:1/-1}
 .field label{font-size:11px;color:#aab9ce;font-weight:600}
 .field input,.field select,.field textarea{
@@ -1079,7 +1079,7 @@ function updateOverviewStats() {
   if ($("totalAccounts")) $("totalAccounts").textContent = accountsData.length;
   if ($("activeAccounts")) {
     $("activeAccounts").textContent =
-      accountsData.filter(a => a.status === "Active").length;
+      accountsData.filter(a => String(a.status || "").toLowerCase() === "active").length;
   }
   if ($("pendingKyc")) {
     $("pendingKyc").textContent =
@@ -1325,10 +1325,10 @@ function renderAccounts() {
       <td>${money(account.account_size)}</td>
       <td>${escapeHTML(account.account_type || "—")}</td>
       <td>${escapeHTML(account.phase || "—")}</td>
-      <td>WFT TradingView</td>
+      <td>${escapeHTML(account.platform || "—")}</td>
       <td>${statusBadge(account.status)}</td>
       <td>${money(account.profit)}</td>
-      <td>${account.status === "Failed" ? escapeHTML(account.failure_reason || "Failure reason unavailable — contact WFT support.") : "—"}</td>
+      <td>${String(account.status || "").toLowerCase() === "failed" ? escapeHTML(account.failure_reason || "Failure reason unavailable — contact WFT support.") : "—"}</td>
     </tr>
   `).join("");
 }
@@ -1752,7 +1752,7 @@ async function reviewChallengeRequest(id, decision) {
     }
   } else {
     if (!confirm(
-      "Approve only after verifying the passed challenge, five profitable days, and 10% target. The account will be activated as funded and a certificate will be generated."
+      "Approve only after verifying this account meets its selected program’s profit target, required profitable days and minimum daily profit, consistency limit, and all applicable risk rules. Approval will activate the account as funded and generate a certificate."
     )) return;
     note = prompt("Optional admin note:") || "";
   }
