@@ -425,6 +425,7 @@ const params = new URLSearchParams(location.search);
 
 const size = Number(params.get("size"));
 const type = (params.get("type") || "").toLowerCase();
+const programCode = (params.get("program") || "").toLowerCase();
 
 const couponInput = document.getElementById("coupon");
 const platformInput = document.getElementById("platform");
@@ -664,22 +665,15 @@ async function initialize(){
     rewardBalance = Math.max(0, rewardBalance);
     applyRewardBalanceInput.checked = false;
 
-    if(![
-      2500,
-      5000,
-      10000,
-      25000,
-      50000,
-      100000
-    ].includes(size)){
+    if(![2500,5000,10000,25000,50000,100000,200000,300000].includes(size)){
 
       throw new Error("Invalid account size.");
     }
 
-    if(![
-      "evaluation",
-      "instant"
-    ].includes(type)){
+    if(!["2-step","1-step","instant"].includes(type) || ![
+      "2step_standard","2step_pro","1step_standard","1step_pro",
+      "instant_standard","instant_plus","instant_pro"
+    ].includes(programCode)){
 
       throw new Error("Invalid challenge type.");
     }
@@ -687,47 +681,19 @@ async function initialize(){
     document.getElementById("size").textContent =
       "$" + size.toLocaleString();
 
-    document.getElementById("type").textContent =
-      type === "evaluation"
-        ? "1-Step Evaluation"
-        : "Instant Funding";
+    const { data: program, error: programError } = await db
+      .from("challenge_programs")
+      .select("code,name,family,base_price_2500,enabled")
+      .eq("code", programCode)
+      .eq("enabled", true)
+      .single();
+    if (programError || !program) throw new Error("Selected funding program is unavailable.");
+    document.getElementById("type").textContent = program.name;
 
     platformInput.value = "WFT TRADINGVIEW";
 
-    const {
-      data:price,
-      error:priceError
-    } = await db
-      .from("challenge_prices")
-      .select("base_price,evaluation_enabled,instant_enabled")
-      .eq("account_size",size)
-      .single();
-
-    if(priceError || !price){
-
-      throw new Error("Challenge price not found.");
-    }
-
-    if(
-      type === "evaluation" &&
-      !price.evaluation_enabled
-    ){
-
-      throw new Error("1-Step Evaluation is unavailable.");
-    }
-
-    if(
-      type === "instant" &&
-      !price.instant_enabled
-    ){
-
-      throw new Error("Instant Funding is unavailable.");
-    }
-
-    basePrice = Number(price.base_price);
-
-    if(!Number.isFinite(basePrice) || basePrice <= 0){
-
+    basePrice = Number(program.base_price_2500) * (size / 2500);
+    if (!Number.isFinite(basePrice) || basePrice <= 0) {
       throw new Error("Invalid challenge price.");
     }
 
@@ -808,7 +774,8 @@ button.addEventListener("click",async()=>{
       {
         body:{
           account_size:size,
-          account_type:type,
+          account_type:type === "instant" ? "instant" : "evaluation",
+          program_code:programCode,
           platform:platform,
           coupon_code:couponCode,
           apply_reward_balance:applyRewardBalanceInput.checked
