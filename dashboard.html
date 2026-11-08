@@ -669,22 +669,22 @@ hr {
   </div>
 
   <div class="nav-label">MAIN MENU</div>
-  <button class="nav-btn active" type="button" data-page="overview"><span class="ico">⌂</span>Overview</button>
-  <button class="nav-btn" type="button" data-page="challenge"><span class="ico">▤</span>Challenge</button>
-  <button class="nav-btn" type="button" data-page="accounts"><span class="ico">▣</span>My Accounts</button>
-  <button class="nav-btn" type="button" data-page="orders"><span class="ico">▧</span>My Orders</button>
+  <a class="nav-btn active" href="customer-overview.html" data-page="overview"><span class="ico">⌂</span>Overview</a>
+  <a class="nav-btn" href="customer-challenge.html" data-page="challenge"><span class="ico">▤</span>Challenge</a>
+  <a class="nav-btn" href="customer-accounts.html" data-page="accounts"><span class="ico">▣</span>My Accounts</a>
+  <a class="nav-btn" href="customer-orders.html" data-page="orders"><span class="ico">▧</span>My Orders</a>
   <a class="nav-link" href="virtual-terminal.html"><span class="ico">⌁</span>Trading Terminal</a>
 
   <div class="nav-label">SERVICES</div>
-  <button class="nav-btn" type="button" data-page="kyc"><span class="ico">◈</span>KYC Verification</button>
-  <button class="nav-btn" type="button" data-page="certificate"><span class="ico">♧</span>Certificate</button>
-  <button class="nav-btn" type="button" data-page="payout"><span class="ico">$</span>Payout</button>
-  <button class="nav-btn" type="button" data-page="reward"><span class="ico">★</span>Rewards</button>
-  <button class="nav-btn" type="button" data-page="affiliate"><span class="ico">♧</span>Affiliate</button>
-  <button class="nav-btn" type="button" data-page="support"><span class="ico">✉</span>Support & FAQ</button>
+  <a class="nav-btn" href="customer-kyc.html" data-page="kyc"><span class="ico">◈</span>KYC Verification</a>
+  <a class="nav-btn" href="customer-certificate.html" data-page="certificate"><span class="ico">♧</span>Certificate</a>
+  <a class="nav-btn" href="customer-payout.html" data-page="payout"><span class="ico">$</span>Payout</a>
+  <a class="nav-btn" href="customer-rewards.html" data-page="reward"><span class="ico">★</span>Rewards</a>
+  <a class="nav-btn" href="customer-affiliate.html" data-page="affiliate"><span class="ico">♧</span>Affiliate</a>
+  <a class="nav-btn" href="customer-support.html" data-page="support"><span class="ico">✉</span>Support & FAQ</a>
 
   <div class="nav-label">ACCOUNT</div>
-  <button class="nav-btn" type="button" data-page="settings"><span class="ico">⚙</span>Settings</button>
+  <a class="nav-btn" href="customer-settings.html" data-page="settings"><span class="ico">⚙</span>Settings</a>
   <button class="nav-btn logout" type="button" id="logoutBtn"><span class="ico">⇥</span><span id="logoutText">Logout</span></button>
 </aside>
 
@@ -2252,7 +2252,9 @@ const { data, error } = await supabase.auth.getSession();
     }
 
     await loadAll();
-    showPage("overview");
+    const requestedPage = new URLSearchParams(window.location.search).get("page") || "overview";
+    const allowedPages = new Set(["overview","challenge","accounts","orders","kyc","certificate","payout","reward","affiliate","support","settings"]);
+    showPage(allowedPages.has(requestedPage) ? requestedPage : "overview");
   } catch (err) {
     console.error("Dashboard startup error:", err);
     toast("Dashboard error: " + err.message, true);
