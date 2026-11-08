@@ -36,7 +36,7 @@ body{color:var(--wft-text);text-rendering:optimizeLegibility;-webkit-font-smooth
  html{scroll-padding-top:68px}
  :where(button,.btn,.button,.primary-btn,.submit-btn,.cta-button){min-height:40px}
  :where(input,select,textarea){font-size:16px}
- :where(table){min-width:620px}
+ :where(.table-wrap table,.table-container table,.overflow-x-auto table){min-width:620px}
 }
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
