@@ -97,7 +97,9 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const email = emailInput.value.trim();
+      // Supabase email sign-in is case-insensitive; normalize accidental spaces/case.
+      const email = emailInput.value.trim().toLowerCase();
+      // Do NOT trim passwords: leading/trailing spaces may be intentional.
       const password = passwordInput.value;
 
       if (!email || !password) {
@@ -116,9 +118,12 @@
             throw new Error("Please confirm your email address before logging in. Check your Inbox and Spam folder.");
           }
           if (error.message && /invalid login credentials/i.test(error.message)) {
-            throw new Error("Email or password is incorrect. If you forgot your password, use the Forgot Password link.");
+            throw new Error("Supabase could not verify this email/password pair. Check the email address, or use Forgot Password to set a new password.");
           }
-          throw error;
+          if (error.message && /too many requests/i.test(error.message)) {
+            throw new Error("Too many login attempts. Please wait a few minutes and try again.");
+          }
+          throw new Error(error.message || "Login failed. Please try again.");
         }
         if (!data.session) throw new Error("Your login session could not be created. Please try again.");
 
