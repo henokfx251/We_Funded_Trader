@@ -54,3 +54,7 @@ body{color:var(--wft-text);text-rendering:optimizeLegibility;-webkit-font-smooth
 :where(h1,h2,h3,h4,.page-title,.section-title,.card-title){color:#f2f7fd;font-weight:750}
 :where(.btn,.button,.primary-btn,.submit-btn,.cta-button){font-weight:700}
 :where(.card,.stat-card,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.auth-card,.form-card,.glass-card){background-color:#102239}
+
+/* Global WFT typography: clear white primary text on every page */
+html,body{color:#f5f8fc!important}
+h1,h2,h3,h4,h5,h6,.page-title,.section-title,.card-title,.panel-title{color:#f5f8fc!important}
