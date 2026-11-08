@@ -1960,10 +1960,14 @@ function updatePayoutPreview() {
     return;
   }
 
-  const shareRate = String(account.account_type).toLowerCase() === "instant" ? 0.70 : 0.80;
-  const estimate = Math.max(0, Number(account.profit || 0)) * shareRate;
+  const isInstant = String(account.account_type).toLowerCase() === "instant";
   setText("payoutAccountProfit", money(account.profit));
-  setText("payoutTraderShare", money(estimate) + (estimate < 50 ? " · $50 minimum" : ""));
+  if (isInstant) {
+    const estimate = Math.max(0, Number(account.profit || 0)) * 0.70;
+    setText("payoutTraderShare", money(estimate) + (estimate < 50 ? " · $50 minimum" : ""));
+  } else {
+    setText("payoutTraderShare", "Confirmed by WFT per program");
+  }
 }
 $("payoutAccount")?.addEventListener("change", updatePayoutPreview);
 
