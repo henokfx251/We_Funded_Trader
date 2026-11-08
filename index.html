@@ -514,13 +514,13 @@ footer{
   .hero-description{font-size:15px}
   .promo{grid-template-columns:1fr;text-align:center;padding:24px 18px}
   .promo-side strong{font-size:40px}
-  .challenge-types{grid-template-columns:1fr}
+  .challenge-types{grid-template-columns:repeat(2,minmax(0,1fr))}
   .reward-box{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:480px){
   .section{padding:60px 0}
-  .account-grid,.rules-grid,.steps{grid-template-columns:1fr}
+  .account-grid,.rules-grid,.steps,.challenge-types{grid-template-columns:1fr}
   .hero-trust{gap:12px}
   .hero-buttons .btn{width:100%}
   .nav-actions{gap:5px}
@@ -630,6 +630,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
 
+.faq-list{display:grid;grid-template-columns:1fr;gap:12px;max-width:900px;margin:0 auto}.faq-item{padding:0;overflow:hidden}.faq-item summary{list-style:none;cursor:pointer;padding:19px 22px;font-weight:800;color:var(--text);position:relative;padding-right:48px}.faq-item summary::-webkit-details-marker{display:none}.faq-item summary:after{content:"+";position:absolute;right:22px;top:14px;color:var(--gold);font-size:24px}.faq-item[open] summary:after{content:"−"}.faq-item p{padding:0 22px 20px;color:var(--muted);font-size:14px;line-height:1.7}
 </style>
   <link rel="stylesheet" href="wft-global.css?v=3">
 </head>
@@ -650,6 +651,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
         <a href="#account-sizes">Account Sizes</a>
         <a href="#rewards">Rewards</a>
         <a href="#rules">Rules</a>
+        <a href="#faq">FAQ</a>
         <a href="#how">How It Works</a>
         <a href="dashboard.html">Dashboard</a>
         <a href="virtual-terminal.html">WFT Terminal</a>
@@ -692,7 +694,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
       </div>
 
       <div class="hero-trust">
-        <span>1-Step Evaluation</span>
+        <span>2-Step & 1-Step Programs</span>
         <span>Instant Funding</span>
         <span>WFT TradingView Terminal</span>
       </div>
@@ -707,14 +709,15 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
       <div class="promo-label">WELCOME TO WE FUNDED TRADER</div>
       <h2>New Here? Get <span class="gold">50% OFF</span></h2>
       <p>
-        Special welcome discount for eligible first-time customers.
-        Use the promotional code when ordering.
+        NEW50 gives eligible first-time customers 50% off their first order.
+        WFT20 gives an ongoing 20% discount, and WFT10 gives an ongoing 10% discount.
+        Use one coupon code per order.
       </p>
-      <span class="promo-code">NEW50</span>
+      <span class="promo-code">NEW50 · WFT20 · WFT10</span>
     </div>
     <div class="promo-side">
-      <strong>50%</strong>
-      <small>NEW CUSTOMER DISCOUNT</small>
+      <strong>UP TO 50%</strong>
+      <small>NEW50 FIRST ORDER · WFT20 / WFT10 ONGOING</small>
       <div style="margin-top:15px">
         <a class="btn btn-primary" href="challenges.html">Claim Your Offer ↗</a>
       </div>
@@ -729,48 +732,19 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
       <div class="eyebrow">Choose Your Path</div>
       <h2>Find Your <span class="gold">Funding Program</span></h2>
       <p>
-        Start with an evaluation or choose instant funding.
-        Select the path that fits your trading approach.
+        Choose from seven programs across 2-Step, 1-Step and Instant Funding.
+        Each program has its own profit target and drawdown rules.
       </p>
     </div>
 
     <div class="challenge-types">
-      <article class="card challenge-card featured">
-        <span class="type-label">MOST POPULAR</span>
-        <span class="type-icon">📈</span>
-        <h3>1-Step Evaluation</h3>
-        <p>One evaluation phase designed to assess your trading discipline.</p>
-        <ul>
-          <li>One-step evaluation process</li>
-          <li>10% evaluation profit target</li>
-          <li>Minimum 5 profitable days</li>
-          <li>At least 0.5% profit on each counted profitable day</li>
-          <li>WFT TradingView Terminal</li>
-          <li>Funded stage after successful review</li>
-        </ul>
-        <a class="btn btn-primary btn-block" href="challenges.html">
-          Explore 1-Step ↗
-        </a>
-      </article>
-
-      <article class="card challenge-card">
-        <span class="type-label">START TRADING</span>
-        <span class="type-icon">⚡</span>
-        <h3>Instant Funding</h3>
-        <p>Access an instant funding program subject to its account rules.</p>
-        <ul>
-          <li>No evaluation phase</li>
-          <li>Instant Funding account option</li>
-          <li>5% maximum drawdown</li>
-          <li>No daily drawdown limit</li>
-          <li>5% max drawdown includes floating losses</li>
-          <li>Closed trades count toward profit and consistency</li>
-          <li>WFT TradingView Terminal</li>
-        </ul>
-        <a class="btn btn-outline btn-block" href="challenges.html">
-          Explore Instant Funding ↗
-        </a>
-      </article>
+      <article class="card challenge-card featured"><span class="type-label">1-STEP · STANDARD</span><span class="type-icon">🎯</span><h3>1-Step Standard</h3><p>10% target · 5% max loss · 3% daily loss. 5 profitable days, each at least 0.5%.</p><a class="btn btn-primary btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card"><span class="type-label">INSTANT · PLUS</span><span class="type-icon">⚡</span><h3>Instant Plus</h3><p>Instant access · 3% max loss · 1% daily loss.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card"><span class="type-label">2-STEP · PRO</span><span class="type-icon">🚀</span><h3>2-Step Pro</h3><p>Phase targets 6% + 6% · 6% max loss · 3% daily loss.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card"><span class="type-label">INSTANT · STANDARD</span><span class="type-icon">⚡</span><h3>Instant Standard</h3><p>Instant access · 5% max loss · no daily loss limit. Closed positions only; no restart.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card"><span class="type-label">INSTANT · PRO</span><span class="type-icon">📈</span><h3>Instant Pro</h3><p>Instant access · 5% trailing equity max loss · 2% equity daily loss.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card"><span class="type-label">2-STEP · STANDARD</span><span class="type-icon">📊</span><h3>2-Step Standard</h3><p>Phase targets 10% + 5% · 8% max loss · 4% daily loss with rolling 24-hour reset.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card"><span class="type-label">1-STEP · PRO</span><span class="type-icon">🛡️</span><h3>1-Step Pro</h3><p>6% target · 6% trailing equity max loss · 3% equity daily loss.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
     </div>
   </div>
 </section>
@@ -788,54 +762,16 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
     </div>
 
     <div class="account-grid">
-      <article class="card account-card">
-        <p>STARTER ACCOUNT</p>
-        <div class="account-size">$2,500</div>
-        <div class="account-price">$10</div>
-        <div class="small-note">1-Step Evaluation</div>
-        <a class="btn btn-outline btn-block" href="challenges.html">Choose Account</a>
-      </article>
-
-      <article class="card account-card featured">
-        <p>POPULAR CHOICE</p>
-        <div class="account-size">$5,000</div>
-        <div class="account-price">$20</div>
-        <div class="small-note">1-Step Evaluation</div>
-        <a class="btn btn-primary btn-block" href="challenges.html">Choose Account</a>
-      </article>
-
-      <article class="card account-card">
-        <p>GROWTH ACCOUNT</p>
-        <div class="account-size">$10,000</div>
-        <div class="account-price">$40</div>
-        <div class="small-note">1-Step Evaluation</div>
-        <a class="btn btn-outline btn-block" href="challenges.html">Choose Account</a>
-      </article>
-
-      <article class="card account-card">
-        <p>ADVANCED ACCOUNT</p>
-        <div class="account-size">$25,000</div>
-        <div class="account-price">$100</div>
-        <div class="small-note">1-Step Evaluation</div>
-        <a class="btn btn-outline btn-block" href="challenges.html">Choose Account</a>
-      </article>
-
-      <article class="card account-card">
-        <p>PRO ACCOUNT</p>
-        <div class="account-size">$50,000</div>
-        <div class="account-price">$200</div>
-        <div class="small-note">1-Step Evaluation</div>
-        <a class="btn btn-outline btn-block" href="challenges.html">Choose Account</a>
-      </article>
-
-      <article class="card account-card">
-        <p>ELITE ACCOUNT</p>
-        <div class="account-size">$100,000</div>
-        <div class="account-price">$400</div>
-        <div class="small-note">1-Step Evaluation</div>
-        <a class="btn btn-outline btn-block" href="challenges.html">Choose Account</a>
-      </article>
+      <article class="card account-card"><p>STARTER</p><div class="account-size">$2,500</div><div class="small-note">Choose any of the 7 programs</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
+      <article class="card account-card featured"><p>POPULAR</p><div class="account-size">$5,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-primary btn-block" href="challenges.html">View Pricing</a></article>
+      <article class="card account-card"><p>GROWTH</p><div class="account-size">$10,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
+      <article class="card account-card"><p>ADVANCED</p><div class="account-size">$25,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
+      <article class="card account-card"><p>PRO</p><div class="account-size">$50,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
+      <article class="card account-card"><p>ELITE</p><div class="account-size">$100,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
+      <article class="card account-card"><p>PREMIUM</p><div class="account-size">$200,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
+      <article class="card account-card"><p>MAX</p><div class="account-size">$300,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
     </div>
+    <p class="muted" style="text-align:center;margin-top:22px">Each program has its own $2,500 starting price. Larger account prices scale proportionally. Select your program to see the exact price and available discount.</p>
   </div>
 </section>
 
@@ -892,41 +828,13 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
     </div>
 
     <div class="rules-grid">
-      <article class="card rule-card">
-        <div class="rule-icon">🎯</div>
-        <h3>10% Profit Target</h3>
-        <p>Reach the required profit target to complete the 1-Step Evaluation.</p>
-      </article>
-
-      <article class="card rule-card">
-        <div class="rule-icon">📉</div>
-        <h3>3% Static Daily Drawdown</h3>
-        <p>The 3% daily drawdown is measured from the day’s starting balance against live account equity. Floating losses on open trades count toward the limit.</p>
-      </article>
-
-      <article class="card rule-card">
-        <div class="rule-icon">🛡️</div>
-        <h3>5% Maximum Drawdown</h3>
-        <p>The 5% maximum drawdown is measured against account equity. Floating losses on open trades count toward this limit.</p>
-      </article>
-
-      <article class="card rule-card">
-        <div class="rule-icon">📅</div>
-        <h3>5 Profitable Days · 0.5% Minimum</h3>
-        <p>Complete at least five profitable days. Each counted day must reach at least 0.5% profit.</p>
-      </article>
-
-      <article class="card rule-card">
-        <div class="rule-icon">⚡</div>
-        <h3>Instant Funding Rules</h3>
-        <p>5% maximum drawdown with no daily limit. Drawdown includes floating losses; closed trades count toward profit and consistency calculations.</p>
-      </article>
-
-      <article class="card rule-card">
-        <div class="rule-icon">⚖️</div>
-        <h3>Consistency</h3>
-        <p>Withdrawal consistency: 50% for 1-Step funded accounts and 30% for Instant Funding accounts.</p>
-      </article>
+      <article class="card rule-card"><div class="rule-icon">📊</div><h3>2-Step Standard</h3><p>Targets: 10% / 5%. Maximum loss 8% static. Daily loss 4% static with a rolling 24-hour reset.</p></article>
+      <article class="card rule-card"><div class="rule-icon">🚀</div><h3>2-Step Pro</h3><p>Targets: 6% / 6%. Maximum loss 6% static. Daily loss 3% static with daily reset.</p></article>
+      <article class="card rule-card"><div class="rule-icon">🎯</div><h3>1-Step Standard</h3><p>10% target, 5% static maximum loss, 3% static daily loss, at least 5 profitable days with 0.5% minimum per counted day.</p></article>
+      <article class="card rule-card"><div class="rule-icon">🛡️</div><h3>1-Step Pro</h3><p>6% target. Maximum loss trails the highest recorded equity at 6%; daily equity loss limit is 3%.</p></article>
+      <article class="card rule-card"><div class="rule-icon">⚡</div><h3>Instant Standard</h3><p>5% static maximum loss, no daily loss limit. Closed positions only; no restart.</p></article>
+      <article class="card rule-card"><div class="rule-icon">💠</div><h3>Instant Plus</h3><p>3% static maximum loss and 1% static daily loss with daily reset.</p></article>
+      <article class="card rule-card"><div class="rule-icon">📈</div><h3>Instant Pro</h3><p>5% maximum loss trailing the highest recorded equity and 2% equity daily loss.</p></article>
     </div>
   </div>
 </section>
@@ -1015,7 +923,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
       <article class="card step-card">
         <div class="step-number">02</div>
         <h3>Choose Your Program</h3>
-        <p>Select 1-Step Evaluation or Instant Funding and your account size.</p>
+        <p>Choose from 2-Step Standard/Pro, 1-Step Standard/Pro, or Instant Standard/Plus/Pro and select your account size.</p>
       </article>
 
       <article class="card step-card">
@@ -1029,6 +937,29 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
         <h3>Unlock Your Account</h3>
         <p>Complete the required review and proceed according to your account status.</p>
       </article>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAM FAQ -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-heading">
+      <div class="eyebrow">Need To Know</div>
+      <h2>Frequently Asked <span class="gold">Questions</span></h2>
+      <p>Answers about WFT programs, trading rules, pricing and discounts.</p>
+    </div>
+    <div class="faq-list">
+      <details class="card faq-item"><summary>Which funding programs does WFT offer?</summary><p>WFT offers seven programs: 2-Step Standard, 2-Step Pro, 1-Step Standard, 1-Step Pro, Instant Standard, Instant Plus and Instant Pro.</p></details>
+      <details class="card faq-item"><summary>What are the profit targets?</summary><p>2-Step Standard: 10% in Phase 1 and 5% in Phase 2. 2-Step Pro: 6% in each phase. 1-Step Standard: 10%. 1-Step Pro: 6%. Instant programs do not have an evaluation target.</p></details>
+      <details class="card faq-item"><summary>How do the drawdown rules work?</summary><p>Each program has its own maximum and daily loss limits. Static limits use the stated fixed reference. 1-Step Pro and Instant Pro use equity-based rules, with maximum loss trailing the highest recorded equity. Floating losses count where equity is used.</p></details>
+      <details class="card faq-item"><summary>When does daily drawdown reset?</summary><p>2-Step Standard uses a rolling 24-hour reset from the account start time. Programs marked Daily Reset use the broker server day. Instant Standard has no daily drawdown limit.</p></details>
+      <details class="card faq-item"><summary>What are the special rules for 1-Step Standard?</summary><p>Traders must reach the 10% target and record at least five profitable days. Each counted profitable day must reach at least 0.5% profit.</p></details>
+      <details class="card faq-item"><summary>Can I restart an Instant Standard account?</summary><p>No. Instant Standard is closed-positions-only and does not offer a restart.</p></details>
+      <details class="card faq-item"><summary>Which account sizes are available?</summary><p>$2,500, $5,000, $10,000, $25,000, $50,000, $100,000, $200,000 and $300,000. The selected program's $2,500 base price scales proportionally with account size.</p></details>
+      <details class="card faq-item"><summary>How do WFT discount codes work?</summary><p>NEW50 gives eligible first-time customers 50% off their first order. WFT20 gives an ongoing 20% discount and WFT10 gives an ongoing 10% discount. Only one coupon code can be applied to an order. NEW50 eligibility is checked against your order history.</p></details>
+      <details class="card faq-item"><summary>What is the trader profit split and payout schedule?</summary><p>1-Step funded accounts have an 80% trader / 20% company split. Instant Funding accounts have a 70% trader / 30% company split. The stated payout schedule is the first payout after 14 days and then every 14 days, with a $50 minimum and 1–3 business day processing.</p></details>
+      <details class="card faq-item"><summary>Does the WFT TradingView Terminal execute trades?</summary><p>No. The WFT TradingView Terminal is for chart analysis only. It does not execute broker trades.</p></details>
     </div>
   </div>
 </section>
