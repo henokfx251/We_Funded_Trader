@@ -786,8 +786,9 @@ hr {
 
   <div class="info-card">
     <h3>Challenge Rules</h3>
-    <p><b>1-Step Evaluation:</b> 10% profit target, 3% daily drawdown, 5% maximum drawdown, at least 5 profitable days and 0.5% minimum profit per profitable day. Drawdown uses live equity, including floating losses on open trades.</p>
-    <p><b>Instant Funding:</b> No evaluation phase, 5% maximum drawdown and no daily limit. Drawdown uses live equity; closed trades count toward profit and consistency calculations.</p>
+    <p><b>1-Step Evaluation:</b> 10% profit target, 3% daily drawdown, 5% maximum drawdown, at least 5 profitable days and 0.5% minimum profit per profitable day. Funded payout consistency: 50%.</p>
+    <p><b>Instant Funding:</b> No evaluation phase. Each Instant program follows its own maximum/daily drawdown limits. Funded payout consistency: 30% for every Instant account.</p>
+    <p><b>2-Step Evaluation:</b> Follow the selected 2-Step program's phase targets and drawdown limits. No consistency rule applies to 2-Step accounts.</p>
     <p class="muted">Your terminal balance, equity, floating P/L and account status update from WFT virtual trading records.</p>
   </div>
 </section>
@@ -950,7 +951,7 @@ hr {
       <label for="payoutWallet">USDT Wallet Address</label>
       <input id="payoutWallet" required minlength="20" maxlength="120" placeholder="Enter your USDT wallet address">
 
-      <p class="muted small">Choose an eligible funded account. Your payout share, consistency limit, minimum and maximum request are checked automatically before submission.</p>
+      <p class="muted small">Choose an eligible funded account. Consistency: 50% for 1-Step, 30% for Instant, and no consistency rule for 2-Step accounts. Other payout eligibility checks still apply.</p>
       <button class="btn" id="payoutSubmitBtn" type="submit">Submit Payout Request</button>
     </form>
   </div>
