@@ -946,7 +946,7 @@ async function refreshAll() {
 async function loadOrders() {
   const tbody = $("ordersTable");
   if (tbody) {
-    tbody.innerHTML = '<tr><td colspan="7" class="empty">Loading orders...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="11" class="empty">Loading orders...</td></tr>';
   }
 
   const { data, error } = await db
@@ -957,7 +957,7 @@ async function loadOrders() {
   if (error) {
     console.error("Orders:", error);
     if (tbody) tbody.innerHTML =
-      `<tr><td colspan="7" class="empty">${escapeHTML(error.message)}</td></tr>`;
+      `<tr><td colspan="11" class="empty">${escapeHTML(error.message)}</td></tr>`;
     return;
   }
 
