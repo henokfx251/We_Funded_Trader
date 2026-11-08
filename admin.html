@@ -1223,7 +1223,7 @@ async function reviewKYC(id, decision) {
 async function loadTradingAccounts() {
   const tbody = $("accountsTable");
   if (tbody) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">Loading accounts...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="empty">Loading accounts...</td></tr>';
   }
 
   const { data, error } = await db
@@ -1234,7 +1234,7 @@ async function loadTradingAccounts() {
   if (error) {
     console.error("Trading accounts:", error);
     if (tbody) tbody.innerHTML =
-      `<tr><td colspan="8" class="empty">${escapeHTML(error.message)}</td></tr>`;
+      `<tr><td colspan="9" class="empty">${escapeHTML(error.message)}</td></tr>`;
     return;
   }
 
