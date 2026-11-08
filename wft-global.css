@@ -1,40 +1,26 @@
-/* WE FUNDED TRADER — unified text palette from Homepage
-   White = primary text; Gold = highlighted/accent text.
-   Visual-only: do not override page layout, surfaces, controls or application logic. */
+/* WE FUNDED TRADER — shared homepage text palette
+   Apply the homepage's white + gold typography across every page.
+   Preserve each page's layout, backgrounds, components, buttons and application logic. */
 :root{
-  --wft-text:#f4f7fb;
-  --wft-white:#f4f7fb;
-  --wft-gold:#e8b84b;
-  --wft-gold-light:#f5d27c;
-  --wft-gold-soft:#f6d98b;
+  color-scheme:dark;
+  --text:#f4f7fb!important;
+  --text-primary:#f4f7fb!important;
+  --gold:#e8b84b!important;
+  --gold2:#f5d27c!important;
+  --gold-bright:#f6d98b!important;
+  --wft-gold:#f2c66d!important;
+  --wft-gold-soft:#ffe2a1!important;
 }
 body{color:#f4f7fb}
 h1,h2,h3,h4,h5,h6,
 .page-title,.section-title,.card-title,.panel-title,
-.title,.heading,.hero-title,.section-heading{
-  color:#f4f7fb;
+.title,.heading,.hero-title{color:#f4f7fb}
+.gold,.text-gold,.highlight,.highlight-text,.accent-gold,
+.brand-gold,.gold-text,.logo span,.price-highlight,
+.section-eyebrow,.eyebrow.gold,.badge-gold{
+  color:#e8b84b!important;
 }
-p,.description,.subtitle,.muted,.text-muted,
-.hint,.helper-text,.form-hint,.nav-caption,
-.breadcrumb,.meta,.eyebrow,.small,small,
-.secondary-text,.supporting-text,.text-secondary{
-  color:#f4f7fb;
+:where(.price,.amount,.plan-price,.account-price,.total-price,.stat-value.gold){
+  color:#f5d27c;
 }
-/* Homepage-style gold emphasis */
-.gold,.text-gold,.highlight,.highlight-text,
-.accent,.accent-text,.section-heading .accent,
-.logo,.logo span,.brand,.brand-name,
-.price,.amount,.plan-price,.account-price,
-.promo-label,.promo-code,.type-label,
-h1 .gold,h2 .gold,h3 .gold,
-h1 .highlight,h2 .highlight,h3 .highlight{
-  color:#e8b84b;
-}
-a:not(.btn):not(.button):not(.btn-primary):not(.primary-btn),
-a:not(.btn):not(.button):not(.btn-primary):not(.primary-btn):visited{
-  color:#e8b84b;
-}
-a:hover{color:#f5d27c}
-input,select,textarea{color:#f4f7fb}
-input::placeholder,textarea::placeholder{color:#f4f7fb;opacity:.72}
 ::selection{background:rgba(232,184,75,.28);color:#fff}
