@@ -22,7 +22,7 @@
   --gold:var(--wft-gold)!important;
   --gold2:var(--wft-gold-2)!important;
   --gold-bright:#f6d98b!important;
-  --wft-gold:var(--wft-gold)!important;
+  --wft-gold:#e8b84b!important;
   --wft-gold-soft:#ffe2a1!important;
 }
 *,*::before,*::after{box-sizing:border-box}
