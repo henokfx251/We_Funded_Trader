@@ -1,0 +1,43 @@
+/* WE FUNDED TRADER — shared premium UI layer
+   Visual-only enhancement. Keeps page structure, forms, IDs and application scripts intact. */
+:root{
+ --wft-bg:#07111f;--wft-surface:#0d1b2d;--wft-surface-2:#12243a;
+ --wft-line:rgba(148,170,198,.17);--wft-gold:#e8b84b;--wft-gold-light:#f5d27c;
+ --wft-text:#f4f7fb;--wft-muted:#93a6bc;--wft-radius:15px;
+}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{color:var(--wft-text);text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(232,184,75,.28);color:#fff}
+:where(button,a,input,select,textarea,[tabindex]):focus-visible{outline:2px solid var(--wft-gold)!important;outline-offset:3px}
+:where(button,a){-webkit-tap-highlight-color:transparent}
+:where(button){transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease}
+:where(button:hover){filter:brightness(1.08)}
+:where(button:active){transform:translateY(1px)}
+:where(input,select,textarea){max-width:100%;accent-color:var(--wft-gold);transition:border-color .18s ease,box-shadow .18s ease}
+:where(input,select,textarea):focus{border-color:var(--wft-gold)!important;box-shadow:0 0 0 3px rgba(232,184,75,.11)}
+:where(a){text-underline-offset:3px}
+:where(img,video,iframe){max-width:100%}
+:where(table){border-collapse:separate;border-spacing:0}
+:where(th){font-weight:750;letter-spacing:.02em}
+:where(td,th){overflow-wrap:anywhere}
+:where(.card,.stat-card,.stat,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.auth-card,.form-card,.glass-card){
+ border-color:var(--wft-line);
+}
+:where(.card,.stat-card,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.glass-card){
+ box-shadow:0 12px 32px rgba(0,0,0,.13);
+}
+:where(.btn,.button,.primary-btn,.submit-btn,.cta-button){font-weight:750;letter-spacing:.01em}
+:where(.btn-primary,.primary-btn,.submit-btn,.cta-button){box-shadow:0 7px 22px rgba(232,184,75,.12)}
+:where(.muted,.text-muted,.subtitle,.description){color:var(--wft-muted)}
+:where(.badge,.status-badge,.pill){letter-spacing:.02em}
+:where(.table-wrap,.table-container,.overflow-x-auto){max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+:where(.sidebar,.side-nav){overscroll-behavior:contain}
+@media(max-width:768px){
+ html{scroll-padding-top:68px}
+ :where(button,.btn,.button,.primary-btn,.submit-btn,.cta-button){min-height:40px}
+ :where(input,select,textarea){font-size:16px}
+ :where(table){min-width:620px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
