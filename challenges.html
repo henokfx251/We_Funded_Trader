@@ -7,9 +7,9 @@
 :root{--bg:#07111f;--panel:#101d30;--panel2:#14243a;--blue:#2588ff;--blue2:#62b0ff;--text:#f4f7fb;--muted:#9aabc0;--line:#26374d;--green:#4cdb9a;--red:#ff7777}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
 header{padding:18px 6%;display:flex;justify-content:space-between;align-items:center;gap:18px;border-bottom:1px solid var(--line);background:#091525}
-.logo{font-weight:900;color:var(--blue2);letter-spacing:.5px;font-size:20px}nav{display:flex;gap:17px;flex-wrap:wrap}nav a{color:#fff;text-decoration:none;font-size:14px}nav a:hover{color:var(--blue2)}
+.logo{font-weight:900;color:#fff;letter-spacing:.5px;font-size:20px}nav{display:flex;gap:17px;flex-wrap:wrap}nav a{color:#fff;text-decoration:none;font-size:14px}nav a:hover{color:var(--blue2)}
 main{max-width:1100px;margin:38px auto;padding:0 18px}h1{text-align:center;font-size:34px;margin:0 0 8px}.sub{text-align:center;color:var(--muted);margin:0 0 26px;line-height:1.6}
-.promo{background:linear-gradient(135deg,#102b4b,#13243b);border:1px solid #2466a9;border-radius:14px;padding:17px;text-align:center;margin-bottom:24px}.promo strong{display:block;color:var(--blue2);font-size:23px;margin-bottom:6px}.promo p{margin:4px;color:#d5deea}
+.promo{background:linear-gradient(135deg,#102b4b,#13243b);border:1px solid #2466a9;border-radius:14px;padding:17px;text-align:center;margin-bottom:24px}.promo strong{display:block;color:#fff;font-size:23px;margin-bottom:6px}.promo p{margin:4px;color:#d5deea}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:22px;margin-bottom:22px}
 label{display:block;color:#fff;font-weight:bold;font-size:14px;margin:0 0 9px}
 select,input{width:100%;padding:14px;background:#071525;border:1px solid #34465d;border-radius:10px;color:#fff;font-size:15px;margin:0 0 17px}input::placeholder{color:#d5deea;opacity:.8}
@@ -17,8 +17,8 @@ select,input{width:100%;padding:14px;background:#071525;border:1px solid #34465d
 .program{background:linear-gradient(145deg,#142b46,#0d1b2d);border:1px solid #365577;border-radius:14px;padding:17px;cursor:pointer;text-align:left;color:#fff!important;transition:.2s;box-shadow:0 5px 18px #0003}.program:hover{transform:translateY(-3px);border-color:#4da3ff;box-shadow:0 10px 25px #0005}
 .program.active{border:2px solid #3998ff;background:linear-gradient(145deg,#16477a,#102640);box-shadow:0 0 0 2px #2588ff30}.program h3{margin:0 0 7px;color:#fff!important;font-size:17px}.program p{margin:4px 0;color:#fff!important;font-size:12px;line-height:1.7;opacity:.9}.program .starting{font-size:19px;font-weight:800;color:white;margin-top:9px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:15px 0}
-.stat{background:var(--panel2);padding:15px;border:1px solid var(--line);border-radius:10px}.stat small{color:#fff;font-size:12px;opacity:.85}.stat strong{display:block;font-size:19px;margin-top:7px;color:var(--blue2)}
-.price{text-align:center;font-size:35px;font-weight:800;color:var(--blue2);margin:15px 0}
+.stat{background:var(--panel2);padding:15px;border:1px solid var(--line);border-radius:10px}.stat small{color:#fff;font-size:12px;opacity:.85}.stat strong{display:block;font-size:19px;margin-top:7px;color:#fff}
+.price{text-align:center;font-size:35px;font-weight:800;color:#fff;margin:15px 0}
 button{font-family:inherit;color:#fff!important;cursor:pointer}button.primary{background:linear-gradient(135deg,#2588ff,#1264c7);color:#fff!important;border:1px solid #5eafff;border-radius:11px;padding:15px 22px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 6px 18px #0878ff35;transition:.2s}button.primary:hover{background:linear-gradient(135deg,#49a3ff,#1975dc);transform:translateY(-2px);box-shadow:0 10px 24px #0878ff55}
 button:focus,select:focus,input:focus{outline:2px solid #2588ff}.message{font-size:13px;margin-top:10px;line-height:1.5}.success{color:var(--green)}.error{color:var(--red)}.note{color:#fff;font-size:12px;line-height:1.7;opacity:.85}
 .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.rule{background:linear-gradient(145deg,#142b46,#0d1b2d);border:1px solid #304a68;border-radius:13px;padding:16px}.rule h3{color:#fff;margin:0 0 8px;font-size:16px}.rule p{color:#fff;font-size:13px;line-height:1.8;margin:0;opacity:.9}
@@ -46,7 +46,7 @@ footer{text-align:center;color:#fff;padding:28px;border-top:1px solid var(--line
 <div class="price" id="price">$15.00</div><p class="note" id="discountNote" style="text-align:center">Price is calculated from the selected program's $2,500 base price.</p>
 <button class="primary" style="width:100%" onclick="checkout()">Continue to Checkout</button><div id="checkoutMessage" class="message"></div>
 </section>
-<section class="panel"><h2 style="color:var(--blue2);margin-top:0">Program Rules</h2><div class="rules" id="allRules"></div></section>
+<section class="panel"><h2 style="color:#fff;margin-top:0">Program Rules</h2><div class="rules" id="allRules"></div></section>
 </main><footer>© 2026 We Funded Trader. All rights reserved.</footer>
 <script>
 const programs=[
