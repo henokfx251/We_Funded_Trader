@@ -4,131 +4,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07111f">
-<title>WFT | TradingView Terminal</title>
+<title>WFT Analysis Terminal</title>
 <style>
-:root{--bg:#07111f;--panel:#101d30;--panel2:#14243a;--line:#26374d;--gold:#e8b84b;--gold2:#f5d27c;--text:#f4f7fb;--muted:#94a3b8;--green:#22c55e;--red:#ef4444}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px Arial,Helvetica,sans-serif;padding-bottom:76px}
-button,input,select{font:inherit}button{cursor:pointer}
-.topbar{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#091525;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
-.brand{color:var(--gold);font-weight:900;font-size:16px;letter-spacing:.4px}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:1.7px;margin-top:3px}
-.top-actions{display:flex;align-items:center;gap:10px}.back{color:var(--gold);text-decoration:none;background:#1b2c43;padding:9px 11px;border-radius:8px;font-size:11px}
-.container{max-width:1600px;margin:auto;padding:15px}.headline{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:4px 0 13px}.headline h1{font-size:17px;margin:0 0 4px}.sub{color:var(--muted);font-size:11px}
-.pill{display:inline-flex;padding:5px 8px;border-radius:20px;background:#153528;color:#70e3a0;font-size:10px;font-weight:700}
-.account-row{display:grid;grid-template-columns:minmax(180px,1.4fr) repeat(4,minmax(100px,1fr));gap:9px;margin-bottom:12px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;min-width:0}
-.metric-label{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px}.metric-value{font-size:17px;font-weight:800;margin-top:7px;overflow-wrap:anywhere}
-select,input{width:100%;background:#091525;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:10px;outline:none}select:focus,input:focus{border-color:var(--gold)}
-.tabs{display:none}.view{display:none}.view.active{display:block}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px;margin-bottom:12px}
-.panel-title{font-size:13px;font-weight:800;margin:0 0 11px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.market-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px}.market-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.market-filters button{background:#0b192a;color:var(--muted);border:1px solid var(--line);padding:7px 10px;border-radius:7px;font-size:10px}.market-filters button.active{border-color:var(--gold);color:var(--gold)}.market-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.market{background:#0b192a;border:1px solid var(--line);border-radius:9px;padding:12px;text-align:left;color:var(--text);width:100%}
-.market.selected{border-color:var(--gold);background:#172b43}.market-name{font-weight:800;font-size:13px}.market-price{color:var(--gold2);font-size:15px;font-weight:800;margin-top:7px}.market-meta{color:var(--muted);font-size:10px;margin-top:3px}.market-change{font-size:10px;color:var(--muted);margin-top:5px}.trade-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}.trade-summary .card{padding:10px}.history-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}.history-summary .card{padding:10px}.search-input{min-width:0}
-.chart-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.chart-pair-select{width:auto;min-width:128px;max-width:48%;font-weight:800;color:var(--gold2);padding:8px 10px}.chart-wrap iframe{pointer-events:auto!important;user-select:auto;-webkit-user-select:auto}.chart-top strong{font-size:14px}.chart-wrap{width:100%;height:540px;background:#091525;border-radius:8px;overflow:hidden}.chart-wrap svg{width:100%;height:100%;display:block}
-.trade-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.field label{display:block;color:#cbd5e1;font-size:10px;margin:10px 0 6px}
-.side-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.btn{border:0;border-radius:8px;padding:11px 14px;font-size:11px;font-weight:800}.buy{background:#15803d;color:white}.sell{background:#b91c1c;color:white}.secondary{background:#26374d;color:#e2e8f0}.close-btn{background:#26374d;color:#fff;padding:7px 10px;border-radius:7px;border:0;font-size:10px}
-.notice{background:#0b192a;border:1px solid var(--line);padding:10px;border-radius:8px;color:var(--muted);font-size:11px;line-height:1.5;margin:10px 0}
-.status{font-size:11px;color:var(--gold2);margin-top:9px;min-height:15px}
-.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:580px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);font-size:11px;white-space:nowrap}th{color:var(--muted);font-weight:600}
-.empty{padding:22px;text-align:center;color:var(--muted);background:#0b192a;border-radius:8px}
-.rule-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.rule{background:#0b192a;border:1px solid var(--line);border-radius:8px;padding:11px}.rule b{display:block;margin-bottom:5px}.rule span{color:var(--muted);font-size:10px}
-.bottom-nav{position:fixed;z-index:20;bottom:0;left:0;right:0;background:#091525;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:7px 5px calc(7px + env(safe-area-inset-bottom))}
-.nav-btn{background:transparent;border:0;color:var(--muted);font-size:10px;padding:5px 2px;display:flex;flex-direction:column;align-items:center;gap:4px}.nav-btn span{font-size:17px}.nav-btn.active{color:var(--gold)}
-.loading{color:var(--muted);text-align:center;padding:22px;font-size:12px}
-@media(min-width:850px){.container{padding:22px}.tabs{display:flex;gap:7px;margin-bottom:12px}.tabs button{background:#102033;color:var(--muted);border:1px solid var(--line);padding:9px 14px;border-radius:8px;font-size:11px}.tabs button.active{color:var(--gold);border-color:var(--gold)}.bottom-nav{position:static;max-width:1250px;margin:0 auto 20px;border:1px solid var(--line);border-radius:10px;display:none}.market-list{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.view#view-chart{width:100%;margin:0}
-.view#view-chart>.panel{border-left:0;border-right:0;border-radius:0;padding:12px clamp(10px,1.4vw,24px);margin-bottom:0}
-#view-chart .chart-wrap{position:relative;width:100%;height:clamp(460px,72vh,780px);min-height:460px;max-height:780px;border-radius:8px;overflow:hidden;background:#091525}
-#view-chart .chart-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;pointer-events:auto!important}
-#view-chart .chart-order-panel{margin:12px 0 18px!important}
-#view-chart .chart-order{display:block;width:100%;margin:0;padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;position:static;transform:none;z-index:auto;overflow:visible}
-#view-chart .chart-order .side-toggle{display:flex;gap:9px;margin:10px 0}
-#view-chart .chart-order .btn{flex:1;max-width:none;min-height:44px;padding:9px 12px;font-size:13px;border-radius:9px}
-#view-chart .chart-order-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-#view-chart .chart-order-fields label{display:block;color:#e2e8f0;font-size:10px;font-weight:700;margin:0 0 5px}
-#view-chart .chart-order-fields input,#view-chart .chart-order-fields select{width:100%;min-width:0;padding:9px 8px;font-size:12px;min-height:38px}
-#view-chart .chart-order .status{font-size:11px;margin-top:7px;min-height:15px}
-@media(max-width:700px){
- #view-chart .chart-wrap{height:62vh;min-height:440px;max-height:680px}
- #view-chart .chart-order-panel{margin:10px 0 16px!important}
- #view-chart .chart-order{padding:11px}
- #view-chart .chart-order .btn{min-height:42px}
- #view-chart .chart-order-fields{gap:6px}
- #view-chart .chart-order-fields label{font-size:9px}
- #view-chart .chart-order-fields input,#view-chart .chart-order-fields select{padding:8px 6px;font-size:11px}
- .account-row{grid-template-columns:repeat(2,minmax(0,1fr))}
- .account-row .account-select{grid-column:1/-1}
- .container{padding:11px}
- .view#view-chart>.panel{padding:10px 0}
- .view#view-chart .chart-top{margin:0 11px 8px}
-}</style>
+:root{--bg:#07111f;--panel:#0d1b2d;--panel2:#12243a;--line:#243951;--gold:#e8b84b;--gold2:#f5d27c;--text:#f4f7fb;--muted:#93a6bc;--green:#31c48d;--red:#f16d78}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#142c48 0,transparent 50%),var(--bg);color:var(--text);font:14px Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.topbar{height:68px;padding:0 clamp(14px,3vw,38px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#081525eF;position:sticky;top:0;z-index:5;backdrop-filter:blur(14px)}
+.brand{font-weight:900;letter-spacing:.8px;color:var(--gold);font-size:15px}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:2px;margin-top:4px}
+.links{display:flex;gap:8px}.links a{color:#dce6f2;text-decoration:none;padding:9px 12px;border:1px solid var(--line);border-radius:9px;font-size:11px}.links a:hover{border-color:var(--gold);color:var(--gold)}
+main{max-width:1580px;margin:auto;padding:22px clamp(12px,2.5vw,32px) 50px}
+.heading{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin:4px 0 18px}.eyebrow{font-size:10px;letter-spacing:2px;color:var(--gold);font-weight:800}.heading h1{font-size:clamp(23px,3vw,34px);margin:7px 0 5px;letter-spacing:-.7px}.heading p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}
+.mode{border:1px solid #28634e;background:#0d2a25;color:#78e0b1;padding:8px 12px;border-radius:30px;font-size:10px;font-weight:800;white-space:nowrap}
+.account-strip{display:grid;grid-template-columns:minmax(220px,1.4fr) repeat(3,minmax(120px,1fr));gap:10px;margin-bottom:14px}
+.card{background:linear-gradient(145deg,#102239,#0b192a);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0;box-shadow:0 8px 28px #00000016}
+.label{font-size:9px;color:var(--muted);letter-spacing:1.1px;text-transform:uppercase;font-weight:800}.value{font-size:18px;font-weight:800;margin-top:7px;overflow-wrap:anywhere}.sub{font-size:10px;color:var(--muted);margin-top:4px}
+select,input,textarea{width:100%;background:#081525;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:11px;outline:none}select:focus,input:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 2px #e8b84b18}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;align-items:start}
+.chart-card{padding:14px}.chart-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.symbol-tools{display:flex;align-items:center;gap:10px;min-width:0}.symbol-select{width:auto;min-width:150px;color:var(--gold2);font-weight:900;font-size:15px}.chart-caption{font-size:10px;color:var(--muted)}
+.timeframes{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}.timeframes button,.symbols button{border:1px solid var(--line);background:#091829;color:var(--muted);border-radius:7px;padding:8px 11px;font-size:10px;font-weight:800}.timeframes button.active,.symbols button.active{color:var(--gold);border-color:var(--gold);background:#2a261b}
+.chart{height:min(70vh,720px);min-height:480px;position:relative;overflow:hidden;border-radius:10px;background:#081525;border:1px solid #1d3047}.chart iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.symbols{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.symbols button{padding:7px 10px}
+.side{display:grid;gap:12px}.side h2{font-size:13px;margin:0 0 12px}.side p{font-size:11px;line-height:1.6;color:var(--muted);margin:0 0 12px}
+.field{margin-top:10px}.field label{display:block;font-size:10px;color:#c8d5e5;margin-bottom:6px;font-weight:700}.field input{padding:10px;font-size:12px}
+.calc-result{background:#081525;border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px}.calc-result strong{font-size:22px;color:var(--gold2)}.calc-result small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.plan textarea{min-height:120px;resize:vertical;line-height:1.5;font-size:12px}.save-state{font-size:10px;color:var(--green);min-height:14px;margin-top:7px}
+.rules{display:grid;gap:8px}.rule{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #1e3248;font-size:11px}.rule:last-child{border:0}.rule span{color:var(--muted);text-align:right}
+.notice{border:1px solid #66512b;background:#2a2315;color:#e8d5a4;padding:11px;border-radius:10px;font-size:10px;line-height:1.6}
+.status{font-size:11px;color:var(--muted);margin-top:12px;min-height:15px}
+@media(max-width:950px){.workspace{grid-template-columns:1fr}.side{grid-template-columns:repeat(2,minmax(0,1fr))}.side .rules-card{grid-column:1/-1}.chart{height:64vh;min-height:440px}}
+@media(max-width:620px){.topbar{height:58px}.links a{padding:8px;font-size:10px}.heading{align-items:flex-start;flex-direction:column}.account-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.account-strip .account-card{grid-column:1/-1}.workspace{gap:10px}.chart-card{padding:10px}.chart-head{align-items:flex-start;flex-direction:column}.symbol-select{width:100%;max-width:100%}.chart{height:58vh;min-height:390px}.side{grid-template-columns:1fr}.side .rules-card{grid-column:auto}main{padding-top:16px}.mode{align-self:flex-start}}
+</style>
 </head>
 <body>
 <header class="topbar">
-  <div class="brand">WE FUNDED TRADER<small>TRADINGVIEW TERMINAL</small></div>
-  <div class="top-actions"><a class="back" href="index.html">Home</a><a class="back" href="challenges.html">Challenges</a><a class="back" href="dashboard.html">Dashboard</a></div>
+ <div class="brand">WE FUNDED TRADER<small>PROFESSIONAL ANALYSIS TERMINAL</small></div>
+ <nav class="links"><a href="index.html">Home</a><a href="dashboard.html">Dashboard</a></nav>
 </header>
-<main class="container">
-  <section class="account-row" id="accountOverview">
-    <div class="card account-select"><div class="metric-label">Trading Account</div><select id="accountSelect"><option value="">Loading accounts…</option></select></div>
-    <div class="card"><div class="metric-label">Balance</div><div class="metric-value" id="balance">$—</div></div>
-    <div class="card"><div class="metric-label">Equity</div><div class="metric-value" id="equity">$—</div></div>
-    <div class="card"><div class="metric-label">Floating P/L</div><div class="metric-value" id="floating">$—</div></div>
-    <div class="card"><div class="metric-label">Free Margin</div><div class="metric-value" id="freeMargin">$—</div></div>
-  </section>
-  <div class="tabs" id="desktopTabs">
-    <button class="active" data-tab="pairs">Pairs</button><button data-tab="chart">Chart</button><button data-tab="trade">Trade</button><button data-tab="history">History</button><button data-tab="settings">Settings</button>
+<main>
+ <section class="heading">
+  <div><div class="eyebrow">MARKET ANALYSIS WORKSPACE</div><h1>TradingView Terminal</h1><p>Analyze price action, plan risk and prepare your next setup — all in one clean workspace.</p></div>
+  <div class="mode">● ANALYSIS ONLY · NO LIVE ORDERS</div>
+ </section>
+ <section class="account-strip">
+  <div class="card account-card"><div class="label">Your WFT Account</div><select id="accountSelect"><option value="">Loading your accounts…</option></select><div class="sub" id="accountHint">Read-only account information</div></div>
+  <div class="card"><div class="label">Account Size</div><div class="value" id="accountSize">—</div><div class="sub">Selected account</div></div>
+  <div class="card"><div class="label">Account Status</div><div class="value" id="accountStatus">—</div><div class="sub">WFT account</div></div>
+  <div class="card"><div class="label">Program</div><div class="value" id="accountType">—</div><div class="sub">Account type</div></div>
+ </section>
+ <section class="workspace">
+  <div class="card chart-card">
+   <div class="chart-head"><div class="symbol-tools"><select id="symbolSelect" class="symbol-select" aria-label="Choose market">
+    <option value="OANDA:XAUUSD">XAUUSD · Gold</option><option value="OANDA:EURUSD">EURUSD</option><option value="OANDA:GBPUSD">GBPUSD</option><option value="OANDA:USDJPY">USDJPY</option><option value="OANDA:AUDUSD">AUDUSD</option><option value="OANDA:USDCAD">USDCAD</option><option value="OANDA:USDCHF">USDCHF</option><option value="OANDA:NZDUSD">NZDUSD</option><option value="BITSTAMP:BTCUSD">BTCUSD · Bitcoin</option>
+   </select></div><div class="chart-caption">TradingView market data · Chart for analysis</div></div>
+   <div class="timeframes" id="timeframes"><button data-interval="1">1m</button><button data-interval="5">5m</button><button data-interval="15" class="active">15m</button><button data-interval="60">1H</button><button data-interval="240">4H</button><button data-interval="D">1D</button><button data-interval="W">1W</button></div>
+   <div class="chart" id="chart"><div class="status">Loading TradingView chart…</div></div>
+   <div class="symbols" id="quickSymbols"><button class="active" data-symbol="OANDA:XAUUSD">Gold</button><button data-symbol="OANDA:EURUSD">EURUSD</button><button data-symbol="OANDA:GBPUSD">GBPUSD</button><button data-symbol="OANDA:USDJPY">USDJPY</button><button data-symbol="BITSTAMP:BTCUSD">Bitcoin</button></div>
   </div>
-  <section class="view" id="view-pairs">
-    <div class="panel"><h2 class="panel-title">Market Watch <span style="display:flex;align-items:center;gap:8px"><span class="sub">Forex · Metals · Crypto</span><button class="close-btn" id="refreshMarketsBtn" type="button">↻ Refresh</button></span></h2><div class="market-tools"><input class="search-input" id="pairSearch" type="search" placeholder="Search pair (e.g. EURUSD, Gold, BTC)"><span class="sub" id="pairCount"></span></div><div class="market-filters" id="marketFilters"><button class="active" data-market-filter="ALL">All</button><button data-market-filter="FOREX">Forex Major</button><button data-market-filter="METALS">Metals</button><button data-market-filter="CRYPTO">Crypto</button></div><div class="market-list" id="marketList"><div class="loading">Loading markets…</div></div></div>
-  </section>
-  <section class="view active" id="view-chart">
-    <div class="panel">
-      <div class="chart-top"><select id="chartPairSelect" class="chart-pair-select" aria-label="Select trading pair"><option value="XAUUSD">XAUUSD</option></select></div>
-      <div class="chart-wrap" id="chartWrap"><div class="loading">Loading live market chart…</div></div>
-    </div>
-    <div class="panel chart-order-panel">
-      <div class="chart-order" id="chartOrder">
-        <div class="chart-order-fields"><div><label for="chartOrderType">Order Type</label><select id="chartOrderType"><option value="MARKET">Market</option><option value="BUY_LIMIT">Buy Limit</option><option value="SELL_LIMIT">Sell Limit</option></select></div><div id="chartLimitWrap" style="display:none"><label for="chartLimitPrice">Limit Price</label><input id="chartLimitPrice" type="number" step="any" placeholder="Entry price"></div></div><div class="side-toggle"><button class="btn buy" id="chartBuy">BUY</button><button class="btn sell" id="chartSell">SELL</button></div>
-        <div class="chart-order-fields">
-          <div><label for="chartVolume">Lots</label><input id="chartVolume" type="number" min="0.01" max="10" step="0.01" value="0.10"></div>
-          <div><label for="chartSL">Stop Loss</label><input id="chartSL" type="number" step="any" placeholder="Optional"></div>
-          <div><label for="chartTP">Take Profit</label><input id="chartTP" type="number" step="any" placeholder="Optional"></div>
-        </div>
-        <div class="status" id="chartTradeStatus"></div>
-      </div>
-    </div>
-  </section>
-  <section class="view" id="view-trade">
-    <div class="trade-summary"><div class="card"><div class="metric-label">Balance</div><div class="metric-value" id="tradeBalance">$—</div></div><div class="card"><div class="metric-label">Equity</div><div class="metric-value" id="tradeEquity">$—</div></div><div class="card"><div class="metric-label">Open Trades</div><div class="metric-value" id="tradeOpenCount">0</div></div></div>
-    <div class="panel">
-      <h2 class="panel-title">Place Order</h2>
-      <div class="field"><label for="tradeSymbol">Trading Pair</label><select id="tradeSymbol"></select></div>
-      <div class="field"><label for="volume">Volume (Lots)</label><input id="volume" type="number" min="0.01" max="10" step="0.01" value="0.10"></div>
-      <div class="trade-grid">
-        <div class="field"><label for="stopLoss">Stop Loss (optional)</label><input id="stopLoss" type="number" step="any" placeholder="Price"></div>
-        <div class="field"><label for="takeProfit">Take Profit (optional)</label><input id="takeProfit" type="number" step="any" placeholder="Price"></div>
-      </div>
-      <div class="trade-grid"><div class="field"><label for="tradeOrderType">Order Type</label><select id="tradeOrderType"><option value="MARKET">Market</option><option value="BUY_LIMIT">Buy Limit</option><option value="SELL_LIMIT">Sell Limit</option></select></div><div class="field" id="tradeLimitWrap" style="display:none"><label for="tradeLimitPrice">Limit Price</label><input id="tradeLimitPrice" type="number" step="any" placeholder="Entry price"></div></div><div class="side-toggle"><button class="btn buy" id="buyButton">BUY</button><button class="btn sell" id="sellButton">SELL</button></div>
-      <div class="status" id="tradeStatus"></div>
-    </div>
-    <div class="panel"><h2 class="panel-title">Pending Limit Orders <span class="sub" id="pendingCount">0 orders</span></h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Type</th><th>Lots</th><th>Limit Price</th><th>Stop Loss</th><th>Take Profit</th><th></th></tr></thead><tbody id="pendingOrdersBody"><tr><td colspan="7" class="empty">No pending orders</td></tr></tbody></table></div></div><div class="panel"><h2 class="panel-title">Open Positions <span style="display:flex;align-items:center;gap:9px"><span class="sub" id="positionCount">0 positions</span><button class="close-btn" id="closeAllButton" type="button">Close All Positions</button></span></h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Stop Loss</th><th>Take Profit</th><th>Floating P/L</th><th></th></tr></thead><tbody id="positionsBody"><tr><td colspan="8" class="empty">No open positions</td></tr></tbody></table></div></div>
-  </section>
-  <section class="view" id="view-history">
-    <div class="history-summary"><div class="card"><div class="metric-label">Current Balance</div><div class="metric-value" id="historyBalance">$—</div></div><div class="card"><div class="metric-label">Total Profit</div><div class="metric-value" id="historyProfit">$0.00</div></div><div class="card"><div class="metric-label">Total Loss</div><div class="metric-value" id="historyLoss">$0.00</div></div></div><div class="panel"><h2 class="panel-title">Closed Trade History</h2><div class="table-wrap"><table><thead><tr><th>Pair</th><th>Side</th><th>Lots</th><th>Entry</th><th>Close</th><th>Profit/Loss</th><th>Balance</th><th>Closed</th></tr></thead><tbody id="historyBody"><tr><td colspan="8" class="empty">No closed trades</td></tr></tbody></table></div></div>
-  </section>
-  <section class="view" id="view-settings">
-    <div class="panel"><h2 class="panel-title">Account & Risk Settings</h2><div class="rule-grid" id="riskRules"></div><div class="status" id="accountStatus"></div></div>
-  </section>
-  <div class="loading" id="globalStatus">Connecting to WFT Trading Engine…</div>
+  <aside class="side">
+   <section class="card">
+    <h2>Risk Calculator</h2><p>Estimate your planned cash risk before taking a setup. This tool does not place orders or calculate broker lot sizes.</p>
+    <div class="field"><label for="riskBalance">Account balance ($)</label><input id="riskBalance" type="number" min="0" step="any" placeholder="5000"></div>
+    <div class="field"><label for="riskPercent">Risk per trade (%)</label><input id="riskPercent" type="number" min="0" max="100" step="0.1" value="0.5"></div>
+    <div class="field"><label for="entryPrice">Planned entry price</label><input id="entryPrice" type="number" step="any" placeholder="Optional"></div>
+    <div class="field"><label for="stopPrice">Stop-loss price</label><input id="stopPrice" type="number" step="any" placeholder="Optional"></div>
+    <div class="calc-result"><div class="label">Maximum planned risk</div><strong id="riskAmount">$0.00</strong><small id="riskDistance">Enter your balance and risk percentage.</small></div>
+   </section>
+   <section class="card plan">
+    <h2>Trade Plan Notes</h2><p>Write your setup, confirmation, invalidation level and target. Notes stay on this device.</p>
+    <textarea id="planNotes" placeholder="Pair:
+Market direction:
+Setup / confirmation:
+Entry idea:
+Stop loss:
+Take profit:
+Reason to skip the trade:"></textarea>
+    <div class="save-state" id="saveState"></div>
+   </section>
+   <section class="card rules-card">
+    <h2>WFT Risk Rules</h2><div class="rules" id="riskRules"><div class="rule"><b>Account rules</b><span>Loading…</span></div></div>
+    <div class="status" id="accountMessage"></div>
+   </section>
+   <div class="notice">This terminal is for chart analysis and trade planning only. Charts are provided by TradingView. It does not connect to a broker, execute trades, or guarantee real-time pricing.</div>
+  </aside>
+ </section>
 </main>
-<nav class="bottom-nav" id="bottomNav">
-  <button class="nav-btn" data-tab="pairs"><span>☷</span>Pairs</button>
-  <button class="nav-btn active" data-tab="chart"><span>▥</span>Chart</button>
-  <button class="nav-btn" data-tab="trade"><span>⇄</span>Trade</button>
-  <button class="nav-btn" data-tab="history"><span>◷</span>History</button>
-  <button class="nav-btn" data-tab="settings"><span>⚙</span>Settings</button>
-</nav>
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const SUPABASE_URL="https://vxcwfirfgxrxafbirnwu.supabase.co";
@@ -136,176 +95,56 @@ const SUPABASE_KEY="sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const money=n=>"$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmt=(n,d=5)=>Number(n||0).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let user=null,accounts=[],selectedAccount="",state=null,selectedSymbol="XAUUSD",activeTab="chart",refreshing=false,marketFilter="ALL",chartEmbedKey="";
-function showTab(tab){
- activeTab=tab;
- $("accountOverview").style.display=tab==="trade"?"grid":"none";
- document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+tab));
- document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
- if(tab==="chart") drawChart();
-}
-document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
-$("pairSearch").addEventListener("input",renderMarkets);
-$("chartPairSelect").addEventListener("change",()=>{
- selectedSymbol=$("chartPairSelect").value;
- $("tradeSymbol").value=selectedSymbol;
- chartEmbedKey="";
- renderMarkets();
- drawChart();
- refreshState();
-});
-$("refreshMarketsBtn").addEventListener("click",async()=>{const b=$("refreshMarketsBtn");if(refreshing)return;b.disabled=true;b.textContent="Refreshing…";await refreshState();b.disabled=false;b.textContent="↻ Refresh";});
-document.querySelectorAll("[data-market-filter]").forEach(b=>b.addEventListener("click",()=>{marketFilter=b.dataset.marketFilter;document.querySelectorAll("[data-market-filter]").forEach(x=>x.classList.toggle("active",x===b));renderMarkets();}));
-function quote(symbol){return state?.markets?.find(m=>m.symbol===symbol)}
-function marketType(symbol){return symbol.startsWith("X")?"METALS":symbol.startsWith("BTC")?"CRYPTO":"FOREX"}
-function renderMarkets(){
- const list=$("marketList"),select=$("tradeSymbol"),all=(Array.isArray(state?.markets)&&state.markets.length?state.markets:[{symbol:"AUDUSD",name:"Australian Dollar / US Dollar",price:0.65189,bid:0.65183,ask:0.65195,digits:5},{symbol:"EURUSD",name:"Euro / US Dollar",price:1.08556,bid:1.08550,ask:1.08562,digits:5},{symbol:"GBPUSD",name:"Pound / US Dollar",price:1.27468,bid:1.274605,ask:1.274755,digits:5},{symbol:"NZDUSD",name:"New Zealand Dollar / US Dollar",price:0.57126,bid:0.57120,ask:0.57132,digits:5},{symbol:"USDCAD",name:"US Dollar / Canadian Dollar",price:1.40238,bid:1.402305,ask:1.402455,digits:5},{symbol:"USDCHF",name:"US Dollar / Swiss Franc",price:0.80485,bid:0.80479,ask:0.80491,digits:5},{symbol:"USDJPY",name:"US Dollar / Japanese Yen",price:153.308,bid:153.302,ask:153.314,digits:3},{symbol:"XAUUSD",name:"Gold / US Dollar",price:2651.15,bid:2651,ask:2651.3,digits:2},{symbol:"XAGUSD",name:"Silver / US Dollar",price:31.633,bid:31.6155,ask:31.6505,digits:3},{symbol:"XPTUSD",name:"Platinum / US Dollar",price:994.69,bid:994.09,ask:995.29,digits:2},{symbol:"XPDUSD",name:"Palladium / US Dollar",price:1012.35,bid:1011.6,ask:1013.1,digits:2},{symbol:"BTCUSD",name:"Bitcoin / US Dollar",price:67871.61,bid:67865.61,ask:67877.61,digits:2}]),query=$("pairSearch")?.value.trim().toUpperCase()||"";
- list.innerHTML="";select.innerHTML="";
- const sorted=[...all].sort((a,b)=>a.symbol.localeCompare(b.symbol));
- const chartSelect=$("chartPairSelect");if(chartSelect){chartSelect.innerHTML=sorted.map(m=>'<option value="'+esc(m.symbol)+'">'+esc(m.symbol)+'</option>').join("");chartSelect.value=selectedSymbol;}
- sorted.forEach(m=>{const opt=document.createElement("option");opt.value=m.symbol;opt.textContent=m.symbol;select.appendChild(opt);});
- const visible=sorted.filter(m=>(marketFilter==="ALL"||marketType(m.symbol)===marketFilter)&&(!query||(m.symbol+" "+m.name).toUpperCase().includes(query)));
- $("pairCount").textContent=visible.length+" / "+all.length;
- visible.forEach(m=>{
-  const button=document.createElement("button");button.className="market"+(m.symbol===selectedSymbol?" selected":"");
-  const category=marketType(m.symbol)==="FOREX"?"FOREX MAJOR":marketType(m.symbol);
-  button.innerHTML='<div class="market-name">'+esc(m.symbol)+' <span class="sub">'+category+'</span></div><div class="market-price">'+fmt(m.price,m.digits)+'</div><div class="market-meta">Bid '+fmt(m.bid,m.digits)+' · Ask '+fmt(m.ask,m.digits)+'</div>';
-  button.addEventListener("click",()=>{selectedSymbol=m.symbol;$("tradeSymbol").value=m.symbol;renderMarkets();showTab("chart");refreshState();});list.appendChild(button);
- });
- if(!visible.length)list.innerHTML='<div class="empty">No matching pair found</div>';
- select.value=selectedSymbol;
-}
-function tvSymbol(symbol){
- const map={XAUUSD:"OANDA:XAUUSD",XAGUSD:"OANDA:XAGUSD",XPTUSD:"OANDA:XPTUSD",XPDUSD:"OANDA:XPDUSD",EURUSD:"OANDA:EURUSD",GBPUSD:"OANDA:GBPUSD",USDJPY:"OANDA:USDJPY",USDCHF:"OANDA:USDCHF",USDCAD:"OANDA:USDCAD",AUDUSD:"OANDA:AUDUSD",NZDUSD:"OANDA:NZDUSD",BTCUSD:"BITSTAMP:BTCUSD"};
- return map[symbol]||("OANDA:"+symbol);
-}
+let selectedInterval="15",selectedSymbol="OANDA:XAUUSD",accounts=[];
 function drawChart(){
- const m=quote(selectedSymbol);
- if($("chartPairSelect"))$("chartPairSelect").value=selectedSymbol;
- const interval="15";
- const params=new URLSearchParams({symbol:tvSymbol(selectedSymbol),interval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"091525",enable_publishing:"false",hide_top_toolbar:"false",hide_legend:"false",saveimage:"false",studies:"[]",withdateranges:"true",hide_side_toolbar:"false",allow_symbol_change:"true",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
- const embedKey=selectedSymbol+"|15m";
- if(embedKey===chartEmbedKey)return;
- chartEmbedKey=embedKey;
- const orderPanel=$("chartOrder");orderPanel.style.display="block";orderPanel.style.visibility="visible";orderPanel.style.opacity="1";$("chartWrap").innerHTML='<iframe title="Live TradingView chart" src="https://www.tradingview.com/widgetembed/?'+params.toString()+'" loading="eager" allowfullscreen></iframe>';const frame=$("chartWrap").querySelector("iframe");frame.style.zIndex="1";frame.style.pointerEvents="auto";
+ const params=new URLSearchParams({symbol:selectedSymbol,interval:selectedInterval,timezone:"Etc/UTC",theme:"dark",style:"1",locale:"en",toolbarbg:"0d1b2d",enable_publishing:"false",hide_top_toolbar:"false",hide_legend:"false",saveimage:"false",withdateranges:"true",hide_side_toolbar:"false",allow_symbol_change:"true",details:"false",hotlist:"false",calendar:"false",support_host:"https://www.tradingview.com"});
+ $("chart").innerHTML='<iframe title="TradingView analysis chart" src="https://www.tradingview.com/widgetembed/?'+params.toString()+'" loading="eager" allowfullscreen></iframe>';
 }
-function renderPositions(){
- const body=$("positionsBody"),items=state?.positions||[];$("positionCount").textContent=items.length+" positions";body.innerHTML="";
- if(!items.length){body.innerHTML='<tr><td colspan="8" class="empty">No open positions</td></tr>';return;}
- items.forEach(p=>{const row=document.createElement("tr");const pnl=Number(p.unrealized_pnl||0);row.innerHTML='<td>'+esc(p.symbol)+'</td><td style="color:'+(p.side==="BUY"?"#22c55e":"#ef4444")+'">'+esc(p.side)+'</td><td>'+esc(p.volume)+'</td><td>'+fmt(p.entry_price,5)+'</td><td style="color:#ef4444">'+(p.stop_loss==null?"—":fmt(p.stop_loss,5))+'</td><td style="color:#22c55e">'+(p.take_profit==null?"—":fmt(p.take_profit,5))+'</td><td style="color:'+(pnl>=0?"#22c55e":"#ef4444")+'">'+money(pnl)+'</td><td><button class="close-btn" data-close="'+esc(p.id)+'">Close</button></td>';body.appendChild(row);});
- body.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closePosition(b.dataset.close,b)));
+function setSymbol(symbol){
+ selectedSymbol=symbol;$("symbolSelect").value=symbol;
+ document.querySelectorAll("[data-symbol]").forEach(b=>b.classList.toggle("active",b.dataset.symbol===symbol));
+ drawChart();
 }
-function renderHistory(){
- const body=$("historyBody"),items=[...(state?.history||[])].sort((a,b)=>new Date(a.closed_at)-new Date(b.closed_at));body.innerHTML="";
- const initial=Number(state?.account?.initial_balance||0);let running=initial,totalProfit=0,totalLoss=0;
- items.forEach(p=>{const pnl=Number(p.profit||0);running+=pnl;if(pnl>=0)totalProfit+=pnl;else totalLoss+=Math.abs(pnl);});
- $("historyBalance").textContent=money(state?.account?.balance);$("historyProfit").textContent=money(totalProfit);$("historyLoss").textContent=money(totalLoss);
- $("historyProfit").style.color="#22c55e";$("historyLoss").style.color="#ef4444";
- if(!items.length){body.innerHTML='<tr><td colspan="8" class="empty">No closed trades</td></tr>';return;}
- running=initial;items.forEach(p=>{const row=document.createElement("tr"),pnl=Number(p.profit||0);running+=pnl;row.innerHTML='<td>'+esc(p.symbol)+'</td><td>'+esc(p.side)+'</td><td>'+esc(p.volume)+'</td><td>'+fmt(p.entry_price,5)+'</td><td>'+fmt(p.close_price,5)+'</td><td style="color:'+(pnl>=0?"#22c55e":"#ef4444")+'">'+money(pnl)+'</td><td>'+money(running)+'</td><td>'+new Date(p.closed_at).toLocaleString()+'</td>';body.appendChild(row);});
+$("symbolSelect").addEventListener("change",e=>setSymbol(e.target.value));
+document.querySelectorAll("[data-symbol]").forEach(b=>b.addEventListener("click",()=>setSymbol(b.dataset.symbol)));
+document.querySelectorAll("[data-interval]").forEach(b=>b.addEventListener("click",()=>{selectedInterval=b.dataset.interval;document.querySelectorAll("[data-interval]").forEach(x=>x.classList.toggle("active",x===b));drawChart();}));
+function calculateRisk(){
+ const balance=Number($("riskBalance").value),pct=Number($("riskPercent").value),entry=$("entryPrice").value,stop=$("stopPrice").value;
+ if(!Number.isFinite(balance)||balance<=0||!Number.isFinite(pct)||pct<=0||pct>100){$("riskAmount").textContent="$0.00";$("riskDistance").textContent="Enter a valid balance and risk percentage (0–100).";return;}
+ $("riskAmount").textContent=money(balance*pct/100);
+ if(entry!==""&&stop!==""&&Number.isFinite(Number(entry))&&Number.isFinite(Number(stop))){const distance=Math.abs(Number(entry)-Number(stop));$("riskDistance").textContent="Entry-to-stop distance: "+distance.toLocaleString("en-US",{maximumFractionDigits:6})+" price units.";}
+ else $("riskDistance").textContent="Based on "+pct+"% of your entered balance.";
 }
-function renderSummary(){
- const a=state?.account;if(!a)return;
- $("balance").textContent=money(a.balance);$("equity").textContent=money(a.equity);$("floating").textContent=money(a.unrealized_pnl);$("freeMargin").textContent=money(a.free_margin);
- $("floating").style.color=Number(a.unrealized_pnl)>=0?"#22c55e":"#ef4444";
- $("tradeBalance").textContent=money(a.balance);$("tradeEquity").textContent=money(a.equity);$("tradeOpenCount").textContent=(state?.positions||[]).length;
- $("accountStatus").textContent="Account status: "+a.status;
- const isChallenge=a.account_type==="1-Step Challenge";
- $("riskRules").innerHTML=[
-  ["Account type",a.account_type],
-  ["Initial balance",money(a.initial_balance)],
-  ["Max drawdown","5% · static"],
-  ...(isChallenge?[["Daily drawdown","3% · static"],["Profit target","10%"],["Profitable days",a.profitable_days+" / 5"],["Profitable day target","0.5% of initial balance"]]:[["Daily drawdown","Not applied"],["Consistency",Number(a.consistency_percent||0).toFixed(1)+"% of positive-day profit"]])
- ].map(x=>'<div class="rule"><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div>').join("");
-}
-function renderAll(){
- renderSummary();renderMarkets();renderPositions();renderPendingOrders();renderHistory();if(activeTab==="chart")drawChart();
-}
-async function callEngine(action,extra={}){
- const {data,error}=await db.rpc("wft_virtual_terminal_action",{
-  p_action:action,p_trading_account_id:selectedAccount,p_symbol:extra.symbol||selectedSymbol,
-  p_side:extra.side??null,p_volume:extra.volume??null,p_stop_loss:extra.stop_loss??null,
-  p_take_profit:extra.take_profit??null,p_position_id:extra.position_id??null
- });
- if(error)throw error;state=data;renderAll();return data;
-}
-async function refreshState(){
- if(!selectedAccount||refreshing)return;refreshing=true;
- try{await callEngine("state");$("globalStatus").textContent="WFT trading engine connected · Last update "+new Date().toLocaleTimeString();}
- catch(e){$("globalStatus").textContent="Engine error: "+e.message;}
- finally{refreshing=false;}
-}
-async function placeLimitOrder(side,fromChart=false){
- const status=fromChart?$("chartTradeStatus"):$("tradeStatus");
- const vol=Number(fromChart?$("chartVolume").value:$("volume").value);
- const raw=fromChart?$("chartLimitPrice").value:$("tradeLimitPrice").value;const price=Number(raw);
- const sl=(fromChart?$("chartSL").value:$("stopLoss").value).trim();const tp=(fromChart?$("chartTP").value:$("takeProfit").value).trim();
- if(!selectedAccount){status.textContent="Select an active account first.";return;}
- if(!Number.isFinite(vol)||vol<0.01||vol>10){status.textContent="Lot size must be 0.01–10.";return;}
- if(!raw||!Number.isFinite(price)||price<=0){status.textContent="Enter a valid limit price.";return;}
- status.textContent="Submitting pending limit order…";
- try{const result=await db.rpc("wft_virtual_place_limit",{p_trading_account_id:selectedAccount,p_symbol:fromChart?selectedSymbol:$("tradeSymbol").value,p_side:side,p_volume:vol,p_pending_price:price,p_stop_loss:sl===""?null:Number(sl),p_take_profit:tp===""?null:Number(tp)});if(result.error)throw result.error;status.textContent=(side==="BUY"?"Buy Limit":"Sell Limit")+" placed. It activates automatically when price reaches your limit.";await refreshState();}catch(e){status.textContent=e.message;}
-}
-function submitOrder(side,fromChart=false){const type=fromChart?$("chartOrderType").value:$("tradeOrderType").value;if(type==="MARKET"){placeOrder(side,fromChart);return;}if((type==="BUY_LIMIT"&&side!=="BUY")||(type==="SELL_LIMIT"&&side!=="SELL")){(fromChart?$("chartTradeStatus"):$("tradeStatus")).textContent="Select the matching BUY or SELL button for this limit type.";return;}placeLimitOrder(side,fromChart);}
-async function cancelPendingOrder(id,button){button.disabled=true;try{const r=await db.rpc("wft_virtual_cancel_limit",{p_trading_account_id:selectedAccount,p_order_id:id});if(r.error)throw r.error;await refreshState();}catch(e){$("tradeStatus").textContent=e.message;button.disabled=false;}}
-function renderPendingOrders(){
- const body=$("pendingOrdersBody");if(!body)return;
- const rows=state?.pending_orders||[];$("pendingCount").textContent=rows.length+" orders";body.innerHTML="";
- if(!rows.length){body.innerHTML='<tr><td colspan="7" class="empty">No pending orders</td></tr>';return;}
- rows.forEach(p=>{
-  const row=document.createElement("tr");
-  row.innerHTML='<td>'+esc(p.symbol)+'</td><td>'+esc(String(p.order_type||"").replace("_"," "))+'</td><td>'+Number(p.volume).toFixed(2)+'</td><td>'+fmt(p.pending_price,5)+'</td><td>'+(p.stop_loss==null?"—":fmt(p.stop_loss,5))+'</td><td>'+(p.take_profit==null?"—":fmt(p.take_profit,5))+'</td><td></td>';
-  const button=document.createElement("button");button.className="close-btn";button.type="button";button.textContent="Cancel";
-  button.addEventListener("click",()=>cancelPendingOrder(p.id,button));row.lastElementChild.appendChild(button);body.appendChild(row);
- });
-}
-async function placeOrder(side,fromChart=false){
- if(!selectedAccount){$("tradeStatus").textContent="Select an active account first.";return;}
- const volume=Number(fromChart?$("chartVolume").value:$("volume").value),sl=(fromChart?$("chartSL").value:$("stopLoss").value).trim(),tp=(fromChart?$("chartTP").value:$("takeProfit").value).trim();
- if(!Number.isFinite(volume)||volume<0.01||volume>10){$("tradeStatus").textContent="Lot size must be 0.01–10.";if(fromChart)$("chartTradeStatus").textContent="Lot size must be 0.01–10.";return;}
- $("buyButton").disabled=$("sellButton").disabled=$("chartBuy").disabled=$("chartSell").disabled=true;
- try{await callEngine("open",{symbol:fromChart?selectedSymbol:$("tradeSymbol").value,side,volume,stop_loss:sl===""?null:Number(sl),take_profit:tp===""?null:Number(tp)});$("tradeStatus").textContent=side+" order opened successfully in your WFT account.";$("chartTradeStatus").textContent=fromChart?side+" order opened successfully in your WFT account.":$("chartTradeStatus").textContent;}
- catch(e){$("tradeStatus").textContent=e.message;if(fromChart)$("chartTradeStatus").textContent=e.message;}
- finally{$("buyButton").disabled=$("sellButton").disabled=$("chartBuy").disabled=$("chartSell").disabled=false;}
-}
-async function closePosition(id,button){
- button.disabled=true;
- try{await callEngine("close",{position_id:id});$("tradeStatus").textContent="Position closed and saved to history.";}
- catch(e){$("tradeStatus").textContent=e.message;button.disabled=false;}
-}
-async function closeAllPositions(){
- const ids=(state?.positions||[]).map(p=>p.id);
- if(!ids.length){$("tradeStatus").textContent="There are no open positions to close.";return;}
- if(!confirm("Close all "+ids.length+" open positions? This will save them to trade history."))return;
- const button=$("closeAllButton");button.disabled=true;button.textContent="Closing…";
- try{
-  for(const id of ids)await callEngine("close",{position_id:id});
-  $("tradeStatus").textContent="All open positions have been closed and saved to history.";
- }catch(e){$("tradeStatus").textContent="Some positions may remain open: "+e.message;}
- finally{button.disabled=false;button.textContent="Close All Positions";await refreshState();}
+["riskBalance","riskPercent","entryPrice","stopPrice"].forEach(id=>$(id).addEventListener("input",calculateRisk));
+let noteTimer;
+$("planNotes").value=localStorage.getItem("wft_analysis_plan")||"";
+$("planNotes").addEventListener("input",()=>{clearTimeout(noteTimer);$("saveState").textContent="Saving notes…";noteTimer=setTimeout(()=>{localStorage.setItem("wft_analysis_plan",$("planNotes").value);$("saveState").textContent="Saved on this device";},250);});
+function renderRules(a){
+ const isChallenge=String(a.account_type||"").toLowerCase().includes("challenge");
+ const rules=[["Maximum drawdown","5% static"],["Daily drawdown",isChallenge?"3% static":"Not applied"]];
+ if(isChallenge)rules.push(["Profit target","10%"],["Minimum profitable day","0.5%"],["Profitable days","5"]);
+ else rules.push(["Consistency requirement","30%"],["Withdrawal range","1%–4%"]);
+ $("riskRules").innerHTML=rules.map(([k,v])=>'<div class="rule"><b>'+k+'</b><span>'+v+'</span></div>').join("");
 }
 async function init(){
+ drawChart();
  const {data,error}=await db.auth.getSession();
- if(error||!data.session){location.replace("Login.html");return;}
- user=data.session.user;
- const {data:rows,error:loadError}=await db.from("trading_accounts").select("id,account_size,account_type,status,initial_balance,phase,created_at").eq("user_id",user.id).order("created_at",{ascending:false});
- if(loadError){$("globalStatus").textContent="Could not load accounts: "+loadError.message;return;}
- accounts=(rows||[]).filter(a=>["active","passed","funded"].includes(String(a.status||"").toLowerCase()));
- if(!accounts.length){$("accountSelect").innerHTML='<option value="">No active accounts available</option>';$("globalStatus").textContent="You need an Active WFT Challenge or Instant Funding account to use the terminal.";return;}
- $("accountSelect").innerHTML=accounts.map(a=>'<option value="'+esc(a.id)+'">$'+Number(a.account_size).toLocaleString()+" · "+esc(a.account_type)+" · "+esc(a.status)+'</option>').join("");
- selectedAccount=accounts[0].id;$("accountSelect").value=selectedAccount;
- showTab("chart");
- $("accountSelect").addEventListener("change",async()=>{selectedAccount=$("accountSelect").value;await refreshState();});
- $("tradeSymbol").addEventListener("change",e=>{selectedSymbol=e.target.value;drawChart();});
- $("chartPairSelect").addEventListener("change",e=>{selectedSymbol=e.target.value;$("tradeSymbol").value=selectedSymbol;renderMarkets();drawChart();});
- $("buyButton").addEventListener("click",()=>submitOrder("BUY"));$("sellButton").addEventListener("click",()=>submitOrder("SELL"));
- $("chartBuy").addEventListener("click",()=>submitOrder("BUY",true));$("chartSell").addEventListener("click",()=>submitOrder("SELL",true));
- const toggleLimit=(sid,wid)=>$(sid).addEventListener("change",()=>{$(wid).style.display=$(sid).value==="MARKET"?"none":"block";});toggleLimit("chartOrderType","chartLimitWrap");toggleLimit("tradeOrderType","tradeLimitWrap");
- $("closeAllButton").addEventListener("click",closeAllPositions);
- await refreshState();
- setInterval(()=>{if(document.visibilityState==="visible")refreshState();},6000);
+ if(error||!data.session){$("accountSelect").innerHTML='<option value="">Sign in to view your WFT account</option>';$("accountMessage").textContent="Please sign in through your WFT dashboard to load account rules.";return;}
+ const {data:rows,error:loadError}=await db.from("trading_accounts").select("id,account_size,account_type,status,initial_balance,phase,created_at").eq("user_id",data.session.user.id).order("created_at",{ascending:false});
+ if(loadError){$("accountSelect").innerHTML='<option value="">Could not load accounts</option>';$("accountMessage").textContent=loadError.message;return;}
+ accounts=rows||[];
+ if(!accounts.length){$("accountSelect").innerHTML='<option value="">No WFT accounts found</option>';$("accountMessage").textContent="Your analysis chart is available. Account rules will appear when you have a WFT account.";return;}
+ $("accountSelect").innerHTML=accounts.map(a=>'<option value="'+a.id+'">$'+Number(a.account_size).toLocaleString()+" · "+String(a.account_type||"Account")+'</option>').join("");
+ function chooseAccount(){
+  const a=accounts.find(x=>x.id===$("accountSelect").value)||accounts[0];
+  $("accountSize").textContent=money(a.account_size);$("accountStatus").textContent=a.status||"—";$("accountType").textContent=a.account_type||"—";
+  $("accountHint").textContent="Account details shown for analysis context only";
+  renderRules(a);
+  const base=Number(a.balance||a.initial_balance||a.account_size||0);
+  $("riskBalance").value=base||"";
+  calculateRisk();
+ }
+ $("accountSelect").addEventListener("change",chooseAccount);chooseAccount();
 }
 init();
 </script>
