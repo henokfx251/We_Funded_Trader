@@ -148,12 +148,12 @@ tr:last-child td{border-bottom:0}
 }
 .field,.form-group{display:flex;flex-direction:column;gap:7px}
 .field.full{grid-column:1/-1}
-.field label{font-size:11px;color:#aab9ce;font-weight:600}
-.field input,.field select,.field textarea{
+.field label,.form-group label{font-size:11px;color:#aab9ce;font-weight:600}
+.field input,.field select,.field textarea,.form-group input,.form-group select,.form-group textarea{
   width:100%;background:#0a1322;border:1px solid var(--border);
   border-radius:8px;padding:12px;color:white;outline:none;font-size:12px;
 }
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue)}
+.field input:focus,.field select:focus,.field textarea:focus,.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--blue)}
 .field select option{background:#101a2b}
 .form-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
 .notice{
