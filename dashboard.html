@@ -1012,15 +1012,36 @@ hr {
         <p class="payout-footnote">Consistency: your best profitable day must not exceed 50% of your total positive profits.</p>
       </article>
 
+      <article class="info-card payout-program payout-two-step">
+        <div class="payout-program-top">
+          <span class="payout-program-label">EVALUATION → FUNDED</span>
+          <span class="payout-program-mark">02</span>
+        </div>
+        <h3>2-Step Funded</h3>
+        <div class="payout-split">
+          <div><strong>85%</strong><span>Trader Share</span></div>
+          <div class="payout-company"><strong>15%</strong><span>Company Share</span></div>
+        </div>
+        <div class="payout-rule-list">
+          <div><span>Consistency rule</span><strong>None</strong></div>
+          <div><span>Minimum payout</span><strong>$50</strong></div>
+        </div>
+        <div class="payout-challenge-note">
+          <strong>2-Step challenge rules</strong>
+          <p>Complete both evaluation phases and meet the selected program's drawdown and profitable-day requirements.</p>
+        </div>
+        <p class="payout-footnote">No consistency rule applies to 2-Step accounts.</p>
+      </article>
+
       <article class="info-card payout-program payout-instant">
         <div class="payout-program-top">
           <span class="payout-program-label">DIRECT FUNDING</span>
-          <span class="payout-program-mark">02</span>
+          <span class="payout-program-mark">03</span>
         </div>
         <h3>Instant Funding</h3>
         <div class="payout-split">
-          <div><strong>70%</strong><span>Trader Share</span></div>
-          <div class="payout-company"><strong>30%</strong><span>Company Share</span></div>
+          <div><strong>75%</strong><span>Trader Share</span></div>
+          <div class="payout-company"><strong>25%</strong><span>Company Share</span></div>
         </div>
         <div class="payout-rule-list">
           <div><span>Consistency rule</span><strong>30% maximum</strong></div>
@@ -1094,7 +1115,7 @@ hr {
 
       <div class="payout-form-note">
         <strong>Before you submit</strong>
-        <p class="muted small">1-Step funded accounts require 50% consistency. Instant accounts require 30%. 2-Step payout conditions are program-specific. A $50 minimum withdrawal and all other payout checks apply.</p>
+        <p class="muted small">1-Step funded accounts require 50% consistency and receive 80% of eligible profit. 2-Step funded accounts receive 85% with no consistency rule. Instant accounts receive 75% and require 30% consistency. A $50 minimum withdrawal and all other payout checks apply.</p>
       </div>
       <button class="btn payout-submit-btn" id="payoutSubmitBtn" type="submit">Submit Payout Request <span>→</span></button>
     </form>
@@ -1682,7 +1703,7 @@ async function loadAccounts() {
     $("payoutAccount").innerHTML = `
       <option value="">Select eligible account</option>
       ${eligiblePayoutAccounts.map(a => `
-        <option value="${safe(a.id)}">${safe(a.account_name || String(a.id).slice(0,8))} — ${Number(a.account_size || 0).toLocaleString()} — ${String(a.account_type).toLowerCase() === "instant" ? "Instant Funding (70/30)" : "Funded Evaluation — program terms apply"}</option>
+        <option value="${safe(a.id)}">${safe(a.account_name || String(a.id).slice(0,8))} — ${Number(a.account_size || 0).toLocaleString()} — ${String(a.account_type).toLowerCase() === "instant" ? "Instant Funding (75/25)" : "Funded Evaluation — program terms apply"}</option>
       `).join("")}
     ` || `<option value="">No eligible accounts available</option>`;
   }
@@ -1963,7 +1984,7 @@ function updatePayoutPreview() {
   const isInstant = String(account.account_type).toLowerCase() === "instant";
   setText("payoutAccountProfit", money(account.profit));
   if (isInstant) {
-    const estimate = Math.max(0, Number(account.profit || 0)) * 0.70;
+    const estimate = Math.max(0, Number(account.profit || 0)) * 0.75;
     setText("payoutTraderShare", money(estimate) + (estimate < 50 ? " · $50 minimum" : ""));
   } else {
     setText("payoutTraderShare", "Confirmed by WFT per program");
