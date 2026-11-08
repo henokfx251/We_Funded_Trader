@@ -564,6 +564,72 @@ body{background:#07111f}
  .hero-trust span{font-size:10px}
 }
 
+
+/* WFT CLEAN PREMIUM DESIGN PASS */
+:root{
+  --bg:#07111f;--panel:#0f1d30;--panel2:#14243a;
+  --gold:#e8b84b;--gold2:#f6d98b;--text:#f4f7fb;
+  --muted:#a6b3c5;--line:rgba(148,163,184,.18);
+}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;letter-spacing:.005em}
+.container{width:min(1180px,91%);margin-inline:auto}
+header{background:rgba(5,14,27,.88);border-bottom:1px solid rgba(148,163,184,.13)}
+.navbar{min-height:78px}
+.logo{font-size:19px;letter-spacing:.7px}
+.nav-links{gap:22px;font-size:13px}
+.nav-links a{transition:color .2s ease}
+.hero{padding:112px 0 100px;min-height:570px;display:grid;align-items:center}
+.hero-content{max-width:880px}
+.hero-tag{font-size:10px;letter-spacing:2px;padding:10px 16px}
+.hero h1{font-size:clamp(45px,7.2vw,82px);letter-spacing:-2.8px;line-height:1.02}
+.hero-description{font-size:16px;line-height:1.9;color:#b3c0d1}
+.btn{border-radius:9px;min-height:46px;padding:13px 22px;letter-spacing:.01em}
+.btn-primary{box-shadow:0 8px 26px rgba(232,184,75,.14)}
+.btn-outline{border-color:rgba(148,163,184,.28)}
+.hero-trust{gap:12px;margin-top:36px}
+.hero-trust span{font-size:11px;padding:9px 13px}
+.promo-wrap{margin-top:-28px}
+.promo{padding:30px 36px;border-radius:16px;background:linear-gradient(110deg,#13243a,#17263a 68%,#292417);box-shadow:0 22px 60px rgba(0,0,0,.28)}
+.section{padding:88px 0}
+.section-heading{margin-bottom:38px}
+.section-heading .eyebrow,.eyebrow{font-size:10px;letter-spacing:2.2px}
+.section-heading h2{font-size:clamp(29px,4vw,43px);letter-spacing:-1.1px}
+.section-heading p{font-size:14px;line-height:1.8}
+.card{border-radius:15px;padding:27px;background:linear-gradient(145deg,rgba(18,34,54,.98),rgba(10,24,41,.98));border-color:rgba(148,163,184,.16)}
+.card:hover{transform:translateY(-3px);border-color:rgba(232,184,75,.42);box-shadow:0 20px 48px rgba(0,0,0,.22)}
+.challenge-types{gap:22px}
+.challenge-card{padding:30px}
+.challenge-card.featured{border-color:rgba(232,184,75,.5);background:linear-gradient(145deg,#172b43,#101e32)}
+.challenge-card li{font-size:13px;line-height:1.6;border-bottom-color:rgba(148,163,184,.12)}
+.account-grid{gap:18px}
+.account-card{padding:25px 20px}
+.account-card .account-size{font-size:30px;letter-spacing:-.8px}
+.account-card .account-price{font-size:36px}
+.account-card.featured{box-shadow:0 16px 42px rgba(232,184,75,.09)}
+.reward-box{border-radius:18px;border-color:rgba(232,184,75,.3);background:linear-gradient(125deg,#14263d,#0d1b2d)}
+.reward-box p,.reward-points li{line-height:1.8}
+.reward-highlight{border-radius:15px;background:linear-gradient(145deg,rgba(232,184,75,.1),rgba(232,184,75,.035))}
+.rules-grid,.steps{gap:18px}
+.rule-card .rule-icon{border:1px solid rgba(232,184,75,.18)}
+.final-cta{border-radius:18px;padding:64px 25px}
+footer{background:#050c16}
+.footer-grid{gap:42px}
+.footer-bottom{border-top-color:rgba(148,163,184,.14)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+@media(max-width:700px){
+ .hero{min-height:unset;padding:76px 0 72px}
+ .hero h1{font-size:clamp(39px,11vw,57px);letter-spacing:-1.6px}
+ .hero-description{font-size:14px;line-height:1.8}
+ .section{padding:64px 0}
+ .promo{padding:25px 20px}
+ .challenge-card{padding:24px}
+ .card{padding:23px}
+ .nav-links{background:#081526}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+
 </style>
 </head>
 
