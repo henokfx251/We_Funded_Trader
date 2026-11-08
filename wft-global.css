@@ -1,26 +1,140 @@
-/* WE FUNDED TRADER — shared homepage text palette
-   Apply the homepage's white + gold typography across every page.
-   Preserve each page's layout, backgrounds, components, buttons and application logic. */
+/* WE FUNDED TRADER — Unified Design System v8
+   Shared visual layer for all WFT HTML pages.
+   Design-only overrides: no application logic, selectors, or Supabase behavior changed. */
 :root{
   color-scheme:dark;
-  --text:#f4f7fb!important;
-  --text-primary:#f4f7fb!important;
-  --gold:#e8b84b!important;
-  --gold2:#f5d27c!important;
+  --wft-bg:#07111f;
+  --wft-bg-deep:#040b15;
+  --wft-panel:#0d1b2d;
+  --wft-panel-2:#12243a;
+  --wft-panel-3:#172d46;
+  --wft-line:rgba(148,163,184,.18);
+  --wft-line-gold:rgba(232,184,75,.38);
+  --wft-text:#f4f7fb;
+  --wft-muted:#9aabc0;
+  --wft-gold:#e8b84b;
+  --wft-gold-2:#f5d27c;
+  --wft-blue:#55a8ff;
+  --wft-green:#4adea8;
+  --wft-red:#fb7185;
+  --text:var(--wft-text)!important;
+  --text-primary:var(--wft-text)!important;
+  --gold:var(--wft-gold)!important;
+  --gold2:var(--wft-gold-2)!important;
   --gold-bright:#f6d98b!important;
-  --wft-gold:#f2c66d!important;
+  --wft-gold:var(--wft-gold)!important;
   --wft-gold-soft:#ffe2a1!important;
 }
-body{color:#f4f7fb}
-h1,h2,h3,h4,h5,h6,
-.page-title,.section-title,.card-title,.panel-title,
-.title,.heading,.hero-title{color:#f4f7fb}
-.gold,.text-gold,.highlight,.highlight-text,.accent-gold,
-.brand-gold,.gold-text,.logo span,.price-highlight,
-.section-eyebrow,.eyebrow.gold,.badge-gold{
-  color:#e8b84b!important;
-}
-:where(.price,.amount,.plan-price,.account-price,.total-price,.stat-value.gold){
-  color:#f5d27c;
-}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{color:var(--wft-text)}
+h1,h2,h3,h4,h5,h6,.page-title,.section-title,.card-title,.panel-title,.title,.heading,.hero-title{color:var(--wft-text)}
+p{line-height:1.65}
+a{transition:color .18s ease,opacity .18s ease}
+a:hover{opacity:.92}
+.gold,.text-gold,.highlight,.highlight-text,.accent-gold,.brand-gold,.gold-text,.logo span,.price-highlight,.section-eyebrow,.eyebrow.gold,.badge-gold{color:var(--wft-gold)!important}
+:where(.price,.amount,.plan-price,.account-price,.total-price,.stat-value.gold){color:var(--wft-gold-2)}
 ::selection{background:rgba(232,184,75,.28);color:#fff}
+
+/* Shared surfaces */
+:where(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.route-card){
+  border-color:var(--wft-line);
+  border-radius:16px;
+}
+:where(.card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card){
+  box-shadow:0 14px 38px rgba(0,0,0,.20);
+}
+:where(.card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card){
+  backdrop-filter:blur(10px);
+}
+:where(.muted,.subtext,.helper-text,.description,.small-text,.text-muted){color:var(--wft-muted)}
+
+/* Forms — consistent accessible controls */
+:where(input,select,textarea){
+  accent-color:var(--wft-gold);
+}
+:where(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
+  color:var(--wft-text);
+  border-color:rgba(148,163,184,.24);
+  border-radius:10px;
+}
+:where(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea):focus{
+  outline:none;
+  border-color:var(--wft-gold)!important;
+  box-shadow:0 0 0 3px rgba(232,184,75,.13)!important;
+}
+:where(input,textarea)::placeholder{color:#71839a}
+:where(label,.field-label){color:#d9e2ed}
+
+/* WFT buttons and calls to action */
+:where(.submit,.primary-btn,.btn-primary,.button-primary,.cta-button,.buy-button,.action-primary){
+  border:1px solid rgba(255,226,161,.32);
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--wft-gold-2),var(--wft-gold));
+  color:#111b29;
+  font-weight:850;
+  box-shadow:0 8px 24px rgba(232,184,75,.13);
+  transition:transform .18s ease,filter .18s ease,box-shadow .18s ease;
+}
+:where(.submit,.primary-btn,.btn-primary,.button-primary,.cta-button,.buy-button,.action-primary):hover{
+  filter:brightness(1.06);
+  transform:translateY(-1px);
+  box-shadow:0 12px 28px rgba(232,184,75,.18);
+}
+:where(.secondary-btn,.btn-secondary,.button-secondary,.outline-btn,.back-button){
+  border:1px solid var(--wft-line)!important;
+  border-radius:10px!important;
+}
+:where(button,a,input,select,textarea):focus-visible{
+  outline:2px solid var(--wft-gold)!important;
+  outline-offset:3px;
+}
+
+/* Badges, status and labels */
+:where(.badge,.pill,.status-badge,.tag){
+  border-radius:999px;
+  font-weight:750;
+  letter-spacing:.15px;
+}
+:where(.success,.text-success,.status-success){color:var(--wft-green)}
+:where(.danger,.error,.text-danger,.status-danger){color:var(--wft-red)}
+:where(.warning,.text-warning,.status-warning){color:var(--wft-gold-2)}
+
+/* Tables and data lists */
+:where(table){border-collapse:separate;border-spacing:0;max-width:100%}
+:where(th){color:#a9bbcf}
+:where(td,th){border-color:rgba(148,163,184,.13)}
+:where(thead th){background:rgba(13,27,45,.92)}
+:where(tbody tr:hover){background:rgba(85,168,255,.045)}
+
+/* Navigation and dashboard layout */
+:where(.sidebar,.side-nav,.dashboard-sidebar,.app-sidebar){
+  border-color:var(--wft-line);
+}
+:where(.nav-link,.sidebar a,.side-nav a,.dashboard-sidebar a){
+  transition:background .18s ease,color .18s ease,border-color .18s ease;
+}
+:where(.nav-link.active,.sidebar a.active,.side-nav a.active,.dashboard-sidebar a.active){
+  color:var(--wft-gold-2);
+}
+:where(.topbar,.top-bar,.dashboard-header,.app-header){
+  border-color:var(--wft-line);
+}
+
+/* Auth pages */
+.auth-shell{max-width:100%;width:min(100%,480px)}
+.auth-shell .card{border:1px solid var(--wft-line);box-shadow:0 24px 80px rgba(0,0,0,.34)}
+.auth-shell .field input{min-height:48px}
+.auth-shell .submit{min-height:50px}
+
+/* Responsive safety for every page */
+img,video,canvas,svg{max-width:100%}
+:where(.table-wrap,.table-responsive,.overflow-x-auto){max-width:100%;overflow-x:auto}
+@media(max-width:700px){
+  :where(.card,.content-card,.info-card,.form-card,.table-card,.section-card){border-radius:13px}
+  :where(.page-title,.hero-title){overflow-wrap:anywhere}
+  :where(button,.btn,.submit){max-width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
