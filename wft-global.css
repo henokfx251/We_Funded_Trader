@@ -46,3 +46,11 @@ body{color:var(--wft-text);text-rendering:optimizeLegibility;-webkit-font-smooth
 :root{--gold:#3b82f6!important;--gold2:#93c5fd!important;--gold-bright:#bfdbfe!important;--blue:#3b82f6!important;--wft-gold:#3b82f6!important;--wft-gold-light:#93c5fd!important}
 :where(a,.gold,.eyebrow,.brand,.brand-name span,.brand span,.section-title,.nav-link.active){color:#60a5fa}
 :where(input,select,textarea){accent-color:#3b82f6}
+
+/* WFT visual hierarchy refinement: softer secondary text, clearer surfaces */
+:root{--wft-bg:#091626;--wft-surface:#102239;--wft-surface-2:#162b43;--wft-muted:#a9bbcf;--wft-line:rgba(137,174,214,.20)}
+:where(.muted,.text-muted,.subtitle,.description,.hint,.helper-text,.form-hint,.nav-caption,.breadcrumb,.meta,.eyebrow){color:#9fb2c7!important;font-weight:400!important}
+:where(p,li,label,small,.description,.subtitle){font-weight:400}
+:where(h1,h2,h3,h4,.page-title,.section-title,.card-title){color:#f2f7fd;font-weight:750}
+:where(.btn,.button,.primary-btn,.submit-btn,.cta-button){font-weight:700}
+:where(.card,.stat-card,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.auth-card,.form-card,.glass-card){background-color:#102239}
