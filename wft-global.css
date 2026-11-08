@@ -1,89 +1,20 @@
-/* WE FUNDED TRADER — unified Challenge-page visual system
-   Visual-only layer. Keep page markup, IDs, application logic and Supabase calls unchanged. */
+/* WE FUNDED TRADER — shared typography colors only
+   Matches the text palette used on index.html and challenges.html.
+   Intentionally does not override page backgrounds, cards, buttons, borders or layout. */
 :root{
-  color-scheme:dark;
-  --bg:#07111f!important;--panel:#101d30!important;--panel2:#14243a!important;
-  --blue:#2588ff!important;--blue2:#62b0ff!important;
-  --gold:#2588ff!important;--gold2:#62b0ff!important;--gold-bright:#9dccff!important;
-  --text:#f4f7fb!important;--muted:#9aabc0!important;--line:#26374d!important;
-  --border:#26374d!important;--wft-bg:#07111f!important;--wft-surface:#101d30!important;
-  --wft-surface-2:#14243a!important;--wft-line:rgba(148,170,198,.20)!important;
-  --wft-gold:#2588ff!important;--wft-gold-light:#62b0ff!important;
+  --wft-text:#f4f7fb;
+  --wft-muted:#9aabc0;
+  --wft-link:#62b0ff;
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:82px}
-body{
-  background:radial-gradient(ellipse at 50% -18%,rgba(37,136,255,.13),transparent 48%),#07111f!important;
-  color:#f4f7fb!important;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased
-}
-h1,h2,h3,h4,h5,h6,.page-title,.section-title,.card-title,.panel-title{color:#f4f7fb}
-a{color:#62b0ff}
-a:hover{color:#9dccff}
+body{color:var(--wft-text)}
+h1,h2,h3,h4,h5,h6,
+.page-title,.section-title,.card-title,.panel-title,
+.title,.heading{color:var(--wft-text)}
+p,.description,.subtitle,.muted,.text-muted,
+.hint,.helper-text,.form-hint,.nav-caption,
+.breadcrumb,.meta,.eyebrow,.small,
+small,.secondary-text,.supporting-text{color:var(--wft-muted)}
+a:not(.btn):not(.button):not(.btn-primary):not(.primary-btn){color:var(--wft-link)}
+input,select,textarea{color:var(--wft-text)}
+input::placeholder,textarea::placeholder{color:var(--wft-muted);opacity:.85}
 ::selection{background:rgba(37,136,255,.3);color:#fff}
-:where(button,a,input,select,textarea,[tabindex]):focus-visible{outline:2px solid #62b0ff!important;outline-offset:3px}
-:where(input,select,textarea){
-  accent-color:#2588ff;max-width:100%;background-color:#071525;color:#f4f7fb;
-  border-color:#34465d;transition:border-color .18s ease,box-shadow .18s ease
-}
-:where(input,select,textarea)::placeholder{color:#9aabc0;opacity:.85}
-:where(input,select,textarea):focus{border-color:#2588ff!important;box-shadow:0 0 0 3px rgba(37,136,255,.14)!important}
-:where(button,a){-webkit-tap-highlight-color:transparent}
-:where(button){transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease}
-:where(button:active){transform:translateY(1px)}
-:where(.card,.stat-card,.stat,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.auth-card,.form-card,.glass-card,.container,.route-card){
-  background-color:#101d30;border-color:#26374d
-}
-:where(.card,.stat-card,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.auth-card,.form-card,.glass-card,.container,.route-card){
-  box-shadow:0 12px 32px rgba(0,0,0,.20)
-}
-:where(.sidebar,.side-nav){background:#091525;border-color:#26374d;overscroll-behavior:contain}
-:where(header,.topbar,.top,.navbar){border-color:#26374d}
-:where(.nav-btn:hover,.nav-btn.active,.nav-link:hover){background:#142b46;color:#62b0ff}
-:where(.btn-primary,.primary-btn,.submit-btn,.cta-button,button.primary,button[type=submit],.btn:not(.secondary):not(.danger):not(.reject):not(.logout)){
-  background:linear-gradient(135deg,#2588ff,#1264c7);border-color:#5eafff;color:#fff;
-  box-shadow:0 7px 22px rgba(37,136,255,.18);font-weight:800
-}
-:where(.btn-primary:hover,.primary-btn:hover,.submit-btn:hover,.cta-button:hover,button.primary:hover,button[type=submit]:hover){
-  filter:brightness(1.08);box-shadow:0 10px 25px rgba(37,136,255,.25)
-}
-:where(.secondary,.btn-secondary,.btn-outline,.copy-btn){background:#14243a;border-color:#365577;color:#dceaff}
-:where(.muted,.text-muted,.subtitle,.description,.hint,.helper-text,.form-hint,.nav-caption,.breadcrumb,.meta,.eyebrow,.small){color:#9aabc0}
-:where(.badge,.status-badge,.pill){letter-spacing:.02em}
-:where(table){border-collapse:separate;border-spacing:0}
-:where(th){font-weight:750;letter-spacing:.02em}
-:where(td,th){overflow-wrap:anywhere;border-color:#26374d}
-:where(.table-wrap,.table-container,.overflow-x-auto){max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
-:where(.table-wrap table,.table-container table){background:#101d30}
-:where(.program,.rule,.stat,.wallet-card,.payment,.agreement-area){border-color:#365577}
-:where(.program.active,.size-btn.active){border-color:#3998ff;box-shadow:0 0 0 2px rgba(37,136,255,.18)}
-:where(.message.success,.success){color:#4cdb9a}
-:where(.message.error,.error){color:#ff7777}
-@media(max-width:768px){
-  html{scroll-padding-top:68px}
-  :where(button,.btn,.button,.primary-btn,.submit-btn,.cta-button){min-height:40px}
-  :where(input,select,textarea){font-size:16px}
-  :where(.table-wrap table,.table-container table,.overflow-x-auto table){min-width:620px}
-}
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-}
-
-/* Final specificity layer: consistently apply the Challenge-page blue treatment */
-body{background-color:#07111f!important;color:#f4f7fb!important}
-a:not(.btn):not(.button){color:#62b0ff}
-.card,.stat-card,.stat,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.auth-card,.form-card,.glass-card,.container,.route-card{
-  background-color:#101d30!important;border-color:#26374d!important
-}
-.sidebar,.side-nav{background-color:#091525!important;border-color:#26374d!important}
-.topbar,.top,.navbar{background-color:#091525!important;border-color:#26374d!important}
-.nav-btn:hover,.nav-btn.active,.nav-link:hover{background:#142b46!important;color:#62b0ff!important}
-input,select,textarea{background-color:#071525!important;color:#f4f7fb!important;border-color:#34465d!important}
-input:focus,select:focus,textarea:focus{border-color:#2588ff!important;box-shadow:0 0 0 3px rgba(37,136,255,.14)!important}
-.btn-primary,.primary-btn,.submit-btn,.cta-button,button.primary,button[type=submit],.btn:not(.secondary):not(.danger):not(.reject):not(.success):not(.logout):not(.copy-btn){
-  background:linear-gradient(135deg,#2588ff,#1264c7)!important;border:1px solid #5eafff!important;color:#fff!important;
-  box-shadow:0 7px 22px rgba(37,136,255,.18)!important
-}
-.btn-primary:hover,.primary-btn:hover,.submit-btn:hover,.cta-button:hover,button.primary:hover,button[type=submit]:hover{
-  filter:brightness(1.08);box-shadow:0 10px 25px rgba(37,136,255,.25)!important
-}
-.secondary,.btn-secondary,.btn-outline,.copy-btn{background:#14243a!important;border-color:#365577!important;color:#dceaff!important}
