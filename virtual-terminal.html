@@ -122,7 +122,7 @@ $("planNotes").addEventListener("input",()=>{clearTimeout(noteTimer);$("saveStat
 function renderRules(a){
  const isChallenge=String(a.account_type||"").toLowerCase().includes("challenge");
  const rules=[["Maximum drawdown","5% static"],["Daily drawdown",isChallenge?"3% static":"Not applied"]];
- if(isChallenge)rules.push(["Profit target","10%"],["Minimum profitable day","0.5%"],["Profitable days","5"]);
+ if(isChallenge)rules.push(["Profit target","10%"],["Minimum profitable day","0.5%"],["Profitable days","5"],["Consistency requirement","50%"],["Withdrawal range","2%–6%"]);
  else rules.push(["Consistency requirement","30%"],["Withdrawal range","1%–4%"]);
  $("riskRules").innerHTML=rules.map(([k,v])=>'<div class="rule"><b>'+k+'</b><span>'+v+'</span></div>').join("");
 }
