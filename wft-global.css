@@ -1,60 +1,69 @@
-/* WE FUNDED TRADER — shared premium UI layer
-   Visual-only enhancement. Keeps page structure, forms, IDs and application scripts intact. */
+/* WE FUNDED TRADER — unified Challenge-page visual system
+   Visual-only layer. Keep page markup, IDs, application logic and Supabase calls unchanged. */
 :root{
- --wft-bg:#07111f;--wft-surface:#0d1b2d;--wft-surface-2:#12243a;
- --wft-line:rgba(148,170,198,.17);--wft-gold:#3b82f6;--wft-gold-light:#93c5fd;
- --wft-text:#f4f7fb;--wft-muted:#93a6bc;--wft-radius:15px;
+  color-scheme:dark;
+  --bg:#07111f!important;--panel:#101d30!important;--panel2:#14243a!important;
+  --blue:#2588ff!important;--blue2:#62b0ff!important;
+  --gold:#2588ff!important;--gold2:#62b0ff!important;--gold-bright:#9dccff!important;
+  --text:#f4f7fb!important;--muted:#9aabc0!important;--line:#26374d!important;
+  --border:#26374d!important;--wft-bg:#07111f!important;--wft-surface:#101d30!important;
+  --wft-surface-2:#14243a!important;--wft-line:rgba(148,170,198,.20)!important;
+  --wft-gold:#2588ff!important;--wft-gold-light:#62b0ff!important;
 }
-html{scroll-behavior:smooth;scroll-padding-top:84px}
-body{color:var(--wft-text);text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
-::selection{background:rgba(59,130,246,.28);color:#fff}
-:where(button,a,input,select,textarea,[tabindex]):focus-visible{outline:2px solid var(--wft-gold)!important;outline-offset:3px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:82px}
+body{
+  background:radial-gradient(ellipse at 50% -18%,rgba(37,136,255,.13),transparent 48%),#07111f!important;
+  color:#f4f7fb!important;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased
+}
+h1,h2,h3,h4,h5,h6,.page-title,.section-title,.card-title,.panel-title{color:#f4f7fb}
+a{color:#62b0ff}
+a:hover{color:#9dccff}
+::selection{background:rgba(37,136,255,.3);color:#fff}
+:where(button,a,input,select,textarea,[tabindex]):focus-visible{outline:2px solid #62b0ff!important;outline-offset:3px}
+:where(input,select,textarea){
+  accent-color:#2588ff;max-width:100%;background-color:#071525;color:#f4f7fb;
+  border-color:#34465d;transition:border-color .18s ease,box-shadow .18s ease
+}
+:where(input,select,textarea)::placeholder{color:#9aabc0;opacity:.85}
+:where(input,select,textarea):focus{border-color:#2588ff!important;box-shadow:0 0 0 3px rgba(37,136,255,.14)!important}
 :where(button,a){-webkit-tap-highlight-color:transparent}
 :where(button){transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease}
-:where(button:hover){filter:brightness(1.08)}
 :where(button:active){transform:translateY(1px)}
-:where(input,select,textarea){max-width:100%;accent-color:var(--wft-gold);transition:border-color .18s ease,box-shadow .18s ease}
-:where(input,select,textarea):focus{border-color:var(--wft-gold)!important;box-shadow:0 0 0 3px rgba(59,130,246,.11)}
-:where(a){text-underline-offset:3px}
-:where(img,video,iframe){max-width:100%}
+:where(.card,.stat-card,.stat,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.auth-card,.form-card,.glass-card,.container,.route-card){
+  background-color:#101d30;border-color:#26374d
+}
+:where(.card,.stat-card,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.auth-card,.form-card,.glass-card,.container,.route-card){
+  box-shadow:0 12px 32px rgba(0,0,0,.20)
+}
+:where(.sidebar,.side-nav){background:#091525;border-color:#26374d;overscroll-behavior:contain}
+:where(header,.topbar,.top,.navbar){border-color:#26374d}
+:where(.nav-btn:hover,.nav-btn.active,.nav-link:hover){background:#142b46;color:#62b0ff}
+:where(.btn-primary,.primary-btn,.submit-btn,.cta-button,button.primary,button[type=submit],.btn:not(.secondary):not(.danger):not(.reject):not(.logout)){
+  background:linear-gradient(135deg,#2588ff,#1264c7);border-color:#5eafff;color:#fff;
+  box-shadow:0 7px 22px rgba(37,136,255,.18);font-weight:800
+}
+:where(.btn-primary:hover,.primary-btn:hover,.submit-btn:hover,.cta-button:hover,button.primary:hover,button[type=submit]:hover){
+  filter:brightness(1.08);box-shadow:0 10px 25px rgba(37,136,255,.25)
+}
+:where(.secondary,.btn-secondary,.btn-outline,.copy-btn){background:#14243a;border-color:#365577;color:#dceaff}
+:where(.muted,.text-muted,.subtitle,.description,.hint,.helper-text,.form-hint,.nav-caption,.breadcrumb,.meta,.eyebrow,.small){color:#9aabc0}
+:where(.badge,.status-badge,.pill){letter-spacing:.02em}
 :where(table){border-collapse:separate;border-spacing:0}
 :where(th){font-weight:750;letter-spacing:.02em}
-:where(td,th){overflow-wrap:anywhere}
-:where(.card,.stat-card,.stat,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.auth-card,.form-card,.glass-card){
- border-color:var(--wft-line);
-}
-:where(.card,.stat-card,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.glass-card){
- box-shadow:0 12px 32px rgba(0,0,0,.13);
-}
-:where(.btn,.button,.primary-btn,.submit-btn,.cta-button){font-weight:750;letter-spacing:.01em}
-:where(.btn-primary,.primary-btn,.submit-btn,.cta-button){box-shadow:0 7px 22px rgba(59,130,246,.12)}
-:where(.muted,.text-muted,.subtitle,.description){color:var(--wft-muted)}
-:where(.badge,.status-badge,.pill){letter-spacing:.02em}
+:where(td,th){overflow-wrap:anywhere;border-color:#26374d}
 :where(.table-wrap,.table-container,.overflow-x-auto){max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
-:where(.sidebar,.side-nav){overscroll-behavior:contain}
+:where(.table-wrap table,.table-container table){background:#101d30}
+:where(.program,.rule,.stat,.wallet-card,.payment,.agreement-area){border-color:#365577}
+:where(.program.active,.size-btn.active){border-color:#3998ff;box-shadow:0 0 0 2px rgba(37,136,255,.18)}
+:where(.message.success,.success){color:#4cdb9a}
+:where(.message.error,.error){color:#ff7777}
 @media(max-width:768px){
- html{scroll-padding-top:68px}
- :where(button,.btn,.button,.primary-btn,.submit-btn,.cta-button){min-height:40px}
- :where(input,select,textarea){font-size:16px}
- :where(.table-wrap table,.table-container table,.overflow-x-auto table){min-width:620px}
+  html{scroll-padding-top:68px}
+  :where(button,.btn,.button,.primary-btn,.submit-btn,.cta-button){min-height:40px}
+  :where(input,select,textarea){font-size:16px}
+  :where(.table-wrap table,.table-container table,.overflow-x-auto table){min-width:620px}
 }
 @media(prefers-reduced-motion:reduce){
- *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
-
-/* WFT unified electric-blue brand accents */
-:root{--gold:#3b82f6!important;--gold2:#93c5fd!important;--gold-bright:#bfdbfe!important;--blue:#3b82f6!important;--wft-gold:#3b82f6!important;--wft-gold-light:#93c5fd!important}
-:where(a,.gold,.eyebrow,.brand,.brand-name span,.brand span,.section-title,.nav-link.active){color:#60a5fa}
-:where(input,select,textarea){accent-color:#3b82f6}
-
-/* WFT visual hierarchy refinement: softer secondary text, clearer surfaces */
-:root{--wft-bg:#091626;--wft-surface:#102239;--wft-surface-2:#162b43;--wft-muted:#a9bbcf;--wft-line:rgba(137,174,214,.20)}
-:where(.muted,.text-muted,.subtitle,.description,.hint,.helper-text,.form-hint,.nav-caption,.breadcrumb,.meta,.eyebrow){color:#9fb2c7!important;font-weight:400!important}
-:where(p,li,label,small,.description,.subtitle){font-weight:400}
-:where(h1,h2,h3,h4,.page-title,.section-title,.card-title){color:#f2f7fd;font-weight:750}
-:where(.btn,.button,.primary-btn,.submit-btn,.cta-button){font-weight:700}
-:where(.card,.stat-card,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.auth-card,.form-card,.glass-card){background-color:#102239}
-
-/* Global WFT typography: clear white primary text on every page */
-html,body{color:#f5f8fc!important}
-h1,h2,h3,h4,h5,h6,.page-title,.section-title,.card-title,.panel-title{color:#f5f8fc!important}
