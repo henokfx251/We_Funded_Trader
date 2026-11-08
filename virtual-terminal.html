@@ -33,6 +33,44 @@ select,input,textarea{width:100%;background:#081525;color:var(--text);border:1px
 .status{font-size:11px;color:var(--muted);margin-top:12px;min-height:15px}
 @media(max-width:950px){.workspace{grid-template-columns:1fr}.side{grid-template-columns:repeat(2,minmax(0,1fr))}.side .rules-card{grid-column:1/-1}.chart{height:64vh;min-height:440px}}
 @media(max-width:620px){.topbar{height:58px}.links a{padding:8px;font-size:10px}.heading{align-items:flex-start;flex-direction:column}.account-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.account-strip .account-card{grid-column:1/-1}.workspace{gap:10px}.chart-card{padding:10px}.chart-head{align-items:flex-start;flex-direction:column}.symbol-select{width:100%;max-width:100%}.chart{height:58vh;min-height:390px}.side{grid-template-columns:1fr}.side .rules-card{grid-column:auto}main{padding-top:16px}.mode{align-self:flex-start}}
+
+/* WFT Terminal v3 — premium navy / gold / ice-blue trading workspace */
+:root{--bg:#050a13;--panel:#0a1422;--panel2:#101e30;--line:rgba(232,184,75,.20);--gold:#e8b84b;--gold2:#f7d98c;--text:#f7f9fc;--muted:#9bb4ce;--blue:#55a8ff;--green:#38d6a0;--red:#ff6474}
+body{background:radial-gradient(ellipse at 65% -18%,rgba(37,91,145,.30),transparent 42%),radial-gradient(ellipse at 0% 35%,rgba(232,184,75,.06),transparent 34%),#050a13}
+.topbar{background:rgba(5,11,20,.94);border-bottom:1px solid rgba(85,168,255,.18);box-shadow:0 8px 30px #0006}
+.brand{color:var(--gold2);font-size:14px;letter-spacing:1.3px}.brand small{color:#83a9ce}
+main{max-width:1700px;margin-left:86px;padding-top:24px}
+.wft-side-nav{position:fixed;z-index:8;left:0;top:68px;bottom:0;width:72px;background:linear-gradient(180deg,#0a1422,#060c16);border-right:1px solid rgba(232,184,75,.17);display:flex;flex-direction:column;align-items:center;padding:16px 8px;gap:10px}
+.wft-side-nav a{width:54px;min-height:54px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;text-decoration:none;color:#9bb4ce;border:1px solid transparent;font-size:9px;font-weight:800;letter-spacing:.3px}
+.wft-side-nav a span{font-size:19px;line-height:1}.wft-side-nav a:hover,.wft-side-nav a.active{color:var(--gold2);background:linear-gradient(145deg,#302719,#151a22);border-color:rgba(232,184,75,.35);box-shadow:inset 3px 0 var(--gold),0 5px 18px #0005}
+.heading h1{letter-spacing:-.9px}.eyebrow{color:var(--blue)}
+.mode{border-color:#23644f;background:#0a251f;color:#68e4b3}
+.card{background:linear-gradient(145deg,rgba(16,31,49,.98),rgba(7,16,28,.98));border-color:rgba(120,158,196,.18);box-shadow:0 14px 36px #0005}
+.account-strip .card{position:relative;overflow:hidden}.account-strip .card:after{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(var(--gold),var(--blue));opacity:.8}
+.label{color:#a9c1da}.value{color:#fff}.sub{color:#8da9c6}
+.symbol-select{background:#0a1728;border-color:rgba(232,184,75,.35);color:var(--gold2)}
+.timeframes button,.symbols button{background:#091525;color:#a9c2dc;border-color:rgba(122,159,197,.2)}
+.timeframes button.active,.symbols button.active{color:var(--gold2);border-color:var(--gold);background:linear-gradient(145deg,#332a18,#151c27);box-shadow:0 0 0 1px #e8b84b22}
+.chart{background:#050d18;border-color:rgba(85,168,255,.22);box-shadow:inset 0 0 35px #0008}
+.side h2{color:#fff}.field label{color:#b8cce0}.calc-result{background:#071321;border-color:rgba(85,168,255,.22)}.calc-result strong{color:var(--gold2)}
+.notice{background:#101c2a;border-color:rgba(232,184,75,.32);color:#c4d4e6}
+.rule{border-color:rgba(122,159,197,.15)}.rule span{color:#9bb9d7}
+.wft-mobile-dock{display:none}
+@media(max-width:950px){main{margin-left:76px}.wft-side-nav{width:64px}.wft-side-nav a{width:48px}}
+@media(max-width:620px){
+ .topbar{height:58px;padding:0 13px}.brand{font-size:12px}.brand small{font-size:8px}
+ .links a{padding:8px 9px;font-size:9px}
+ .wft-side-nav{display:none}main{margin:0;padding:15px 12px 94px}
+ .heading{gap:10px;margin-bottom:14px}.heading h1{font-size:24px}.heading p{font-size:11px;max-width:340px}
+ .account-strip{gap:8px}.account-strip .card{padding:12px}.account-strip .value{font-size:16px}
+ .chart-card{border-radius:16px}.chart{height:54vh;min-height:360px;border-radius:12px}
+ .timeframes{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px}.timeframes button{flex:0 0 auto}
+ .symbols{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.symbols button{flex:0 0 auto}
+ .wft-mobile-dock{position:fixed;z-index:20;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));height:62px;display:grid;grid-template-columns:repeat(3,1fr);background:rgba(8,17,29,.96);backdrop-filter:blur(18px);border:1px solid rgba(232,184,75,.28);border-radius:17px;box-shadow:0 12px 35px #000b;padding:5px}
+ .wft-mobile-dock a{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;text-decoration:none;color:#9bb4ce;font-size:9px;font-weight:800}
+ .wft-mobile-dock a span{font-size:18px}.wft-mobile-dock a.active{color:var(--gold2)}
+}
+
 </style>
   <link rel="stylesheet" href="wft-global.css?v=2">
 </head>
@@ -41,6 +79,14 @@ select,input,textarea{width:100%;background:#081525;color:var(--text);border:1px
  <div class="brand">WE FUNDED TRADER<small>PROFESSIONAL ANALYSIS TERMINAL</small></div>
  <nav class="links"><a href="index.html">Home</a><a href="dashboard.html">Dashboard</a></nav>
 </header>
+
+<nav class="wft-side-nav" aria-label="Terminal navigation">
+ <a class="active" href="#chart"><span>▥</span>CHART</a>
+ <a href="#accountSelect"><span>◉</span>ACCOUNT</a>
+ <a href="#riskRules"><span>⌁</span>RULES</a>
+ <a href="#riskBalance"><span>⌗</span>RISK</a>
+ <a href="#planNotes"><span>✎</span>NOTES</a>
+</nav>
 <main>
  <section class="heading">
   <div><div class="eyebrow">MARKET ANALYSIS WORKSPACE</div><h1>TradingView Terminal</h1><p>Analyze price action, plan risk and prepare your next setup — all in one clean workspace.</p></div>
@@ -89,6 +135,13 @@ Reason to skip the trade:"></textarea>
   </aside>
  </section>
 </main>
+
+<nav class="wft-mobile-dock" aria-label="Quick terminal navigation">
+ <a class="active" href="#chart"><span>▥</span>Trade</a>
+ <a href="#accountSelect"><span>◉</span>Account</a>
+ <a href="#riskRules"><span>⌁</span>Rules</a>
+</nav>
+
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const SUPABASE_URL="https://vxcwfirfgxrxafbirnwu.supabase.co";
