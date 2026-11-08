@@ -67,3 +67,23 @@ a:hover{color:#9dccff}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* Final specificity layer: consistently apply the Challenge-page blue treatment */
+body{background-color:#07111f!important;color:#f4f7fb!important}
+a:not(.btn):not(.button){color:#62b0ff}
+.card,.stat-card,.stat,.panel,.section-card,.content-card,.challenge-card,.price-card,.order-card,.account-card,.reward-card,.feature-card,.auth-card,.form-card,.glass-card,.container,.route-card{
+  background-color:#101d30!important;border-color:#26374d!important
+}
+.sidebar,.side-nav{background-color:#091525!important;border-color:#26374d!important}
+.topbar,.top,.navbar{background-color:#091525!important;border-color:#26374d!important}
+.nav-btn:hover,.nav-btn.active,.nav-link:hover{background:#142b46!important;color:#62b0ff!important}
+input,select,textarea{background-color:#071525!important;color:#f4f7fb!important;border-color:#34465d!important}
+input:focus,select:focus,textarea:focus{border-color:#2588ff!important;box-shadow:0 0 0 3px rgba(37,136,255,.14)!important}
+.btn-primary,.primary-btn,.submit-btn,.cta-button,button.primary,button[type=submit],.btn:not(.secondary):not(.danger):not(.reject):not(.success):not(.logout):not(.copy-btn){
+  background:linear-gradient(135deg,#2588ff,#1264c7)!important;border:1px solid #5eafff!important;color:#fff!important;
+  box-shadow:0 7px 22px rgba(37,136,255,.18)!important
+}
+.btn-primary:hover,.primary-btn:hover,.submit-btn:hover,.cta-button:hover,button.primary:hover,button[type=submit]:hover{
+  filter:brightness(1.08);box-shadow:0 10px 25px rgba(37,136,255,.25)!important
+}
+.secondary,.btn-secondary,.btn-outline,.copy-btn{background:#14243a!important;border-color:#365577!important;color:#dceaff!important}
