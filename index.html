@@ -115,7 +115,10 @@ header{
   font-weight:700;
 }
 .nav-links a:hover{color:var(--gold)}
-.nav-actions{display:flex;align-items:center;gap:9px}
+.nav-actions{display:flex;align-items:center;gap:12px}
+.nav-actions .btn{min-width:112px;min-height:44px;padding:12px 20px;text-align:center;font-size:13px;font-weight:800}
+.logo{font-size:28px;letter-spacing:1.5px;color:var(--gold);font-weight:950}
+
 .menu-toggle{
   display:none;
   width:42px;height:42px;
@@ -507,7 +510,7 @@ footer{
     border-bottom:1px solid rgba(255,255,255,.05);
     font-size:14px;
   }
-  .nav-actions .btn{padding:10px 12px;font-size:12px}
+  .nav-actions .btn{min-width:94px;min-height:42px;padding:11px 14px;font-size:13px}
   .logo{font-size:16px}
   .hero{padding:75px 0 65px}
   .hero h1{letter-spacing:-1px}
@@ -524,7 +527,7 @@ footer{
   .hero-trust{gap:12px}
   .hero-buttons .btn{width:100%}
   .nav-actions{gap:5px}
-  .nav-actions .btn{padding:9px 10px;font-size:11px}
+  .nav-actions .btn{min-width:82px;padding:10px 12px;font-size:12px}
   .footer-grid{grid-template-columns:1fr}
   .footer-bottom{flex-direction:column}
 }
@@ -640,7 +643,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
 <header>
   <div class="container">
     <nav class="navbar">
-      <a class="logo" href="index.html">WE <span>FUNDED</span> TRADER</a>
+      <a class="logo" href="index.html" aria-label="WFT Home">WFT</a>
 
       <button class="menu-toggle" id="menuToggle"
         type="button" aria-label="Open navigation menu"
@@ -658,7 +661,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
       </div>
 
       <div class="nav-actions">
-        <a class="btn btn-outline" href="Login.html">Log In</a>
+        <a class="btn btn-outline" href="Login.html">Login</a>
         <a class="btn btn-primary" href="register.html">Sign Up ↗</a>
       </div>
     </nav>
