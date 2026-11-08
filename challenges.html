@@ -53,8 +53,10 @@ let programs=[
 {code:"1step_pro",name:"1-Step Pro",family:"1-Step",price:15,max:"6% Trailing Equity",daily:"3% Equity",reset:"Daily reset",target:"6%",consistency:"50% consistency rule applies to funded payouts",note:"Minimum profitable-day rule: 3 days, each at least 0.25%. Maximum loss trails the highest recorded equity. Floating losses count."}
 ];
 programs.forEach(p=>{p.profitableDays=3;p.minDailyProfit="0.25%";});
+const programPriority={2step_standard:10,1step_pro:20,instant_pro:30,2step_pro:40,instant_standard:50,1step_standard:60,instant_plus:70};
+programs.sort((a,b)=>(programPriority[a.code]||100)-(programPriority[b.code]||100)||a.price-b.price);
 const sizes=[2500,5000,10000,25000,50000,100000,200000,300000];
-let selected=programs[0],selectedSize=2500,couponApplied=false,livePrograms={},rulesAgreed=false;
+let selected=programs.find(p=>p.code==="2step_standard")||programs[0],selectedSize=2500,couponApplied=false,livePrograms={},rulesAgreed=false;
 const money=n=>"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 function basePrice(){const p=livePrograms[selected.code]||selected.price;return p*selectedSize/2500}
 function drawPrograms(){document.getElementById("programs").innerHTML=programs.map(p=>'<button type="button" class="program '+(p.code===selected.code?'active':'')+'" data-code="'+p.code+'"><h3>'+p.name+'</h3><p><span>Max Loss: '+p.max+'</span><span>Daily Loss: '+p.daily+'</span><span>Profit Target: '+p.target+'</span><span>Profitable days: 3 × 0.25%</span><span>Consistency: '+p.consistency+'</span></p><div class="starting">From '+money(livePrograms[p.code]||p.price)+'</div></button>').join("");document.querySelectorAll(".program").forEach(b=>b.addEventListener("click",()=>{selected=programs.find(p=>p.code===b.dataset.code);couponApplied=false;rulesAgreed=false;document.getElementById("agreeRules").checked=false;document.getElementById("coupon").value="";document.getElementById("couponMessage").textContent="";document.getElementById("checkoutMessage").textContent="";drawPrograms();renderRules();updateAgreement();update();}));}
