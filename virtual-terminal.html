@@ -51,7 +51,7 @@ select,input{background:#071321;color:var(--text);border:1px solid #2a4059;borde
   <div class="panel"><div class="metric-label">Floating P/L</div><div class="metric" id="floating">$—</div><div class="hint">Open positions</div></div>
   <div class="panel"><div class="metric-label">Free Margin</div><div class="metric" id="freeMargin">$—</div><div class="hint" id="accountStatus">Account status —</div></div>
  </section>
- <section class="workspace terminal-view" id="chartView">
+ <section class="workspace terminal-view" id="chartView" hidden>
   <div>
    <section class="panel chartpanel">
     <div class="charttop"><div class="marketpick"><select id="symbolSelect" aria-label="Market">
@@ -83,7 +83,7 @@ select,input{background:#071321;color:var(--text);border:1px solid #2a4059;borde
    </section>
   </aside>
  </section>
- <section class="panel" style="margin-top:12px"><h2 style="font-size:14px;margin:0 0 12px;color:#fff">Challenge Monitor</h2><div class="rules" style="margin-top:0;grid-template-columns:repeat(3,minmax(0,1fr))"><div class="rule"><span>DAILY DRAWDOWN</span><b id="dailyDD">0.00%</b><span>Maximum allowed: 3% for 1-Step</span></div><div class="rule"><span>MAXIMUM DRAWDOWN</span><b id="maxDD">0.00%</b><span>Maximum allowed: 5%</span></div><div class="rule"><span>PROFITABLE DAYS</span><b id="profitableDays">0 / 5</b><span>Minimum: 5 profitable days</span></div></div><div class="statusline" id="challengeStatus">Waiting for account…</div></section>
+ <section class="panel terminal-view" id="monitorView" hidden style="margin-top:12px"><h2 style="font-size:14px;margin:0 0 12px;color:#fff">Challenge Monitor</h2><div class="rules" style="margin-top:0;grid-template-columns:repeat(3,minmax(0,1fr))"><div class="rule"><span>DAILY DRAWDOWN</span><b id="dailyDD">0.00%</b><span>Maximum allowed: 3% for 1-Step</span></div><div class="rule"><span>MAXIMUM DRAWDOWN</span><b id="maxDD">0.00%</b><span>Maximum allowed: 5%</span></div><div class="rule"><span>PROFITABLE DAYS</span><b id="profitableDays">0 / 5</b><span>Minimum: 5 profitable days</span></div></div><div class="statusline" id="challengeStatus">Waiting for account…</div></section>
  <div class="disclaimer">WFT Internal Simulator — all orders, balances and P/L are simulated records stored in Supabase. Quotes and candles are generated for demo testing and are not live market prices. No real broker orders or real money are involved.</div>
 </main>
 <script type="module">
