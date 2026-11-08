@@ -1259,7 +1259,20 @@ function showPage(name) {
 }
 
 document.querySelectorAll("[data-page]").forEach(button => {
-  button.addEventListener("click", () => showPage(button.dataset.page));
+  button.addEventListener("click", event => {
+    event.preventDefault();
+    const pageName = button.dataset.page;
+    showPage(pageName);
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.set("page", pageName);
+    window.history.pushState({ page: pageName }, "", nextUrl);
+  });
+});
+
+window.addEventListener("popstate", () => {
+  const pageName = new URLSearchParams(window.location.search).get("page") || "overview";
+  const allowedPages = new Set(["overview","challenge","accounts","orders","kyc","certificate","payout","reward","affiliate","support","settings"]);
+  showPage(allowedPages.has(pageName) ? pageName : "overview");
 });
 
 $("menuBtn")?.addEventListener("click", () => {
