@@ -33,11 +33,11 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
   <p class="gold">LIMITED GIVEAWAY · MAXIMUM 100 TRADERS</p>
   <div class="fee"><strong id="giveawayLiveStatus">Checking Giveaway status...</strong><div style="height:9px;background:#07111f;border-radius:20px;overflow:hidden;margin-top:10px"><div id="giveawayProgressBar" style="height:100%;width:0;background:var(--gold)"></div></div><p class="small" id="giveawaySlots">Loading available places...</p></div>
   <h1>Join the WFT 100 Trader Giveaway</h1>
-  <p class="muted">Complete the social follow tasks, refer 3 people who activate a WFT account, then pay the one-time activation fee for your selected account size. Your confirmed activation fee is credited 100% to your WFT Wallet Balance after Admin approval.</p>
+  <p class="muted">Complete all five social follow tasks, refer 2 people who activate a WFT account, choose your account size, then submit the one-time activation fee. Your confirmed activation fee is credited 100% to your WFT Wallet Balance after Admin approval.</p>
   <p><strong class="gold">Important:</strong> This is an activation fee, not a direct challenge purchase. You can use the Wallet Balance later to buy any challenge and apply a coupon at checkout.</p>
 </section>
 <section class="card">
-  <h2>Activation Fee</h2>
+  <h2>Activation Fee by Account Size</h2>
   <div class="grid">
     <div class="fee">$2,500 <strong>$1</strong></div><div class="fee">$5,000 <strong>$3</strong></div>
     <div class="fee">$10,000 <strong>$5</strong></div><div class="fee">$25,000 <strong>$10</strong></div>
@@ -46,7 +46,7 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
   <p class="small">Only 100 entries are accepted. One entry per user.</p>
 </section>
 <section class="card hidden" id="entryCreate">
-  <h2>3. Redeem My Giveaway Size</h2>
+  <h2>Step 3. Choose Account Size & Activation Fee</h2>
   <label for="accountSize">Account Size</label>
   <select id="accountSize">
     <option value="2500">$2,500 — $1 activation fee</option>
@@ -60,26 +60,26 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
   <div class="status" id="createStatus">Sign in to join the giveaway.</div>
 </section>
 <section class="card" id="entryPanel">
-  <h2>1–2. Social Follow & Referral Requirements</h2>
+  <h2>Step 1. Social Follow Tasks</h2>
   <p>Follow the official WE FUNDED TRADER accounts on:</p>
   <div class="grid" id="socialLinksGrid"><div class="fee">Loading official social links...</div></div>
   <p class="small">X/Twitter is not part of this giveaway.</p>
   <p class="small">For EACH platform: tap <strong>Follow Task</strong>, follow the WFT account, then upload a screenshot with <strong>Submit Proof</strong>. JPG, PNG or WEBP · maximum 5MB each. X is not included.</p>
   <div class="status" id="proofSummary">0 / 5 social proofs submitted.</div>
   <div class="referral-box" id="referralStep">
-    <h3 class="gold">3. Invite Friends — Your Referral Link</h3>
-    <p>Share your personal WFT referral link. You need 3 referred traders with active WFT trading accounts to qualify.</p>
+    <h3 class="gold">Step 2. Invite 2 Friends</h3>
+    <p>Share your personal WFT referral link. You need 2 referred traders with active WFT trading accounts to unlock account size selection.</p>
     <label for="giveawayReferralLink">Your personal referral link</label>
     <div class="referral-link-row">
       <input id="giveawayReferralLink" type="text" readonly placeholder="Sign in to load your referral link">
       <button class="btn" id="copyGiveawayReferral" type="button">Copy Link</button>
     </div>
-    <p class="small" id="referralStatus">Sign in to display and copy your personal referral link.</p>
+    <p class="small" id="referralStatus">Sign in to display and copy your personal referral link.</p><p class="small" id="referralProgress">Active referrals: 0 / 2</p>
     <a href="dashboard.html?page=affiliate" class="small">Open Affiliate Dashboard ↗</a>
   </div>
   <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I completed all five follow tasks and the screenshots are genuine.</span></label>
   <button class="btn" id="confirmSocial">Confirm All Follow Tasks</button>
-  <p class="small" id="proofStatus">Submit proof for all five platforms to unlock giveaway size selection.</p>
+  <p class="small" id="proofStatus">Complete all 5 follow proofs and refer 2 active traders to unlock Step 3.</p>
   <div class="status" id="entryStatus"></div>
   <div class="fee hidden" id="walletNextStep">
     <h3 class="gold">Your Giveaway Wallet Credit is Ready</h3>
@@ -89,7 +89,7 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
   </div>
 </section>
 <section class="card hidden" id="paymentPanel">
-  <h2>4. Pay Activation Fee</h2>
+  <h2>Step 4. Submit Activation Fee Payment</h2>
   <p>Selected account: <strong id="chosenSize" class="gold"></strong> · Fee: <strong id="chosenFee" class="gold"></strong></p>
   <label for="network">Payment Network</label>
   <select id="network"><option value="BEP20">USDT BEP20</option><option value="TRC20">USDT TRC20</option></select>
@@ -114,7 +114,7 @@ function renderEntry(){
  $("entryCreate").classList.add("hidden");$("entryPanel").classList.remove("hidden");
  $("chosenSize").textContent="$"+Number(entry.account_size).toLocaleString();
  $("chosenFee").textContent=money(entry.activation_fee);
- $("entryStatus").textContent="Entry: "+entry.entry_status+" · Referrals recorded: "+entry.referral_count+"/3 · Payment: "+entry.payment_status;
+ $("entryStatus").textContent="Entry: "+entry.entry_status+" · Referrals recorded: "+entry.referral_count+"/2 · Payment: "+entry.payment_status;
  $("socialConfirm").checked=!!entry.social_follow_confirmed;
  socialProofPath=entry.social_proof_path||null;socialFollowConfirmed=!!entry.social_follow_confirmed;
  $("proofStatus").textContent="Your five social follow proofs are shown above.";
@@ -157,8 +157,24 @@ async function loadSocialProofRows(){
   if(state)state.textContent=row?"Proof submitted · "+row.review_status:"Not submitted";
  });
  const count=socialProofPlatforms.filter(p=>socialProofRows.some(x=>x.platform===p)).length;
+ socialProofCount=count;
  $("proofSummary").textContent=count+" / 5 social proofs submitted.";
- if(count===5){$("referralStep").classList.remove("hidden");$("entryCreate").classList.remove("hidden");}
+ if(count===5){$("referralStep").classList.remove("hidden");} updateEligibility();
+}
+let activeReferralCount=0, socialProofCount=0;
+function updateEligibility(){
+ const ready=socialProofCount>=5 && activeReferralCount>=2 && !entry;
+ $("entryCreate").classList.toggle("hidden",!ready);
+ $("referralStep").classList.toggle("hidden",socialProofCount<5);
+ $("proofStatus").textContent=socialProofCount+"/5 follow proofs · "+activeReferralCount+"/2 active referrals. "+(ready?"Step 3 is unlocked.":"Complete both requirements to unlock Step 3.");
+}
+async function loadGiveawayReferralProgress(){
+ if(!session)return;
+ const {data,error}=await db.rpc("get_giveaway_referral_progress");
+ if(error){$("referralProgress").textContent="Could not check referral progress: "+error.message;return;}
+ activeReferralCount=Number(data?.referral_count||0);
+ $("referralProgress").textContent="Active referrals: "+activeReferralCount+" / 2"+(data?.eligible?" · Requirement completed ✓":" · Need "+Math.max(0,2-activeReferralCount)+" more active referral(s)");
+ updateEligibility();
 }
 async function submitSocialProof(platform){
  if(!session){message("createStatus","Please log in before submitting proof.","error");location.href="Login.html";return;}
@@ -194,7 +210,7 @@ async function loadGiveawayReferralLink(){
     const link=new URL("register.html",window.location.href);
     link.searchParams.set("ref",code);
     if(input)input.value=link.href;
-    if(status)status.textContent="Share this link with friends. Three active referred accounts are required.";
+    if(status)status.textContent="Share this link with friends. Two active referred accounts are required.";
     if(copy)copy.disabled=false;
   }catch(error){if(status)status.textContent="Could not load referral link: "+(error.message||"Please try again.");}
 }
@@ -234,6 +250,7 @@ async function load(){
  session=data.session;
  await loadSocialLinks();
  await loadGiveawayReferralLink();
+ await loadGiveawayReferralProgress();
  const {data:rows,error:entryError}=await db.from("giveaway_entries").select("*").eq("user_id",session.user.id).limit(1);
  if(entryError){message("createStatus","Could not load giveaway entry. Refresh the page.","error");return;}
  if(rows?.length){entry=rows[0];renderEntry();}
@@ -263,7 +280,9 @@ $("confirmSocial").addEventListener("click",async()=>{
  if(error){message("entryStatus",error.message,"error");$("confirmSocial").disabled=false;return;}
  socialFollowConfirmed=true;
  $("entryCreate").classList.remove("hidden");
- message("entryStatus","All social proofs submitted. Now complete 3 active referrals and redeem your giveaway size.","success");
+ socialProofCount=5;
+ await loadGiveawayReferralProgress();
+ message("entryStatus","Step 1 complete. Complete 2 active referrals to unlock account size selection.","success");
 });
 $("walletTerms").addEventListener("change",()=>{$("continueCheckout").disabled=!$("walletTerms").checked;});
 $("continueCheckout").addEventListener("click",()=>{if($("walletTerms").checked)location.href="challenges.html";});
