@@ -16,6 +16,11 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
 .check{display:flex;align-items:flex-start;gap:10px;background:var(--panel2);padding:12px;border-radius:10px;margin:8px 0}.check input{width:auto;margin:3px 0}
 .status{padding:12px;border-radius:10px;background:var(--panel2);margin-top:12px;white-space:pre-wrap}.success{color:var(--green)}.error{color:#fca5a5}
 .hidden{display:none!important}.small{font-size:13px;color:var(--muted);line-height:1.5}
+.referral-box{margin-top:14px;padding:17px;border:1px solid rgba(232,184,75,.28);border-radius:14px;background:linear-gradient(135deg,rgba(232,184,75,.09),rgba(20,36,58,.9))}
+.referral-link-row{display:flex;gap:9px;align-items:stretch;margin-top:10px}
+.referral-link-row input{flex:1;min-width:0;margin:0}
+.referral-link-row .btn{white-space:nowrap}
+@media(max-width:520px){.referral-link-row{flex-direction:column}.referral-link-row .btn{width:100%}}
 @media(max-width:600px){main{margin:16px auto}.card{padding:16px}}
 </style>
 </head>
@@ -59,11 +64,16 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
   <p class="small">X/Twitter is not part of this giveaway.</p>
   <p class="small">For EACH platform: tap <strong>Follow Task</strong>, follow the WFT account, then upload a screenshot with <strong>Submit Proof</strong>. JPG, PNG or WEBP · maximum 5MB each. X is not included.</p>
   <div class="status" id="proofSummary">0 / 5 social proofs submitted.</div>
-  <div class="fee" id="referralStep">
-    <h3 class="gold">Referral Task</h3>
-    <p>Invite 3 people using your WFT referral link. They must activate WFT trading accounts before you can redeem.</p>
-    <a class="btn" href="dashboard.html" style="display:inline-block">Open Dashboard — Get Referral Link</a>
-    <p class="small" id="referralStatus">Your 3 active referrals will be checked automatically.</p>
+  <div class="referral-box" id="referralStep">
+    <h3 class="gold">3. Invite Friends — Your Referral Link</h3>
+    <p>Share your personal WFT referral link. You need 3 referred traders with active WFT trading accounts to qualify.</p>
+    <label for="giveawayReferralLink">Your personal referral link</label>
+    <div class="referral-link-row">
+      <input id="giveawayReferralLink" type="text" readonly placeholder="Sign in to load your referral link">
+      <button class="btn" id="copyGiveawayReferral" type="button">Copy Link</button>
+    </div>
+    <p class="small" id="referralStatus">Sign in to display and copy your personal referral link.</p>
+    <a href="dashboard.html?page=affiliate" class="small">Open Affiliate Dashboard ↗</a>
   </div>
   <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I completed all five follow tasks and the screenshots are genuine.</span></label>
   <button class="btn" id="confirmSocial">Confirm All Follow Tasks</button>
@@ -165,6 +175,40 @@ async function submitSocialProof(platform){
  }catch(e){$("state-"+platform).textContent="Submit failed. Try again.";message("proofSummary",e.message||"Could not submit proof.","error");}
  finally{btn.disabled=false;}
 }
+async function loadGiveawayReferralLink(){
+  const input=$("giveawayReferralLink"),status=$("referralStatus"),copy=$("copyGiveawayReferral");
+  if(!session){if(input)input.value="";if(copy)copy.disabled=true;return;}
+  if(copy)copy.disabled=true;
+  try{
+    const {data,error}=await db.from("referral_profiles").select("referral_code")
+      .eq("user_id",session.user.id).maybeSingle();
+    if(error)throw error;
+    const code=data?.referral_code;
+    if(!code){
+      if(input)input.value="";
+      if(status)status.textContent="No referral code is available yet. Open Affiliate Dashboard to initialize your referral profile.";
+      return;
+    }
+    const link=new URL("register.html",window.location.href);
+    link.searchParams.set("ref",code);
+    if(input)input.value=link.href;
+    if(status)status.textContent="Share this link with friends. Three active referred accounts are required.";
+    if(copy)copy.disabled=false;
+  }catch(error){if(status)status.textContent="Could not load referral link: "+(error.message||"Please try again.");}
+}
+$("copyGiveawayReferral")?.addEventListener("click",async()=>{
+  const input=$("giveawayReferralLink");
+  if(!input?.value){message("referralStatus","Your referral link is not available. Sign in and open Affiliate Dashboard.","error");return;}
+  try{
+    await navigator.clipboard.writeText(input.value);
+    message("referralStatus","Referral link copied. Share it with your friends.","success");
+  }catch{
+    input.focus();input.select();
+    const copied=document.execCommand("copy");
+    message("referralStatus",copied?"Referral link copied. Share it with your friends.":"Select the link and copy it manually.",copied?"success":"error");
+  }
+});
+
 async function loadGiveawayStatus(){
  try{
   const {data,error}=await db.rpc("giveaway_public_status");if(error)throw error;
