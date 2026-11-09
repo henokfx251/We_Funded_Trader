@@ -850,14 +850,13 @@ tr:hover td{background:rgba(85,168,255,.035)}
   <div class="page-heading">
     <div>
       <h1>Rewards Management</h1>
-      <p>Review social task proof and manage the WFT Reward Balance program.</p>
+      <p>Review social task proofs and manage the unified WFT Wallet rewards.</p>
     </div>
     <button class="btn" onclick="loadRewardManagement()">Refresh</button>
   </div>
 
   <div class="notice">
-    Approving a valid social task automatically credits its configured reward to the customer's Reward Balance.
-    Reward Balance is checkout credit, not withdrawable cash.
+    Approving a valid task automatically credits its configured reward to the customer's Wallet Balance. Wallet credits are challenge checkout credit, not withdrawable cash.
   </div>
 
   <div class="panel">
@@ -887,7 +886,7 @@ tr:hover td{background:rgba(85,168,255,.035)}
   </div>
 
   <div class="panel">
-    <div class="panel-head"><h3>Recent Wallet Reward Credits</h3></div>
+    <div class="panel-head"><h3>Recent Wallet Credits</h3></div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Trader ID</th><th>Date</th><th>Description</th><th>Amount</th></tr></thead>
@@ -2176,6 +2175,7 @@ async function loadRewardManagement() {
         .order("sort_order", { ascending: true }),
       db.from("wallet_ledger")
         .select("user_id,amount,description,created_at")
+        .gt("amount", 0)
         .order("created_at", { ascending: false })
         .limit(100)
     ]);
@@ -2223,14 +2223,15 @@ function renderRewardManagement(signedProofs = new Map()) {
       </tr>`).join("") || '<tr><td colspan="3">No follow tasks configured.</td></tr>';
   }
 
-  const pendingCount = rewardTaskSubmissionsData.filter(row => row.status === "pending").length;
+  const isOpenReview = row => ["pending","needs_review","submitted"].includes(String(row.status || "").toLowerCase());
+  const pendingCount = rewardTaskSubmissionsData.filter(isOpenReview).length;
   const pendingBadge = $("rewardPendingCount");
   if (pendingBadge) pendingBadge.textContent = pendingCount + " Pending";
 
   if (taskBody) {
     const reviewQueue = [...rewardTaskSubmissionsData].sort((a, b) => {
-      if (a.status === "pending" && b.status !== "pending") return -1;
-      if (a.status !== "pending" && b.status === "pending") return 1;
+      if (isOpenReview(a) && !isOpenReview(b)) return -1;
+      if (!isOpenReview(a) && isOpenReview(b)) return 1;
       return new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0);
     });
     taskBody.innerHTML = reviewQueue.length
@@ -2250,7 +2251,7 @@ function renderRewardManagement(signedProofs = new Map()) {
               <td>${row.submitted_at ? new Date(row.submitted_at).toLocaleString() : "—"}</td>
               <td>${statusBadge(row.status)}</td>
               <td>${escapeHTML(row.admin_note || "—")}</td>
-              <td>${row.status === "pending" ? `
+              <td>${isOpenReview(row) ? `
                 <button class="btn small green" onclick="reviewRewardTask('${row.id}','approved')">Approve +${money(task?.reward_amount || 0)}</button>
                 <button class="btn small red" onclick="reviewRewardTask('${row.id}','rejected')">Reject</button>
               ` : "Reviewed"}</td>
@@ -2302,7 +2303,7 @@ async function saveRewardTaskLink(id) {
 async function reviewRewardTask(id, decision) {
   if (!["approved","rejected"].includes(decision)) return;
   const row = rewardTaskSubmissionsData.find(item => item.id === id);
-  if (!row || row.status !== "pending") {
+  if (!row || !["pending","needs_review","submitted"].includes(String(row.status || "").toLowerCase())) {
     showToast("This task has already been reviewed.");
     return;
   }
@@ -2327,7 +2328,7 @@ async function reviewRewardTask(id, decision) {
         reviewed_at: new Date().toISOString()
       })
       .eq("id", id)
-      .eq("status", "pending")
+      .in("status", ["pending","needs_review","submitted"])
       .select("id");
 
     if (error) throw error;
