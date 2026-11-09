@@ -871,6 +871,22 @@ tr:hover td{background:rgba(85,168,255,.035)}
   </div>
 
   <div class="panel">
+    <div class="panel-head"><h3>Website Tasks</h3></div>
+    <p class="small">Create tasks that customers complete on the official WFT website. Each task is shown in its own Website Tasks category and requires screenshot proof.</p>
+    <div class="form-grid">
+      <div><label for="newWebsiteTaskTitle">Task Title</label><input id="newWebsiteTaskTitle" type="text" maxlength="90" placeholder="Example: Read WFT Challenge Rules"></div>
+      <div><label for="newWebsiteTaskReward">Wallet Reward (USD)</label><input id="newWebsiteTaskReward" type="number" min="0.01" max="50" step="0.01" value="0.50"></div>
+      <div><label for="newWebsiteTaskUrl">WFT Website Link</label><input id="newWebsiteTaskUrl" type="url" placeholder="https://..."></div>
+      <div><label for="newWebsiteTaskDescription">Instructions</label><textarea id="newWebsiteTaskDescription" rows="2" maxlength="500" placeholder="Explain what the customer must complete and screenshot."></textarea></div>
+    </div>
+    <button class="btn" type="button" onclick="createWebsiteRewardTask()">Create Website Task</button>
+    <div class="table-wrap" style="margin-top:16px">
+      <table><thead><tr><th>Task</th><th>Link</th><th>Reward</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody id="websiteRewardTaskTable"><tr><td colspan="5">Loading website tasks...</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <div class="panel">
     <div class="panel-head"><h3>Submitted Reviews — Pending Approval</h3><span id="rewardPendingCount" class="status pending">0 Pending</span></div>
     <div class="table-wrap">
       <table>
@@ -2171,7 +2187,7 @@ async function loadRewardManagement() {
         .select("id,user_id,task_id,platform,proof_path,proof_url,status,admin_note,submitted_at,reviewed_at")
         .order("submitted_at", { ascending: false }),
       db.from("reward_task_catalog")
-        .select("id,task_key,title,category,platform,task_url,reward_amount")
+        .select("id,task_key,title,description,category,platform,task_url,reward_amount,is_active,sort_order,requires_proof")
         .order("sort_order", { ascending: true }),
       db.from("wallet_ledger")
         .select("user_id,amount,description,created_at")
@@ -2223,6 +2239,19 @@ function renderRewardManagement(signedProofs = new Map()) {
       </tr>`).join("") || '<tr><td colspan="3">No follow tasks configured.</td></tr>';
   }
 
+  const websiteBody = $("websiteRewardTaskTable");
+  if (websiteBody) {
+    const websiteTasks = rewardTaskCatalogData.filter(item => item.category === "website");
+    websiteBody.innerHTML = websiteTasks.length ? websiteTasks.map(item => `
+      <tr>
+        <td><strong>${escapeHTML(item.title)}</strong><br><small>${escapeHTML(item.description || "")}</small></td>
+        <td>${item.task_url ? `<a href="${escapeHTML(item.task_url)}" target="_blank" rel="noopener">Open ↗</a>` : "—"}</td>
+        <td>${money(item.reward_amount)}</td>
+        <td>${item.is_active ? '<span class="status approved">Active</span>' : '<span class="status pending">Paused</span>'}</td>
+        <td><button class="btn small" onclick="toggleWebsiteRewardTask('${item.id}',${item.is_active ? "false" : "true"})">${item.is_active ? "Pause" : "Activate"}</button></td>
+      </tr>`).join("") : '<tr><td colspan="5" class="empty">No website tasks created yet.</td></tr>';
+  }
+
   const isOpenReview = row => ["pending","needs_review","submitted"].includes(String(row.status || "").toLowerCase());
   const pendingCount = rewardTaskSubmissionsData.filter(isOpenReview).length;
   const pendingBadge = $("rewardPendingCount");
@@ -2271,6 +2300,52 @@ function renderRewardManagement(signedProofs = new Map()) {
         </tr>`).join("")
       : '<tr><td colspan="4" class="empty">No Wallet reward activity yet.</td></tr>';
   }
+}
+
+async function createWebsiteRewardTask() {
+  const title = $("newWebsiteTaskTitle")?.value.trim() || "";
+  const description = $("newWebsiteTaskDescription")?.value.trim() || "";
+  const taskUrl = $("newWebsiteTaskUrl")?.value.trim() || "";
+  const rewardAmount = Number($("newWebsiteTaskReward")?.value || 0);
+  if (!title || !description) { showToast("Enter a task title and clear instructions."); return; }
+  if (!Number.isFinite(rewardAmount) || rewardAmount <= 0 || rewardAmount > 50) { showToast("Reward must be between $0.01 and $50."); return; }
+  if (taskUrl) {
+    try { const parsed = new URL(taskUrl); if (parsed.protocol !== "https:") throw new Error(); }
+    catch { showToast("Use a valid HTTPS WFT website link."); return; }
+  }
+  try {
+    const nextOrder = Math.max(0, ...rewardTaskCatalogData.map(row => Number(row.sort_order || 0))) + 1;
+    const { error } = await db.from("reward_task_catalog").insert({
+      task_key: "website_" + Date.now(),
+      category: "website",
+      platform: "WFT Website",
+      title,
+      description,
+      reward_amount: rewardAmount,
+      task_url: taskUrl || null,
+      requires_proof: true,
+      is_active: true,
+      sort_order: nextOrder
+    });
+    if (error) throw error;
+    $("newWebsiteTaskTitle").value = "";
+    $("newWebsiteTaskDescription").value = "";
+    $("newWebsiteTaskUrl").value = "";
+    $("newWebsiteTaskReward").value = "0.50";
+    showToast("Website task created.");
+    await loadRewardManagement();
+  } catch (error) { showToast("Could not create website task: " + error.message); }
+}
+
+async function toggleWebsiteRewardTask(id, active) {
+  try {
+    const { error } = await db.from("reward_task_catalog")
+      .update({ is_active: active, updated_at: new Date().toISOString() })
+      .eq("id", id).eq("category", "website");
+    if (error) throw error;
+    showToast(active ? "Website task activated." : "Website task paused.");
+    await loadRewardManagement();
+  } catch (error) { showToast("Could not update website task: " + error.message); }
 }
 
 async function saveRewardTaskLink(id) {
