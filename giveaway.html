@@ -156,9 +156,9 @@ async function loadSocialProofRows(){
   const state=$("state-"+platform);
   if(state)state.textContent=row?"Proof submitted · "+row.review_status:"Not submitted";
  });
- const count=socialProofPlatforms.filter(p=>socialProofRows.some(x=>x.platform===p)).length;
+ const count=socialProofPlatforms.filter(p=>socialProofRows.some(x=>x.platform===p && x.review_status==="approved")).length;
  socialProofCount=count;
- $("proofSummary").textContent=count+" / 5 social proofs submitted.";
+ $("proofSummary").textContent=count+" / 5 social proofs AI-approved.";
  if(count===5){$("referralStep").classList.remove("hidden");} updateEligibility();
 }
 let activeReferralCount=0, socialProofCount=0;
