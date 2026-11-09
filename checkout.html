@@ -296,10 +296,10 @@ a:hover{text-decoration:underline}
 
 <div class="reward-credit-box">
   <label class="reward-credit-toggle" for="applyRewardBalance">
-    <input id="applyRewardBalance" type="checkbox">
-    <span>Apply my Reward Balance</span>
+    <input id="applyRewardBalance" type="checkbox" disabled>
+    <span>Legacy Reward Balance (moved to Wallet)</span>
   </label>
-  <p class="small" id="rewardBalanceInfo">Checking available Reward Balance...</p>
+  <p class="small" id="rewardBalanceInfo">New rewards are credited directly to Wallet Balance.</p>
   <label class="reward-credit-toggle" for="applyWalletBalance">
     <input id="applyWalletBalance" type="checkbox">
     <span>Use my Wallet Balance</span>
@@ -812,7 +812,7 @@ button.addEventListener("click",async()=>{
           program_code:programCode,
           platform:platform,
           coupon_code:couponCode,
-          apply_reward_balance:applyRewardBalanceInput.checked,
+          apply_reward_balance:false,
           apply_wallet_balance:applyWalletBalanceInput.checked
         }
       }
