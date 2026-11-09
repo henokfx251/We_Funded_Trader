@@ -691,7 +691,7 @@ tr:hover td{background:rgba(85,168,255,.035)}
           <p class="muted">Review each Instagram, TikTok, YouTube, Telegram and Discord screenshot submitted by participants.</p>
           <div class="table-wrap" style="margin-bottom:18px">
             <table>
-              <thead><tr><th>Trader ID</th><th>Platform</th><th>Screenshot</th><th>Status</th><th>Submitted</th></tr></thead>
+              <thead><tr><th>Trader ID</th><th>Platform</th><th>Screenshot</th><th>Status</th><th>Submitted</th><th>Admin Review</th></tr></thead>
               <tbody id="giveawaySocialProofsTable"><tr><td colspan="5" class="empty">Loading social proofs...</td></tr></tbody>
             </table>
           </div>
@@ -1157,15 +1157,38 @@ async function loadGiveawayEntries() {
 
 async function loadGiveawaySocialProofs(){
  const tbody=$("giveawaySocialProofsTable");if(!tbody)return;
- tbody.innerHTML='<tr><td colspan="5" class="empty">Loading social proofs...</td></tr>';
- const {data,error}=await db.from("giveaway_social_task_proofs").select("id,user_id,platform,proof_path,review_status,submitted_at").order("submitted_at",{ascending:false});
- if(error){tbody.innerHTML='<tr><td colspan="5" class="empty">'+escapeHTML(error.message)+'</td></tr>';return;}
- if(!data?.length){tbody.innerHTML='<tr><td colspan="5" class="empty">No individual social proofs submitted yet.</td></tr>';return;}
+ tbody.innerHTML='<tr><td colspan="6" class="empty">Loading social proofs...</td></tr>';
+ const {data,error}=await db.from("giveaway_social_task_proofs").select("id,user_id,platform,proof_path,review_status,admin_note,submitted_at").order("submitted_at",{ascending:false});
+ if(error){tbody.innerHTML='<tr><td colspan="6" class="empty">'+escapeHTML(error.message)+'</td></tr>';return;}
+ if(!data?.length){tbody.innerHTML='<tr><td colspan="6" class="empty">No individual social proofs submitted yet.</td></tr>';return;}
  const rows=await Promise.all(data.map(async row=>{
   const {data:link}=await db.storage.from("giveaway-proofs").createSignedUrl(row.proof_path,3600);
   return {...row,proof_url:link?.signedUrl||null};
  }));
- tbody.innerHTML=rows.map(row=>'<tr><td><small>'+escapeHTML(row.user_id)+'</small></td><td>'+escapeHTML(row.platform)+'</td><td>'+(row.proof_url?'<a href="'+escapeHTML(row.proof_url)+'" target="_blank" rel="noopener">View Screenshot ↗</a>':'Unavailable')+'</td><td>'+escapeHTML(row.review_status)+'</td><td>'+escapeHTML(new Date(row.submitted_at).toLocaleString())+'</td></tr>').join("");
+ tbody.innerHTML=rows.map(row=>{
+  const canReview=["submitted","pending","needs_review"].includes(row.review_status);
+  const actions=canReview
+   ? '<button class="btn btn-sm green" onclick="reviewGiveawaySocialProof(\''+escapeHTML(row.id)+'\',\'approved\')">Approve</button> <button class="btn btn-sm red" onclick="reviewGiveawaySocialProof(\''+escapeHTML(row.id)+'\',\'rejected\')">Reject</button>'
+   : '<span class="small">Reviewed</span>';
+  return '<tr><td><small>'+escapeHTML(row.user_id)+'</small></td><td>'+escapeHTML(row.platform)+'</td><td>'+(row.proof_url?'<a href="'+escapeHTML(row.proof_url)+'" target="_blank" rel="noopener">View Screenshot ↗</a>':'Unavailable')+'</td><td>'+statusBadge(row.review_status)+(row.admin_note?'<br><small>'+escapeHTML(row.admin_note)+'</small>':'')+'</td><td>'+escapeHTML(new Date(row.submitted_at).toLocaleString())+'</td><td>'+actions+'</td></tr>';
+ }).join("");
+}
+async function reviewGiveawaySocialProof(id, decision){
+ if(!["approved","rejected"].includes(decision))return;
+ const note=decision==="rejected"
+  ? prompt("Enter the reason for rejecting this screenshot:")
+  : (prompt("Optional admin note:")||"");
+ if(note===null || (decision==="rejected" && !note.trim()))return;
+ if(decision==="approved" && !confirm("Approve this social follow screenshot? This does not approve the giveaway entry or credit the wallet."))return;
+ try{
+  const {data,error}=await db.from("giveaway_social_task_proofs")
+   .update({review_status:decision,admin_note:note.trim()||null,reviewed_at:new Date().toISOString()})
+   .eq("id",id).in("review_status",["submitted","pending","needs_review"]).select("id");
+  if(error)throw error;
+  if(!data?.length){showToast("This social proof was already reviewed.");return;}
+  showToast(decision==="approved"?"Social screenshot approved.":"Social screenshot rejected.");
+  await loadGiveawaySocialProofs();
+ }catch(error){showToast("Social proof review failed: "+error.message);}
 }
 
 function renderGiveawayEntries() {
