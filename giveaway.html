@@ -128,7 +128,7 @@ async function loadGiveawayStatus(){
  try{
   const {data,error}=await db.rpc("giveaway_public_status");if(error)throw error;
   const joined=Number(data?.joined||0),remaining=Number(data?.remaining||0);
-  $("giveawayLiveStatus").textContent=data?.is_live?"GIVEAWAY IS LIVE":"GIVEAWAY FULL";
+  $("giveawayLiveStatus").textContent=data?.is_live?"GIVEAWAY IS LIVE ✓":"GIVEAWAY FULL";
   $("giveawaySlots").textContent=joined+" / 100 joined · "+remaining+" places remaining";
   $("giveawayProgressBar").style.width=Math.min(100,joined)+"%";
   if(!data?.is_live){$("createEntry").disabled=true;$("createStatus").textContent="Giveaway is full. Registration is closed.";}
@@ -180,7 +180,7 @@ $("uploadSocialProof").addEventListener("click",async()=>{
   if(upErr)throw upErr;
   const {error:saveErr}=await db.rpc("save_giveaway_social_proof",{p_path:path});
   if(saveErr)throw saveErr;
-  socialProofPath=path;socialFollowConfirmed=false;if(entry)entry.social_proof_path=path;$("socialConfirm").checked=false;$("proofStatus").textContent="Screenshot uploaded successfully.";
+  socialProofPath=path;socialFollowConfirmed=false;if(entry)entry.social_proof_path=path;$("entryCreate").classList.add("hidden");$("socialConfirm").checked=false;$("proofStatus").textContent="Screenshot uploaded successfully.";
   message("entryStatus","Screenshot uploaded. Now confirm your social follows.","success");
  }catch(e){$("proofStatus").textContent="Upload failed. Try again.";message("entryStatus",e.message,"error");$("uploadSocialProof").disabled=false;}
 });
