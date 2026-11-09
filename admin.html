@@ -827,21 +827,21 @@ tr:hover td{background:rgba(85,168,255,.035)}
         <!-- WFT AI ADMIN BOT -->
 <section class="page" id="page-ai-bot">
   <div class="page-heading">
-    <div><h1>🤖 WFT AI Admin Bot</h1><p>Automatic screenshot proof checks, reward approvals and giveaway verification.</p></div>
-    <button class="btn" onclick="loadWftAiBot()">Refresh AI</button>
+    <div><h1>🤖 WFT Proof Review Bot</h1><p>Free screenshot intake, duplicate detection and admin review.</p></div>
+    <button class="btn" onclick="loadWftAiBot()">Refresh</button>
   </div>
   <div class="notice" id="wftAiStatus">Checking AI configuration...</div>
   <div class="panel">
-    <div class="panel-head"><h3>Automatic Review Controls</h3><span id="wftAiModeBadge" class="status pending">Loading</span></div>
-    <p class="small">New reward and giveaway screenshot submissions are checked automatically. Clear, high-confidence decisions are applied; uncertain proofs remain pending. Approved reward tasks use the existing database reward-credit trigger.</p>
-    <label style="display:flex;align-items:center;gap:12px;margin:16px 0;font-weight:700"><input id="wftAiAutoEnabled" type="checkbox" onchange="saveWftAiSettings(this.checked)" style="width:20px;height:20px"> Enable automatic AI review</label>
-    <div class="grid-2"><div><small>Auto-approve confidence</small><h3 id="wftAiApproveThreshold">92%</h3></div><div><small>Auto-reject confidence</small><h3 id="wftAiRejectThreshold">95%</h3></div></div>
-    <p class="small">AI model: <strong id="wftAiModel">gpt-4.1-mini</strong>. Required server secret: <code>OPENAI_API_KEY</code> in Supabase Edge Function Secrets. Never put this key in website HTML.</p>
-    <button class="btn" onclick="processWftAiQueue()">Process Pending Queue Now</button> <span id="wftAiQueueResult" class="small"></span>
+    <div class="panel-head"><h3>Free Review Controls</h3><span id="wftAiModeBadge" class="status pending">Loading</span></div>
+    <p class="small">No paid AI API is used. New screenshots are checked for file validity and exact duplicate uploads, then queued for an administrator. All non-duplicate proofs require human review before rewards are credited.</p>
+    <label style="display:flex;align-items:center;gap:12px;margin:16px 0;font-weight:700"><input id="wftAiAutoEnabled" type="checkbox" onchange="saveWftAiSettings(this.checked)" style="width:20px;height:20px"> Enable free proof intake</label>
+    <div class="notice">Automatic vision approval: OFF. Duplicate screenshot detection: ON. Admin approval is required for reward credits.</div>
+    <p class="small">Review engine: <strong id="wftAiModel">Free Rule Check</strong>. No OpenAI API key or card required.</p>
+    <button class="btn" onclick="processWftAiQueue()">Check Pending Proofs</button> <span id="wftAiQueueResult" class="small"></span>
   </div>
   <div class="panel">
-    <div class="panel-head"><h3>AI Review Activity</h3><span id="wftAiLogCount" class="status">0 Records</span></div>
-    <div class="table-wrap"><table><thead><tr><th>Time</th><th>Type</th><th>Trader</th><th>Decision</th><th>Confidence</th><th>Reason</th></tr></thead><tbody id="wftAiLogs"><tr><td colspan="6" class="empty">Loading AI activity...</td></tr></tbody></table></div>
+    <div class="panel-head"><h3>Proof Review Activity</h3><span id="wftAiLogCount" class="status">0 Records</span></div>
+    <div class="table-wrap"><table><thead><tr><th>Time</th><th>Type</th><th>Trader</th><th>Decision</th><th>Review mode</th><th>Reason</th></tr></thead><tbody id="wftAiLogs"><tr><td colspan="6" class="empty">Loading AI activity...</td></tr></tbody></table></div>
   </div>
 </section>
 
@@ -2331,7 +2331,7 @@ async function loadWftAiBot() {
   try {
     const results = await Promise.all([
       db.from("wft_ai_admin_settings").select("*").eq("id", true).single(),
-      db.from("wft_ai_review_logs").select("id,submission_type,user_id,decision,confidence,reason,processed_at").order("processed_at", { ascending: false }).limit(50)
+      db.from("wft_ai_review_logs").select("id,submission_type,user_id,decision,confidence,reason,model,processed_at").order("processed_at", { ascending: false }).limit(50)
     ]);
     if (results[0].error) throw results[0].error;
     if (results[1].error) throw results[1].error;
@@ -2339,23 +2339,21 @@ async function loadWftAiBot() {
     const logs = results[1].data || [];
     const toggle = $("wftAiAutoEnabled");
     if (toggle) toggle.checked = !!settings.auto_enabled;
-    $("wftAiApproveThreshold").textContent = Math.round(Number(settings.approval_confidence) * 100) + "%";
-    $("wftAiRejectThreshold").textContent = Math.round(Number(settings.rejection_confidence) * 100) + "%";
-    $("wftAiModel").textContent = settings.model || "gpt-4.1-mini";
-    $("wftAiModeBadge").textContent = settings.auto_enabled ? "AUTO MODE ON" : "AUTO MODE OFF";
+    $("wftAiModel").textContent = "Free Rule Check";
+    $("wftAiModeBadge").textContent = settings.auto_enabled ? "FREE INTAKE ON" : "FREE INTAKE OFF";
     $("wftAiModeBadge").className = "status " + (settings.auto_enabled ? "approved" : "pending");
     if (status) status.textContent = settings.auto_enabled
-      ? "AI auto-review is enabled. New customer submissions will be checked automatically."
-      : "AI auto-review is OFF. Add OPENAI_API_KEY to Supabase Edge Function Secrets, then enable Auto Review here.";
+      ? "Free proof intake is enabled. Screenshots are checked for validity and duplicates, then sent to Admin Review. No paid AI API is called."
+      : "Free proof intake is paused. Enable it to receive and check new screenshot submissions.";
     $("wftAiLogCount").textContent = logs.length + " Records";
     if (body) body.innerHTML = logs.length ? logs.map(row =>
       "<tr><td>" + (row.processed_at ? new Date(row.processed_at).toLocaleString() : "—") +
       "</td><td>" + escapeHTML(row.submission_type || "—") +
       "</td><td><small>" + escapeHTML(String(row.user_id || "").slice(0,8)) +
       "</small></td><td>" + statusBadge(row.decision) +
-      "</td><td>" + Math.round(Number(row.confidence || 0) * 100) +
-      "%</td><td>" + escapeHTML(row.reason || "—") + "</td></tr>"
-    ).join("") : '<tr><td colspan="6" class="empty">No AI reviews yet.</td></tr>';
+      "</td><td>" + escapeHTML(row.model || "free-rule-check") +
+      "</td><td>" + escapeHTML(row.reason || "—") + "</td></tr>"
+    ).join("") : '<tr><td colspan="6" class="empty">No proof reviews yet.</td></tr>';
   } catch (error) {
     if (status) status.textContent = "AI dashboard could not load: " + error.message;
     if (body) body.innerHTML = '<tr><td colspan="6" class="empty">Could not load AI logs.</td></tr>';
@@ -2369,7 +2367,7 @@ async function saveWftAiSettings(enabled) {
       updated_by: currentUser.id
     }).eq("id", true);
     if (error) throw error;
-    showToast(enabled ? "WFT AI Auto Review enabled." : "WFT AI Auto Review paused.");
+    showToast(enabled ? "Free proof intake enabled." : "Free proof intake paused.");
     await loadWftAiBot();
   } catch (error) {
     showToast("Could not update AI settings: " + error.message);
@@ -2379,7 +2377,7 @@ async function saveWftAiSettings(enabled) {
 }
 async function processWftAiQueue() {
   const result = $("wftAiQueueResult");
-  if (result) result.textContent = "Scanning pending submissions...";
+  if (result) result.textContent = "Checking pending proofs...";
   try {
     const pair = await Promise.all([
       db.from("reward_task_submissions").select("id").eq("status", "pending").limit(100),
@@ -2395,7 +2393,7 @@ async function processWftAiQueue() {
       const call = await db.functions.invoke("wft-ai-admin-bot", { body: item });
       if (call.error) failed++; else sent++;
     }
-    if (result) result.textContent = "Scanned " + queue.length + " · sent " + sent + " · errors " + failed;
+    if (result) result.textContent = "Checked " + queue.length + " · processed " + sent + " · errors " + failed;
     await Promise.all([loadWftAiBot(), loadRewardManagement(), loadGiveawayEntries()]);
   } catch (error) {
     if (result) result.textContent = "Queue error: " + error.message;
