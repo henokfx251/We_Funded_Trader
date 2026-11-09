@@ -1,4 +1,4 @@
-/* WE FUNDED TRADER — Unified Design System v8
+/* WE FUNDED TRADER — Unified Design System v9
    Shared visual layer for all WFT HTML pages.
    Design-only overrides: no application logic, selectors, or Supabase behavior changed. */
 :root{
@@ -137,4 +137,120 @@ img,video,canvas,svg{max-width:100%}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+
+/* =========================================================
+   WFT DESIGN SYSTEM v9 — Midnight / Gold / Precision
+   Shared visual language. Presentation only; no app logic.
+   ========================================================= */
+:root{
+  --wft-bg:#060f1c;
+  --wft-bg-deep:#030914;
+  --wft-panel:#0d1a2b;
+  --wft-panel-2:#12243a;
+  --wft-panel-3:#192e47;
+  --wft-line:rgba(151,170,195,.17);
+  --wft-line-gold:rgba(232,184,75,.34);
+  --wft-text:#f5f7fb;
+  --wft-muted:#9aabc0;
+  --wft-gold:#e8b84b;
+  --wft-gold-2:#f5d27c;
+  --wft-blue:#6c9fcf;
+  --wft-green:#43d6a0;
+  --wft-red:#ff7185;
+  --border:var(--wft-line);
+  --line:var(--wft-line);
+  --gold:var(--wft-gold);
+  --gold2:var(--wft-gold-2);
+  --blue:var(--wft-gold);
+  --blue2:var(--wft-gold-2);
+  --text:var(--wft-text);
+  --muted:var(--wft-muted);
+}
+html{background:var(--wft-bg);scroll-padding-top:88px}
+body{
+  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;
+  background-image:
+    radial-gradient(ellipse at 12% -12%,rgba(42,91,139,.16),transparent 38%),
+    radial-gradient(ellipse at 92% 0%,rgba(232,184,75,.075),transparent 30%);
+  background-attachment:fixed;
+  letter-spacing:.005em;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+h1,h2,h3,h4,h5,h6{letter-spacing:-.025em}
+h1{font-weight:850}
+p{color:inherit}
+small,.small,.muted,.subtitle,.description{color:var(--wft-muted)}
+a{ text-underline-offset:3px }
+:where(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar){
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+:where(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.container){
+  background-color:rgba(13,26,43,.94);
+  border-color:var(--wft-line);
+  box-shadow:0 16px 42px rgba(0,0,0,.22);
+}
+:where(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card){
+  position:relative;
+}
+:where(.btn,.button,.submit,.primary-btn,.btn-primary,.button-primary,.cta-button,.buy-button,.action-primary,button.primary){
+  min-height:44px;
+  font-weight:800;
+  letter-spacing:.01em;
+}
+:where(.btn-primary,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary){
+  background:linear-gradient(125deg,#f7dc94 0%,#e8b84b 58%,#d39a2f 100%);
+  color:#111a27!important;
+  border-color:rgba(255,232,177,.45);
+}
+:where(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn){
+  background:rgba(255,255,255,.025);
+  color:var(--wft-text);
+  border:1px solid var(--wft-line);
+}
+:where(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
+  background-color:#081525;
+  min-height:44px;
+}
+:where(input,select,textarea):disabled{opacity:.62;cursor:not-allowed}
+:where(.sidebar,.side-nav,.dashboard-sidebar,.app-sidebar){
+  background:linear-gradient(180deg,#0a1728 0%,#07111f 100%);
+  border-right:1px solid var(--wft-line);
+}
+:where(.nav-btn,.nav-link,.sidebar a,.side-nav a,.dashboard-sidebar a){
+  border-radius:10px;
+}
+:where(.nav-btn.active,.nav-link.active,.sidebar a.active,.side-nav a.active,.dashboard-sidebar a.active){
+  background:linear-gradient(100deg,rgba(232,184,75,.14),rgba(232,184,75,.035));
+  color:var(--wft-gold-2)!important;
+  border-color:var(--wft-line-gold);
+}
+:where(.brand,.logo,.brand-name){letter-spacing:.035em}
+:where(.eyebrow,.section-eyebrow,.nav-label){
+  letter-spacing:.14em;
+}
+:where(.status,.badge,.pill,.status-badge,.tag){
+  border:1px solid rgba(232,184,75,.18);
+}
+:where(table){width:100%}
+:where(th){font-weight:750;letter-spacing:.025em}
+:where(tbody tr){transition:background .16s ease}
+:where(.hero,.hero-section){
+  position:relative;
+  isolation:isolate;
+}
+:where(.hero h1,.hero-title){
+  letter-spacing:-.045em;
+  line-height:1.06;
+}
+:where(img){height:auto}
+:focus-visible{outline-color:var(--wft-gold)!important}
+@media(max-width:760px){
+  body{background-attachment:scroll}
+  :where(.container,.wrap,main){max-width:100%}
+  :where(.card,.panel,.container){box-shadow:0 10px 28px rgba(0,0,0,.2)}
+  :where(.topbar,.top-bar,.dashboard-header){padding-left:15px;padding-right:15px}
 }
