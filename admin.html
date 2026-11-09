@@ -218,6 +218,124 @@ tr:last-child td{border-bottom:0}
 
 </style>
 <link rel="stylesheet" href="wft-global.css?v=10">
+<style id="wft-admin-polish">
+/* Admin-only visual refinement — keeps all Supabase and dashboard logic unchanged */
+:root{
+  --bg:#060f1c;
+  --panel:#0d1a2b;
+  --panel2:#12243a;
+  --border:rgba(151,170,195,.17);
+  --blue:#e8b84b;
+  --gold:#e8b84b;
+}
+body{
+  background:
+    radial-gradient(ellipse at 12% -12%,rgba(42,91,139,.14),transparent 38%),
+    radial-gradient(ellipse at 92% 0%,rgba(232,184,75,.07),transparent 30%),
+    #060f1c;
+  background-attachment:fixed;
+  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.sidebar{
+  background:linear-gradient(180deg,#0a1728 0%,#07111f 100%);
+  border-right-color:rgba(151,170,195,.17);
+  box-shadow:12px 0 34px rgba(0,0,0,.12);
+}
+.logo{font-weight:900;letter-spacing:.6px}
+.nav-btn{
+  min-height:45px;
+  border:1px solid transparent;
+  transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
+}
+.nav-btn:hover{
+  background:rgba(232,184,75,.075);
+  color:#f5d27c;
+  transform:translateX(2px);
+}
+.nav-btn.active{
+  background:linear-gradient(100deg,rgba(232,184,75,.16),rgba(232,184,75,.045));
+  color:#f5d27c;
+  border:1px solid rgba(232,184,75,.18);
+  border-left:3px solid #e8b84b;
+}
+.nav-btn.active .nav-icon{color:#f5d27c}
+.topbar{
+  background:rgba(7,17,31,.88);
+  border-bottom-color:rgba(151,170,195,.17);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.topbar h2{font-weight:800;letter-spacing:-.02em}
+.admin-pill{
+  border-color:rgba(67,214,160,.28);
+  background:rgba(18,57,47,.55);
+  font-weight:800;
+  letter-spacing:.45px;
+}
+.content{padding-top:30px}
+.page-heading h1{font-weight:850;letter-spacing:-.035em}
+.stat-card,.panel{
+  background:linear-gradient(145deg,rgba(15,29,48,.98),rgba(10,22,38,.98));
+  border-color:rgba(151,170,195,.17);
+  border-radius:15px;
+  box-shadow:0 14px 36px rgba(0,0,0,.17);
+}
+.stat-card{transition:border-color .18s ease,transform .18s ease}
+.stat-card:hover{
+  border-color:rgba(232,184,75,.34);
+  transform:translateY(-2px);
+}
+.stat-card .stat-value{letter-spacing:-.035em}
+.panel-head h3{font-weight:800}
+.btn{
+  min-height:40px;
+  border-radius:9px;
+  font-weight:800;
+  transition:filter .18s ease,transform .18s ease,box-shadow .18s ease;
+}
+.btn:not(.green):not(.red):not(.gray){
+  background:linear-gradient(125deg,#f7dc94 0%,#e8b84b 58%,#d39a2f 100%);
+  color:#111a27;
+  box-shadow:0 7px 20px rgba(232,184,75,.12);
+}
+.btn:hover{transform:translateY(-1px)}
+.btn.green{background:#137e65}
+.btn.red{background:#a93649}
+.btn.gray{background:#34445e}
+.field input,.field select,.field textarea,.form-group input,.form-group select,.form-group textarea,
+.toolbar input,.toolbar select{
+  background:#081525;
+  border-color:rgba(151,170,195,.22);
+  border-radius:10px;
+}
+.field input:focus,.field select:focus,.field textarea:focus,
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+  border-color:#e8b84b;
+  box-shadow:0 0 0 3px rgba(232,184,75,.12);
+}
+table{border-spacing:0}
+th{background:rgba(8,21,37,.72);color:#a9bbcf}
+td{border-bottom-color:rgba(151,170,195,.12)}
+tr:hover td{background:rgba(85,168,255,.035)}
+.empty{background:rgba(8,21,37,.72);border-color:rgba(151,170,195,.2);border-radius:11px}
+.risk-alert-panel{
+  background:linear-gradient(135deg,rgba(17,30,50,.98),rgba(10,22,38,.98));
+  border-color:rgba(232,184,75,.2);
+}
+.risk-alert-item{border-color:rgba(151,170,195,.16);background:rgba(8,21,37,.72)}
+#toast{box-shadow:0 14px 36px rgba(0,0,0,.3);border-color:rgba(232,184,75,.25)}
+@media(max-width:760px){
+  .sidebar{box-shadow:18px 0 48px rgba(0,0,0,.42)}
+  .topbar{height:68px}
+  .content{padding:18px 13px 28px}
+  .risk-alert-head{align-items:flex-start}
+  .risk-alert-time{white-space:normal}
+}
+@media(prefers-reduced-motion:reduce){
+  .nav-btn,.stat-card,.btn{transition:none}
+}
+</style>
 </head>
 
 <body>
