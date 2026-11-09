@@ -96,8 +96,7 @@ function renderEntry(){
  $("chosenFee").textContent=money(entry.activation_fee);
  $("entryStatus").textContent="Entry: "+entry.entry_status+" · Referrals recorded: "+entry.referral_count+"/3 · Payment: "+entry.payment_status;
  $("socialConfirm").checked=!!entry.social_follow_confirmed;
- $("proofStatus").textContent=entry.social_proof_path?"Screenshot uploaded. WFT Admin can review it.":"Screenshot not uploaded yet.";
- $("uploadSocialProof").disabled=!!entry.social_proof_path;
+ socialProofPath=entry.social_proof_path||null;socialFollowConfirmed=!!entry.social_follow_confirmed;
  $("proofStatus").textContent=entry.social_proof_path?"Screenshot uploaded. WFT Admin can review it.":"Screenshot not uploaded yet.";
  $("uploadSocialProof").disabled=!!entry.social_proof_path;
  if(entry.social_follow_confirmed)$("confirmSocial").disabled=true;
@@ -163,7 +162,7 @@ $("uploadSocialProof").addEventListener("click",async()=>{
   if(upErr)throw upErr;
   const {error:saveErr}=await db.rpc("save_giveaway_social_proof",{p_path:path});
   if(saveErr)throw saveErr;
-  socialProofPath=path;socialFollowConfirmed=false;$("socialConfirm").checked=false;$("proofStatus").textContent="Screenshot uploaded successfully.";
+  socialProofPath=path;socialFollowConfirmed=false;if(entry)entry.social_proof_path=path;$("socialConfirm").checked=false;$("proofStatus").textContent="Screenshot uploaded successfully.";
   message("entryStatus","Screenshot uploaded. Now confirm your social follows.","success");
  }catch(e){$("proofStatus").textContent="Upload failed. Try again.";message("entryStatus",e.message,"error");$("uploadSocialProof").disabled=false;}
 });
