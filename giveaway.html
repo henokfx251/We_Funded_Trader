@@ -24,6 +24,7 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
 <main>
 <section class="card hero">
   <p class="gold">LIMITED GIVEAWAY · MAXIMUM 100 TRADERS</p>
+  <div class="fee"><strong id="giveawayLiveStatus">Checking Giveaway status...</strong><div style="height:9px;background:#07111f;border-radius:20px;overflow:hidden;margin-top:10px"><div id="giveawayProgressBar" style="height:100%;width:0;background:var(--gold)"></div></div><p class="small" id="giveawaySlots">Loading available places...</p></div>
   <h1>Join the WFT 100 Trader Giveaway</h1>
   <p class="muted">Complete the social follow tasks, refer 3 people who activate a WFT account, then pay the one-time activation fee for your selected account size. Your confirmed activation fee is credited 100% to your WFT Wallet Balance after Admin approval.</p>
   <p><strong class="gold">Important:</strong> This is an activation fee, not a direct challenge purchase. You can use the Wallet Balance later to buy any challenge and apply a coupon at checkout.</p>
@@ -58,7 +59,7 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
     <div class="fee">Instagram</div><div class="fee">TikTok</div><div class="fee">YouTube</div><div class="fee">Telegram</div><div class="fee"><a href="https://discord.gg/eVAH7bDzFg" target="_blank" rel="noopener">Discord Community ↗</a></div>
   </div>
   <p class="small">X/Twitter is not part of this giveaway.</p>
-  <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I followed the official WFT accounts listed above.</span></label>
+  <label for="socialProof">Upload screenshots showing that you followed the WFT social accounts (JPG, PNG or WEBP, max 5MB).</label>\n  <input type="file" id="socialProof" accept="image/jpeg,image/png,image/webp">\n  <button class="btn" id="uploadSocialProof" type="button">Upload Social Follow Screenshot</button>\n  <p class="small" id="proofStatus">Screenshot not uploaded yet.</p>\n  <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I followed the official WFT accounts listed above and the screenshot is genuine.</span></label>
   <button class="btn" id="confirmSocial">Confirm Social Tasks</button>
   <p>Refer <strong class="gold">3 people with active WFT trading accounts</strong>. Referral eligibility is checked securely by WFT before the entry is created.</p>
   <div class="status" id="entryStatus"></div>
@@ -90,7 +91,7 @@ function renderEntry(){
  $("chosenSize").textContent="$"+Number(entry.account_size).toLocaleString();
  $("chosenFee").textContent=money(entry.activation_fee);
  $("entryStatus").textContent="Entry: "+entry.entry_status+" · Referrals recorded: "+entry.referral_count+"/3 · Payment: "+entry.payment_status;
- $("socialConfirm").checked=!!entry.social_follow_confirmed;
+ $("socialConfirm").checked=!!entry.social_follow_confirmed;\n $("proofStatus").textContent=entry.social_proof_path?"Screenshot uploaded. WFT Admin can review it.":"Screenshot not uploaded yet.";\n $("uploadSocialProof").disabled=!!entry.social_proof_path;
  if(entry.social_follow_confirmed)$("confirmSocial").disabled=true;
  if(entry.payment_status!=="verified"&&entry.entry_status!=="active")$("paymentPanel").classList.remove("hidden");
  else $("paymentPanel").classList.add("hidden");
@@ -121,7 +122,7 @@ $("confirmSocial").addEventListener("click",async()=>{
  $("confirmSocial").disabled=true;
  const {data,error}=await db.rpc("confirm_giveaway_social_follows");
  if(error){message("entryStatus",error.message,"error");$("confirmSocial").disabled=false;return}
- entry.social_follow_confirmed=true;renderEntry();message("entryStatus","Social follow confirmation saved. Referral and payment requirements remain.","success");
+ entry.social_follow_confirmed=true;renderEntry();message("entryStatus","Social screenshot and follow confirmation saved. Referral and payment requirements remain.","success");
 });
 $("network").addEventListener("change",()=>{
  const n=$("network").value;$("addressLabel").textContent="USDT "+n+" Address";$("receiveAddress").textContent=addresses[n];
