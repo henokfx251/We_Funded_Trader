@@ -512,14 +512,11 @@ function calculatePrice(){
   const discountPercent = couponValid ? getDiscountPercent() : 0;
   const discountAmount = basePrice * discountPercent / 100;
   const afterCoupon = Math.max(0, basePrice - discountAmount);
-  const rewardCredit = applyRewardBalanceInput.checked
-    ? Math.min(rewardBalance, afterCoupon)
-    : 0;
-  const remainingAfterReward = Math.max(0, afterCoupon - rewardCredit);
+  const rewardCredit = 0; // All approved Rewards are already included in Wallet Balance.
   const walletCredit = applyWalletBalanceInput.checked
-    ? Math.min(walletBalance, remainingAfterReward)
+    ? Math.min(walletBalance, afterCoupon)
     : 0;
-  const finalPrice = Math.max(0, remainingAfterReward - walletCredit);
+  const finalPrice = Math.max(0, afterCoupon - walletCredit);
 
   document.getElementById("discount").textContent =
     "$" + discountAmount.toFixed(2);
@@ -532,9 +529,7 @@ function calculatePrice(){
 
   const note = document.getElementById("discountNote");
   const balanceInfo = document.getElementById("rewardBalanceInfo");
-  balanceInfo.textContent = "Available Reward Balance: $" +
-    rewardBalance.toFixed(2) +
-    " · Separate from Wallet Balance.";
+  balanceInfo.textContent = "Approved Rewards are included in your Wallet Balance.";
   document.getElementById("walletBalanceInfo").textContent =
     "Available Wallet Balance: $" + walletBalance.toFixed(2) +
     " · Giveaway activation credits and other wallet funds.";
@@ -675,16 +670,7 @@ async function initialize(){
       return;
     }
 
-    const { data: rewardRows, error: rewardError } = await db
-      .from("reward_balance_ledger")
-      .select("amount")
-      .eq("user_id", session.user.id);
-
-    if(rewardError) throw rewardError;
-    rewardBalance = (rewardRows || []).reduce(
-      (sum, row) => sum + Number(row.amount || 0), 0
-    );
-    rewardBalance = Math.max(0, rewardBalance);
+    rewardBalance = 0; // Legacy Reward Balance is retired; use wallet_ledger only.
 
     const { data: walletRows, error: walletError } = await db
       .from("wallet_ledger")
@@ -899,14 +885,12 @@ button.addEventListener("click",async()=>{
       }
 
       document.getElementById("rewardBalanceInfo").textContent =
-        "Remaining Reward Balance: $" + rewardBalance.toFixed(2) +
-        " · Separate from Wallet Balance.";
+        "Approved Rewards are included in your Wallet Balance.";
       document.getElementById("walletBalanceInfo").textContent =
         "Remaining Wallet Balance: $" + walletBalance.toFixed(2);
 
       document.getElementById("discountNote").textContent =
-        serverDiscount + "% coupon discount · Reward credit $" +
-        serverRewardCredit.toFixed(2) + " · Wallet credit $" +
+        serverDiscount + "% coupon discount · Wallet credit $" +
         serverWalletCredit.toFixed(2) + " confirmed by server.";
     }
 
@@ -922,7 +906,7 @@ button.addEventListener("click",async()=>{
     if (data.pricing && Number(data.pricing.final_price) === 0) {
       paymentSection.classList.add("hidden");
       showMessage(
-        "Your Reward Balance and/or Wallet Balance covered the full challenge price. No USDT payment is required. Your order is marked paid and is ready for WFT processing.",
+        "Your Wallet Balance covered the full challenge price. No USDT payment is required. Your order is marked paid and is ready for WFT processing.",
         "success"
       );
     } else {
