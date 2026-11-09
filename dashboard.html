@@ -1652,12 +1652,12 @@ async function loadOrders() {
         safe(o.transaction_hash.slice(0, 12)) + '…' + safe(o.transaction_hash.slice(-8)) + '</span>'
       : '—';
     const verificationStatus = o.payment_verification_status === 'verified'
-      ? '<span class="status-badge success">Verified · ' + Number(o.payment_confirmations || 0) + ' confirmations</span>'
+      ? '<span class="badge paid">Verified · ' + Number(o.payment_confirmations || 0) + ' confirmations</span>'
       : o.payment_verification_status === 'pending_confirmations'
-        ? '<span class="status-badge pending">Confirming · ' + Number(o.payment_confirmations || 0) + '</span>'
+        ? '<span class="badge pending">Confirming · ' + Number(o.payment_confirmations || 0) + '</span>'
         : o.payment_verification_status === 'failed'
-          ? '<span class="status-badge danger">Verification failed</span>'
-          : '<span class="status-badge">Not verified</span>';
+          ? '<span class="badge failed">Verification failed</span>'
+          : '<span class="badge">Not verified</span>';
     return '<tr>' +
       '<td>' + safe(String(o.id).slice(0, 8)) + '</td>' +
       '<td>' + safe(o.account_size) + ' USD</td>' +
