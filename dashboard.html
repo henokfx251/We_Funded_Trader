@@ -1184,7 +1184,7 @@ hr {
 
   <div class="stats-grid reward-stats">
     <div class="stat-card balance-stat"><span>Available Wallet Balance</span><h2 id="rewardBalance">$0.00</h2><small>Available at Challenge Checkout</small></div>
-    <div class="stat-card"><span>Reward Used at Checkout</span><h2 id="rewardUsed">$0.00</h2><small>Total Wallet Balance applied to orders</small></div>
+    <div class="stat-card"><span>Wallet Used at Checkout</span><h2 id="rewardUsed">$0.00</h2><small>Total Wallet Balance applied to orders</small></div>
     <div class="stat-card"><span>Approved Tasks</span><h2 id="rewardApproved">0</h2><small>Tasks and milestones completed</small></div>
     <div class="stat-card"><span>Pending Reviews</span><h2 id="rewardPending">0</h2><small>Waiting for WFT Admin</small></div>
   </div>
@@ -1212,7 +1212,15 @@ hr {
 
   <div class="panel reward-category-panel">
     <div class="reward-heading">
-      <div><h3>③ Challenge Passed Tasks</h3><p class="muted small">Each approved challenge pass counts automatically. Higher milestones add only the remaining amount to reach the displayed total.</p></div>
+      <div><h3>③ WFT Website Tasks</h3><p class="muted small">Complete tasks published on the official WFT website and submit screenshot proof when requested.</p></div>
+      <span class="reward-rate">Website tasks</span>
+    </div>
+    <div id="rewardWebsiteTasks" class="reward-task-grid"><div class="empty">Loading website tasks...</div></div>
+  </div>
+
+  <div class="panel reward-category-panel">
+    <div class="reward-heading">
+      <div><h3>④ Challenge Passed Tasks</h3><p class="muted small">Each approved challenge pass counts automatically. Higher milestones add only the remaining amount to reach the displayed total.</p></div>
       <span class="reward-rate">$1 per pass</span>
     </div>
     <div id="rewardPassedTasks" class="reward-task-grid"><div class="empty">Loading passed milestones...</div></div>
@@ -1220,7 +1228,7 @@ hr {
 
   <div class="panel reward-category-panel">
     <div class="reward-heading">
-      <div><h3>④ Buy Challenges Tasks</h3><p class="muted small">Verified paid challenge purchases count automatically. Rewards increase with each purchase milestone.</p></div>
+      <div><h3>⑤ Buy Challenges Tasks</h3><p class="muted small">Verified paid challenge purchases count automatically. Rewards increase with each purchase milestone.</p></div>
       <span class="reward-rate">$1 per purchase</span>
     </div>
     <div id="rewardBuyTasks" class="reward-task-grid"><div class="empty">Loading purchase milestones...</div></div>
@@ -1228,14 +1236,14 @@ hr {
 
   <div class="panel reward-category-panel">
     <div class="reward-heading">
-      <div><h3>⑤ Payout Tasks</h3><p class="muted small">Payout requests and successfully received payouts are tracked separately.</p></div>
+      <div><h3>⑥ Payout Tasks</h3><p class="muted small">Payout requests and successfully received payouts are tracked separately.</p></div>
       <span class="reward-rate">$1 per milestone unit</span>
     </div>
     <div id="rewardPayoutTasks" class="reward-task-grid"><div class="empty">Loading payout milestones...</div></div>
   </div>
 
   <div class="panel">
-    <h3>Reward Balance History</h3>
+    <h3>Wallet Activity</h3>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead>
@@ -1442,7 +1450,8 @@ function statusBadge(status) {
     ? "#22c55e"
     : ["rejected","failed","breached"].includes(s)
       ? "#ef4444" : "#eab308";
-  return `<span style="color:${color};font-weight:700">${safe(status || "Pending")}</span>`;
+  const label = s === "needs_review" || s === "submitted" ? "Pending Review" : (status || "Pending");
+  return `<span style="color:${color};font-weight:700">${safe(label)}</span>`;
 }
 
 function showPage(name) {
@@ -2215,7 +2224,7 @@ async function loadRewards() {
   const usedBalance = ledger.filter(row => row.entry_type === "challenge_checkout_debit" && Number(row.amount) < 0)
     .reduce((sum, row) => sum + Math.abs(Number(row.amount || 0)), 0);
   const approvedCount = submissions.filter(row => row.status === "approved").length + milestones.length;
-  const pendingCount = submissions.filter(row => row.status === "pending").length;
+  const pendingCount = submissions.filter(row => ["pending","needs_review","submitted"].includes(String(row.status || "").toLowerCase())).length;
 
   setText("rewardBalance", money(Math.max(0, balance)));
   setText("rewardUsed", money(usedBalance));
@@ -2247,13 +2256,13 @@ async function loadRewards() {
 
   const renderProofTask = task => {
     const prior = latestByTask.get(task.id);
-    const blocked = prior && (prior.status === "pending" || prior.status === "approved");
+    const blocked = prior && ["pending","needs_review","submitted","approved"].includes(String(prior.status || "").toLowerCase());
     const taskId = safe(task.id);
     const taskUrl = /^https?:\/\//i.test(task.task_url || "") ? task.task_url : "";
     const status = prior
       ? prior.status === "approved"
         ? `<span class="badge approved">Approved · ${money(task.reward_amount || 0)} credited</span>`
-        : prior.status === "pending"
+        : ["pending","needs_review","submitted"].includes(String(prior.status || "").toLowerCase())
           ? '<span class="badge pending">Pending Review</span>'
           : '<span class="badge rejected">Rejected</span>'
       : '<span class="badge">Not Started</span>';
@@ -2293,7 +2302,7 @@ async function loadRewards() {
         <div class="reward-task-top"><span class="reward-platform">${safe(task.platform || "WFT Community")}</span>${status}</div>
         <h4>${safe(task.title)}</h4>
         <p>${safe(task.description || "")}</p>
-        <div class="reward-milestone-footer"><strong>Reward Balance: ${money(task.reward_amount || 0)}</strong><span>Credited after Admin approval</span></div>
+        <div class="reward-milestone-footer"><strong>Wallet Credit: ${money(task.reward_amount || 0)}</strong><span>Credited after Admin approval</span></div>
         <div class="reward-task-actions">${openLink}</div>
         ${rejection}
         ${form}
@@ -2302,12 +2311,15 @@ async function loadRewards() {
 
   const followTasks = tasks.filter(task => task.category === "follow");
   const postedTasks = tasks.filter(task => task.category === "posted");
+  const websiteTasks = tasks.filter(task => task.category === "website");
   const wftTasks = tasks.filter(task => task.category === "wft");
 
   setHTML("rewardFollowTasks", followTasks.map(renderProofTask).join("") ||
     '<div class="empty">No follow tasks are available right now.</div>');
   setHTML("rewardPostedTasks", postedTasks.map(renderProofTask).join("") ||
     '<div class="empty">No social posting tasks are available right now.</div>');
+  setHTML("rewardWebsiteTasks", websiteTasks.map(renderProofTask).join("") ||
+    '<div class="empty">No website tasks are available right now.</div>');
 
   const milestoneByTask = new Map(milestones.map(row => [row.task_key, row]));
   const renderMilestone = task => {
@@ -2332,7 +2344,7 @@ async function loadRewards() {
         <div class="reward-progress"><span style="width:${progress}%"></span></div>
         <div class="reward-milestone-footer">
           <strong>Reward: ${money(task.reward_amount || 0)}</strong>
-          <span>Reward Balance: ${done ? "Credited " + money(creditedAmount) : "+" + money(nextCredit) + " when reached"}</span>
+          <span>Wallet Credit: ${done ? "Credited " + money(creditedAmount) : "+" + money(nextCredit) + " when reached"}</span>
         </div>
       </article>`;
   };
@@ -2352,7 +2364,7 @@ async function loadRewards() {
     <tr><td>${date(row.created_at)}</td>
     <td>${safe(row.description || row.entry_type)}</td>
     <td class="${Number(row.amount) >= 0 ? "positive-value" : "negative-value"}">${Number(row.amount) > 0 ? "+" : ""}${money(row.amount)}</td></tr>
-  `).join("") || emptyRow(3, "No Reward Balance activity yet."));
+  `).join("") || emptyRow(3, "No Wallet activity yet."));
 
   setHTML("rewardSubmissions", submissions.map(row => {
     const task = tasks.find(item => item.id === row.task_id);
@@ -2381,8 +2393,8 @@ window.submitRewardTask = async function(taskId, category) {
   const proofUrl = urlInput?.value.trim() || null;
   let uploadedPath = null;
 
-  if (category === "follow" && !file) {
-    toast("Upload a screenshot showing that you followed or joined WFT.", true);
+  if ((category === "follow" || category === "website") && !file) {
+    toast(category === "website" ? "Upload a screenshot showing the completed WFT website task." : "Upload a screenshot showing that you followed or joined WFT.", true);
     return;
   }
   if (category === "posted" && !file && !proofUrl) {
@@ -2418,10 +2430,14 @@ window.submitRewardTask = async function(taskId, category) {
       if (uploadError) throw uploadError;
     }
 
+    const { data: taskInfo, error: taskInfoError } = await supabase
+      .from("reward_task_catalog").select("platform").eq("id", taskId).single();
+    if (taskInfoError) throw taskInfoError;
+
     const { data: submission, error } = await supabase.from("reward_task_submissions").insert({
       user_id: currentUser.id,
       task_id: taskId,
-      platform: platformInput?.value || null,
+      platform: platformInput?.value || taskInfo?.platform || (category === "website" ? "WFT Website" : null),
       proof_path: uploadedPath,
       proof_url: proofUrl,
       status: "pending"
@@ -2435,13 +2451,9 @@ window.submitRewardTask = async function(taskId, category) {
       body: { submission_id: submission.id, submission_type: "reward_task" }
     });
     if (aiReview.error) {
-      toast("Proof submitted. AI review is queued until AI auto-review is configured.");
-    } else if (aiReview.data?.decision === "approved") {
-      toast("AI approved your task. Reward Wallet credited.");
-    } else if (aiReview.data?.decision === "rejected") {
-      toast("AI reviewed your proof. Check the task status for details.", true);
+      toast("Proof submitted successfully. It is waiting for WFT Admin review.");
     } else {
-      toast("Proof submitted. AI review is pending further verification.");
+      toast("Proof submitted successfully. WFT Admin will review it; Wallet credit is added only after approval.");
     }
     await loadRewards();
   } catch (err) {
