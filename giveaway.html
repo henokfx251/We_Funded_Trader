@@ -188,7 +188,13 @@ async function submitSocialProof(platform){
   if(upErr)throw upErr;
   const {error:saveErr}=await db.rpc("submit_giveaway_social_task_proof",{p_platform:platform,p_path:path});
   if(saveErr)throw saveErr;
-  $("state-"+platform).textContent="Proof submitted · awaiting review";
+  const {data:proofRow}=await db.from("giveaway_social_task_proofs").select("id").eq("user_id",session.user.id).eq("platform",platform).eq("proof_path",path).maybeSingle();
+  if(proofRow?.id){
+   const aiReview=await db.functions.invoke("wft-ai-admin-bot",{body:{submission_id:proofRow.id,submission_type:"giveaway_social"}});
+   $("state-"+platform).textContent=aiReview.error?"Proof submitted · AI review waiting for configuration":(aiReview.data?.decision==="approved"?"AI approved · proof verified":aiReview.data?.decision==="rejected"?"AI rejected · please review your proof":"AI review pending further verification");
+  }else{
+   $("state-"+platform).textContent="Proof submitted · AI review queued";
+  }
   await loadSocialProofRows();
  }catch(e){$("state-"+platform).textContent="Submit failed. Try again.";message("proofSummary",e.message||"Could not submit proof.","error");}
  finally{btn.disabled=false;}
