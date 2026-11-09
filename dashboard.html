@@ -931,7 +931,7 @@ hr {
         <thead>
           <tr>
             <th>Order</th><th>Account Size</th><th>Type</th><th>Trading Platform</th>
-            <th>Price</th><th>Payment Status</th><th>Network</th><th>Transaction ID</th><th>Date</th>
+            <th>Price</th><th>Payment Status</th><th>Verification</th><th>Network</th><th>Transaction ID</th><th>Date</th>
           </tr>
         </thead>
         <tbody id="ordersTable">
@@ -1651,6 +1651,13 @@ async function loadOrders() {
       ? '<span title="' + safe(o.transaction_hash) + '">' +
         safe(o.transaction_hash.slice(0, 12)) + '…' + safe(o.transaction_hash.slice(-8)) + '</span>'
       : '—';
+    const verificationStatus = o.payment_verification_status === 'verified'
+      ? '<span class="status-badge success">Verified · ' + Number(o.payment_confirmations || 0) + ' confirmations</span>'
+      : o.payment_verification_status === 'pending_confirmations'
+        ? '<span class="status-badge pending">Confirming · ' + Number(o.payment_confirmations || 0) + '</span>'
+        : o.payment_verification_status === 'failed'
+          ? '<span class="status-badge danger">Verification failed</span>'
+          : '<span class="status-badge">Not verified</span>';
     return '<tr>' +
       '<td>' + safe(String(o.id).slice(0, 8)) + '</td>' +
       '<td>' + safe(o.account_size) + ' USD</td>' +
@@ -1658,13 +1665,14 @@ async function loadOrders() {
       '<td>WFT TradingView</td>' +
       '<td>' + money(o.final_price) + '</td>' +
       '<td>' + statusBadge(displayStatus) + '</td>' +
+      '<td>' + verificationStatus + '</td>' +
       '<td>' + safe(o.payment_network || '—') + '</td>' +
       '<td>' + tx + '</td>' +
       '<td>' + date(o.payment_submitted_at || o.created_at) + '</td>' +
       '</tr>';
   }).join('');
 
-  setHTML('ordersTable', rows || emptyRow(9, 'No orders found.'));
+  setHTML('ordersTable', rows || emptyRow(10, 'No orders found.'));
   const overviewRows = orders.slice(0, 5).map(o => {
     const submitted = o.status === 'pending' && o.transaction_hash && o.payment_network;
     return '<tr><td>' + safe(o.account_size) + ' USD</td>' +
