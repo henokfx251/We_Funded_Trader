@@ -284,3 +284,25 @@ h1,h2,h3,h4,h5,h6,
 small,.small,.muted,.subtext,.subtitle,.helper-text,.description,.small-text,.text-muted{
   color:var(--wft-muted);
 }
+
+
+/* WFT SITE-WIDE FINISH — aligned with the Challenges page */
+:root{
+  --bg:#07111f;--panel:#101d30;--panel2:#14243a;
+  --gold:#e8b84b;--gold2:#f5d27c;--text:#f4f7fb;
+  --muted:#9aabc0;--line:#26374d;
+}
+html,body{background-color:#07111f;color:#f4f7fb}
+body{font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;line-height:1.65}
+body :where(p,li,td,th,label,span,div){text-decoration-color:rgba(232,184,75,.35)}
+body :where(h1,h2,h3,h4,h5,h6){color:#f4f7fb}
+body :where(.gold,.highlight,.eyebrow,.section-kicker,.brand span,.logo span,.price,.starting,.amount,.total-price){color:#f5d27c!important}
+body :where(.muted,.small,.sub,.subtitle,.description,.helper-text,small){color:#9aabc0}
+body :where(a:not(.btn):not(.button):not(.nav-link):not(.sidebar a)){color:#f5d27c}
+body :where(.card,.panel,.box,.section,.content-card,.info-card,.form-card,.table-card,.stat,.rule,.program){border-color:rgba(148,163,184,.2)}
+body :where(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background:#081525;color:#f4f7fb;border:1px solid #34465d}
+body :where(input,select,textarea)::placeholder{color:#91a1b5}
+body :where(button.primary,.primary-btn,.btn-primary,.button-primary,.submit,.cta-button,.buy-button){background:linear-gradient(120deg,#f5d27c,#e8b84b)!important;color:#142033!important;border:1px solid #ffe2a1!important;box-shadow:0 8px 22px rgba(219,166,75,.18)}
+body :where(button.primary,.primary-btn,.btn-primary,.button-primary,.submit,.cta-button,.buy-button):hover{filter:brightness(1.06);transform:translateY(-1px)}
+body :where(.active,.selected,.program.active,.size-btn.active){border-color:#e8b84b}
+@media(max-width:650px){body{font-size:14px}main{width:100%;padding-left:14px;padding-right:14px}}
