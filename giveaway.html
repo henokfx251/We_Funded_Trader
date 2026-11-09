@@ -65,6 +65,12 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
   <button class="btn" id="confirmSocial">Confirm Social Tasks</button>
   <p>After submitting your screenshot, refer <strong class="gold">3 people with active WFT trading accounts</strong>. WFT checks referrals before you can redeem a giveaway size.</p>
   <div class="status" id="entryStatus"></div>
+  <div class="fee hidden" id="walletNextStep">
+    <h3 class="gold">Your Giveaway Wallet Credit is Ready</h3>
+    <p class="small">After Admin approval, your full activation fee is added to Wallet Balance. Rewards are also credited to this same Wallet Balance. You can use it to buy any WFT Challenge, and an eligible coupon discount can still be applied at checkout. The wallet credit is not a direct challenge purchase or a cash withdrawal.</p>
+    <label class="check"><input type="checkbox" id="walletTerms"><span>I understand how my Wallet Balance works and want to continue to Challenge Checkout.</span></label>
+    <button class="btn" id="continueCheckout" type="button" disabled>Continue to Challenge Checkout</button>
+  </div>
 </section>
 <section class="card hidden" id="paymentPanel">
   <h2>4. Pay Activation Fee</h2>
@@ -101,7 +107,10 @@ function renderEntry(){
  if(entry.payment_status!=="verified"&&entry.entry_status!=="active")$("paymentPanel").classList.remove("hidden");
  else $("paymentPanel").classList.add("hidden");
  if(entry.payment_status==="verified"&&entry.entry_status!=="active")message("entryStatus","Payment verified. Waiting for Admin approval. Your full activation fee will be credited to Wallet after approval.","success");
- if(entry.entry_status==="active")message("entryStatus","Giveaway entry approved. Activation fee credited to Wallet Balance: "+money(entry.activation_fee)+".","success");
+ if(entry.entry_status==="active"){
+  message("entryStatus","Giveaway entry approved. Activation fee credited to Wallet Balance: "+money(entry.activation_fee)+".","success");
+  $("walletNextStep").classList.remove("hidden");
+ }
  if(entry.payment_verification_message)message("entryStatus",entry.payment_verification_message);
 }
 async function loadSocialLinks(){
@@ -183,6 +192,8 @@ $("confirmSocial").addEventListener("click",async()=>{
  if(error){message("entryStatus",error.message,"error");$("confirmSocial").disabled=false;return}
  socialFollowConfirmed=true;$("entryCreate").classList.remove("hidden");message("entryStatus","Social screenshot confirmed. Now complete 3 active referrals and redeem your giveaway size.","success");
 });
+$("walletTerms").addEventListener("change",()=>{$("continueCheckout").disabled=!$("walletTerms").checked;});
+$("continueCheckout").addEventListener("click",()=>{if($("walletTerms").checked)location.href="challenges.html";});
 $("network").addEventListener("change",()=>{
  const n=$("network").value;$("addressLabel").textContent="USDT "+n+" Address";$("receiveAddress").textContent=addresses[n];
  $("txHash").placeholder=n==="BEP20"?"Paste BEP20 transaction hash":"Paste TRC20 transaction hash";
