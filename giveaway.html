@@ -55,9 +55,7 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
 <section class="card hidden" id="entryPanel">
   <h2>1–2. Social Follow & Referral Requirements</h2>
   <p>Follow the official WE FUNDED TRADER accounts on:</p>
-  <div class="grid">
-    <div class="fee">Instagram</div><div class="fee">TikTok</div><div class="fee">YouTube</div><div class="fee">Telegram</div><div class="fee"><a href="https://discord.gg/eVAH7bDzFg" target="_blank" rel="noopener">Discord Community ↗</a></div>
-  </div>
+  <div class="grid" id="socialLinksGrid"><div class="fee">Loading official social links...</div></div>
   <p class="small">X/Twitter is not part of this giveaway.</p>
   <label for="socialProof">Upload screenshots showing that you followed the WFT social accounts (JPG, PNG or WEBP, max 5MB).</label>
   <input type="file" id="socialProof" accept="image/jpeg,image/png,image/webp">
@@ -106,6 +104,17 @@ function renderEntry(){
  if(entry.entry_status==="active")message("entryStatus","Giveaway entry approved. Activation fee credited to Wallet Balance: "+money(entry.activation_fee)+".","success");
  if(entry.payment_verification_message)message("entryStatus",entry.payment_verification_message);
 }
+async function loadSocialLinks(){
+ const grid=$("socialLinksGrid");if(!grid)return;
+ const {data,error}=await db.from("reward_task_catalog").select("title,platform,task_url").eq("category","follow").eq("is_active",true).order("sort_order",{ascending:true});
+ const rows=data||[];
+ const labels=["Instagram","TikTok","YouTube","Telegram","Discord"];
+ const seen=new Set();
+ const items=rows.map(row=>({label:row.platform||row.title,url:row.task_url})).filter(row=>row.label&&labels.some(x=>row.label.toLowerCase().includes(x.toLowerCase()))).filter(row=>{const k=row.label.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
+ if(!items.some(x=>x.label.toLowerCase().includes("discord")))items.push({label:"Discord",url:"https://discord.gg/eVAH7bDzFg"});
+ grid.innerHTML=items.length?items.map(item=>{let url="";try{const u=new URL(item.url||"");if(u.protocol==="https:")url=u.href;}catch{}return '<div class="fee">'+(url?'<a href="'+url+'" target="_blank" rel="noopener">'+item.label+' ↗</a>':item.label+'<p class="small">Official link will be added soon.</p>')+'</div>';}).join(""):'<div class="fee">Official social links will be added soon.</div>';
+ if(error)grid.insertAdjacentHTML("beforeend",'<p class="small">Some official links are not configured yet.</p>');
+}
 async function loadGiveawayStatus(){
  try{
   const {data,error}=await db.rpc("giveaway_public_status");if(error)throw error;
@@ -117,7 +126,7 @@ async function loadGiveawayStatus(){
  }catch(e){$("giveawaySlots").textContent="Could not load live capacity.";}
 }
 async function load(){
- loadGiveawayStatus();
+ loadGiveawayStatus();loadSocialLinks();
  const {data,error}=await db.auth.getSession();
  if(error||!data.session){$("createEntry").disabled=true;message("createStatus","Please sign in to join the giveaway.","error");return}
  session=data.session;
