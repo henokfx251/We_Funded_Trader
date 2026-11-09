@@ -285,8 +285,8 @@ a:hover{text-decoration:underline}
   <strong id="discount" class="discount-highlight">$0.00</strong>
 </div>
 
-<div class="item">
-  <span>Reward Balance Applied</span>
+<div class="item" style="display:none">
+  <span>Legacy Reward Balance</span>
   <strong id="rewardCredit" class="discount-highlight">$0.00</strong>
 </div>
 <div class="item">
@@ -295,11 +295,11 @@ a:hover{text-decoration:underline}
 </div>
 
 <div class="reward-credit-box">
-  <label class="reward-credit-toggle" for="applyRewardBalance">
+  <div hidden>
     <input id="applyRewardBalance" type="checkbox" disabled>
-    <span>Legacy Reward Balance (moved to Wallet)</span>
-  </label>
-  <p class="small" id="rewardBalanceInfo">New rewards are credited directly to Wallet Balance.</p>
+    <p id="rewardBalanceInfo">Reward credits are included in Wallet Balance.</p>
+  </div>
+  <p class="small">Giveaway activation credits and approved Rewards are combined in your Wallet Balance. Coupon discount is calculated first, then Wallet Balance is applied to the remaining challenge price.</p>
   <label class="reward-credit-toggle" for="applyWalletBalance">
     <input id="applyWalletBalance" type="checkbox">
     <span>Use my Wallet Balance</span>
