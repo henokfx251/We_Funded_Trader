@@ -52,18 +52,22 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
   <p class="small">Already have a WFT account? <a href="Login.html">Log in here</a>. New traders can <a href="register.html">create an account</a> first.</p>
   <div class="status" id="createStatus">Sign in to join the giveaway.</div>
 </section>
-<section class="card hidden" id="entryPanel">
+<section class="card" id="entryPanel">
   <h2>1–2. Social Follow & Referral Requirements</h2>
   <p>Follow the official WE FUNDED TRADER accounts on:</p>
   <div class="grid" id="socialLinksGrid"><div class="fee">Loading official social links...</div></div>
   <p class="small">X/Twitter is not part of this giveaway.</p>
-  <label for="socialProof">Upload screenshots showing that you followed the WFT social accounts (JPG, PNG or WEBP, max 5MB).</label>
-  <input type="file" id="socialProof" accept="image/jpeg,image/png,image/webp">
-  <button class="btn" id="uploadSocialProof" type="button">Upload Social Follow Screenshot</button>
-  <p class="small" id="proofStatus">Screenshot not uploaded yet.</p>
-  <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I followed the official WFT accounts listed above and the screenshot is genuine.</span></label>
-  <button class="btn" id="confirmSocial">Confirm Social Tasks</button>
-  <p>After submitting your screenshot, refer <strong class="gold">3 people with active WFT trading accounts</strong>. WFT checks referrals before you can redeem a giveaway size. <a href="dashboard.html">Open your Dashboard to access your Referral link ↗</a></p>
+  <p class="small">For EACH platform: tap <strong>Follow Task</strong>, follow the WFT account, then upload a screenshot with <strong>Submit Proof</strong>. JPG, PNG or WEBP · maximum 5MB each. X is not included.</p>
+  <div class="status" id="proofSummary">0 / 5 social proofs submitted.</div>
+  <div class="fee" id="referralStep">
+    <h3 class="gold">Referral Task</h3>
+    <p>Invite 3 people using your WFT referral link. They must activate WFT trading accounts before you can redeem.</p>
+    <a class="btn" href="dashboard.html" style="display:inline-block">Open Dashboard — Get Referral Link</a>
+    <p class="small" id="referralStatus">Your 3 active referrals will be checked automatically.</p>
+  </div>
+  <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I completed all five follow tasks and the screenshots are genuine.</span></label>
+  <button class="btn" id="confirmSocial">Confirm All Follow Tasks</button>
+  <p class="small" id="proofStatus">Submit proof for all five platforms to unlock giveaway size selection.</p>
   <div class="status" id="entryStatus"></div>
   <div class="fee hidden" id="walletNextStep">
     <h3 class="gold">Your Giveaway Wallet Credit is Ready</h3>
@@ -113,16 +117,54 @@ function renderEntry(){
  }
  if(entry.payment_verification_message)message("entryStatus",entry.payment_verification_message);
 }
+const socialProofPlatforms=["instagram","tiktok","youtube","telegram","discord"];
+let socialProofRows=[];
+function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 async function loadSocialLinks(){
  const grid=$("socialLinksGrid");if(!grid)return;
  const {data,error}=await db.from("reward_task_catalog").select("title,platform,task_url").eq("category","follow").eq("is_active",true).order("sort_order",{ascending:true});
- const rows=data||[];
- const labels=["Instagram","TikTok","YouTube","Telegram","Discord"];
- const seen=new Set();
- const items=rows.map(row=>({label:row.platform||row.title,url:row.task_url})).filter(row=>row.label&&labels.some(x=>row.label.toLowerCase().includes(x.toLowerCase()))).filter(row=>{const k=row.label.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
- if(!items.some(x=>x.label.toLowerCase().includes("discord")))items.push({label:"Discord",url:"https://discord.gg/eVAH7bDzFg"});
- grid.innerHTML=items.length?items.map(item=>{let url="";try{const u=new URL(item.url||"");if(u.protocol==="https:")url=u.href;}catch{}const label=String(item.label).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));return '<div class="fee">'+(url?'<a href="'+url+'" target="_blank" rel="noopener">'+label+' ↗</a>':label+'<p class="small">Official link will be added soon.</p>')+'</div>';}).join(""):'<div class="fee">Official social links will be added soon.</div>';
- if(error)grid.insertAdjacentHTML("beforeend",'<p class="small">Some official links are not configured yet.</p>');
+ const labels=["instagram","tiktok","youtube","telegram","discord"];
+ const rows=(data||[]).filter(r=>labels.includes(String(r.platform||"").toLowerCase()));
+ const links={};rows.forEach(r=>links[String(r.platform).toLowerCase()]=r.task_url);
+ if(!links.discord)links.discord="https://discord.gg/eVAH7bDzFg";
+ const titles={instagram:"Instagram",tiktok:"TikTok",youtube:"YouTube",telegram:"Telegram",discord:"Discord"};
+ grid.innerHTML=socialProofPlatforms.map(platform=>{
+  const url=links[platform]&&String(links[platform]).startsWith("https://")?links[platform]:"";
+  return '<div class="fee" data-platform="'+platform+'"><h3>'+titles[platform]+'</h3><a class="btn" style="display:inline-block" href="'+escapeHTML(url||"#")+'" '+(url?'target="_blank" rel="noopener"':'aria-disabled="true"')+'>Follow Task ↗</a><label for="proof-'+platform+'">Upload follow screenshot</label><input type="file" id="proof-'+platform+'" accept="image/jpeg,image/png,image/webp"><button class="btn submit-proof" type="button" data-platform="'+platform+'">Submit Proof</button><p class="small proof-state" id="state-'+platform+'">Not submitted</p></div>';
+ }).join("");
+ if(error)grid.insertAdjacentHTML("beforeend",'<p class="small">Could not load all task links. Please refresh.</p>');
+ grid.querySelectorAll(".submit-proof").forEach(btn=>btn.addEventListener("click",()=>submitSocialProof(btn.dataset.platform)));
+ if(session)await loadSocialProofRows();
+}
+async function loadSocialProofRows(){
+ const {data,error}=await db.from("giveaway_social_task_proofs").select("platform,proof_path,review_status,submitted_at").eq("user_id",session.user.id);
+ if(error){message("proofSummary","Could not load submitted proofs: "+error.message,"error");return;}
+ socialProofRows=data||[];
+ socialProofPlatforms.forEach(platform=>{
+  const row=socialProofRows.find(x=>x.platform===platform);
+  const state=$("state-"+platform);
+  if(state)state.textContent=row?"Proof submitted · "+row.review_status:"Not submitted";
+ });
+ const count=socialProofPlatforms.filter(p=>socialProofRows.some(x=>x.platform===p)).length;
+ $("proofSummary").textContent=count+" / 5 social proofs submitted.";
+ if(count===5){$("referralStep").classList.remove("hidden");$("entryCreate").classList.remove("hidden");}
+}
+async function submitSocialProof(platform){
+ if(!session){message("createStatus","Please log in before submitting proof.","error");location.href="Login.html";return;}
+ const input=$("proof-"+platform),file=input?.files?.[0],btn=document.querySelector('.submit-proof[data-platform="'+platform+'"]');
+ if(!file){message("proofSummary","Choose the "+platform+" screenshot first.","error");return;}
+ if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>5*1024*1024){message("proofSummary","Use JPG, PNG or WEBP under 5MB.","error");return;}
+ btn.disabled=true;$("state-"+platform).textContent="Uploading...";
+ try{
+  const path=session.user.id+"/"+platform+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^A-Za-z0-9._-]/g,"_");
+  const {error:upErr}=await db.storage.from("giveaway-proofs").upload(path,file,{contentType:file.type,upsert:false});
+  if(upErr)throw upErr;
+  const {error:saveErr}=await db.rpc("submit_giveaway_social_task_proof",{p_platform:platform,p_path:path});
+  if(saveErr)throw saveErr;
+  $("state-"+platform).textContent="Proof submitted · awaiting review";
+  await loadSocialProofRows();
+ }catch(e){$("state-"+platform).textContent="Submit failed. Try again.";message("proofSummary",e.message||"Could not submit proof.","error");}
+ finally{btn.disabled=false;}
 }
 async function loadGiveawayStatus(){
  try{
@@ -135,27 +177,24 @@ async function loadGiveawayStatus(){
  }catch(e){$("giveawaySlots").textContent="Could not load live capacity.";}
 }
 async function load(){
- loadGiveawayStatus();loadSocialLinks();
+ $("entryPanel").classList.remove("hidden");
+ loadGiveawayStatus();
  const {data,error}=await db.auth.getSession();
- if(error||!data.session){$("createEntry").disabled=true;message("createStatus","Please sign in to join the giveaway.","error");return}
+ if(error||!data.session){
+  $("createEntry").disabled=true;
+  message("createStatus","Please sign in to submit screenshots, use your referral link and redeem your giveaway size.","error");
+  await loadSocialLinks();
+  return;
+ }
  session=data.session;
+ await loadSocialLinks();
  const {data:rows,error:entryError}=await db.from("giveaway_entries").select("*").eq("user_id",session.user.id).limit(1);
- if(entryError){message("createStatus","Could not load giveaway entry. Refresh the page.","error");return}
+ if(entryError){message("createStatus","Could not load giveaway entry. Refresh the page.","error");return;}
  if(rows?.length){entry=rows[0];renderEntry();}
- else {
-  $("entryPanel").classList.remove("hidden");
+ else{
   $("entryCreate").classList.add("hidden");
-  const {data:proof}=await db.from("giveaway_social_proofs").select("social_proof_path,social_follow_confirmed").eq("user_id",session.user.id).maybeSingle();
-  if(proof){
-   socialProofPath=proof.social_proof_path;
-   socialFollowConfirmed=!!proof.social_follow_confirmed;
-   $("proofStatus").textContent="Screenshot uploaded successfully.";
-   $("socialConfirm").checked=socialFollowConfirmed;
-   if(socialFollowConfirmed){
-    $("entryCreate").classList.remove("hidden");
-    message("entryStatus","Social proof confirmed. Complete 3 active referrals, then redeem your giveaway size.","success");
-   }
-  } else message("entryStatus","Follow the WFT social accounts and upload your screenshot to begin.");
+  await loadSocialProofRows();
+  message("entryStatus","Submit all 5 social proofs, then complete 3 active referrals before redeeming your giveaway size.");
  }
 }
 $("createEntry").addEventListener("click",async()=>{
@@ -168,29 +207,17 @@ $("createEntry").addEventListener("click",async()=>{
   entry=rows?.[0]||data;renderEntry();await loadGiveawayStatus();
  }catch(e){message("createStatus",e.message||"Could not create giveaway entry.","error");$("createEntry").disabled=false;}
 });
-$("uploadSocialProof").addEventListener("click",async()=>{
- const file=$("socialProof").files?.[0];
- if(!file){message("entryStatus","Choose your social follow screenshot first.","error");return;}
- if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>5*1024*1024){message("entryStatus","Use JPG, PNG or WEBP under 5MB.","error");return;}
- 
- $("uploadSocialProof").disabled=true;$("proofStatus").textContent="Uploading screenshot...";
- try{
-  const path=session.user.id+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^A-Za-z0-9._-]/g,"_");
-  const {error:upErr}=await db.storage.from("giveaway-proofs").upload(path,file,{contentType:file.type,upsert:false});
-  if(upErr)throw upErr;
-  const {error:saveErr}=await db.rpc("save_giveaway_social_proof",{p_path:path});
-  if(saveErr)throw saveErr;
-  socialProofPath=path;socialFollowConfirmed=false;if(entry)entry.social_proof_path=path;$("entryCreate").classList.add("hidden");$("socialConfirm").checked=false;$("proofStatus").textContent="Screenshot uploaded successfully.";
-  message("entryStatus","Screenshot uploaded. Now confirm your social follows.","success");
- }catch(e){$("proofStatus").textContent="Upload failed. Try again.";message("entryStatus",e.message,"error");$("uploadSocialProof").disabled=false;}
-});
 $("confirmSocial").addEventListener("click",async()=>{
- if(!socialProofPath){message("entryStatus","Upload your social follow screenshot first.","error");return;}
- if(!$("socialConfirm").checked){message("entryStatus","Please confirm that you followed all five official WFT accounts.","error");return}
+ if(!session){location.href="Login.html";return;}
+ const count=socialProofPlatforms.filter(p=>socialProofRows.some(x=>x.platform===p)).length;
+ if(count<5){message("entryStatus","Submit screenshot proof for all 5 follow tasks first.","error");return;}
+ if(!$("socialConfirm").checked){message("entryStatus","Confirm that all follow tasks and screenshots are genuine.","error");return;}
  $("confirmSocial").disabled=true;
  const {data,error}=await db.rpc("confirm_giveaway_social_follows");
- if(error){message("entryStatus",error.message,"error");$("confirmSocial").disabled=false;return}
- socialFollowConfirmed=true;if(entry)entry.social_follow_confirmed=true;$("entryCreate").classList.remove("hidden");message("entryStatus","Social screenshot confirmed. Now complete 3 active referrals and redeem your giveaway size.","success");
+ if(error){message("entryStatus",error.message,"error");$("confirmSocial").disabled=false;return;}
+ socialFollowConfirmed=true;
+ $("entryCreate").classList.remove("hidden");
+ message("entryStatus","All social proofs submitted. Now complete 3 active referrals and redeem your giveaway size.","success");
 });
 $("walletTerms").addEventListener("change",()=>{$("continueCheckout").disabled=!$("walletTerms").checked;});
 $("continueCheckout").addEventListener("click",()=>{if($("walletTerms").checked)location.href="challenges.html";});
