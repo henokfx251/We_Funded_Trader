@@ -63,7 +63,7 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
   <p class="small" id="proofStatus">Screenshot not uploaded yet.</p>
   <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I followed the official WFT accounts listed above and the screenshot is genuine.</span></label>
   <button class="btn" id="confirmSocial">Confirm Social Tasks</button>
-  <p>After submitting your screenshot, refer <strong class="gold">3 people with active WFT trading accounts</strong>. WFT checks referrals before you can redeem a giveaway size.</p>
+  <p>After submitting your screenshot, refer <strong class="gold">3 people with active WFT trading accounts</strong>. WFT checks referrals before you can redeem a giveaway size. <a href="dashboard.html">Open your Dashboard to access your Referral link ↗</a></p>
   <div class="status" id="entryStatus"></div>
   <div class="fee hidden" id="walletNextStep">
     <h3 class="gold">Your Giveaway Wallet Credit is Ready</h3>
@@ -190,7 +190,7 @@ $("confirmSocial").addEventListener("click",async()=>{
  $("confirmSocial").disabled=true;
  const {data,error}=await db.rpc("confirm_giveaway_social_follows");
  if(error){message("entryStatus",error.message,"error");$("confirmSocial").disabled=false;return}
- socialFollowConfirmed=true;$("entryCreate").classList.remove("hidden");message("entryStatus","Social screenshot confirmed. Now complete 3 active referrals and redeem your giveaway size.","success");
+ socialFollowConfirmed=true;if(entry)entry.social_follow_confirmed=true;$("entryCreate").classList.remove("hidden");message("entryStatus","Social screenshot confirmed. Now complete 3 active referrals and redeem your giveaway size.","success");
 });
 $("walletTerms").addEventListener("change",()=>{$("continueCheckout").disabled=!$("walletTerms").checked;});
 $("continueCheckout").addEventListener("click",()=>{if($("walletTerms").checked)location.href="challenges.html";});
