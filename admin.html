@@ -3277,7 +3277,7 @@ async function loadRewardManagement() {
       db.from("reward_task_catalog")
         .select("id,task_key,title,category,platform,task_url,reward_amount")
         .order("sort_order", { ascending: true }),
-      db.from("reward_balance_ledger")
+      db.from("wallet_ledger")
         .select("user_id,amount,description,created_at")
         .order("created_at", { ascending: false })
         .limit(100)
@@ -3413,7 +3413,7 @@ async function reviewRewardTask(id, decision) {
   const task = rewardTaskCatalogData.find(item => item.id === row.task_id);
   let note = "";
   if (decision === "approved") {
-    if (!confirm("Approve this task and add " + money(task?.reward_amount || 0) + " to the customer's Reward Balance?")) return;
+    if (!confirm("Approve this task and add " + money(task?.reward_amount || 0) + " to the customer's Wallet Balance?")) return;
     note = prompt("Optional admin note:") || "";
   } else {
     note = prompt("Enter the reason for rejecting this proof:");
@@ -3440,7 +3440,7 @@ async function reviewRewardTask(id, decision) {
     }
 
     showToast(decision === "approved"
-      ? "Task approved. Reward Balance credited automatically."
+      ? "Task approved. Wallet Balance credited automatically."
       : "Task proof rejected.");
     await loadRewardManagement();
   } catch (error) {
