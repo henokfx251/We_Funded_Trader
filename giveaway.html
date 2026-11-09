@@ -59,7 +59,11 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
     <div class="fee">Instagram</div><div class="fee">TikTok</div><div class="fee">YouTube</div><div class="fee">Telegram</div><div class="fee"><a href="https://discord.gg/eVAH7bDzFg" target="_blank" rel="noopener">Discord Community ↗</a></div>
   </div>
   <p class="small">X/Twitter is not part of this giveaway.</p>
-  <label for="socialProof">Upload screenshots showing that you followed the WFT social accounts (JPG, PNG or WEBP, max 5MB).</label>\n  <input type="file" id="socialProof" accept="image/jpeg,image/png,image/webp">\n  <button class="btn" id="uploadSocialProof" type="button">Upload Social Follow Screenshot</button>\n  <p class="small" id="proofStatus">Screenshot not uploaded yet.</p>\n  <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I followed the official WFT accounts listed above and the screenshot is genuine.</span></label>
+  <label for="socialProof">Upload screenshots showing that you followed the WFT social accounts (JPG, PNG or WEBP, max 5MB).</label>
+  <input type="file" id="socialProof" accept="image/jpeg,image/png,image/webp">
+  <button class="btn" id="uploadSocialProof" type="button">Upload Social Follow Screenshot</button>
+  <p class="small" id="proofStatus">Screenshot not uploaded yet.</p>
+  <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I followed the official WFT accounts listed above and the screenshot is genuine.</span></label>
   <button class="btn" id="confirmSocial">Confirm Social Tasks</button>
   <p>Refer <strong class="gold">3 people with active WFT trading accounts</strong>. Referral eligibility is checked securely by WFT before the entry is created.</p>
   <div class="status" id="entryStatus"></div>
@@ -91,7 +95,11 @@ function renderEntry(){
  $("chosenSize").textContent="$"+Number(entry.account_size).toLocaleString();
  $("chosenFee").textContent=money(entry.activation_fee);
  $("entryStatus").textContent="Entry: "+entry.entry_status+" · Referrals recorded: "+entry.referral_count+"/3 · Payment: "+entry.payment_status;
- $("socialConfirm").checked=!!entry.social_follow_confirmed;\n $("proofStatus").textContent=entry.social_proof_path?"Screenshot uploaded. WFT Admin can review it.":"Screenshot not uploaded yet.";\n $("uploadSocialProof").disabled=!!entry.social_proof_path;
+ $("socialConfirm").checked=!!entry.social_follow_confirmed;
+ $("proofStatus").textContent=entry.social_proof_path?"Screenshot uploaded. WFT Admin can review it.":"Screenshot not uploaded yet.";
+ $("uploadSocialProof").disabled=!!entry.social_proof_path;
+ $("proofStatus").textContent=entry.social_proof_path?"Screenshot uploaded. WFT Admin can review it.":"Screenshot not uploaded yet.";
+ $("uploadSocialProof").disabled=!!entry.social_proof_path;
  if(entry.social_follow_confirmed)$("confirmSocial").disabled=true;
  if(entry.payment_status!=="verified"&&entry.entry_status!=="active")$("paymentPanel").classList.remove("hidden");
  else $("paymentPanel").classList.add("hidden");
@@ -99,7 +107,18 @@ function renderEntry(){
  if(entry.entry_status==="active")message("entryStatus","Giveaway entry approved. Activation fee credited to Wallet Balance: "+money(entry.activation_fee)+".","success");
  if(entry.payment_verification_message)message("entryStatus",entry.payment_verification_message);
 }
+async function loadGiveawayStatus(){
+ try{
+  const {data,error}=await db.rpc("giveaway_public_status");if(error)throw error;
+  const joined=Number(data?.joined||0),remaining=Number(data?.remaining||0);
+  $("giveawayLiveStatus").textContent=data?.is_live?"GIVEAWAY IS LIVE":"GIVEAWAY FULL";
+  $("giveawaySlots").textContent=joined+" / 100 joined · "+remaining+" places remaining";
+  $("giveawayProgressBar").style.width=Math.min(100,joined)+"%";
+  if(!data?.is_live){$("createEntry").disabled=true;$("createStatus").textContent="Giveaway is full. Registration is closed.";}
+ }catch(e){$("giveawaySlots").textContent="Could not load live capacity.";}
+}
 async function load(){
+ loadGiveawayStatus();
  const {data,error}=await db.auth.getSession();
  if(error||!data.session){$("createEntry").disabled=true;message("createStatus","Please sign in to join the giveaway.","error");return}
  session=data.session;
@@ -117,7 +136,24 @@ $("createEntry").addEventListener("click",async()=>{
   entry=rows?.[0]||data;renderEntry();
  }catch(e){message("createStatus",e.message||"Could not create giveaway entry.","error");$("createEntry").disabled=false;}
 });
+$("uploadSocialProof").addEventListener("click",async()=>{
+ const file=$("socialProof").files?.[0];
+ if(!file){message("entryStatus","Choose your social follow screenshot first.","error");return;}
+ if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>5*1024*1024){message("entryStatus","Use JPG, PNG or WEBP under 5MB.","error");return;}
+ if(!entry){message("entryStatus","Create your entry after meeting the referral requirement, then upload your screenshot.","error");return;}
+ $("uploadSocialProof").disabled=true;$("proofStatus").textContent="Uploading screenshot...";
+ try{
+  const path=session.user.id+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^A-Za-z0-9._-]/g,"_");
+  const {error:upErr}=await db.storage.from("giveaway-proofs").upload(path,file,{contentType:file.type,upsert:false});
+  if(upErr)throw upErr;
+  const {error:saveErr}=await db.rpc("save_giveaway_social_proof",{p_path:path});
+  if(saveErr)throw saveErr;
+  entry.social_proof_path=path;$("proofStatus").textContent="Screenshot uploaded successfully.";
+  message("entryStatus","Screenshot uploaded. Now confirm your social follows.","success");
+ }catch(e){$("proofStatus").textContent="Upload failed. Try again.";message("entryStatus",e.message,"error");$("uploadSocialProof").disabled=false;}
+});
 $("confirmSocial").addEventListener("click",async()=>{
+ if(!entry?.social_proof_path){message("entryStatus","Upload your social follow screenshot first.","error");return;}
  if(!$("socialConfirm").checked){message("entryStatus","Please confirm that you followed all five official WFT accounts.","error");return}
  $("confirmSocial").disabled=true;
  const {data,error}=await db.rpc("confirm_giveaway_social_follows");
