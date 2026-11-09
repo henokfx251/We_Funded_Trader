@@ -289,13 +289,22 @@ a:hover{text-decoration:underline}
   <span>Reward Balance Applied</span>
   <strong id="rewardCredit" class="discount-highlight">$0.00</strong>
 </div>
+<div class="item">
+  <span>Wallet Balance Applied</span>
+  <strong id="walletCredit" class="discount-highlight">$0.00</strong>
+</div>
 
 <div class="reward-credit-box">
   <label class="reward-credit-toggle" for="applyRewardBalance">
     <input id="applyRewardBalance" type="checkbox">
-    <span>Apply my Reward</span>
+    <span>Apply my Reward Balance</span>
   </label>
   <p class="small" id="rewardBalanceInfo">Checking available Reward Balance...</p>
+  <label class="reward-credit-toggle" for="applyWalletBalance">
+    <input id="applyWalletBalance" type="checkbox">
+    <span>Use my Wallet Balance</span>
+  </label>
+  <p class="small" id="walletBalanceInfo">Checking available Wallet Balance...</p>
 </div>
 
 <div class="item">
@@ -447,12 +456,15 @@ const submitPaymentButton =
 
 const applyRewardBalanceInput =
   document.getElementById("applyRewardBalance");
+const applyWalletBalanceInput =
+  document.getElementById("applyWalletBalance");
 
 const txidInput =
   document.getElementById("txid");
 
 let basePrice = 0;
 let rewardBalance = 0;
+let walletBalance = 0;
 let currentOrderId = null;
 let orderCreated = false;
 
@@ -503,12 +515,18 @@ function calculatePrice(){
   const rewardCredit = applyRewardBalanceInput.checked
     ? Math.min(rewardBalance, afterCoupon)
     : 0;
-  const finalPrice = Math.max(0, afterCoupon - rewardCredit);
+  const remainingAfterReward = Math.max(0, afterCoupon - rewardCredit);
+  const walletCredit = applyWalletBalanceInput.checked
+    ? Math.min(walletBalance, remainingAfterReward)
+    : 0;
+  const finalPrice = Math.max(0, remainingAfterReward - walletCredit);
 
   document.getElementById("discount").textContent =
     "$" + discountAmount.toFixed(2);
   document.getElementById("rewardCredit").textContent =
     "$" + rewardCredit.toFixed(2);
+  document.getElementById("walletCredit").textContent =
+    "$" + walletCredit.toFixed(2);
   document.getElementById("final").textContent =
     "$" + finalPrice.toFixed(2);
 
@@ -516,7 +534,10 @@ function calculatePrice(){
   const balanceInfo = document.getElementById("rewardBalanceInfo");
   balanceInfo.textContent = "Available Reward Balance: $" +
     rewardBalance.toFixed(2) +
-    (rewardBalance > 0 ? " · Applied as checkout credit only, not withdrawable." : " · Complete tasks to earn Reward Balance.");
+    " · Separate from Wallet Balance.";
+  document.getElementById("walletBalanceInfo").textContent =
+    "Available Wallet Balance: $" + walletBalance.toFixed(2) +
+    " · Giveaway activation credits and other wallet funds.";
 
   if(!couponValid){
     note.textContent = "Invalid coupon code.";
@@ -531,7 +552,8 @@ function calculatePrice(){
       ? code + " — " + discountPercent + "% coupon discount applied."
       : "No coupon discount applied.";
   note.textContent = couponNote +
-    (rewardCredit > 0 ? " Reward Balance reduces the remaining price by $" + rewardCredit.toFixed(2) + "." : "");
+    (rewardCredit > 0 ? " Reward Balance: $" + rewardCredit.toFixed(2) + "." : "") +
+    (walletCredit > 0 ? " Wallet Balance: $" + walletCredit.toFixed(2) + "." : "");
 }
 
 // ---------------------------------
@@ -663,7 +685,18 @@ async function initialize(){
       (sum, row) => sum + Number(row.amount || 0), 0
     );
     rewardBalance = Math.max(0, rewardBalance);
+
+    const { data: walletRows, error: walletError } = await db
+      .from("wallet_ledger")
+      .select("amount")
+      .eq("user_id", session.user.id);
+    if (walletError) throw walletError;
+    walletBalance = Math.max(0, (walletRows || []).reduce(
+      (sum, row) => sum + Number(row.amount || 0), 0
+    ));
+
     applyRewardBalanceInput.checked = false;
+    applyWalletBalanceInput.checked = false;
 
     if(![2500,5000,10000,25000,50000,100000,200000,300000].includes(size)){
 
@@ -723,6 +756,7 @@ async function initialize(){
 
 couponInput.addEventListener("input",calculatePrice);
 applyRewardBalanceInput.addEventListener("change",calculatePrice);
+applyWalletBalanceInput.addEventListener("change",calculatePrice);
 
 
 
@@ -778,7 +812,8 @@ button.addEventListener("click",async()=>{
           program_code:programCode,
           platform:platform,
           coupon_code:couponCode,
-          apply_reward_balance:applyRewardBalanceInput.checked
+          apply_reward_balance:applyRewardBalanceInput.checked,
+          apply_wallet_balance:applyWalletBalanceInput.checked
         }
       }
     );
@@ -843,11 +878,15 @@ button.addEventListener("click",async()=>{
         Number(pricing.discount_amount || 0);
       const serverRewardCredit =
         Number(pricing.reward_credit || 0);
+      const serverWalletCredit =
+        Number(pricing.wallet_credit || 0);
 
       document.getElementById("discount").textContent =
         "$" + serverCouponDiscount.toFixed(2);
       document.getElementById("rewardCredit").textContent =
         "$" + serverRewardCredit.toFixed(2);
+      document.getElementById("walletCredit").textContent =
+        "$" + serverWalletCredit.toFixed(2);
       document.getElementById("final").textContent =
         "$" + serverFinal.toFixed(2);
 
@@ -855,14 +894,20 @@ button.addEventListener("click",async()=>{
         rewardBalance = Number(pricing.reward_balance_remaining);
       }
 
+      if (Number.isFinite(Number(pricing.wallet_balance_remaining))) {
+        walletBalance = Number(pricing.wallet_balance_remaining);
+      }
+
       document.getElementById("rewardBalanceInfo").textContent =
         "Remaining Reward Balance: $" + rewardBalance.toFixed(2) +
-        " · Checkout credit only, not withdrawable.";
+        " · Separate from Wallet Balance.";
+      document.getElementById("walletBalanceInfo").textContent =
+        "Remaining Wallet Balance: $" + walletBalance.toFixed(2);
 
       document.getElementById("discountNote").textContent =
-        serverDiscount + "% coupon discount and $" +
-        serverRewardCredit.toFixed(2) +
-        " Reward Balance credit confirmed by server.";
+        serverDiscount + "% coupon discount · Reward credit $" +
+        serverRewardCredit.toFixed(2) + " · Wallet credit $" +
+        serverWalletCredit.toFixed(2) + " confirmed by server.";
     }
 
     showMessage(
@@ -877,7 +922,7 @@ button.addEventListener("click",async()=>{
     if (data.pricing && Number(data.pricing.final_price) === 0) {
       paymentSection.classList.add("hidden");
       showMessage(
-        "Your Reward Balance covered the full challenge price. No USDT payment is required. Your order is marked paid and is ready for WFT processing.",
+        "Your Reward Balance and/or Wallet Balance covered the full challenge price. No USDT payment is required. Your order is marked paid and is ready for WFT processing.",
         "success"
       );
     } else {
