@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07111f">
+<title>WFT | 100 Trader Giveaway</title>
+<style>
+:root{--bg:#07111f;--panel:#101d30;--panel2:#14243a;--gold:#e8b84b;--text:#f4f7fb;--muted:#94a3b8;--line:#26374d;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,Helvetica,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px max(18px,calc((100% - 1000px)/2));background:#091525;border-bottom:1px solid var(--line);gap:10px}
+.brand{font-weight:800;letter-spacing:1px}.brand span{color:var(--gold)}a{color:var(--gold);text-decoration:none}
+main{max-width:1000px;margin:26px auto;padding:0 18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px}
+.hero{background:linear-gradient(135deg,#13243a,#0c1728);border-color:#66502a}.gold{color:var(--gold)}.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}.fee{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:15px}.fee strong{display:block;font-size:23px;color:var(--gold);margin-top:6px}
+select,input{width:100%;padding:13px;border-radius:9px;border:1px solid var(--line);background:#091525;color:var(--text);margin:8px 0 14px}
+label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:9px;padding:13px 17px;background:var(--gold);color:#111827;font-weight:800;cursor:pointer}.btn:disabled{opacity:.5;cursor:not-allowed}
+.check{display:flex;align-items:flex-start;gap:10px;background:var(--panel2);padding:12px;border-radius:10px;margin:8px 0}.check input{width:auto;margin:3px 0}
+.status{padding:12px;border-radius:10px;background:var(--panel2);margin-top:12px;white-space:pre-wrap}.success{color:var(--green)}.error{color:#fca5a5}
+.hidden{display:none!important}.small{font-size:13px;color:var(--muted);line-height:1.5}
+@media(max-width:600px){main{margin:16px auto}.card{padding:16px}}
+</style>
+</head>
+<body>
+<header><div class="brand">WE FUNDED <span>TRADER</span></div><a href="dashboard.html">← Dashboard</a></header>
+<main>
+<section class="card hero">
+  <p class="gold">LIMITED GIVEAWAY · MAXIMUM 100 TRADERS</p>
+  <h1>Join the WFT 100 Trader Giveaway</h1>
+  <p class="muted">Complete the social follow tasks, refer 3 people who activate a WFT account, then pay the one-time activation fee for your selected account size. Your confirmed activation fee is credited 100% to your WFT Wallet Balance after Admin approval.</p>
+  <p><strong class="gold">Important:</strong> This is an activation fee, not a direct challenge purchase. You can use the Wallet Balance later to buy any challenge and apply a coupon at checkout.</p>
+</section>
+<section class="card">
+  <h2>Activation Fee</h2>
+  <div class="grid">
+    <div class="fee">$2,500 <strong>$1</strong></div><div class="fee">$5,000 <strong>$3</strong></div>
+    <div class="fee">$10,000 <strong>$5</strong></div><div class="fee">$25,000 <strong>$10</strong></div>
+    <div class="fee">$50,000 <strong>$20</strong></div>
+  </div>
+  <p class="small">Only 100 entries are accepted. One entry per user.</p>
+</section>
+<section class="card" id="entryCreate">
+  <h2>1. Select Your Giveaway Account</h2>
+  <label for="accountSize">Account Size</label>
+  <select id="accountSize">
+    <option value="2500">$2,500 — $1 activation fee</option>
+    <option value="5000">$5,000 — $3 activation fee</option>
+    <option value="10000">$10,000 — $5 activation fee</option>
+    <option value="25000">$25,000 — $10 activation fee</option>
+    <option value="50000">$50,000 — $20 activation fee</option>
+  </select>
+  <button class="btn" id="createEntry">Create Giveaway Entry</button>
+  <div class="status" id="createStatus">Sign in to join the giveaway.</div>
+</section>
+<section class="card hidden" id="entryPanel">
+  <h2>2. Complete the Requirements</h2>
+  <p>Follow the official WE FUNDED TRADER accounts on:</p>
+  <div class="grid">
+    <div class="fee">Instagram</div><div class="fee">TikTok</div><div class="fee">YouTube</div><div class="fee">Telegram</div><div class="fee">Discord</div>
+  </div>
+  <p class="small">X/Twitter is not part of this giveaway.</p>
+  <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I followed the official WFT accounts listed above.</span></label>
+  <button class="btn" id="confirmSocial">Confirm Social Tasks</button>
+  <p>Refer <strong class="gold">3 people with active WFT trading accounts</strong>. Referral eligibility is checked securely by WFT before the entry is created.</p>
+  <div class="status" id="entryStatus"></div>
+</section>
+<section class="card hidden" id="paymentPanel">
+  <h2>3. Pay Activation Fee</h2>
+  <p>Selected account: <strong id="chosenSize" class="gold"></strong> · Fee: <strong id="chosenFee" class="gold"></strong></p>
+  <label for="network">Payment Network</label>
+  <select id="network"><option value="BEP20">USDT BEP20</option><option value="TRC20">USDT TRC20</option></select>
+  <div class="fee"><span id="addressLabel">USDT BEP20 Address</span><p id="receiveAddress" style="overflow-wrap:anywhere">0xc6e6d92df291cd2f48e83dbf656817f1712d8cfa</p><button class="btn" id="copyAddress">Copy Address</button></div>
+  <label for="txHash">Transaction Hash</label>
+  <input id="txHash" autocomplete="off" placeholder="Paste your transaction hash">
+  <button class="btn" id="verifyPayment">Submit & Verify Payment</button>
+  <p class="small">The system checks the USDT contract, receiving address, exact activation fee and required blockchain confirmations. After verification, Admin approval is required before the full fee is credited to your Wallet Balance.</p>
+</section>
+</main>
+<script type="module">
+import {createClient} from "https://esm.sh/@supabase/supabase-js@2";
+const db=createClient("https://vxcwfirfgxrxafbirnwu.supabase.co","sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv");
+const fees={2500:1,5000:3,10000:5,25000:10,50000:20};
+const addresses={BEP20:"0xc6e6d92df291cd2f48e83dbf656817f1712d8cfa",TRC20:"TS52ntAQWhtnwFRgSASm5ugD7h35Mow9N4"};
+let session=null,entry=null;
+const $=id=>document.getElementById(id);
+const money=n=>"$"+Number(n).toFixed(2);
+function message(id,text,kind=""){ $(id).textContent=text;$(id).className="status "+kind; }
+function renderEntry(){
+ if(!entry)return;
+ $("entryCreate").classList.add("hidden");$("entryPanel").classList.remove("hidden");
+ $("chosenSize").textContent="$"+Number(entry.account_size).toLocaleString();
+ $("chosenFee").textContent=money(entry.activation_fee);
+ $("entryStatus").textContent="Entry: "+entry.entry_status+" · Referrals recorded: "+entry.referral_count+"/3 · Payment: "+entry.payment_status;
+ $("socialConfirm").checked=!!entry.social_follow_confirmed;
+ if(entry.social_follow_confirmed)$("confirmSocial").disabled=true;
+ if(entry.payment_status!=="verified"&&entry.entry_status!=="active")$("paymentPanel").classList.remove("hidden");
+ else $("paymentPanel").classList.add("hidden");
+ if(entry.payment_status==="verified"&&entry.entry_status!=="active")message("entryStatus","Payment verified. Waiting for Admin approval. Your full activation fee will be credited to Wallet after approval.","success");
+ if(entry.entry_status==="active")message("entryStatus","Giveaway entry approved. Activation fee credited to Wallet Balance: "+money(entry.activation_fee)+".","success");
+ if(entry.payment_verification_message)message("entryStatus",entry.payment_verification_message);
+}
+async function load(){
+ const {data,error}=await db.auth.getSession();
+ if(error||!data.session){$("createEntry").disabled=true;message("createStatus","Please sign in to join the giveaway.","error");return}
+ session=data.session;
+ const {data:rows,error:entryError}=await db.from("giveaway_entries").select("*").eq("user_id",session.user.id).limit(1);
+ if(entryError){message("createStatus","Could not load giveaway entry. Refresh the page.","error");return}
+ if(rows?.length){entry=rows[0];renderEntry();}else message("createStatus","Choose an account size and create your entry. You must have 3 referred users with active WFT accounts.");
+}
+$("createEntry").addEventListener("click",async()=>{
+ $("createEntry").disabled=true;message("createStatus","Checking referral eligibility and available places...");
+ try{
+  const {data,error}=await db.rpc("create_giveaway_entry",{p_account_size:Number($("accountSize").value)});
+  if(error)throw error;
+  const {data:rows,error:loadError}=await db.from("giveaway_entries").select("*").eq("user_id",session.user.id).limit(1);
+  if(loadError)throw loadError;
+  entry=rows?.[0]||data;renderEntry();
+ }catch(e){message("createStatus",e.message||"Could not create giveaway entry.","error");$("createEntry").disabled=false;}
+});
+$("confirmSocial").addEventListener("click",async()=>{
+ if(!$("socialConfirm").checked){message("entryStatus","Please confirm that you followed all five official WFT accounts.","error");return}
+ $("confirmSocial").disabled=true;
+ const {data,error}=await db.rpc("confirm_giveaway_social_follows");
+ if(error){message("entryStatus",error.message,"error");$("confirmSocial").disabled=false;return}
+ entry.social_follow_confirmed=true;renderEntry();message("entryStatus","Social follow confirmation saved. Referral and payment requirements remain.","success");
+});
+$("network").addEventListener("change",()=>{
+ const n=$("network").value;$("addressLabel").textContent="USDT "+n+" Address";$("receiveAddress").textContent=addresses[n];
+ $("txHash").placeholder=n==="BEP20"?"Paste BEP20 transaction hash":"Paste TRC20 transaction hash";
+});
+$("copyAddress").addEventListener("click",async()=>{
+ try{await navigator.clipboard.writeText(addresses[$("network").value]);$("copyAddress").textContent="Copied";}
+ catch{message("entryStatus","Select and copy the wallet address manually.","error");}
+});
+$("verifyPayment").addEventListener("click",async()=>{
+ if(!entry){message("entryStatus","Create your entry first.","error");return}
+ if(!entry.social_follow_confirmed){message("entryStatus","Confirm your social follow tasks first.","error");return}
+ const network=$("network").value,hash=$("txHash").value.trim();
+ $("verifyPayment").disabled=true;$("verifyPayment").textContent="Verifying...";
+ try{
+  const {data:submitted,error:submitError}=await db.rpc("submit_giveaway_payment",{p_entry_id:entry.id,p_network:network,p_transaction_hash:hash});
+  if(submitError)throw submitError;
+  const {data,error}=await db.functions.invoke("verify-giveaway-payment",{body:{entry_id:entry.id,network,transaction_hash:hash}});
+  if(error){let m=error.message;try{const b=await error.context.clone().json();m=b.error||m}catch{}throw new Error(m)}
+  if(!data?.success)throw new Error(data?.error||"Verification failed.");
+  const v=data.verification||{};
+  message("entryStatus",v.message+(v.confirmations?" Confirmations: "+v.confirmations:""),v.status==="verified"?"success":"");
+  const {data:rows}=await db.from("giveaway_entries").select("*").eq("id",entry.id).limit(1);
+  if(rows?.length){entry=rows[0];renderEntry();}
+  if(v.status==="pending_confirmations"){$("verifyPayment").disabled=false;$("verifyPayment").textContent="Check Confirmations Again";}
+  else{$("verifyPayment").textContent="Payment Verified";}
+ }catch(e){message("entryStatus",e.message||"Payment verification failed.","error");$("verifyPayment").disabled=false;$("verifyPayment").textContent="Try Again";}
+});
+load();
+</script>
+</body>
+</html>
