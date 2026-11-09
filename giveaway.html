@@ -121,7 +121,7 @@ async function loadSocialLinks(){
  const seen=new Set();
  const items=rows.map(row=>({label:row.platform||row.title,url:row.task_url})).filter(row=>row.label&&labels.some(x=>row.label.toLowerCase().includes(x.toLowerCase()))).filter(row=>{const k=row.label.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
  if(!items.some(x=>x.label.toLowerCase().includes("discord")))items.push({label:"Discord",url:"https://discord.gg/eVAH7bDzFg"});
- grid.innerHTML=items.length?items.map(item=>{let url="";try{const u=new URL(item.url||"");if(u.protocol==="https:")url=u.href;}catch{}return '<div class="fee">'+(url?'<a href="'+url+'" target="_blank" rel="noopener">'+item.label+' ↗</a>':item.label+'<p class="small">Official link will be added soon.</p>')+'</div>';}).join(""):'<div class="fee">Official social links will be added soon.</div>';
+ grid.innerHTML=items.length?items.map(item=>{let url="";try{const u=new URL(item.url||"");if(u.protocol==="https:")url=u.href;}catch{}const label=String(item.label).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));return '<div class="fee">'+(url?'<a href="'+url+'" target="_blank" rel="noopener">'+label+' ↗</a>':label+'<p class="small">Official link will be added soon.</p>')+'</div>';}).join(""):'<div class="fee">Official social links will be added soon.</div>';
  if(error)grid.insertAdjacentHTML("beforeend",'<p class="small">Some official links are not configured yet.</p>');
 }
 async function loadGiveawayStatus(){
