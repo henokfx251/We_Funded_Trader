@@ -105,8 +105,7 @@ function renderEntry(){
  $("entryStatus").textContent="Entry: "+entry.entry_status+" · Referrals recorded: "+entry.referral_count+"/3 · Payment: "+entry.payment_status;
  $("socialConfirm").checked=!!entry.social_follow_confirmed;
  socialProofPath=entry.social_proof_path||null;socialFollowConfirmed=!!entry.social_follow_confirmed;
- $("proofStatus").textContent=entry.social_proof_path?"Screenshot uploaded. WFT Admin can review it.":"Screenshot not uploaded yet.";
- $("uploadSocialProof").disabled=!!entry.social_proof_path;
+ $("proofStatus").textContent="Your five social follow proofs are shown above.";
  if(entry.social_follow_confirmed)$("confirmSocial").disabled=true;
  if(entry.payment_status!=="verified"&&entry.entry_status!=="active")$("paymentPanel").classList.remove("hidden");
  else $("paymentPanel").classList.add("hidden");
