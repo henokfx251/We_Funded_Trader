@@ -1143,21 +1143,21 @@ hr {
     <div>
       <div class="welcome-kicker">WE FUNDED TRADER · REWARD PROGRAM</div>
       <h1>Rewards Center</h1>
-      <p class="muted">Earn rewards and use your balance on your next challenge.</p>
+      <p class="muted">Earn rewards and every approved reward is added directly to your WFT Wallet Balance.</p>
       <a class="btn" href="challenges.html">Apply Reward</a>
     </div>
   </div>
 
   <div class="stats-grid reward-stats">
-    <div class="stat-card balance-stat"><span>Available Reward Balance</span><h2 id="rewardBalance">$0.00</h2><small>Available at Challenge Checkout</small></div>
-    <div class="stat-card"><span>Reward Used at Checkout</span><h2 id="rewardUsed">$0.00</h2><small>Total Reward Balance applied to orders</small></div>
+    <div class="stat-card balance-stat"><span>Available Wallet Balance</span><h2 id="rewardBalance">$0.00</h2><small>Available at Challenge Checkout</small></div>
+    <div class="stat-card"><span>Reward Used at Checkout</span><h2 id="rewardUsed">$0.00</h2><small>Total Wallet Balance applied to orders</small></div>
     <div class="stat-card"><span>Approved Tasks</span><h2 id="rewardApproved">0</h2><small>Tasks and milestones completed</small></div>
     <div class="stat-card"><span>Pending Reviews</span><h2 id="rewardPending">0</h2><small>Waiting for WFT Admin</small></div>
   </div>
 
   <div class="info-card reward-credit-note">
-    <h3>How Reward Balance Works</h3>
-    <p>Your Reward Balance is <strong>not withdrawable</strong>. It works like a checkout discount and is deducted from your challenge price. Example: a $20 challenge with $3 Reward Balance means you pay $17. If your balance covers the full price, checkout shows $0 due.</p>
+    <h3>How Wallet Rewards Work</h3>
+    <p>Every approved task reward is credited directly to your Wallet Balance. Use it at challenge checkout, together with an eligible coupon discount. Rewards and Giveaway credits appear in the same Wallet Balance.</p>
   </div>
 
   <div class="panel reward-category-panel">
@@ -2145,7 +2145,7 @@ async function loadRewards() {
         .eq("user_id", currentUser.id)
         .order("submitted_at", { ascending: false }),
 
-      supabase.from("reward_balance_ledger")
+      supabase.from("wallet_ledger")
         .select("id,amount,entry_type,description,created_at")
         .eq("user_id", currentUser.id)
         .order("created_at", { ascending: false }),
@@ -2170,7 +2170,7 @@ async function loadRewards() {
   const approvedMilestones = new Set(milestones.map(row => row.task_key));
 
   const balance = ledger.reduce((sum, row) => sum + Number(row.amount || 0), 0);
-  const usedBalance = ledger.filter(row => row.entry_type === "checkout_credit" && Number(row.amount) < 0)
+  const usedBalance = ledger.filter(row => row.entry_type === "challenge_checkout_debit" && Number(row.amount) < 0)
     .reduce((sum, row) => sum + Math.abs(Number(row.amount || 0)), 0);
   const approvedCount = submissions.filter(row => row.status === "approved").length + milestones.length;
   const pendingCount = submissions.filter(row => row.status === "pending").length;
