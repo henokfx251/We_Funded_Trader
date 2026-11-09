@@ -1145,27 +1145,44 @@ async function loadGiveawaySocialProofs(){
 function renderGiveawayEntries() {
   const tbody = $("giveawayEntriesTable");
   if (!tbody) return;
+
   const rows = giveawayEntriesData || [];
   if (!rows.length) {
     tbody.innerHTML = '<tr><td colspan="9" class="empty">No giveaway entries yet.</td></tr>';
     return;
   }
+
   tbody.innerHTML = rows.map(row => {
     const canApprove = row.entry_status === "pending" &&
       row.payment_status === "verified" &&
       row.social_follow_confirmed === true &&
-      Boolean(row.social_proof_path) &&
       Number(row.referral_count || 0) >= 3;
     const tx = row.transaction_hash
-      ? escapeHTML(String(row.transaction_hash).slice(0, 12) + "…")
+      ? '<span title="' + escapeHTML(row.transaction_hash) + '">' +
+        escapeHTML(String(row.transaction_hash).slice(0, 12)) + '…</span>'
       : "—";
+    const social = row.social_proof_url
+      ? '<a href="' + escapeHTML(row.social_proof_url) + '" target="_blank" rel="noopener noreferrer">View proof ↗</a>'
+      : (row.social_follow_confirmed ? "Confirmed" : "Not confirmed");
     const action = row.entry_status === "pending"
-      ? '<button class="btn btn-sm" onclick="reviewGiveawayEntry(\'' + row.id + '\',\'approve\')" ' + (canApprove ? "" : "disabled") + '>Approve & Credit</button> ' +
-        '<button class="btn btn-sm btn-danger" onclick="reviewGiveawayEntry(\'' + row.id + '\',\'reject\')">Reject</button>'
-      : escapeHTML(row.entry_status);
+      ? '<button class="btn btn-sm" onclick="reviewGiveawayEntry(\'' + escapeHTML(row.id) + '\',\'approve\')" ' +
+        (canApprove ? "" : "disabled") + '>Approve & Credit</button> ' +
+        '<button class="btn btn-sm btn-danger" onclick="reviewGiveawayEntry(\'' + escapeHTML(row.id) + '\',\'reject\')">Reject</button>'
+      : escapeHTML(row.entry_status || "—");
+
     return '<tr>' +
-      '<td><small>' + escapeHTML(row.user_id) + '</small></td>' +
-      '<td>
+      '<td><small>' + escapeHTML(row.user_id || "—") + '</small></td>' +
+      '<td>$' + Number(row.account_size || 0).toLocaleString() + '</td>' +
+      '<td>$' + Number(row.activation_fee || 0).toFixed(2) + '</td>' +
+      '<td>' + Number(row.referral_count || 0) + ' / 3</td>' +
+      '<td>' + social + '</td>' +
+      '<td>' + escapeHTML(row.payment_status || "—") + '</td>' +
+      '<td>' + escapeHTML(row.payment_network || "—") + ' / ' + tx + '</td>' +
+      '<td>' + escapeHTML(row.entry_status || "—") + '</td>' +
+      '<td>' + action + '</td>' +
+      '</tr>';
+  }).join("");
+}
 
 async function loadOrders() {
   const tbody = $("ordersTable");
