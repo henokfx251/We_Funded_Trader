@@ -762,7 +762,21 @@ footer{background:#081321;border-top-color:#263b54}
 }
 
 </style>
-<link rel="stylesheet" href="wft-global.css?v=9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="wft-global.css?v=10">
+<style>
+/* WFT homepage refinement — visual layer only */
+body{font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important}
+header,.navbar{background:rgba(5,14,26,.9)!important;border-bottom-color:rgba(232,184,75,.15)}
+.btn,.hero-buttons a,.hero-buttons button{border-radius:12px;transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+.btn:hover,.hero-buttons a:hover,.hero-buttons button:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(232,184,75,.16)}
+.card,.feature-card,.challenge-card,.program-card{border:1px solid rgba(151,170,195,.16);border-radius:18px}
+.section-heading h2,.section-title{letter-spacing:-.035em}
+footer{border-top:1px solid rgba(232,184,75,.16)}
+@media(max-width:760px){.section{padding:62px 0}.container{width:min(100% - 30px,1160px)}}
+</style>
 </head>
 
 <body>
