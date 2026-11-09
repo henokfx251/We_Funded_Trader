@@ -2418,20 +2418,31 @@ window.submitRewardTask = async function(taskId, category) {
       if (uploadError) throw uploadError;
     }
 
-    const { error } = await supabase.from("reward_task_submissions").insert({
+    const { data: submission, error } = await supabase.from("reward_task_submissions").insert({
       user_id: currentUser.id,
       task_id: taskId,
       platform: platformInput?.value || null,
       proof_path: uploadedPath,
       proof_url: proofUrl,
       status: "pending"
-    });
+    }).select("id").single();
     if (error) {
       if (uploadedPath) await supabase.storage.from("reward-proofs").remove([uploadedPath]);
       throw error;
     }
 
-    toast("Task proof submitted. Reward is added after Admin approval.");
+    const aiReview = await supabase.functions.invoke("wft-ai-admin-bot", {
+      body: { submission_id: submission.id, submission_type: "reward_task" }
+    });
+    if (aiReview.error) {
+      toast("Proof submitted. AI review is queued until AI auto-review is configured.");
+    } else if (aiReview.data?.decision === "approved") {
+      toast("AI approved your task. Reward Wallet credited.");
+    } else if (aiReview.data?.decision === "rejected") {
+      toast("AI reviewed your proof. Check the task status for details.", true);
+    } else {
+      toast("Proof submitted. AI review is pending further verification.");
+    }
     await loadRewards();
   } catch (err) {
     toast(err.message || "Could not submit task proof.", true);
