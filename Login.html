@@ -135,11 +135,11 @@
         if (!requestedNext && document.referrer) {
           try {
             const ref = new URL(document.referrer);
-            const basePath = window.location.pathname.replace(/Login\\.html$/i, "");
+            const basePath = window.location.pathname.replace(/Login\.html$/i, "");
             if (ref.origin === window.location.origin &&
                 ref.pathname.startsWith(basePath) &&
-                /\\.html$/i.test(ref.pathname) &&
-                !/\\/Login\\.html$/i.test(ref.pathname)) {
+                /\.html$/i.test(ref.pathname) &&
+                !/\/Login\.html$/i.test(ref.pathname)) {
               requestedNext = ref.pathname.slice(basePath.length) + ref.search + ref.hash;
             }
           } catch (_) {}
