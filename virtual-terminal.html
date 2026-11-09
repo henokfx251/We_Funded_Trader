@@ -169,10 +169,14 @@ async function loadState(showMessage=false){
   const {data,error}=await db.rpc("wft_virtual_terminal_action",{p_action:"state",p_trading_account_id:selectedAccount,p_symbol:currentTradeSymbol,p_side:null,p_volume:null,p_stop_loss:null,p_take_profit:null,p_position_id:null});
   if(error)throw error;
   state=data;
-  const {data:latest,error:accountError}=await db.from("trading_accounts").select("id,account_size,account_type,status,initial_balance,balance,equity,profit,phase,program_code,max_loss_percent,max_loss_mode,highest_equity,daily_reference_equity,daily_dd_reference_balance,daily_loss_percent,daily_loss_mode,daily_reset_mode,min_profitable_days,min_profitable_day_percent,profitable_days,consistency_percent,profit_targets,closed_positions_only,restart_allowed").eq("id",selectedAccount).maybeSingle();
+  const {data:latest,error:accountError}=await db.from("trading_accounts").select("id,account_size,account_type,status,initial_balance,balance,equity,profit,phase,phase_started_at,start_date,program_code,max_loss_percent,max_loss_mode,highest_equity,daily_reference_equity,daily_dd_reference_balance,daily_loss_percent,daily_loss_mode,daily_reset_mode,min_profitable_days,min_profitable_day_percent,profitable_days,consistency_percent,profit_targets,closed_positions_only,restart_allowed").eq("id",selectedAccount).maybeSingle();
   if(accountError)throw accountError;
   if(latest){
-   const {data:dailyRows}=await db.from("account_daily_profits").select("daily_profit").eq("trading_account_id",selectedAccount);
+   const phaseStart=(latest.phase_started_at||latest.start_date||"").slice(0,10);
+   let dailyQuery=db.from("account_daily_profits").select("profit_date,daily_profit").eq("trading_account_id",selectedAccount);
+   if(phaseStart)dailyQuery=dailyQuery.gte("profit_date",phaseStart);
+   const {data:dailyRows,error:dailyError}=await dailyQuery;
+   if(dailyError)throw dailyError;
    const rows=dailyRows||[];
    const positive=rows.reduce((sum,x)=>sum+Math.max(0,Number(x.daily_profit)||0),0);
    const best=rows.reduce((max,x)=>Math.max(max,Number(x.daily_profit)||0),0);
