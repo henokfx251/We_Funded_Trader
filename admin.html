@@ -684,7 +684,15 @@ tr:hover td{background:rgba(85,168,255,.035)}
           <div class="notice">Approve only after blockchain payment is verified, all five social follows are confirmed, and 3 active referrals are recorded. Approval credits 100% of the activation fee to the trader's Wallet Balance.</div>
           <div class="panel">
             <div class="panel-head"><h3>Giveaway Entries</h3></div>
-            <div class="table-wrap">
+            <h3>Social Follow Screenshot Submissions</h3>
+          <p class="muted">Review each Instagram, TikTok, YouTube, Telegram and Discord screenshot submitted by participants.</p>
+          <div class="table-wrap" style="margin-bottom:18px">
+            <table>
+              <thead><tr><th>Trader ID</th><th>Platform</th><th>Screenshot</th><th>Status</th><th>Submitted</th></tr></thead>
+              <tbody id="giveawaySocialProofsTable"><tr><td colspan="5" class="empty">Loading social proofs...</td></tr></tbody>
+            </table>
+          </div>
+          <div class="table-wrap">
               <table>
                 <thead><tr>
                   <th>Trader ID</th><th>Account</th><th>Fee</th><th>Referrals</th>
@@ -1100,6 +1108,7 @@ async function refreshAll() {
 /* ================= GIVEAWAY MANAGEMENT ================= */
 
 async function loadGiveawayEntries() {
+  await loadGiveawaySocialProofs();
   const tbody = $("giveawayEntriesTable");
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="9" class="empty">Loading giveaway entries...</td></tr>';
@@ -1118,6 +1127,19 @@ async function loadGiveawayEntries() {
     return { ...row, social_proof_url: proof?.signedUrl || null };
   }));
   renderGiveawayEntries();
+}
+
+async function loadGiveawaySocialProofs(){
+ const tbody=$("giveawaySocialProofsTable");if(!tbody)return;
+ tbody.innerHTML='<tr><td colspan="5" class="empty">Loading social proofs...</td></tr>';
+ const {data,error}=await db.from("giveaway_social_task_proofs").select("id,user_id,platform,proof_path,review_status,submitted_at").order("submitted_at",{ascending:false});
+ if(error){tbody.innerHTML='<tr><td colspan="5" class="empty">'+escapeHTML(error.message)+'</td></tr>';return;}
+ if(!data?.length){tbody.innerHTML='<tr><td colspan="5" class="empty">No individual social proofs submitted yet.</td></tr>';return;}
+ const rows=await Promise.all(data.map(async row=>{
+  const {data:link}=await db.storage.from("giveaway-proofs").createSignedUrl(row.proof_path,3600);
+  return {...row,proof_url:link?.signedUrl||null};
+ }));
+ tbody.innerHTML=rows.map(row=>'<tr><td><small>'+escapeHTML(row.user_id)+'</small></td><td>'+escapeHTML(row.platform)+'</td><td>'+(row.proof_url?'<a href="'+escapeHTML(row.proof_url)+'" target="_blank" rel="noopener">View Screenshot ↗</a>':'Unavailable')+'</td><td>'+escapeHTML(row.review_status)+'</td><td>'+escapeHTML(new Date(row.submitted_at).toLocaleString())+'</td></tr>').join("");
 }
 
 function renderGiveawayEntries() {
