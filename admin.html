@@ -1182,7 +1182,7 @@ function renderGiveawayEntries() {
     const canApprove = row.entry_status === "pending" &&
       row.payment_status === "verified" &&
       row.social_follow_confirmed === true &&
-      Number(row.referral_count || 0) >= 3;
+      Number(row.referral_count || 0) >= 2;
     const tx = row.transaction_hash
       ? '<span title="' + escapeHTML(row.transaction_hash) + '">' +
         escapeHTML(String(row.transaction_hash).slice(0, 12)) + '…</span>'
@@ -2399,6 +2399,22 @@ async function processWftAiQueue() {
     await Promise.all([loadWftAiBot(), loadRewardManagement(), loadGiveawayEntries()]);
   } catch (error) {
     if (result) result.textContent = "Queue error: " + error.message;
+  }
+}
+
+async function reviewGiveawayEntry(entryId, decision) {
+  if (!["approve", "reject"].includes(decision)) return;
+  if (decision === "reject" && !confirm("Reject this giveaway entry?")) return;
+  try {
+    const { data, error } = await db.rpc("admin_review_giveaway", {
+      p_entry_id: entryId,
+      p_decision: decision
+    });
+    if (error) throw error;
+    showToast(decision === "approve" ? "Giveaway entry approved and wallet credited." : "Giveaway entry rejected.");
+    await loadGiveawayEntries();
+  } catch (error) {
+    showToast("Giveaway review failed: " + error.message);
   }
 }
 </script>
