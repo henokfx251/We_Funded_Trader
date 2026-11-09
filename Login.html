@@ -128,10 +128,36 @@
         if (!data.session) throw new Error("Your login session could not be created. Please try again.");
 
         showMessage("Login successful. Opening your account...", "success");
-        const requestedNext = new URLSearchParams(window.location.search).get("next");
-        const safeNext = ["admin.html", "dashboard.html"].includes(requestedNext)
-          ? requestedNext
-          : "dashboard.html";
+        const params = new URLSearchParams(window.location.search);
+        let requestedNext = params.get("next");
+
+        // Return to the protected WFT page that sent the visitor to Login.
+        if (!requestedNext && document.referrer) {
+          try {
+            const ref = new URL(document.referrer);
+            const basePath = window.location.pathname.replace(/Login\\.html$/i, "");
+            if (ref.origin === window.location.origin &&
+                ref.pathname.startsWith(basePath) &&
+                /\\.html$/i.test(ref.pathname) &&
+                !/\\/Login\\.html$/i.test(ref.pathname)) {
+              requestedNext = ref.pathname.slice(basePath.length) + ref.search + ref.hash;
+            }
+          } catch (_) {}
+        }
+
+        const allowedPages = new Set([
+          "admin.html", "dashboard.html", "giveaway.html", "wallet.html",
+          "orders.html", "checkout.html", "challenges.html",
+          "customer-rewards.html", "customer-affiliate.html",
+          "customer-support.html", "customer-payout.html",
+          "customer-certificate.html"
+        ]);
+        const nextUrl = requestedNext ? new URL(requestedNext, window.location.href) : null;
+        const safeNext = nextUrl &&
+          nextUrl.origin === window.location.origin &&
+          allowedPages.has(nextUrl.pathname.split("/").pop())
+            ? nextUrl.pathname + nextUrl.search + nextUrl.hash
+            : "dashboard.html";
         window.location.replace(safeNext);
       } catch (error) {
         showMessage(error.message || "Login failed. Please try again.", "error");
