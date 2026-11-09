@@ -1223,7 +1223,7 @@ function renderGiveawayEntries() {
       '<td><small>' + escapeHTML(row.user_id || "—") + '</small></td>' +
       '<td>$' + Number(row.account_size || 0).toLocaleString() + '</td>' +
       '<td>$' + Number(row.activation_fee || 0).toFixed(2) + '</td>' +
-      '<td>' + Number(row.referral_count || 0) + ' / 3</td>' +
+      '<td>' + Number(row.referral_count || 0) + ' / 2</td>' +
       '<td>' + social + '</td>' +
       '<td>' + escapeHTML(row.payment_status || "—") + '</td>' +
       '<td>' + escapeHTML(row.payment_network || "—") + ' / ' + tx + '</td>' +
