@@ -255,3 +255,32 @@ a{ text-underline-offset:3px }
   :where(.card,.panel,.container){box-shadow:0 10px 28px rgba(0,0,0,.2)}
   :where(.topbar,.top-bar,.dashboard-header){padding-left:15px;padding-right:15px}
 }
+
+
+/* WFT PRIMARY TYPOGRAPHY — clean pure white text across all HTML pages */
+:root{
+  --wft-text:#ffffff;
+  --text:#ffffff;
+  --text-primary:#ffffff;
+}
+body,
+main,
+main p,
+main li,
+main td,
+main .content,
+main .main-text,
+main .text-primary,
+.page-content,
+.main-content,
+.dashboard-content{
+  color:#ffffff;
+}
+h1,h2,h3,h4,h5,h6,
+.page-title,.section-title,.card-title,.panel-title,.title,.heading,.hero-title{
+  color:#ffffff;
+}
+/* Keep secondary information softer and brand/status colors intact */
+small,.small,.muted,.subtext,.subtitle,.helper-text,.description,.small-text,.text-muted{
+  color:var(--wft-muted);
+}
