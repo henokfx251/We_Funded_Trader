@@ -188,7 +188,7 @@ a{ text-underline-offset:3px }
   backdrop-filter:blur(18px);
   -webkit-backdrop-filter:blur(18px);
 }
-:where(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.container){
+:where(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card){
   background-color:rgba(13,26,43,.94);
   border-color:var(--wft-line);
   box-shadow:0 16px 42px rgba(0,0,0,.22);
