@@ -137,6 +137,24 @@ footer{padding:42px 0 23px;border-top:1px solid var(--line);background:#fff;colo
 <link rel="stylesheet" href="wft-global.css?v=23">
 
 
+
+<style id="wft-hero-black-text-fix">
+/* Only the requested hero copy is black; buttons and other sections stay unchanged. */
+html body main .hero .hero-tag,
+html body main .hero .hero-content h1,
+html body main .hero .hero-content h1 span,
+html body main .hero .hero-description {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+html body main .hero .hero-content h1 span {
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+}
+</style>
+
 </head>
 
 <body>
