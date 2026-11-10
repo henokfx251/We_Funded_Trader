@@ -3,7 +3,7 @@
  --wft-blue:#155eef;--wft-blue-strong:#1248c7;--wft-blue-dark:#103b91;
  --wft-blue-soft:#eaf2ff;--wft-page:#f5f8ff;--wft-white:#fff;
  --wft-ink:#14213d;--wft-text:#34445f;--wft-muted:#687891;
- --wft-border:#dce5f2;--wft-green:#15803d;--wft-red:#dc2626;--wft-amber:#155eef;
+ --wft-border:#dce5f2;--wft-green:#15803d;--wft-red:#dc2626;--wft-accent:#155eef;
  color-scheme:light;
 }
 html:not(:has(.chartbox)){background:var(--wft-page)!important;color-scheme:light!important}
@@ -189,8 +189,8 @@ body:not(:has(.chartbox)) :is(input,select,textarea){max-width:100%}
 }
 
 
-/* v21 — strict blue-only accent policy; remove all yellow/amber UI accents */
-:root{--wft-amber:#155eef!important;--gold:#155eef!important;--gold2:#bfdbfe!important}
+/* v21 — strict blue-only accent policy */
+:root{--wft-accent:#155eef!important;--gold:#155eef!important;--gold2:#bfdbfe!important}
 body:not(:has(.chartbox)) :is(.gold,.gold-text,.text-gold,.eyebrow,.price,.starting,.amount,.total-price,.highlight,.warning,.text-warning,.pending,.status-pending,.status.pending,.badge.pending){
  color:#155eef!important;
 }
