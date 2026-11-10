@@ -621,14 +621,14 @@ tr:hover td{background:rgba(85,168,255,.035)}
 
           <div class="panel">
             <div class="panel-head"><h3>Payout Requests</h3></div>
-            <div style="padding:12px 16px 0;color:#d6ad55;font-size:11px;font-weight:700;letter-spacing:.08em">DEMO COUNTS · UI TEST ONLY · REAL PAYOUT RECORDS ARE UNCHANGED</div>
-            <div id="payoutDemoBanner" style="display:none;margin:12px 16px 0;padding:10px 12px;border:1px solid #d6ad55;border-radius:10px;color:#d6ad55;background:rgba(214,173,85,.08)">DEMO PREVIEW ONLY — 25 Pending, 20 Approved, 5 Rejected. No database records or payments are changed.</div>
+            <div id="payoutDemoNotice" style="display:none;padding:12px 16px 0;color:#d6ad55;font-size:11px;font-weight:700;letter-spacing:.08em">DEMO COUNTS · ADMIN-ONLY PREVIEW · REAL PAYOUT RECORDS ARE UNCHANGED</div>
+            <div id="payoutDemoBanner" style="display:none;margin:12px 16px 0;padding:10px 12px;border:1px solid #d6ad55;border-radius:10px;color:#d6ad55;background:rgba(214,173,85,.08)">DEMO PREVIEW ONLY — 25 Pending, 17 Approved, 6 Rejected (48 total). Fictional names and payout details; no database records or payments are changed.</div>
             <div id="payoutStatusFilters" style="display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px 4px">
               <button type="button" class="btn small" data-payout-filter="all" onclick="setPayoutFilter('all')">All <span id="payoutCountAll">0</span></button>
-              <button type="button" class="btn small" data-payout-filter="pending" onclick="setPayoutFilter('pending')">Pending <span id="payoutCountPending">5</span></button>
-              <button type="button" class="btn small green" data-payout-filter="approved" onclick="setPayoutFilter('approved')">Approved <span id="payoutCountApproved">50</span></button>
-              <button type="button" class="btn small red" data-payout-filter="rejected" onclick="setPayoutFilter('rejected')">Rejected <span id="payoutCountRejected">20</span></button>
-              <button type="button" class="btn small gold" data-payout-filter="paid" onclick="setPayoutFilter('paid')">Paid <span id="payoutCountPaid">25</span></button>
+              <button type="button" class="btn small" data-payout-filter="pending" onclick="setPayoutFilter('pending')">Pending <span id="payoutCountPending">0</span></button>
+              <button type="button" class="btn small green" data-payout-filter="approved" onclick="setPayoutFilter('approved')">Approved <span id="payoutCountApproved">0</span></button>
+              <button type="button" class="btn small red" data-payout-filter="rejected" onclick="setPayoutFilter('rejected')">Rejected <span id="payoutCountRejected">0</span></button>
+              <button type="button" class="btn small gold" data-payout-filter="paid" onclick="setPayoutFilter('paid')">Paid <span id="payoutCountPaid">0</span></button>
             </div>
             <div class="table-wrap">
               <table>
@@ -1712,15 +1712,27 @@ async function loadPayouts() {
 function getPayoutDisplayRows() {
   if (!payoutDemoPreview) return payoutsData;
   const rows = [];
+  const demoNames = [
+    "Daniel Bekele","Marta Tesfaye","Samuel Tadesse","Hana Alemu","Yonas Kebede",
+    "Rahel Girma","Abel Worku","Meron Desta","Nahom Getachew","Liya Mekonnen",
+    "Dawit Assefa","Selamawit Hailu","Mikiros Abebe","Eden Fikru","Biruk Demissie",
+    "Sara Wolde","Natnael Solomon","Tigist Kassahun","Yonatan Mulatu","Mahi Ebrahim",
+    "Robel Girma","Ruth Daniel","Henok Tola","Bethlehem Kassa","Fitsum Alemayehu",
+    "Mekdes Abate","Bereket Niguse","Hirut Bekele","Kalkidan Sisay","Eyob Tamiru",
+    "Nardos Kebede","Abraham Fenta","Mulugeta Workneh","Saron Mamo","Kebede Tesfaye",
+    "Dagmawi Alemu","Feven Solomon","Mihret Tadesse","Biniyam Asrat","Elsa Bekele",
+    "Solomon Dinku","Aster Getachew","Natnael Bekele","Martha Abebe","Henok Asfaw",
+    "Rahel Worku","Yared Mekonnen","Selam Hailu"
+  ];
   const statuses = [
     ...Array(25).fill("pending"),
-    ...Array(20).fill("approved"),
-    ...Array(5).fill("rejected")
+    ...Array(17).fill("approved"),
+    ...Array(6).fill("rejected")
   ];
   statuses.forEach((status, index) => {
     rows.push({
       id: "DEMO-" + String(index + 1).padStart(3, "0"),
-      user_id: "Demo Trader " + String(index + 1).padStart(2, "0"),
+      user_id: demoNames[index],
       account_profit: 100,
       trader_share: 80,
       company_share: 20,
@@ -1767,7 +1779,9 @@ function renderPayouts() {
   updatePayoutFilterCounts();
   const payoutRows = getPayoutDisplayRows();
   const demoBanner = $("payoutDemoBanner");
+  const demoNotice = $("payoutDemoNotice");
   if (demoBanner) demoBanner.style.display = payoutDemoPreview ? "block" : "none";
+  if (demoNotice) demoNotice.style.display = payoutDemoPreview ? "block" : "none";
   if (!payoutRows.length) {
     tbody.innerHTML =
       '<tr><td colspan="11" class="empty">No payout requests found.</td></tr>';
