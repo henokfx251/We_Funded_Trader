@@ -622,6 +622,7 @@ tr:hover td{background:rgba(85,168,255,.035)}
           <div class="panel">
             <div class="panel-head"><h3>Payout Requests</h3></div>
             <div style="padding:12px 16px 0;color:#d6ad55;font-size:11px;font-weight:700;letter-spacing:.08em">DEMO COUNTS · UI TEST ONLY · REAL PAYOUT RECORDS ARE UNCHANGED</div>
+            <div id="payoutDemoBanner" style="display:none;margin:12px 16px 0;padding:10px 12px;border:1px solid #d6ad55;border-radius:10px;color:#d6ad55;background:rgba(214,173,85,.08)">DEMO PREVIEW ONLY — 25 Pending, 20 Approved, 5 Rejected. No database records or payments are changed.</div>
             <div id="payoutStatusFilters" style="display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px 4px">
               <button type="button" class="btn small" data-payout-filter="all" onclick="setPayoutFilter('all')">All <span id="payoutCountAll">0</span></button>
               <button type="button" class="btn small" data-payout-filter="pending" onclick="setPayoutFilter('pending')">Pending <span id="payoutCountPending">5</span></button>
@@ -948,6 +949,7 @@ let kycData = [];
 let accountsData = [];
 let payoutsData = [];
 let payoutStatusFilter = "all";
+const payoutDemoPreview = new URLSearchParams(window.location.search).get("payoutTest") === "1";
 let challengeRequestsData = [];
 let giveawayEntriesData = [];
 let supportTicketsData = [];
@@ -1707,18 +1709,45 @@ async function loadPayouts() {
 }
 
 
+function getPayoutDisplayRows() {
+  if (!payoutDemoPreview) return payoutsData;
+  const rows = [];
+  const statuses = [
+    ...Array(25).fill("pending"),
+    ...Array(20).fill("approved"),
+    ...Array(5).fill("rejected")
+  ];
+  statuses.forEach((status, index) => {
+    rows.push({
+      id: "DEMO-" + String(index + 1).padStart(3, "0"),
+      user_id: "Demo Trader " + String(index + 1).padStart(2, "0"),
+      account_profit: 100,
+      trader_share: 80,
+      company_share: 20,
+      payout_amount: 80,
+      network: index % 2 ? "TRC20" : "BEP20",
+      wallet_address: "DEMO WALLET — NOT REAL",
+      status,
+      requested_at: new Date(Date.now() - index * 3600000).toISOString(),
+      admin_note: "DEMO PREVIEW ONLY",
+      trading_account: { account_name: "Demo Account " + (index + 1), platform: "MT5", account_size: 5000 },
+      is_demo: true
+    });
+  });
+  return rows;
+}
 function updatePayoutFilterCounts() {
-  const realCounts = {
-    all: payoutsData.length,
-    pending: payoutsData.filter(p => p.status === "pending").length,
-    approved: payoutsData.filter(p => p.status === "approved").length,
-    rejected: payoutsData.filter(p => p.status === "rejected").length,
-    paid: payoutsData.filter(p => p.status === "paid").length
+  const rows = getPayoutDisplayRows();
+  const counts = {
+    all: rows.length,
+    pending: rows.filter(p => p.status === "pending").length,
+    approved: rows.filter(p => p.status === "approved").length,
+    rejected: rows.filter(p => p.status === "rejected").length,
+    paid: rows.filter(p => p.status === "paid").length
   };
-  const demoCounts = { pending: 5, approved: 50, rejected: 20, paid: 25 };
-  Object.entries(realCounts).forEach(([status, realCount]) => {
+  Object.entries(counts).forEach(([status, count]) => {
     const el = $("payoutCount" + status.charAt(0).toUpperCase() + status.slice(1));
-    if (el) el.textContent = status === "all" ? realCount : demoCounts[status];
+    if (el) el.textContent = count;
   });
 }
 function setPayoutFilter(status) {
@@ -1736,15 +1765,18 @@ function renderPayouts() {
   if (!tbody) return;
 
   updatePayoutFilterCounts();
-  if (!payoutsData.length) {
+  const payoutRows = getPayoutDisplayRows();
+  const demoBanner = $("payoutDemoBanner");
+  if (demoBanner) demoBanner.style.display = payoutDemoPreview ? "block" : "none";
+  if (!payoutRows.length) {
     tbody.innerHTML =
       '<tr><td colspan="11" class="empty">No payout requests found.</td></tr>';
     return;
   }
 
   const visiblePayouts = payoutStatusFilter === "all"
-    ? payoutsData
-    : payoutsData.filter(item => String(item.status || "").toLowerCase() === payoutStatusFilter);
+    ? payoutRows
+    : payoutRows.filter(item => String(item.status || "").toLowerCase() === payoutStatusFilter);
   if (!visiblePayouts.length) {
     tbody.innerHTML = `<tr><td colspan="11" class="empty">No ${escapeHTML(payoutStatusFilter)} payout requests.</td></tr>`;
     return;
@@ -1760,16 +1792,16 @@ function renderPayouts() {
         : ""
     ].filter(Boolean).join(" / ");
 
-    let actions = "—";
+    let actions = item.is_demo ? '<span class="badge">Demo only</span>' : "—";
 
-    if (item.status === "pending") {
+    if (!item.is_demo && item.status === "pending") {
       actions = `
         <button class="btn small green"
           onclick="reviewPayout('${item.id}','approved')">Approve</button>
         <button class="btn small red"
           onclick="reviewPayout('${item.id}','rejected')">Reject</button>
       `;
-    } else if (item.status === "approved") {
+    } else if (!item.is_demo && item.status === "approved") {
       actions = `
         <button class="btn small gold"
           onclick="reviewPayout('${item.id}','paid')">Mark Paid</button>
@@ -1780,7 +1812,7 @@ function renderPayouts() {
 
     return `
       <tr>
-        <td>${escapeHTML(String(item.user_id || "").slice(0, 12))}</td>
+        <td>${escapeHTML(String(item.user_id || "").slice(0, 24))}</td>
         <td>${escapeHTML(accountLabel || "—")}</td>
         <td>${money(item.account_profit)}</td>
         <td>${money(item.trader_share)}</td>
