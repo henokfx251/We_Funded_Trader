@@ -860,3 +860,140 @@ body:not(:has(.chartbox)) :is(td,tbody,tr,table){background:#fff!important;color
 body:not(:has(.chartbox)) :is(.status.pending,.warning){background:#fffbeb!important;color:#92400e!important}
 body:not(:has(.chartbox)) :is(.status.approved,.status.paid,.status.active,.success,.positive){background:#ecfdf5!important;color:#047857!important}
 body:not(:has(.chartbox)) :is(.status.rejected,.status.failed,.danger,.negative,.error){background:#fef2f2!important;color:#b91c1c!important}
+
+
+/* =========================================================
+   WFT LIGHT THEME — FINAL NAVIGATION / DASHBOARD / CHALLENGE FIX
+   Explicit component colors replace the old blanket inherit rule.
+   ========================================================= */
+@media (prefers-color-scheme: dark){
+  body:not(:has(.chartbox)){color-scheme:light!important}
+}
+body:not(:has(.chartbox)){
+  background:#f4f7fb!important;
+  color:#334155!important;
+  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
+  font-weight:400!important;
+}
+/* Dashboard sidebar: consistent deep-navy rail with readable light labels */
+body:not(:has(.chartbox)) .sidebar,
+body:not(:has(.chartbox)) .dashboard-sidebar,
+body:not(:has(.chartbox)) .app-sidebar,
+body:not(:has(.chartbox)) .side-nav{
+  background:#10243b!important;
+  color:#e2e8f0!important;
+  border-right:1px solid #243b56!important;
+}
+body:not(:has(.chartbox)) .sidebar :is(.brand,.logo,.nav-label),
+body:not(:has(.chartbox)) .dashboard-sidebar :is(.brand,.logo,.nav-label),
+body:not(:has(.chartbox)) .app-sidebar :is(.brand,.logo,.nav-label),
+body:not(:has(.chartbox)) .side-nav :is(.brand,.logo,.nav-label){
+  color:#cbd5e1!important;
+}
+body:not(:has(.chartbox)) .sidebar :is(.nav-btn,.nav-link,a,button),
+body:not(:has(.chartbox)) .dashboard-sidebar :is(.nav-btn,.nav-link,a,button),
+body:not(:has(.chartbox)) .app-sidebar :is(.nav-btn,.nav-link,a,button),
+body:not(:has(.chartbox)) .side-nav :is(.nav-btn,.nav-link,a,button){
+  color:#dbe7f5!important;
+  background-color:transparent!important;
+  font-weight:400!important;
+}
+body:not(:has(.chartbox)) .sidebar :is(.nav-btn:hover,.nav-btn.active,.nav-link:hover,.nav-link.active,a.active),
+body:not(:has(.chartbox)) .dashboard-sidebar :is(.nav-btn:hover,.nav-btn.active,.nav-link:hover,.nav-link.active,a.active),
+body:not(:has(.chartbox)) .app-sidebar :is(.nav-btn:hover,.nav-btn.active,.nav-link:hover,.nav-link.active,a.active),
+body:not(:has(.chartbox)) .side-nav :is(.nav-btn:hover,.nav-btn.active,.nav-link:hover,.nav-link.active,a.active){
+  background:#1e3a5f!important;
+  color:#ffffff!important;
+}
+body:not(:has(.chartbox)) .sidebar .nav-btn.logout,
+body:not(:has(.chartbox)) .sidebar a.logout{color:#fca5a5!important}
+/* Main workspace and top navigation */
+body:not(:has(.chartbox)) .main,
+body:not(:has(.chartbox)) .content,
+body:not(:has(.chartbox)) main,
+body:not(:has(.chartbox)) .page{
+  background:#f4f7fb!important;
+  color:#334155!important;
+}
+body:not(:has(.chartbox)) :is(.topbar,.top-bar,.dashboard-header,.app-header,.navbar){
+  background:#ffffff!important;
+  color:#1e293b!important;
+  border-color:#e2e8f0!important;
+  box-shadow:0 2px 12px rgba(15,23,42,.04)!important;
+}
+body:not(:has(.chartbox)) :is(.topbar,.top-bar,.dashboard-header,.app-header,.navbar) :is(h1,h2,h3,p,span,a,button){
+  color:#334155!important;
+}
+/* Dashboard content cards and data */
+body:not(:has(.chartbox)) :is(.stat-card,.panel,.info-card,.account-card,.order-card,.reward-card,.activity-card,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.table-card,.content-card){
+  background:#ffffff!important;
+  color:#334155!important;
+  border:1px solid #e2e8f0!important;
+  box-shadow:0 4px 18px rgba(15,23,42,.045)!important;
+}
+body:not(:has(.chartbox)) :is(.stat-card,.panel,.info-card,.account-card,.order-card,.reward-card,.activity-card,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.table-card,.content-card) :is(h1,h2,h3,h4,h5,strong,b){
+  color:#172033!important;
+}
+body:not(:has(.chartbox)) :is(.stat-card,.panel,.info-card,.account-card,.order-card,.reward-card,.activity-card,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.table-card,.content-card) :is(p,small,label,td,th,span,div){
+  color:inherit;
+}
+/* Status words: semantic colors, regular weight, no heavy badges */
+body:not(:has(.chartbox)) :is(.success,.text-success,.status-success,.positive,.approved,.paid,.active){
+  color:#15803d!important;
+  font-weight:400!important;
+}
+body:not(:has(.chartbox)) :is(.error,.text-danger,.status-danger,.danger,.negative,.rejected,.failed,.breached){
+  color:#dc2626!important;
+  font-weight:400!important;
+}
+body:not(:has(.chartbox)) :is(.warning,.text-warning,.pending,.status-pending){
+  color:#b45309!important;
+  font-weight:400!important;
+}
+body:not(:has(.chartbox)) :is(.status,.status-badge,.badge,.pill,.tag){
+  font-weight:400!important;
+  letter-spacing:0!important;
+}
+body:not(:has(.chartbox)) :is(.status.approved,.status.paid,.status.active,.badge.approved,.badge.paid,.badge.active){
+  background:#ecfdf5!important;color:#15803d!important;border-color:#bbf7d0!important;
+}
+body:not(:has(.chartbox)) :is(.status.rejected,.status.failed,.status.breached,.badge.rejected,.badge.failed){
+  background:#fef2f2!important;color:#dc2626!important;border-color:#fecaca!important;
+}
+body:not(:has(.chartbox)) :is(.status.pending,.badge.pending){
+  background:#fffbeb!important;color:#b45309!important;border-color:#fde68a!important;
+}
+/* Challenges page: light program, rule, form and selection surfaces */
+body:not(:has(.chartbox)) .challenge-hero{
+  background:linear-gradient(135deg,#eaf2ff,#ffffff 72%)!important;
+  color:#172033!important;border:1px solid #dbe7f5!important;
+  box-shadow:0 8px 26px rgba(15,23,42,.05)!important;
+}
+body:not(:has(.chartbox)) .challenge-hero :is(h1,h2,h3,p,span,small,strong,div){
+  color:#172033!important;
+}
+body:not(:has(.chartbox)) :is(.program,.rule,.stat,.agreement-area,.promo){
+  background:#ffffff!important;color:#334155!important;
+  border:1px solid #e2e8f0!important;
+  box-shadow:0 4px 16px rgba(15,23,42,.045)!important;
+}
+body:not(:has(.chartbox)) :is(.program,.rule,.stat,.agreement-area,.promo) :is(h1,h2,h3,h4,p,span,small,strong,label){
+  color:#334155!important;
+}
+body:not(:has(.chartbox)) .program:is(.active,:hover){
+  background:#eff6ff!important;border-color:#93c5fd!important;
+}
+body:not(:has(.chartbox)) :is(.program,.rule,.stat) :is(.starting,.price,strong){
+  color:#1d4ed8!important;
+}
+body:not(:has(.chartbox)) :is(input,select,textarea){
+  background:#ffffff!important;color:#172033!important;border:1px solid #cbd5e1!important;
+}
+body:not(:has(.chartbox)) :is(label,.field-label){color:#475569!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(.message,.success,.error,.agreement-message){
+  font-weight:400!important;
+}
+body:not(:has(.chartbox)) .message.success,
+body:not(:has(.chartbox)) .agreement-message.accepted{color:#15803d!important}
+body:not(:has(.chartbox)) .message.error,
+body:not(:has(.chartbox)) .agreement-message.needs-attention{color:#dc2626!important}
