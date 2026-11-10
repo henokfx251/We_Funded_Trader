@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>WFT | Manager Support Portal</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07111f;--panel:#101d30;--panel2:#14243a;--line:#26374d;--text:#f4f7fb;--muted:#94a3b8;--blue:#155eef;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#142945 0,transparent 38%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}button,input,textarea,select{font:inherit}.hidden{display:none!important}
+.wrap{max-width:1250px;margin:auto;padding:24px}.brand{font-size:20px;font-weight:900;letter-spacing:.6px;color:#6ea8ff}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:2px;margin-top:5px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:18px 22px;border:1px solid var(--line);border-radius:15px;background:#0c1929;margin-bottom:20px}.top h1{font-size:21px;margin:0 0 6px}.muted{color:var(--muted);font-size:12px}.pill{padding:7px 11px;border-radius:30px;background:#12392f;color:#69e4b8;font-size:11px;font-weight:800}
+.panel,.ticket{background:linear-gradient(145deg,#122239,#0d192a);border:1px solid var(--line);border-radius:14px;padding:19px;margin-bottom:15px}.login{max-width:430px;margin:10vh auto}.login h2{font-size:21px;margin:0 0 8px}.field{margin:14px 0}.field label{display:block;font-size:12px;color:#cbd5e1;margin-bottom:7px}.field input,.field textarea,.field select{width:100%;background:#081525;border:1px solid var(--line);border-radius:9px;padding:12px;color:white;outline:none}.field textarea{min-height:90px;resize:vertical}.btn{border:0;border-radius:9px;padding:10px 14px;background:var(--blue);color:white;font-size:12px;font-weight:800;cursor:pointer}.btn:disabled{opacity:.5;cursor:not-allowed}.btn.gray{background:#34445e}.btn.green{background:#137e65}.btn.red{background:#9f3545}.btn.full{width:100%}
+.message{padding:11px 13px;border-radius:9px;margin:12px 0;font-size:12px;display:none}.message.show{display:block}.message.error{background:#421f2b;color:#ff9aa4}.message.success{background:#12392f;color:#69e4b8}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}.stat{padding:15px;background:#101d30;border:1px solid var(--line);border-radius:12px}.stat span{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;font-size:24px;margin-top:7px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.toolbar input,.toolbar select{background:#081525;border:1px solid var(--line);border-radius:9px;padding:10px;color:white;font-size:12px}.toolbar input{flex:1;min-width:180px}
+.ticket-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}.ticket h3{font-size:16px;margin:0 0 7px}.meta{font-size:11px;color:var(--muted);line-height:1.6}.status{display:inline-block;border-radius:20px;padding:5px 9px;background:#34445e;color:#dce5f5;font-size:10px;font-weight:800}.status.open{background:#173a70;color:#9bc2ff}.status.in_progress{background:#493719;color:#f5c96b}.status.resolved{background:#12392f;color:#69e4b8}
+.question{white-space:pre-wrap;line-height:1.7;font-size:13px;margin:15px 0}.files{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.files img{width:150px;height:115px;object-fit:cover;border-radius:9px;border:1px solid var(--line)}.files video{max-width:min(100%,420px);max-height:260px;border-radius:9px;background:#000}.actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.actions textarea{min-height:85px}.ticket-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.forwarded{color:#f5c96b;font-size:11px;font-weight:800}.empty{text-align:center;padding:35px;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+@media(max-width:700px){.wrap{padding:13px}.top{align-items:flex-start;flex-direction:column;padding:16px}.stats{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr}.stat strong{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><div class="brand">WE FUNDED TRADER<small>MANAGER SUPPORT PORTAL</small></div></div>
+    <div id="managerBadge" class="pill hidden">● MANAGER VERIFIED</div>
+  </div>
+  <section id="loginPanel" class="panel login">
+    <h2>Manager Sign In</h2><p class="muted">Authorized WFT support manager access only.</p>
+    <div id="loginMessage" class="message"></div>
+    <form id="loginForm">
+      <div class="field"><label for="managerEmail">Manager Email</label><input id="managerEmail" type="email" value="fxhenok11@gmail.com" autocomplete="username" required readonly></div>
+      <div class="field"><label for="managerPassword">Password</label><input id="managerPassword" type="password" autocomplete="current-password" required placeholder="Enter your Supabase Auth password"></div>
+      <button id="loginButton" class="btn full" type="submit">Sign In</button>
+    </form>
+    <p class="muted">Password is checked securely by Supabase Auth. It is never stored in this page.</p>
+  </section>
+  <section id="managerApp" class="hidden">
+    <div class="top">
+      <div><h1>Support Ticket Inbox</h1><div class="muted">Review customer issues, view screenshots/videos, reply, or forward to the main Admin.</div></div>
+      <div class="ticket-actions"><button class="btn gray" id="refreshButton">Refresh</button><button class="btn red" id="logoutButton">Logout</button></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span>Total Tickets</span><strong id="totalCount">0</strong></div>
+      <div class="stat"><span>Open</span><strong id="openCount">0</strong></div>
+      <div class="stat"><span>In Progress</span><strong id="progressCount">0</strong></div>
+      <div class="stat"><span>Forwarded to Admin</span><strong id="forwardCount">0</strong></div>
+    </div>
+    <div class="toolbar">
+      <input id="searchInput" placeholder="Search ticket, subject or customer ID">
+      <select id="statusFilter"><option value="">All statuses</option><option value="open">Open</option><option value="in_progress">In Progress</option><option value="resolved">Resolved</option></select>
+      <select id="forwardFilter"><option value="">All tickets</option><option value="false">Not forwarded</option><option value="true">Forwarded to Admin</option></select>
+    </div>
+    <div id="ticketList"><div class="empty">Loading tickets...</div></div>
+  </section>
+</div>
+<script>
+"use strict";
+const SUPABASE_URL="https://vxcwfirfgxrxafbirnwu.supabase.co";
+const SUPABASE_KEY="sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv";
+const MANAGER_EMAIL="fxhenok11@gmail.com";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let tickets=[];
+const $=id=>document.getElementById(id);
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function message(id,text,type){const el=$(id);el.textContent=text;el.className="message show "+type;}
+function showApp(){ $("loginPanel").classList.add("hidden");$("managerApp").classList.remove("hidden");$("managerBadge").classList.remove("hidden");}
+async function verifySession(){
+ const {data,error}=await db.auth.getSession();if(error)throw error;
+ const user=data.session?.user;
+ if(!user)return false;
+ if((user.email||"").toLowerCase()!==MANAGER_EMAIL) {await db.auth.signOut();throw new Error("This portal is restricted to the authorized manager account.");}
+ showApp();await loadTickets();return true;
+}
+$("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();const btn=$("loginButton");btn.disabled=true;
+ try{
+  const email=$("managerEmail").value.trim().toLowerCase();
+  if(email!==MANAGER_EMAIL)throw new Error("Manager email is not authorized.");
+  const {data,error}=await db.auth.signInWithPassword({email,password:$("managerPassword").value});
+  if(error)throw error;
+  if((data.user?.email||"").toLowerCase()!==MANAGER_EMAIL){await db.auth.signOut();throw new Error("This account is not authorized for Manager access.");}
+  $("managerPassword").value="";await verifySession();
+ }catch(err){message("loginMessage",err.message||"Sign in failed.","error");}
+ finally{btn.disabled=false;}
+});
+async function loadTickets(){
+ $("ticketList").innerHTML='<div class="empty">Loading support tickets...</div>';
+ const {data,error}=await db.from("support_tickets").select("*").order("created_at",{ascending:false});
+ if(error){$("ticketList").innerHTML='<div class="empty">'+esc(error.message)+'</div>';return;}
+ tickets=data||[];
+ $("totalCount").textContent=tickets.length;
+ $("openCount").textContent=tickets.filter(t=>t.status==="open").length;
+ $("progressCount").textContent=tickets.filter(t=>t.status==="in_progress").length;
+ $("forwardCount").textContent=tickets.filter(t=>t.forwarded_to_admin).length;
+ renderTickets();
+}
+async function signedFiles(ticket){
+ const list=Array.isArray(ticket.attachments)?ticket.attachments:[];
+ return (await Promise.all(list.map(async f=>{
+  const {data,error}=await db.storage.from("support-ticket-files").createSignedUrl(f.path,3600);
+  if(error||!data?.signedUrl)return "";
+  const url=esc(data.signedUrl),name=esc(f.name||"Attachment");
+  if(String(f.type||"").startsWith("video/"))return '<div><video controls playsinline preload="metadata" src="'+url+'"></video><div class="meta">'+name+'</div></div>';
+  return '<a href="'+url+'" target="_blank" rel="noopener"><img src="'+url+'" alt="'+name+'"><div class="meta">'+name+'</div></a>';
+ }))).filter(Boolean);
+}
+async function renderTickets(){
+ const search=$("searchInput").value.trim().toLowerCase(),status=$("statusFilter").value,forward=$("forwardFilter").value;
+ const rows=tickets.filter(t=>(!status||t.status===status)&&(!forward||String(!!t.forwarded_to_admin)===forward)&&[t.id,t.user_id,t.subject,t.question].join(" ").toLowerCase().includes(search));
+ if(!rows.length){$("ticketList").innerHTML='<div class="empty">No support tickets found.</div>';return;}
+ $("ticketList").innerHTML="";
+ for(const t of rows){
+  const files=await signedFiles(t);
+  const article=document.createElement("article");article.className="ticket";
+  article.innerHTML=
+   '<div class="ticket-head"><div><h3>'+esc(t.subject)+'</h3><div class="meta">Ticket #'+esc(t.id.slice(0,8).toUpperCase())+' · Customer ID: '+esc(t.user_id)+'<br>'+esc(new Date(t.created_at).toLocaleString())+' · '+esc(String(t.difficulty||"").replace("_"," "))+'</div></div><span class="status '+esc(t.status)+'">'+esc(t.status)+'</span></div>'+
+   '<div class="question">'+esc(t.question)+'</div>'+
+   (files.length?'<div><div class="meta">Customer attachments</div><div class="files">'+files.join("")+'</div></div>':'')+
+   (t.admin_reply?'<div class="panel"><strong>Previous WFT Reply</strong><p class="question">'+esc(t.admin_reply)+'</p><div class="meta">'+(t.replied_at?esc(new Date(t.replied_at).toLocaleString()):"")+'</div></div>':'')+
+   (t.forwarded_to_admin?'<div class="forwarded">↗ FORWARDED TO MAIN ADMIN</div><div class="meta">'+esc(t.manager_note||"No manager note added.")+'</div>':'')+
+   '<div class="actions"><div class="field"><label>Reply to Customer</label><textarea id="reply-'+esc(t.id)+'" placeholder="Write a clear response...">'+esc(t.admin_reply||"")+'</textarea><div class="ticket-actions"><button class="btn green" data-action="reply" data-id="'+esc(t.id)+'">Send Reply</button><button class="btn gray" data-action="progress" data-id="'+esc(t.id)+'">Mark In Progress</button><button class="btn gray" data-action="resolve" data-id="'+esc(t.id)+'">Resolve</button></div></div>'+
+   '<div class="field"><label>Manager Note for Main Admin</label><textarea id="note-'+esc(t.id)+'" placeholder="Explain why this ticket needs Admin review...">'+esc(t.manager_note||"")+'</textarea><div class="ticket-actions"><button class="btn" data-action="forward" data-id="'+esc(t.id)+'">'+(t.forwarded_to_admin?"Update Admin Note":"Forward to Main Admin")+'</button></div></div></div>';
+  $("ticketList").appendChild(article);
+ }
+}
+async function updateTicket(id,values,success){
+ const {error}=await db.from("support_tickets").update(values).eq("id",id);
+ if(error){alert("Ticket update failed: "+error.message);return;}
+ await loadTickets();alert(success);
+}
+$("ticketList").addEventListener("click",async e=>{
+ const btn=e.target.closest("button[data-action]");if(!btn)return;
+ const id=btn.dataset.id,action=btn.dataset.action;btn.disabled=true;
+ try{
+  if(action==="reply"){
+   const reply=$("reply-"+id).value.trim();if(!reply)throw new Error("Write a reply first.");
+   await updateTicket(id,{admin_reply:reply,replied_at:new Date().toISOString(),manager_replied_at:new Date().toISOString(),status:"in_progress"},"Reply sent to customer.");
+  }else if(action==="progress")await updateTicket(id,{status:"in_progress"},"Ticket marked in progress.");
+  else if(action==="resolve")await updateTicket(id,{status:"resolved"},"Ticket resolved.");
+  else if(action==="forward"){
+   const note=$("note-"+id).value.trim();if(!note)throw new Error("Add a short note for the main Admin before forwarding.");
+   await updateTicket(id,{forwarded_to_admin:true,manager_note:note},"Ticket forwarded to the main Admin.");
+  }
+ }catch(err){alert(err.message||"Action failed.");}
+ finally{btn.disabled=false;}
+});
+$("refreshButton").addEventListener("click",loadTickets);
+$("searchInput").addEventListener("input",renderTickets);
+$("statusFilter").addEventListener("change",renderTickets);
+$("forwardFilter").addEventListener("change",renderTickets);
+$("logoutButton").addEventListener("click",async()=>{await db.auth.signOut();location.reload();});
+verifySession().catch(err=>message("loginMessage",err.message||"Manager verification failed.","error"));
+</script>
+</body>
+</html>
