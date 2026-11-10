@@ -2223,7 +2223,7 @@ async function loadSupportTickets() {
   supportTicketsData = data || [];
   renderSupportTickets();
 }
-function renderSupportTickets() {
+async function renderSupportTickets() {
   const container = $("supportTicketsList");
   if (!container) return;
   $("supportTotal").textContent = supportTicketsData.length;
@@ -2233,14 +2233,25 @@ function renderSupportTickets() {
   const search = ($("supportTicketSearch")?.value || "").toLowerCase();
   const filter = $("supportTicketFilter")?.value || "";
   const rows = supportTicketsData.filter(t =>
-    [t.id,t.user_id,t.subject,t.question,t.difficulty].join(" ").toLowerCase().includes(search) &&
+    [t.id,t.user_id,t.subject,t.question,t.difficulty,t.manager_note].join(" ").toLowerCase().includes(search) &&
     (!filter || t.status === filter)
   );
   if (!rows.length) {
     container.innerHTML = '<div class="empty">No support tickets found.</div>';
     return;
   }
-  container.innerHTML = rows.map(t => `
+  const cards = await Promise.all(rows.map(async t => {
+    const fileLinks = await Promise.all((Array.isArray(t.attachments) ? t.attachments : []).map(async file => {
+      const { data, error } = await db.storage.from("support-ticket-files").createSignedUrl(file.path, 3600);
+      if (error || !data?.signedUrl) return "";
+      const url = escapeHTML(data.signedUrl);
+      const name = escapeHTML(file.name || "Attachment");
+      if (String(file.type || "").startsWith("video/")) {
+        return '<div style="margin:8px 10px 8px 0;display:inline-block"><video controls playsinline preload="metadata" style="max-width:min(100%,380px);max-height:240px;border-radius:8px" src="' + url + '"></video><div class="small">' + name + '</div></div>';
+      }
+      return '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-block;margin:8px 10px 8px 0"><img src="' + url + '" alt="' + name + '" style="width:125px;height:95px;object-fit:cover;border-radius:8px"><div class="small">' + name + '</div></a>';
+    }));
+    return `
     <article class="panel" style="margin-bottom:14px">
       <div class="panel-head">
         <div><h3>${escapeHTML(t.subject)}</h3>
@@ -2248,10 +2259,12 @@ function renderSupportTickets() {
         </div>
         ${statusBadge(t.status)}
       </div>
+      ${t.forwarded_to_admin ? '<div class="notice" style="margin:10px 0"><strong>↗ FORWARDED BY MANAGER</strong><div style="white-space:pre-wrap;margin-top:6px">' + escapeHTML(t.manager_note || "No manager note provided.") + '</div></div>' : ""}
       <div class="toolbar" style="margin-bottom:12px">
         <span class="status">${escapeHTML(String(t.difficulty).replace("_"," "))} difficulty</span>
       </div>
       <div style="white-space:pre-wrap;line-height:1.7;font-size:13px;background:#0a1322;padding:14px;border-radius:8px">${escapeHTML(t.question)}</div>
+      ${fileLinks.filter(Boolean).length ? '<div style="margin-top:13px"><strong class="small">Customer Screenshots / Videos</strong><div>' + fileLinks.join("") + '</div></div>' : ""}
       <div class="form-grid" style="margin-top:14px">
         <div class="field">
           <label for="ticketStatus_${t.id}">Ticket Status</label>
@@ -2268,8 +2281,9 @@ function renderSupportTickets() {
       </div>
       ${t.replied_at ? '<div class="small" style="color:var(--muted);margin-top:8px">Last replied: '+escapeHTML(new Date(t.replied_at).toLocaleString())+'</div>' : ""}
       <div class="form-actions"><button class="btn gold" onclick="saveSupportTicket('${t.id}')">Save Reply and Status</button></div>
-    </article>
-  `).join("");
+    </article>`;
+  }));
+  container.innerHTML = cards.join("");
 }
 async function saveSupportTicket(id) {
   const reply = $("ticketReply_" + id)?.value.trim() || "";
