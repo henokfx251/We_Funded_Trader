@@ -391,7 +391,8 @@ body:not(:has(.chartbox)) .hero :is(h1,h2,h3,h4,p,span,small,strong,.hero-descri
 }
 body:not(:has(.chartbox)) .hero :is(.gold,.highlight){color:#93c5fd!important}
 body:not(:has(.chartbox)) .hero .hero-tag{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.25)!important}
-body:not(:has(.chartbox)) header :is(a,button,span,.logo,.nav-links a,.nav-actions){color:#f8fafc!important}
+body:not(:has(.chartbox)):has(.hero) header{background:#10243b!important;color:#f8fafc!important;border-color:#1d3b5b!important}
+body:not(:has(.chartbox)):has(.hero) header :is(a,button,span,.logo,.nav-links a,.nav-actions){color:#f8fafc!important}
 body:not(:has(.chartbox)) header .nav-actions a[href="Login.html"],
 body:not(:has(.chartbox)) header .nav-actions a.btn-outline{
   color:#111827!important;background:#fff!important;border:1px solid #cbd5e1!important;
