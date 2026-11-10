@@ -119,3 +119,71 @@ body:has(.chartbox) :where(.simtag){color:#75e4b8!important;background:#0b2a22!i
  body:not(:has(.chartbox)) :is(.content,main){padding-left:14px!important;padding-right:14px!important}
  body:not(:has(.chartbox)) :is(.card,.panel,.stat-card){box-shadow:0 3px 14px rgba(16,45,90,.045)!important}
 }
+
+
+/* v20 — exact WFT component alignment (dashboard, admin, customer pages) */
+body:not(:has(.chartbox)) :is(.nav-btn,.nav-link){
+ display:flex;align-items:center;gap:11px;width:100%;min-height:43px;
+ border-radius:10px!important;padding:10px 13px!important;
+ color:#eaf2ff!important;background:transparent!important;
+ border:1px solid transparent!important;font-weight:450!important;
+ transition:background .16s ease,color .16s ease,border-color .16s ease;
+}
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(.nav-btn.active,.nav-link.active,.nav-btn[aria-current="page"]){
+ background:rgba(255,255,255,.17)!important;color:#fff!important;
+ border-color:rgba(255,255,255,.18)!important;
+}
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(.nav-btn:hover,.nav-link:hover){
+ background:rgba(255,255,255,.11)!important;color:#fff!important;
+}
+body:not(:has(.chartbox)) :is(.topbar,.top-bar,.dashboard-header,.app-header){
+ min-height:62px;background:#fff!important;border-bottom:1px solid #dce5f2!important;
+ color:#14213d!important;
+}
+body:not(:has(.chartbox)) :is(.welcome,.dashboard-welcome,.payout-welcome){
+ background:linear-gradient(120deg,#eaf2ff,#fff)!important;
+ border:1px solid #d4e3ff!important;border-radius:16px!important;
+ color:#14213d!important;box-shadow:0 7px 24px rgba(16,45,90,.045)!important;
+}
+body:not(:has(.chartbox)) :is(.welcome,.dashboard-welcome,.payout-welcome) :is(h1,h2,h3,h4,p,span,small,strong,div){color:#14213d!important}
+body:not(:has(.chartbox)) :is(.welcome,.dashboard-welcome,.payout-welcome) :is(.muted,.small,.welcome-kicker,.payout-kicker){color:#687891!important}
+body:not(:has(.chartbox)) :is(.stat-card,.info-card,.panel,.risk-alert-panel,.reward-category-panel,.reward-task-card,.account-card,.client-account-card,.certificate-paper,.table-wrap,.agreement-area,.platform-box){
+ border:1px solid #dce5f2!important;border-radius:13px!important;
+ background:#fff!important;color:#34445f!important;
+ box-shadow:0 5px 20px rgba(16,45,90,.045)!important;
+}
+body:not(:has(.chartbox)) :is(.stat-label,.detail-label,.account-overline,.nav-label,.field label){font-weight:450!important}
+body:not(:has(.chartbox)) :is(.stat-value,.detail-value,.account-size,.account-name,.balance-value){color:#14213d!important}
+body:not(:has(.chartbox)) :is(.btn.gold,.btn.gold:hover,.btn.gold:focus,.btn-primary,.btn.btn-primary,.btn.primary,.primary,.primary-btn,.btn-primary-sm){
+ background:linear-gradient(120deg,#2875ff,#155eef)!important;color:#fff!important;
+ border:1px solid #155eef!important;box-shadow:0 5px 14px rgba(21,94,239,.15)!important;
+}
+body:not(:has(.chartbox)) :is(.btn.gray,.btn-secondary,.btn.btn-secondary,.btn-outline,.secondary){
+ background:#fff!important;color:#155eef!important;border:1px solid #c5d6f3!important;
+}
+body:not(:has(.chartbox)) :is(.btn.green,.btn.btn-sm.green){background:#15803d!important;color:#fff!important;border-color:#15803d!important}
+body:not(:has(.chartbox)) :is(.btn.red,.btn.btn-sm.red,.btn-danger){background:#dc2626!important;color:#fff!important;border-color:#dc2626!important}
+body:not(:has(.chartbox)) :is(.badge,.status,.status-badge){font-size:12px!important;font-weight:400!important;border-radius:999px!important}
+body:not(:has(.chartbox)) :is(.badge.paid,.badge.approved,.status.success,.status.approved){background:#ecfdf5!important;color:#15803d!important;border:1px solid #bbf7d0!important}
+body:not(:has(.chartbox)) :is(.badge.pending,.status.pending){background:#fffbeb!important;color:#a16207!important;border:1px solid #fde68a!important}
+body:not(:has(.chartbox)) :is(.badge.failed,.badge.rejected,.status.rejected,.status.failed){background:#fef2f2!important;color:#dc2626!important;border:1px solid #fecaca!important}
+body:not(:has(.chartbox)) :is(.gold,.gold-text,.text-gold,.eyebrow,.price,.starting,.amount,.total-price){color:#155eef!important}
+body:not(:has(.chartbox)) :is(.promo,.final-cta,.reward-box){border-radius:16px!important}
+body:not(:has(.chartbox)) .promo{background:#eaf2ff!important;border:1px solid #cfe0ff!important;color:#14213d!important}
+body:not(:has(.chartbox)) .promo :is(h1,h2,h3,p,span,strong,small){color:#14213d!important}
+body:not(:has(.chartbox)) .final-cta{background:linear-gradient(125deg,#155eef,#103b91)!important;color:#fff!important}
+body:not(:has(.chartbox)) .final-cta :is(h1,h2,h3,p,span,strong,small){color:#fff!important}
+body:not(:has(.chartbox)) :is(.table-wrap,table){overflow-x:auto;max-width:100%}
+body:not(:has(.chartbox)) table{width:100%;border-collapse:separate;border-spacing:0}
+body:not(:has(.chartbox)) :is(input,select,textarea,button,.btn){min-height:40px}
+body:not(:has(.chartbox)) :is(input,select,textarea){max-width:100%}
+@media(max-width:760px){
+ body:not(:has(.chartbox)) :is(.stats,.stats-grid,.stats-grid,.account-grid,.accounts-grid,.grid-2,.grid-3,.challenge-types,.account-grid){grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+ body:not(:has(.chartbox)) :is(.page-heading,.panel-head,.topbar){gap:10px;flex-wrap:wrap}
+ body:not(:has(.chartbox)) :is(.table-wrap,.table-responsive){overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+ body:not(:has(.chartbox)) table{min-width:620px}
+}
+@media(max-width:420px){
+ body:not(:has(.chartbox)) :is(.stats,.stats-grid,.account-grid,.accounts-grid,.grid-2,.grid-3,.challenge-types){grid-template-columns:minmax(0,1fr)!important}
+ body:not(:has(.chartbox)) :is(.content,main,.main){padding-left:12px!important;padding-right:12px!important}
+}
