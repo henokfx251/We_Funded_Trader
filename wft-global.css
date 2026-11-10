@@ -467,3 +467,144 @@ body:has(.chartbox) :where(.simtag){color:#75e4b8!important;background:#0b2a22!i
   body:not(:has(.chartbox)) :is(.content,main){padding-left:14px!important;padding-right:14px!important}
   body:not(:has(.chartbox)) :is(.card,.panel,.stat-card){box-shadow:0 3px 14px rgba(15,23,42,.04)!important}
 }
+
+
+
+/* =========================================================
+   WFT BLUE + WHITE PRO DESIGN SYSTEM v19
+   Single visual direction: clean, fast, consistent, responsive.
+   The chart workspace is deliberately excluded and stays dark.
+   ========================================================= */
+:root{
+  color-scheme:light;
+  --wft-page:#f3f7ff;
+  --wft-surface:#ffffff;
+  --wft-surface-soft:#f7faff;
+  --wft-ink:#102a4c;
+  --wft-body:#334b68;
+  --wft-muted:#71839b;
+  --wft-border:#dce6f2;
+  --wft-blue:#1769e0;
+  --wft-blue-dark:#1054bd;
+  --wft-blue-soft:#eaf2ff;
+  --wft-green:#16834a;
+  --wft-red:#d93645;
+  --wft-amber:#a96b08;
+  /* Compatibility tokens used by legacy page-level styles */
+  --bg:#f3f7ff;
+  --bg2:#edf4ff;
+  --panel:#ffffff;
+  --panel2:#f7faff;
+  --line:#dce6f2;
+  --text:#102a4c;
+  --text-primary:#102a4c;
+  --muted:#71839b;
+  --gold:#1769e0;
+  --gold2:#4389ef;
+  --gold-bright:#1769e0;
+  --wft-gold:#1769e0;
+  --wft-gold-2:#4389ef;
+  --wft-gold-soft:#dceaff;
+  --blue:#1769e0;
+  --primary:#1769e0;
+}
+html:not(:has(.chartbox)){background:#f3f7ff!important;color-scheme:light!important}
+body:not(:has(.chartbox)){
+  background:#f3f7ff!important;
+  color:#334b68!important;
+  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
+  font-size:14px;line-height:1.6;font-weight:400;
+}
+body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6){color:#102a4c!important;font-weight:650!important}
+body:not(:has(.chartbox)) :is(p,li,small,label,.muted,.description,.subtitle,.helper-text,.text-muted){color:#71839b!important}
+body:not(:has(.chartbox)) :is(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar){
+  background:#fff!important;color:#102a4c!important;border-color:#dce6f2!important;
+  box-shadow:0 2px 14px rgba(16,42,76,.045)!important;
+}
+body:not(:has(.chartbox)) :is(.main,.content,main,.page,.section,.container,.wrap,.page-content,.main-content,.dashboard-content){
+  background:#f3f7ff!important;color:#334b68!important;
+}
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card){
+  background:#fff!important;color:#334b68!important;border:1px solid #dce6f2!important;
+  border-radius:14px!important;box-shadow:0 5px 18px rgba(16,42,76,.045)!important;
+  backdrop-filter:none!important;
+}
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card) :is(h1,h2,h3,h4,h5,h6,strong,b,summary){color:#102a4c!important}
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card) :is(p,li,small,label,.muted,.description,.subtitle){color:#71839b!important}
+/* Unified deep-blue sidebar and active navigation */
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav){
+  background:#10335f!important;color:#eaf2ff!important;border-color:#214a78!important;
+}
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(a,button,span,small,.nav-label,.brand,.logo,.ico,.nav-icon){
+  color:#dceaff!important;font-weight:400!important;
+}
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(.nav-btn.active,.nav-link.active,a.active,.active){
+  background:#1d5fb8!important;color:#fff!important;border-radius:9px!important;
+}
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) .nav-label{color:#9dbce3!important}
+body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle){
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  min-width:42px!important;min-height:42px!important;padding:8px 12px!important;
+  background:#10335f!important;color:#fff!important;border:1px solid #28558a!important;
+  border-radius:10px!important;font-size:22px!important;line-height:1!important;
+  opacity:1!important;visibility:visible!important;
+}
+body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle) *{color:#fff!important}
+/* Brand hero is blue; content stays white and high-contrast */
+body:not(:has(.chartbox)) .hero{
+  background:linear-gradient(135deg,#123b70 0%,#0d2b50 100%)!important;
+  color:#fff!important;border:1px solid #24558d!important;
+}
+body:not(:has(.chartbox)) .hero :is(h1,h2,h3,h4,p,span,small,strong,.hero-description,.hero-trust,.hero-tag){color:#fff!important}
+body:not(:has(.chartbox)) .hero :is(.gold,.highlight){color:#9cc8ff!important}
+body:not(:has(.chartbox)) .hero .hero-tag{background:rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.24)!important}
+body:not(:has(.chartbox)):has(.hero) header{background:#10335f!important;color:#fff!important;border-color:#28558a!important}
+body:not(:has(.chartbox)):has(.hero) header :is(a,button,span,.logo,.nav-links a,.nav-actions){color:#fff!important}
+body:not(:has(.chartbox)) header .nav-actions a[href="Login.html"],
+body:not(:has(.chartbox)) header .nav-actions a.btn-outline{color:#10335f!important;background:#fff!important;border:1px solid #dce6f2!important}
+body:not(:has(.chartbox)) .nav-links{background:#10335f!important}
+body:not(:has(.chartbox)) .hero-trust,body:not(:has(.chartbox)) .hero-trust span{color:#fff!important}
+body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome){
+  background:linear-gradient(135deg,#eaf2ff 0%,#fff 72%)!important;color:#102a4c!important;border:1px solid #d4e4f8!important;
+}
+body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome) :is(h1,h2,h3,h4,p,span,small,strong,div){color:#102a4c!important}
+body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome) :is(.hero-kicker,.hero-tag,.welcome-kicker){color:#1769e0!important}
+body:not(:has(.chartbox)) .section-heading :is(h1,h2,h3,p,.eyebrow){color:#102a4c!important}
+body:not(:has(.chartbox)) .section-heading .gold{color:#1769e0!important}
+/* Inputs and actions */
+body:not(:has(.chartbox)) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
+  background:#fff!important;color:#102a4c!important;border:1px solid #cfdaea!important;border-radius:9px!important;box-shadow:none!important;
+}
+body:not(:has(.chartbox)) :is(input,textarea)::placeholder{color:#91a1b6!important}
+body:not(:has(.chartbox)) select option{background:#fff!important;color:#102a4c!important}
+body:not(:has(.chartbox)) :is(label,.field-label,.field label){color:#465d79!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(.btn-primary,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,.submit,button.primary){
+  background:#1769e0!important;color:#fff!important;border:1px solid #1769e0!important;border-radius:9px!important;
+  box-shadow:0 4px 12px rgba(23,105,224,.15)!important;
+}
+body:not(:has(.chartbox)) :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn){
+  background:#fff!important;color:#174b87!important;border:1px solid #cbdcf0!important;border-radius:9px!important;
+}
+body:not(:has(.chartbox)) :is(table,tbody,tr,td){background:#fff!important;color:#334b68!important;border-color:#e1e9f3!important}
+body:not(:has(.chartbox)) :is(th,thead){background:#edf4ff!important;color:#23476f!important}
+body:not(:has(.chartbox)) tbody tr:hover{background:#f7faff!important}
+body:not(:has(.chartbox)) :is(.gold,.text-gold,.highlight,.highlight-text,.accent-gold,.brand-gold,.gold-text,.price-highlight,.section-eyebrow,.eyebrow,.section-kicker,.price,.starting,.amount,.total-price,.balance){color:#1769e0!important}
+body:not(:has(.chartbox)) .stat-card h2{color:#1769e0!important}
+/* Status colors remain semantic */
+body:not(:has(.chartbox)) :is(.success,.text-success,.status-success,.positive,.approved,.paid,.status.approved,.status.paid){color:#16834a!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(.error,.text-danger,.status-danger,.danger,.negative,.rejected,.failed,.breached,.status.rejected,.status.failed){color:#d93645!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(.warning,.text-warning,.pending,.status-pending,.status.pending){color:#a96b08!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(.status,.status-badge,.badge,.pill,.tag){font-weight:400!important;letter-spacing:0!important}
+/* Preserve dark terminal chart while changing its blue accents */
+body:has(.chartbox){
+  --bg:#050a13!important;--bg2:#071321!important;--panel:#0b1524!important;--panel2:#101f32!important;
+  --line:#24364b!important;--gold:#55a8ff!important;--gold2:#9cc8ff!important;
+  --blue:#55a8ff!important;--text:#f5f8fc!important;--muted:#91a9c2!important;
+  color-scheme:dark!important;background:#050a13!important;color:#f5f8fc!important;
+}
+body:has(.chartbox) :where(.chartbox){background:#091522!important;border-color:#29445f!important}
+body:has(.chartbox) :where(.charttools button,.tab,.order-tabs button,.mode-tabs button){background:#0a1828!important;color:#a9bfd5!important;border-color:#2b4058!important}
+@media(max-width:760px){
+  body:not(:has(.chartbox)){font-size:14px}
+  body:not(:has(.chartbox)) :is(.content,main){padding-left:14px!important;padding-right:14px!important}
+}
