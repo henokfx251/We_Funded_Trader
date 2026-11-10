@@ -5,19 +5,19 @@
 <title>WFT | 100 Trader Giveaway</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#07111f;--panel:#101d30;--panel2:#14243a;--gold:#155eef;--text:#f4f7fb;--muted:#94a3b8;--line:#26374d;--green:#22c55e;--red:#ef4444}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,Arial,Helvetica,sans-serif;line-height:1.6;background-image:radial-gradient(ellipse at 12% 0%,rgba(45,95,145,.18),transparent 38%),radial-gradient(ellipse at 90% 10%,rgba(232,184,75,.08),transparent 30%);background-attachment:fixed}
-header{display:flex;justify-content:space-between;align-items:center;padding:18px max(18px,calc((100% - 1000px)/2));background:rgba(8,19,34,.9);border-bottom:1px solid var(--line);gap:10px;position:sticky;top:0;z-index:5;backdrop-filter:blur(16px)}
-.brand{font-weight:800;letter-spacing:1px}.brand span{color:var(--gold)}a{color:var(--gold);text-decoration:none}
-main{max-width:1000px;margin:30px auto;padding:0 18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:23px;margin-bottom:18px;box-shadow:0 18px 42px rgba(0,0,0,.16)}
-.hero{background:linear-gradient(135deg,#13243a,#0c1728);border-color:rgba(232,184,75,.32);box-shadow:0 20px 50px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.025)}.gold{color:var(--gold)}.muted{color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}.fee{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px;transition:transform .18s,border-color .18s}.fee strong{display:block;font-size:23px;color:var(--gold);margin-top:6px}
-select,input{width:100%;padding:13px;border-radius:9px;border:1px solid var(--line);background:#091525;color:var(--text);margin:8px 0 14px}
-label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:9px;padding:13px 17px;background:var(--gold);color:#111827;font-weight:800;cursor:pointer;transition:transform .18s,filter .18s;box-shadow:0 8px 22px rgba(232,184,75,.12)}.btn:hover{transform:translateY(-1px);filter:brightness(1.06)}.btn:disabled{opacity:.5;cursor:not-allowed}
+:root{--bg:#f5f8ff;--panel:#ffffff;--panel2:#edf3ff;--gold:#155eef;--text:#14213d;--muted:#687891;--line:#dce5f2;--green:#15803d;--red:#dc2626}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,Arial,Helvetica,sans-serif;line-height:1.6}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px max(18px,calc((100% - 1000px)/2));background:#fff;border-bottom:1px solid var(--line);gap:10px;position:sticky;top:0;z-index:5}
+.brand{font-weight:800;letter-spacing:1px;color:#14213d}.brand span{color:var(--gold)}a{color:var(--gold);text-decoration:none}
+main{max-width:1000px;margin:30px auto;padding:0 18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:23px;margin-bottom:18px;box-shadow:0 5px 22px rgba(16,45,90,.055)}
+.hero{background:linear-gradient(135deg,#eaf2ff,#fff);border-color:#cbdcf7;box-shadow:0 10px 30px rgba(21,94,239,.08)}.gold{color:var(--gold)}.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}.fee{background:#f7faff;border:1px solid var(--line);border-radius:14px;padding:16px;transition:transform .18s,border-color .18s}.fee strong{display:block;font-size:23px;color:var(--gold);margin-top:6px}
+select,input{width:100%;padding:13px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--text);margin:8px 0 14px}
+label{display:block;font-weight:700;margin-top:12px;color:#465875}.btn{border:0;border-radius:9px;padding:13px 17px;background:var(--gold);color:#fff;font-weight:800;cursor:pointer;transition:transform .18s,filter .18s;box-shadow:0 8px 22px rgba(21,94,239,.12)}.btn:hover{transform:translateY(-1px);filter:brightness(1.06)}.btn:disabled{opacity:.5;cursor:not-allowed}
 .check{display:flex;align-items:flex-start;gap:10px;background:var(--panel2);padding:12px;border-radius:10px;margin:8px 0}.check input{width:auto;margin:3px 0}
-.status{padding:12px;border-radius:10px;background:var(--panel2);margin-top:12px;white-space:pre-wrap}.success{color:var(--green)}.error{color:#fca5a5}
+.status{padding:12px;border-radius:10px;background:var(--panel2);margin-top:12px;white-space:pre-wrap}.success{color:var(--green)}.error{color:#dc2626}
 .hidden{display:none!important}.small{font-size:13px;color:var(--muted);line-height:1.5}
-.referral-box{margin-top:14px;padding:17px;border:1px solid rgba(232,184,75,.28);border-radius:14px;background:linear-gradient(135deg,rgba(232,184,75,.09),rgba(20,36,58,.9))}
+.referral-box{margin-top:14px;padding:17px;border:1px solid #cbdcf7;border-radius:14px;background:linear-gradient(135deg,#f0f5ff,#fff)}
 .referral-link-row{display:flex;gap:9px;align-items:stretch;margin-top:10px}
 .referral-link-row input{flex:1;min-width:0;margin:0}
 .referral-link-row .btn{white-space:nowrap}
@@ -27,7 +27,7 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
 <link rel="stylesheet" href="wft-global.css?v=22">
 </head>
 <body>
-<header><div class="brand">WE FUNDED <span>TRADER</span></div><a href="dashboard.html">← Dashboard</a></header>
+<header><div class="brand">WE FUNDED <span>TRADER</span></div><nav style="display:flex;gap:14px;flex-wrap:wrap"><a href="dashboard.html?page=reward">Rewards</a><a href="wallet.html">Wallet</a><a href="dashboard.html">← Dashboard</a></nav></header>
 <main>
 <section class="card hero">
   <p class="gold">LIMITED GIVEAWAY · MAXIMUM 100 TRADERS</p>
@@ -79,7 +79,7 @@ label{display:block;font-weight:700;margin-top:12px}.btn{border:0;border-radius:
   </div>
   <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I completed all five follow tasks and the screenshots are genuine.</span></label>
   <button class="btn" id="confirmSocial">Confirm All Follow Tasks</button>
-  <p class="small" id="proofStatus">Complete all 5 follow proofs and refer 2 active traders to unlock Step 3.</p>
+  <p class="small" id="proofStatus">Complete all 5 AI-approved follow proofs and refer 2 active traders to unlock Step 3.</p>
   <div class="status" id="entryStatus"></div>
   <div class="fee hidden" id="walletNextStep">
     <h3 class="gold">Your Giveaway Wallet Credit is Ready</h3>
@@ -263,7 +263,7 @@ async function load(){
  else{
   $("entryCreate").classList.add("hidden");
   await loadSocialProofRows();
-  message("entryStatus","Submit all 5 social proofs, then complete 3 active referrals before redeeming your giveaway size.");
+  message("entryStatus","Submit all 5 AI-approved social proofs, then complete 2 active referrals before redeeming your giveaway size.");
  }
 }
 $("createEntry").addEventListener("click",async()=>{
@@ -278,8 +278,8 @@ $("createEntry").addEventListener("click",async()=>{
 });
 $("confirmSocial").addEventListener("click",async()=>{
  if(!session){location.href="Login.html";return;}
- const count=socialProofPlatforms.filter(p=>socialProofRows.some(x=>x.platform===p)).length;
- if(count<5){message("entryStatus","Submit screenshot proof for all 5 follow tasks first.","error");return;}
+ const count=socialProofPlatforms.filter(p=>socialProofRows.some(x=>x.platform===p && x.review_status==="approved")).length;
+ if(count<5){message("entryStatus","All 5 follow screenshots must be AI-approved before you can confirm.","error");return;}
  if(!$("socialConfirm").checked){message("entryStatus","Confirm that all follow tasks and screenshots are genuine.","error");return;}
  $("confirmSocial").disabled=true;
  const {data,error}=await db.rpc("confirm_giveaway_social_follows");
