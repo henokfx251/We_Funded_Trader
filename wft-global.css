@@ -820,3 +820,43 @@ body:not(:has(.chartbox)) footer{background:#fff!important;color:#64748b!importa
  body:not(:has(.chartbox)){font-size:13px}
  body:not(:has(.chartbox)) :is(.panel,.card,.stat-card){box-shadow:0 3px 14px rgba(15,23,42,.04)!important}
 }
+
+
+/* WFT LIGHT THEME CASCADE REPAIR — authoritative final layer */
+:root{color-scheme:light!important}
+body:not(:has(.chartbox)){
+  background:#f4f7fb!important;color:#334155!important;
+  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
+}
+body:not(:has(.chartbox)) *{color:inherit!important}
+body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6){color:#0f172a!important}
+body:not(:has(.chartbox)) :is(p,small,label,.muted,.description,.subtitle,.helper-text,.nav-label,.loading-text){color:#64748b!important}
+body:not(:has(.chartbox)) :is(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar,.sidebar,.side-nav,.dashboard-sidebar,.app-sidebar,.main,.content,main,.page,.section,.container,.wrap,#loading,#denied,footer){
+ background:#fff!important;color:#334155!important;border-color:#e2e8f0!important;
+}
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.certificate-paper,.risk-alert-panel,.risk-alert-item,.reward-task-card,.reward-box,.final-cta,.promo,.rule-card,.step-card,.platform-box){
+ background:#fff!important;color:#334155!important;border:1px solid #e2e8f0!important;
+ box-shadow:0 6px 22px rgba(15,23,42,.05)!important;
+}
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.certificate-paper,.risk-alert-panel,.risk-alert-item,.reward-task-card,.reward-box,.final-cta,.promo,.rule-card,.step-card,.platform-box) :is(h1,h2,h3,h4,h5,h6){color:#172033!important}
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.certificate-paper,.risk-alert-panel,.risk-alert-item,.reward-task-card,.reward-box,.final-cta,.promo,.rule-card,.step-card,.platform-box) :is(p,small,label,.muted,.description){color:#64748b!important}
+body:not(:has(.chartbox)) :is(.hero,.hero-section,.dashboard-welcome){
+ background:linear-gradient(135deg,#eaf2ff 0%,#ffffff 58%,#f1f6ff 100%)!important;
+ color:#172033!important;border:1px solid #dbe7f5!important;
+}
+body:not(:has(.chartbox)) :is(.hero,.hero-section,.dashboard-welcome) :is(h1,h2,h3,h4,p,span,small,strong,div){
+ color:#172033!important;
+}
+body:not(:has(.chartbox)) :is(.hero,.hero-section,.dashboard-welcome) :is(.gold,.highlight,.hero-tag,.welcome-kicker){color:#1d4ed8!important}
+body:not(:has(.chartbox)) :is(.nav-btn,.nav-link,.sidebar a,.side-nav a,.dashboard-sidebar a){color:#475569!important}
+body:not(:has(.chartbox)) :is(.nav-btn.active,.nav-link.active,.sidebar a.active,.side-nav a.active,.dashboard-sidebar a.active){background:#eff6ff!important;color:#1d4ed8!important}
+body:not(:has(.chartbox)) :is(.gold,.text-gold,.highlight,.highlight-text,.accent-gold,.brand-gold,.gold-text,.logo span,.price-highlight,.section-eyebrow,.eyebrow,.section-kicker,.price,.starting,.amount,.total-price,.balance){color:#1d4ed8!important}
+body:not(:has(.chartbox)) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background:#fff!important;color:#172033!important;border:1px solid #cbd5e1!important}
+body:not(:has(.chartbox)) :is(input,textarea)::placeholder{color:#94a3b8!important}
+body:not(:has(.chartbox)) :is(.btn-primary,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,.submit,button.primary){background:#2563eb!important;color:#fff!important;border-color:#2563eb!important}
+body:not(:has(.chartbox)) :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn){background:#fff!important;color:#1e293b!important;border:1px solid #cbd5e1!important}
+body:not(:has(.chartbox)) :is(th,thead){background:#f1f5f9!important;color:#334155!important}
+body:not(:has(.chartbox)) :is(td,tbody,tr,table){background:#fff!important;color:#334155!important;border-color:#e2e8f0!important}
+body:not(:has(.chartbox)) :is(.status.pending,.warning){background:#fffbeb!important;color:#92400e!important}
+body:not(:has(.chartbox)) :is(.status.approved,.status.paid,.status.active,.success,.positive){background:#ecfdf5!important;color:#047857!important}
+body:not(:has(.chartbox)) :is(.status.rejected,.status.failed,.danger,.negative,.error){background:#fef2f2!important;color:#b91c1c!important}
