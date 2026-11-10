@@ -1,456 +1,108 @@
-/* WE FUNDED TRADER — Unified Design System v9
-   Shared visual layer for all WFT HTML pages.
-   Design-only overrides: no application logic, selectors, or Supabase behavior changed. */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+/* WE FUNDED TRADER — BLUE & WHITE PREMIUM SYSTEM v19 */
 :root{
-  color-scheme:dark;
-  --wft-bg:#07111f;
-  --wft-bg-deep:#040b15;
-  --wft-panel:#0d1b2d;
-  --wft-panel-2:#12243a;
-  --wft-panel-3:#172d46;
-  --wft-line:rgba(148,163,184,.18);
-  --wft-line-gold:rgba(232,184,75,.38);
-  --wft-text:#f4f7fb;
-  --wft-muted:#9aabc0;
-  --wft-gold:#e8b84b;
-  --wft-gold-2:#f5d27c;
-  --wft-blue:#55a8ff;
-  --wft-green:#4adea8;
-  --wft-red:#fb7185;
-  --text:var(--wft-text)!important;
-  --text-primary:var(--wft-text)!important;
-  --gold:var(--wft-gold)!important;
-  --gold2:var(--wft-gold-2)!important;
-  --gold-bright:#f6d98b!important;
-  --wft-gold:#e8b84b!important;
-  --wft-gold-soft:#ffe2a1!important;
-}
-*,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;text-size-adjust:100%;-webkit-text-size-adjust:100%}
-body{color:var(--wft-text)}
-h1,h2,h3,h4,h5,h6,.page-title,.section-title,.card-title,.panel-title,.title,.heading,.hero-title{color:var(--wft-text)}
-p{line-height:1.65}
-a{transition:color .18s ease,opacity .18s ease}
-a:hover{opacity:.92}
-.gold,.text-gold,.highlight,.highlight-text,.accent-gold,.brand-gold,.gold-text,.logo span,.price-highlight,.section-eyebrow,.eyebrow.gold,.badge-gold{color:var(--wft-gold)!important}
-:where(.price,.amount,.plan-price,.account-price,.total-price,.stat-value.gold){color:var(--wft-gold-2)}
-::selection{background:rgba(232,184,75,.28);color:#fff}
-
-/* Shared surfaces */
-:where(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.route-card){
-  border-color:var(--wft-line);
-  border-radius:16px;
-}
-:where(.card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card){
-  box-shadow:0 14px 38px rgba(0,0,0,.20);
-}
-:where(.card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card){
-  backdrop-filter:blur(10px);
-}
-:where(.muted,.subtext,.helper-text,.description,.small-text,.text-muted){color:var(--wft-muted)}
-
-/* Forms — consistent accessible controls */
-:where(input,select,textarea){
-  accent-color:var(--wft-gold);
-}
-:where(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
-  color:var(--wft-text);
-  border-color:rgba(148,163,184,.24);
-  border-radius:10px;
-}
-:where(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea):focus{
-  outline:none;
-  border-color:var(--wft-gold)!important;
-  box-shadow:0 0 0 3px rgba(232,184,75,.13)!important;
-}
-:where(input,textarea)::placeholder{color:#71839a}
-:where(label,.field-label){color:#d9e2ed}
-
-/* WFT buttons and calls to action */
-:where(.submit,.primary-btn,.btn-primary,.button-primary,.cta-button,.buy-button,.action-primary){
-  border:1px solid rgba(255,226,161,.32);
-  border-radius:10px;
-  background:linear-gradient(135deg,var(--wft-gold-2),var(--wft-gold));
-  color:#111b29;
-  font-weight:850;
-  box-shadow:0 8px 24px rgba(232,184,75,.13);
-  transition:transform .18s ease,filter .18s ease,box-shadow .18s ease;
-}
-:where(.submit,.primary-btn,.btn-primary,.button-primary,.cta-button,.buy-button,.action-primary):hover{
-  filter:brightness(1.06);
-  transform:translateY(-1px);
-  box-shadow:0 12px 28px rgba(232,184,75,.18);
-}
-:where(.secondary-btn,.btn-secondary,.button-secondary,.outline-btn,.back-button){
-  border:1px solid var(--wft-line)!important;
-  border-radius:10px!important;
-}
-:where(button,a,input,select,textarea):focus-visible{
-  outline:2px solid var(--wft-gold)!important;
-  outline-offset:3px;
-}
-
-/* Badges, status and labels */
-:where(.badge,.pill,.status-badge,.tag){
-  border-radius:999px;
-  font-weight:750;
-  letter-spacing:.15px;
-}
-:where(.success,.text-success,.status-success){color:var(--wft-green)}
-:where(.danger,.error,.text-danger,.status-danger){color:var(--wft-red)}
-:where(.warning,.text-warning,.status-warning){color:var(--wft-gold-2)}
-
-/* Tables and data lists */
-:where(table){border-collapse:separate;border-spacing:0;max-width:100%}
-:where(th){color:#a9bbcf}
-:where(td,th){border-color:rgba(148,163,184,.13)}
-:where(thead th){background:rgba(13,27,45,.92)}
-:where(tbody tr:hover){background:rgba(85,168,255,.045)}
-
-/* Navigation and dashboard layout */
-:where(.sidebar,.side-nav,.dashboard-sidebar,.app-sidebar){
-  border-color:var(--wft-line);
-}
-:where(.nav-link,.sidebar a,.side-nav a,.dashboard-sidebar a){
-  transition:background .18s ease,color .18s ease,border-color .18s ease;
-}
-:where(.nav-link.active,.sidebar a.active,.side-nav a.active,.dashboard-sidebar a.active){
-  color:var(--wft-gold-2);
-}
-:where(.topbar,.top-bar,.dashboard-header,.app-header){
-  border-color:var(--wft-line);
-}
-
-/* Auth pages */
-.auth-shell{max-width:100%;width:min(100%,480px)}
-.auth-shell .card{border:1px solid var(--wft-line);box-shadow:0 24px 80px rgba(0,0,0,.34)}
-.auth-shell .field input{min-height:48px}
-.auth-shell .submit{min-height:50px}
-
-/* Responsive safety for every page */
-img,video,canvas,svg{max-width:100%}
-:where(.table-wrap,.table-responsive,.overflow-x-auto){max-width:100%;overflow-x:auto}
-@media(max-width:700px){
-  :where(.card,.content-card,.info-card,.form-card,.table-card,.section-card){border-radius:13px}
-  :where(.page-title,.hero-title){overflow-wrap:anywhere}
-  :where(button,.btn,.submit){max-width:100%}
-}
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-}
-
-
-/* =========================================================
-   WFT DESIGN SYSTEM v9 — Midnight / Gold / Precision
-   Shared visual language. Presentation only; no app logic.
-   ========================================================= */
-:root{
-  --wft-bg:#060f1c;
-  --wft-bg-deep:#030914;
-  --wft-panel:#0d1a2b;
-  --wft-panel-2:#12243a;
-  --wft-panel-3:#192e47;
-  --wft-line:rgba(151,170,195,.17);
-  --wft-line-gold:rgba(232,184,75,.34);
-  --wft-text:#f5f7fb;
-  --wft-muted:#9aabc0;
-  --wft-gold:#e8b84b;
-  --wft-gold-2:#f5d27c;
-  --wft-blue:#6c9fcf;
-  --wft-green:#43d6a0;
-  --wft-red:#ff7185;
-  --border:var(--wft-line);
-  --line:var(--wft-line);
-  --gold:var(--wft-gold);
-  --gold2:var(--wft-gold-2);
-  --blue:var(--wft-gold);
-  --blue2:var(--wft-gold-2);
-  --text:var(--wft-text);
-  --muted:var(--wft-muted);
-}
-html{background:var(--wft-bg);scroll-padding-top:88px}
-body{
-  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;
-  background-image:
-    radial-gradient(ellipse at 12% -12%,rgba(42,91,139,.16),transparent 38%),
-    radial-gradient(ellipse at 92% 0%,rgba(232,184,75,.075),transparent 30%);
-  background-attachment:fixed;
-  letter-spacing:.005em;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-}
-h1,h2,h3,h4,h5,h6{letter-spacing:-.025em}
-h1{font-weight:850}
-p{color:inherit}
-small,.small,.muted,.subtitle,.description{color:var(--wft-muted)}
-a{ text-underline-offset:3px }
-:where(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar){
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-}
-:where(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card){
-  background-color:rgba(13,26,43,.94);
-  border-color:var(--wft-line);
-  box-shadow:0 16px 42px rgba(0,0,0,.22);
-}
-:where(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card){
-  position:relative;
-}
-:where(.btn,.button,.submit,.primary-btn,.btn-primary,.button-primary,.cta-button,.buy-button,.action-primary,button.primary){
-  min-height:44px;
-  font-weight:800;
-  letter-spacing:.01em;
-}
-:where(.btn-primary,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary){
-  background:linear-gradient(125deg,#f7dc94 0%,#e8b84b 58%,#d39a2f 100%);
-  color:#111a27!important;
-  border-color:rgba(255,232,177,.45);
-}
-:where(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn){
-  background:rgba(255,255,255,.025);
-  color:var(--wft-text);
-  border:1px solid var(--wft-line);
-}
-:where(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
-  background-color:#081525;
-  min-height:44px;
-}
-:where(input,select,textarea):disabled{opacity:.62;cursor:not-allowed}
-:where(.sidebar,.side-nav,.dashboard-sidebar,.app-sidebar){
-  background:linear-gradient(180deg,#0a1728 0%,#07111f 100%);
-  border-right:1px solid var(--wft-line);
-}
-:where(.nav-btn,.nav-link,.sidebar a,.side-nav a,.dashboard-sidebar a){
-  border-radius:10px;
-}
-:where(.nav-btn.active,.nav-link.active,.sidebar a.active,.side-nav a.active,.dashboard-sidebar a.active){
-  background:linear-gradient(100deg,rgba(232,184,75,.14),rgba(232,184,75,.035));
-  color:var(--wft-gold-2)!important;
-  border-color:var(--wft-line-gold);
-}
-:where(.brand,.logo,.brand-name){letter-spacing:.035em}
-:where(.eyebrow,.section-eyebrow,.nav-label){
-  letter-spacing:.14em;
-}
-:where(.status,.badge,.pill,.status-badge,.tag){
-  border:1px solid rgba(232,184,75,.18);
-}
-:where(table){width:100%}
-:where(th){font-weight:750;letter-spacing:.025em}
-:where(tbody tr){transition:background .16s ease}
-:where(.hero,.hero-section){
-  position:relative;
-  isolation:isolate;
-}
-:where(.hero h1,.hero-title){
-  letter-spacing:-.045em;
-  line-height:1.06;
-}
-:where(img){height:auto}
-:focus-visible{outline-color:var(--wft-gold)!important}
-@media(max-width:760px){
-  body{background-attachment:scroll}
-  :where(.container,.wrap,main){max-width:100%}
-  :where(.card,.panel,.container){box-shadow:0 10px 28px rgba(0,0,0,.2)}
-  :where(.topbar,.top-bar,.dashboard-header){padding-left:15px;padding-right:15px}
-}
-
-
-/* WFT PRIMARY TYPOGRAPHY — clean pure white text across all HTML pages */
-:root{
-  --wft-text:#ffffff;
-  --text:#ffffff;
-  --text-primary:#ffffff;
-}
-body,
-main,
-main p,
-main li,
-main td,
-main .content,
-main .main-text,
-main .text-primary,
-.page-content,
-.main-content,
-.dashboard-content{
-  color:#ffffff;
-}
-h1,h2,h3,h4,h5,h6,
-.page-title,.section-title,.card-title,.panel-title,.title,.heading,.hero-title{
-  color:#ffffff;
-}
-/* Keep secondary information softer and brand/status colors intact */
-small,.small,.muted,.subtext,.subtitle,.helper-text,.description,.small-text,.text-muted{
-  color:var(--wft-muted);
-}
-
-
-/* WFT SITE-WIDE FINISH — aligned with the Challenges page */
-:root{
-  --bg:#07111f;--panel:#101d30;--panel2:#14243a;
-  --gold:#e8b84b;--gold2:#f5d27c;--text:#f4f7fb;
-  --muted:#9aabc0;--line:#26374d;
-}
-html,body{background-color:#07111f;color:#f4f7fb}
-body{font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;line-height:1.65}
-body :where(p,li,td,th,label,span,div){text-decoration-color:rgba(232,184,75,.35)}
-body :where(h1,h2,h3,h4,h5,h6){color:#f4f7fb}
-body :where(.gold,.highlight,.eyebrow,.section-kicker,.brand span,.logo span,.price,.starting,.amount,.total-price){color:#f5d27c!important}
-body :where(.muted,.small,.sub,.subtitle,.description,.helper-text,small){color:#9aabc0}
-body :where(a:not(.btn):not(.button):not(.nav-link):not(.sidebar a)){color:#f5d27c}
-body :where(.card,.panel,.box,.section,.content-card,.info-card,.form-card,.table-card,.stat,.rule,.program){border-color:rgba(148,163,184,.2)}
-body :where(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background:#081525;color:#f4f7fb;border:1px solid #34465d}
-body :where(input,select,textarea)::placeholder{color:#91a1b5}
-body :where(button.primary,.primary-btn,.btn-primary,.button-primary,.submit,.cta-button,.buy-button){background:linear-gradient(120deg,#f5d27c,#e8b84b)!important;color:#142033!important;border:1px solid #ffe2a1!important;box-shadow:0 8px 22px rgba(219,166,75,.18)}
-body :where(button.primary,.primary-btn,.btn-primary,.button-primary,.submit,.cta-button,.buy-button):hover{filter:brightness(1.06);transform:translateY(-1px)}
-body :where(.active,.selected,.program.active,.size-btn.active){border-color:#e8b84b}
-@media(max-width:650px){body{font-size:14px}main{width:100%;padding-left:14px;padding-right:14px}}
-
-
-
-
-/* =========================================================
-   WFT PREMIUM LIGHT SYSTEM — SINGLE AUTHORITATIVE LAYER v18
-   One shared theme for all pages. Terminal chart stays dark.
-   ========================================================= */
-:root{
-  color-scheme:light;
-  --wft-page:#f4f7fb;
-  --wft-surface:#ffffff;
-  --wft-surface-soft:#f8fafc;
-  --wft-ink:#172033;
-  --wft-body:#334155;
-  --wft-muted:#64748b;
-  --wft-border:#e2e8f0;
-  --wft-blue:#2563eb;
-  --wft-blue-dark:#1d4ed8;
-  --wft-green:#15803d;
-  --wft-red:#dc2626;
-  --wft-amber:#b45309;
+ --wft-blue:#155eef;--wft-blue-strong:#1248c7;--wft-blue-dark:#103b91;
+ --wft-blue-soft:#eaf2ff;--wft-page:#f5f8ff;--wft-white:#fff;
+ --wft-ink:#14213d;--wft-text:#34445f;--wft-muted:#687891;
+ --wft-border:#dce5f2;--wft-green:#15803d;--wft-red:#dc2626;--wft-amber:#b45309;
+ color-scheme:light;
 }
 html:not(:has(.chartbox)){background:var(--wft-page)!important;color-scheme:light!important}
 body:not(:has(.chartbox)){
-  background:var(--wft-page)!important;background-image:none!important;
-  color:var(--wft-body)!important;
-  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
-  font-size:14px;font-weight:400;line-height:1.6;
-  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+ margin:0;background:var(--wft-page)!important;background-image:none!important;
+ color:var(--wft-text)!important;font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
+ font-size:14px;font-weight:400;line-height:1.55;-webkit-font-smoothing:antialiased;
 }
-body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6){
-  color:var(--wft-ink)!important;font-weight:600!important;
-}
-body:not(:has(.chartbox)) :is(p,li,small,label,.muted,.small,.description,.subtitle,.helper-text,.text-muted){
-  color:var(--wft-muted)!important;font-weight:400!important;
-}
+body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6){color:var(--wft-ink)!important;font-weight:650!important;letter-spacing:-.02em}
+body:not(:has(.chartbox)) :is(p,li,small,label,.muted,.description,.subtitle,.helper-text,.text-muted){color:var(--wft-muted)!important;font-weight:400}
 body:not(:has(.chartbox)) :is(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar){
-  background:#fff!important;color:var(--wft-body)!important;
-  border-color:var(--wft-border)!important;box-shadow:0 2px 12px rgba(15,23,42,.045)!important;
+ background:#fff!important;color:var(--wft-ink)!important;border-color:var(--wft-border)!important;
+ box-shadow:0 2px 14px rgba(16,45,90,.06)!important;
 }
 body:not(:has(.chartbox)) :is(.main,.content,main,.page,.section,.container,.wrap,.page-content,.main-content,.dashboard-content){
-  background:var(--wft-page)!important;color:var(--wft-body)!important;
+ background:var(--wft-page)!important;color:var(--wft-text)!important;
 }
 body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card){
-  background:#fff!important;color:var(--wft-body)!important;
-  border:1px solid var(--wft-border)!important;
-  box-shadow:0 5px 20px rgba(15,23,42,.045)!important;
+ background:#fff!important;color:var(--wft-text)!important;border:1px solid var(--wft-border)!important;
+ border-radius:14px;box-shadow:0 5px 22px rgba(16,45,90,.055)!important;
 }
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card) :is(h1,h2,h3,h4,h5,h6,strong,b,summary){
-  color:var(--wft-ink)!important;
-}
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card) :is(p,li,small,label,.muted,.description,.subtitle){
-  color:var(--wft-muted)!important;
-}
-/* Keep the customer/admin navigation rail consistently navy. */
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card) :is(h1,h2,h3,h4,h5,h6,strong,b,summary){color:var(--wft-ink)!important}
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card) :is(p,li,small,label,.muted,.description,.subtitle){color:var(--wft-muted)!important}
+/* Unified blue navigation rail */
 body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav){
-  background:#10243b!important;color:#e2e8f0!important;
-  border-color:#243b56!important;
+ background:linear-gradient(180deg,#1248c7 0%,#103b91 100%)!important;color:#fff!important;border-color:#1649a5!important;
+ box-shadow:4px 0 22px rgba(16,59,145,.12)!important;
 }
 body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(a,button,span,small,.nav-label,.brand,.logo,.ico,.nav-icon){
-  color:#dbe7f5!important;font-weight:400!important;
+ color:#eaf2ff!important;font-weight:450!important;
 }
 body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(.nav-btn.active,.nav-link.active,a.active,.active){
-  background:#1e3a5f!important;color:#fff!important;
+ background:rgba(255,255,255,.17)!important;color:#fff!important;border-color:rgba(255,255,255,.25)!important;
 }
-body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) .nav-label{color:#9fb3cc!important}
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(a,button):hover{background:rgba(255,255,255,.12)!important;color:#fff!important}
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) .nav-label{color:#bfd4ff!important}
+/* Visible mobile menu control */
 body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle){
-  display:inline-flex!important;align-items:center!important;justify-content:center!important;
-  min-width:42px!important;min-height:42px!important;padding:8px 12px!important;
-  background:#10243b!important;color:#fff!important;border:1px solid #294563!important;
-  border-radius:9px!important;font-size:22px!important;line-height:1!important;
-  opacity:1!important;visibility:visible!important;
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-width:42px!important;min-height:42px!important;padding:8px 12px!important;
+ background:var(--wft-blue)!important;color:#fff!important;border:1px solid var(--wft-blue)!important;
+ border-radius:10px!important;font-size:22px!important;line-height:1!important;opacity:1!important;visibility:visible!important;
 }
 body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle) *{color:#fff!important}
-/* Homepage masthead and hero intentionally retain the premium navy treatment. */
+/* Homepage blue hero and masthead */
 body:not(:has(.chartbox)) .hero{
-  background:linear-gradient(135deg,#102b49 0%,#0b1c31 100%)!important;
-  color:#f8fafc!important;border-color:#1d3b5b!important;
+ background:linear-gradient(125deg,#155eef 0%,#1248c7 58%,#103b91 100%)!important;
+ color:#fff!important;border-color:#155eef!important;box-shadow:0 14px 34px rgba(21,94,239,.16)!important;
 }
-body:not(:has(.chartbox)) .hero :is(h1,h2,h3,h4,p,span,small,strong,.hero-description,.hero-trust,.hero-tag){
-  color:#f8fafc!important;
-}
-body:not(:has(.chartbox)) .hero :is(.gold,.highlight){color:#93c5fd!important}
-body:not(:has(.chartbox)) .hero .hero-tag{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.25)!important}
-body:not(:has(.chartbox)):has(.hero) header{background:#10243b!important;color:#f8fafc!important;border-color:#1d3b5b!important}
-body:not(:has(.chartbox)):has(.hero) header :is(a,button,span,.logo,.nav-links a,.nav-actions){color:#f8fafc!important}
-body:not(:has(.chartbox)) header .nav-actions a[href="Login.html"],
-body:not(:has(.chartbox)) header .nav-actions a.btn-outline{
-  color:#111827!important;background:#fff!important;border:1px solid #cbd5e1!important;
-}
-body:not(:has(.chartbox)) .nav-links{background:#10243b!important}
-body:not(:has(.chartbox)) .hero-trust,
-body:not(:has(.chartbox)) .hero-trust span{color:#fff!important}
-/* All ordinary content sections, including challenge selection, stay light. */
+body:not(:has(.chartbox)) .hero :is(h1,h2,h3,h4,p,span,small,strong,.hero-description,.hero-trust,.hero-tag){color:#fff!important}
+body:not(:has(.chartbox)) .hero :is(.gold,.highlight){color:#bfdbfe!important}
+body:not(:has(.chartbox)) .hero .hero-tag{background:rgba(255,255,255,.13)!important;border-color:rgba(255,255,255,.3)!important}
+body:not(:has(.chartbox)):has(.hero) header{background:#fff!important;color:var(--wft-ink)!important;border-color:var(--wft-border)!important}
+body:not(:has(.chartbox)):has(.hero) header :is(a,button,span,.logo,.nav-links a,.nav-actions){color:var(--wft-ink)!important}
+body:not(:has(.chartbox)):has(.hero) header .nav-actions a[href="Login.html"],
+body:not(:has(.chartbox)):has(.hero) header .nav-actions a.btn-outline{background:#fff!important;color:var(--wft-blue)!important;border:1px solid #b9cdf3!important}
+body:not(:has(.chartbox)) .nav-links{background:#fff!important}
+body:not(:has(.chartbox)) .hero-trust,body:not(:has(.chartbox)) .hero-trust span{color:#fff!important}
+/* Light-blue feature and welcome panels */
 body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome){
-  background:linear-gradient(135deg,#eaf2ff 0%,#fff 70%,#f1f6ff 100%)!important;
-  color:var(--wft-ink)!important;border:1px solid #dbe7f5!important;
+ background:linear-gradient(135deg,#eaf2ff 0%,#fff 76%)!important;color:var(--wft-ink)!important;border:1px solid #d4e3ff!important;
 }
-body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome) :is(h1,h2,h3,h4,p,span,small,strong,div){
-  color:var(--wft-ink)!important;
-}
-body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome) :is(.hero-kicker,.hero-tag,.welcome-kicker){color:#1d4ed8!important}
-body:not(:has(.chartbox)) #selectedRulesPanel h2{color:#172033!important}
-body:not(:has(.chartbox)) .section-heading :is(h1,h2,h3,p,.eyebrow){color:#172033!important}
-body:not(:has(.chartbox)) .section-heading .gold{color:#1d4ed8!important}
-/* Inputs, selects, buttons and tables */
+body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome) :is(h1,h2,h3,h4,p,span,small,strong,div){color:var(--wft-ink)!important}
+body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome) :is(.hero-kicker,.hero-tag,.welcome-kicker){color:var(--wft-blue)!important}
+body:not(:has(.chartbox)) .section-heading :is(h1,h2,h3,p,.eyebrow){color:var(--wft-ink)!important}
+body:not(:has(.chartbox)) .section-heading .gold{color:var(--wft-blue)!important}
+/* Inputs and controls */
 body:not(:has(.chartbox)) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
-  background:#fff!important;color:#172033!important;border:1px solid #cbd5e1!important;
-  box-shadow:none!important;
+ background:#fff!important;color:var(--wft-ink)!important;border:1px solid #cbd8eb!important;border-radius:9px;box-shadow:none!important;
 }
-body:not(:has(.chartbox)) :is(input,textarea)::placeholder{color:#94a3b8!important}
-body:not(:has(.chartbox)) select option{background:#fff!important;color:#172033!important}
-body:not(:has(.chartbox)) :is(label,.field-label,.field label){color:#475569!important;font-weight:400!important}
-body:not(:has(.chartbox)) :is(button,.btn,.button,.submit,.primary-btn,.btn-primary,.button-primary,.cta-button,.buy-button,.action-primary,button.primary){
-  font-family:inherit!important;
-}
+body:not(:has(.chartbox)) :is(input,textarea)::placeholder{color:#91a1b8!important}
+body:not(:has(.chartbox)) select option{background:#fff!important;color:var(--wft-ink)!important}
+body:not(:has(.chartbox)) :is(label,.field-label,.field label){color:#465875!important;font-weight:450!important}
+body:not(:has(.chartbox)) :is(button,.btn,.button,.submit,.primary-btn,.btn-primary,.button-primary,.cta-button,.buy-button,.action-primary,button.primary){font-family:inherit!important}
 body:not(:has(.chartbox)) :is(.btn-primary,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,.submit,button.primary){
-  background:#2563eb!important;color:#fff!important;border:1px solid #2563eb!important;
+ background:linear-gradient(120deg,#2875ff,#155eef)!important;color:#fff!important;border:1px solid #155eef!important;
+ box-shadow:0 6px 16px rgba(21,94,239,.16)!important;border-radius:9px;
 }
-body:not(:has(.chartbox)) :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn,header .nav-actions a.btn-outline){
-  background:#fff!important;color:#1e293b!important;border:1px solid #cbd5e1!important;
-}
-body:not(:has(.chartbox)) :is(table,tbody,tr,td){background:#fff!important;color:#334155!important;border-color:#e2e8f0!important}
-body:not(:has(.chartbox)) :is(th,thead){background:#f1f5f9!important;color:#334155!important}
-body:not(:has(.chartbox)) tbody tr:hover{background:#f8fafc!important}
-/* Brand and data highlights */
-body:not(:has(.chartbox)) :is(.gold,.text-gold,.highlight,.highlight-text,.accent-gold,.brand-gold,.gold-text,.price-highlight,.section-eyebrow,.eyebrow,.section-kicker,.price,.starting,.amount,.total-price,.balance){color:#1d4ed8!important}
-body:not(:has(.chartbox)) .stat-card h2{color:#1d4ed8!important}
-/* Status text uses restrained semantic colors and normal weight. */
+body:not(:has(.chartbox)) :is(.btn-primary,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,.submit,button.primary):hover{filter:brightness(1.04);transform:translateY(-1px)}
+body:not(:has(.chartbox)) :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn){background:#fff!important;color:var(--wft-blue)!important;border:1px solid #b9cdf3!important}
+body:not(:has(.chartbox)) :is(table,tbody,tr,td){background:#fff!important;color:var(--wft-text)!important;border-color:var(--wft-border)!important}
+body:not(:has(.chartbox)) :is(th,thead){background:#edf3ff!important;color:#243b63!important}
+body:not(:has(.chartbox)) tbody tr:hover{background:#f7faff!important}
+body:not(:has(.chartbox)) :is(a:not(.btn):not(.button)){color:var(--wft-blue)}
+body:not(:has(.chartbox)) :is(.gold,.text-gold,.highlight,.highlight-text,.accent-gold,.brand-gold,.gold-text,.price-highlight,.section-eyebrow,.eyebrow,.section-kicker,.price,.starting,.amount,.total-price,.balance){color:var(--wft-blue)!important}
+body:not(:has(.chartbox)) .stat-card h2{color:var(--wft-blue)!important}
+/* Clear status colors */
 body:not(:has(.chartbox)) :is(.success,.text-success,.status-success,.positive,.approved,.paid,.status.approved,.status.paid){color:#15803d!important;font-weight:400!important}
 body:not(:has(.chartbox)) :is(.error,.text-danger,.status-danger,.danger,.negative,.rejected,.failed,.breached,.status.rejected,.status.failed){color:#dc2626!important;font-weight:400!important}
-body:not(:has(.chartbox)) :is(.warning,.text-warning,.pending,.status-pending,.status.pending){color:#b45309!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(.warning,.text-warning,.pending,.status-pending,.status.pending){color:#a16207!important;font-weight:400!important}
 body:not(:has(.chartbox)) :is(.status,.status-badge,.badge,.pill,.tag){font-weight:400!important;letter-spacing:0!important}
 body:not(:has(.chartbox)) :is(.status.approved,.status.paid,.badge.approved,.badge.paid){background:#ecfdf5!important;color:#15803d!important;border-color:#bbf7d0!important}
 body:not(:has(.chartbox)) :is(.status.rejected,.status.failed,.badge.rejected,.badge.failed){background:#fef2f2!important;color:#dc2626!important;border-color:#fecaca!important}
-body:not(:has(.chartbox)) :is(.status.pending,.badge.pending){background:#fffbeb!important;color:#b45309!important;border-color:#fde68a!important}
-/* Terminal: preserve its dark workspace and chart controls. */
+body:not(:has(.chartbox)) :is(.status.pending,.badge.pending){background:#fffbeb!important;color:#a16207!important;border-color:#fde68a!important}
+/* Trading terminal stays dark so charts remain comfortable to read */
 body:has(.chartbox){
-  --bg:#050a13!important;--panel:#0b1524!important;--panel2:#101f32!important;
-  --line:#24364b!important;--gold:#e8b84b!important;--gold2:#f7d98c!important;
-  --blue:#55a8ff!important;--text:#f5f8fc!important;--muted:#91a9c2!important;
-  color-scheme:dark!important;
-  background:radial-gradient(ellipse at 55% -20%,#183653 0,transparent 48%),#050a13!important;
-  color:#f5f8fc!important;
+ --bg:#050a13!important;--panel:#0b1524!important;--panel2:#101f32!important;--line:#24364b!important;
+ --gold:#55a8ff!important;--gold2:#bfdbfe!important;--blue:#55a8ff!important;--text:#f5f8fc!important;--muted:#91a9c2!important;
+ color-scheme:dark!important;background:radial-gradient(ellipse at 55% -20%,#183653 0,transparent 48%),#050a13!important;color:#f5f8fc!important;
 }
 body:has(.chartbox) :where(h1,h2,h3,h4,h5,h6,p,small,label){color:inherit!important}
 body:has(.chartbox) :where(.panel){background:linear-gradient(145deg,#102137,#091421)!important;border-color:#263b52!important;color:#f5f8fc!important}
@@ -458,153 +110,12 @@ body:has(.chartbox) :where(input,select){background:#071321!important;color:#f5f
 body:has(.chartbox) :where(.top){background:#07111ff2!important;color:#f5f8fc!important;border-color:#24364b!important}
 body:has(.chartbox) :where(.toplink){color:#dce7f4!important}
 body:has(.chartbox) :where(.metric-label,.hint,.muted){color:#91a9c2!important}
-body:has(.chartbox) :where(.metric.gold){color:#f7d98c!important}
+body:has(.chartbox) :where(.metric.gold){color:#bfdbfe!important}
 body:has(.chartbox) :where(.chartbox){background:#091522!important;border-color:#29445f!important}
 body:has(.chartbox) :where(.charttools button,.tab,.order-tabs button,.mode-tabs button){background:#0a1828!important;color:#a9bfd5!important;border-color:#2b4058!important}
 body:has(.chartbox) :where(.simtag){color:#75e4b8!important;background:#0b2a22!important;border-color:#22654d!important}
 @media(max-width:760px){
-  body:not(:has(.chartbox)){font-size:14px}
-  body:not(:has(.chartbox)) :is(.content,main){padding-left:14px!important;padding-right:14px!important}
-  body:not(:has(.chartbox)) :is(.card,.panel,.stat-card){box-shadow:0 3px 14px rgba(15,23,42,.04)!important}
-}
-
-
-
-/* =========================================================
-   WFT BLUE + WHITE PRO DESIGN SYSTEM v19
-   Single visual direction: clean, fast, consistent, responsive.
-   The chart workspace is deliberately excluded and stays dark.
-   ========================================================= */
-:root{
-  color-scheme:light;
-  --wft-page:#f3f7ff;
-  --wft-surface:#ffffff;
-  --wft-surface-soft:#f7faff;
-  --wft-ink:#102a4c;
-  --wft-body:#334b68;
-  --wft-muted:#71839b;
-  --wft-border:#dce6f2;
-  --wft-blue:#1769e0;
-  --wft-blue-dark:#1054bd;
-  --wft-blue-soft:#eaf2ff;
-  --wft-green:#16834a;
-  --wft-red:#d93645;
-  --wft-amber:#a96b08;
-  /* Compatibility tokens used by legacy page-level styles */
-  --bg:#f3f7ff;
-  --bg2:#edf4ff;
-  --panel:#ffffff;
-  --panel2:#f7faff;
-  --line:#dce6f2;
-  --text:#102a4c;
-  --text-primary:#102a4c;
-  --muted:#71839b;
-  --gold:#1769e0;
-  --gold2:#4389ef;
-  --gold-bright:#1769e0;
-  --wft-gold:#1769e0;
-  --wft-gold-2:#4389ef;
-  --wft-gold-soft:#dceaff;
-  --blue:#1769e0;
-  --primary:#1769e0;
-}
-html:not(:has(.chartbox)){background:#f3f7ff!important;color-scheme:light!important}
-body:not(:has(.chartbox)){
-  background:#f3f7ff!important;
-  color:#334b68!important;
-  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
-  font-size:14px;line-height:1.6;font-weight:400;
-}
-body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6){color:#102a4c!important;font-weight:650!important}
-body:not(:has(.chartbox)) :is(p,li,small,label,.muted,.description,.subtitle,.helper-text,.text-muted){color:#71839b!important}
-body:not(:has(.chartbox)) :is(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar){
-  background:#fff!important;color:#102a4c!important;border-color:#dce6f2!important;
-  box-shadow:0 2px 14px rgba(16,42,76,.045)!important;
-}
-body:not(:has(.chartbox)) :is(.main,.content,main,.page,.section,.container,.wrap,.page-content,.main-content,.dashboard-content){
-  background:#f3f7ff!important;color:#334b68!important;
-}
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card){
-  background:#fff!important;color:#334b68!important;border:1px solid #dce6f2!important;
-  border-radius:14px!important;box-shadow:0 5px 18px rgba(16,42,76,.045)!important;
-  backdrop-filter:none!important;
-}
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card) :is(h1,h2,h3,h4,h5,h6,strong,b,summary){color:#102a4c!important}
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card) :is(p,li,small,label,.muted,.description,.subtitle){color:#71839b!important}
-/* Unified deep-blue sidebar and active navigation */
-body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav){
-  background:#10335f!important;color:#eaf2ff!important;border-color:#214a78!important;
-}
-body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(a,button,span,small,.nav-label,.brand,.logo,.ico,.nav-icon){
-  color:#dceaff!important;font-weight:400!important;
-}
-body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(.nav-btn.active,.nav-link.active,a.active,.active){
-  background:#1d5fb8!important;color:#fff!important;border-radius:9px!important;
-}
-body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) .nav-label{color:#9dbce3!important}
-body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle){
-  display:inline-flex!important;align-items:center!important;justify-content:center!important;
-  min-width:42px!important;min-height:42px!important;padding:8px 12px!important;
-  background:#10335f!important;color:#fff!important;border:1px solid #28558a!important;
-  border-radius:10px!important;font-size:22px!important;line-height:1!important;
-  opacity:1!important;visibility:visible!important;
-}
-body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle) *{color:#fff!important}
-/* Brand hero is blue; content stays white and high-contrast */
-body:not(:has(.chartbox)) .hero{
-  background:linear-gradient(135deg,#123b70 0%,#0d2b50 100%)!important;
-  color:#fff!important;border:1px solid #24558d!important;
-}
-body:not(:has(.chartbox)) .hero :is(h1,h2,h3,h4,p,span,small,strong,.hero-description,.hero-trust,.hero-tag){color:#fff!important}
-body:not(:has(.chartbox)) .hero :is(.gold,.highlight){color:#9cc8ff!important}
-body:not(:has(.chartbox)) .hero .hero-tag{background:rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.24)!important}
-body:not(:has(.chartbox)):has(.hero) header{background:#10335f!important;color:#fff!important;border-color:#28558a!important}
-body:not(:has(.chartbox)):has(.hero) header :is(a,button,span,.logo,.nav-links a,.nav-actions){color:#fff!important}
-body:not(:has(.chartbox)) header .nav-actions a[href="Login.html"],
-body:not(:has(.chartbox)) header .nav-actions a.btn-outline{color:#10335f!important;background:#fff!important;border:1px solid #dce6f2!important}
-body:not(:has(.chartbox)) .nav-links{background:#10335f!important}
-body:not(:has(.chartbox)) .hero-trust,body:not(:has(.chartbox)) .hero-trust span{color:#fff!important}
-body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome){
-  background:linear-gradient(135deg,#eaf2ff 0%,#fff 72%)!important;color:#102a4c!important;border:1px solid #d4e4f8!important;
-}
-body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome) :is(h1,h2,h3,h4,p,span,small,strong,div){color:#102a4c!important}
-body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome) :is(.hero-kicker,.hero-tag,.welcome-kicker){color:#1769e0!important}
-body:not(:has(.chartbox)) .section-heading :is(h1,h2,h3,p,.eyebrow){color:#102a4c!important}
-body:not(:has(.chartbox)) .section-heading .gold{color:#1769e0!important}
-/* Inputs and actions */
-body:not(:has(.chartbox)) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
-  background:#fff!important;color:#102a4c!important;border:1px solid #cfdaea!important;border-radius:9px!important;box-shadow:none!important;
-}
-body:not(:has(.chartbox)) :is(input,textarea)::placeholder{color:#91a1b6!important}
-body:not(:has(.chartbox)) select option{background:#fff!important;color:#102a4c!important}
-body:not(:has(.chartbox)) :is(label,.field-label,.field label){color:#465d79!important;font-weight:400!important}
-body:not(:has(.chartbox)) :is(.btn-primary,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,.submit,button.primary){
-  background:#1769e0!important;color:#fff!important;border:1px solid #1769e0!important;border-radius:9px!important;
-  box-shadow:0 4px 12px rgba(23,105,224,.15)!important;
-}
-body:not(:has(.chartbox)) :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn){
-  background:#fff!important;color:#174b87!important;border:1px solid #cbdcf0!important;border-radius:9px!important;
-}
-body:not(:has(.chartbox)) :is(table,tbody,tr,td){background:#fff!important;color:#334b68!important;border-color:#e1e9f3!important}
-body:not(:has(.chartbox)) :is(th,thead){background:#edf4ff!important;color:#23476f!important}
-body:not(:has(.chartbox)) tbody tr:hover{background:#f7faff!important}
-body:not(:has(.chartbox)) :is(.gold,.text-gold,.highlight,.highlight-text,.accent-gold,.brand-gold,.gold-text,.price-highlight,.section-eyebrow,.eyebrow,.section-kicker,.price,.starting,.amount,.total-price,.balance){color:#1769e0!important}
-body:not(:has(.chartbox)) .stat-card h2{color:#1769e0!important}
-/* Status colors remain semantic */
-body:not(:has(.chartbox)) :is(.success,.text-success,.status-success,.positive,.approved,.paid,.status.approved,.status.paid){color:#16834a!important;font-weight:400!important}
-body:not(:has(.chartbox)) :is(.error,.text-danger,.status-danger,.danger,.negative,.rejected,.failed,.breached,.status.rejected,.status.failed){color:#d93645!important;font-weight:400!important}
-body:not(:has(.chartbox)) :is(.warning,.text-warning,.pending,.status-pending,.status.pending){color:#a96b08!important;font-weight:400!important}
-body:not(:has(.chartbox)) :is(.status,.status-badge,.badge,.pill,.tag){font-weight:400!important;letter-spacing:0!important}
-/* Preserve dark terminal chart while changing its blue accents */
-body:has(.chartbox){
-  --bg:#050a13!important;--bg2:#071321!important;--panel:#0b1524!important;--panel2:#101f32!important;
-  --line:#24364b!important;--gold:#55a8ff!important;--gold2:#9cc8ff!important;
-  --blue:#55a8ff!important;--text:#f5f8fc!important;--muted:#91a9c2!important;
-  color-scheme:dark!important;background:#050a13!important;color:#f5f8fc!important;
-}
-body:has(.chartbox) :where(.chartbox){background:#091522!important;border-color:#29445f!important}
-body:has(.chartbox) :where(.charttools button,.tab,.order-tabs button,.mode-tabs button){background:#0a1828!important;color:#a9bfd5!important;border-color:#2b4058!important}
-@media(max-width:760px){
-  body:not(:has(.chartbox)){font-size:14px}
-  body:not(:has(.chartbox)) :is(.content,main){padding-left:14px!important;padding-right:14px!important}
+ body:not(:has(.chartbox)){font-size:14px}
+ body:not(:has(.chartbox)) :is(.content,main){padding-left:14px!important;padding-right:14px!important}
+ body:not(:has(.chartbox)) :is(.card,.panel,.stat-card){box-shadow:0 3px 14px rgba(16,45,90,.045)!important}
 }
