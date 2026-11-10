@@ -226,6 +226,14 @@ $("copyGiveawayReferral")?.addEventListener("click",async()=>{
 });
 
 async function loadGiveawayStatus(){
+ const params=new URLSearchParams(window.location.search);
+ const testValue=params.get("testParticipants");
+ if(testValue!==null && /^\\d+$/.test(testValue) && Number(testValue)<=100000){
+  const testCount=Number(testValue);
+  $("giveawayLiveStatus").textContent="GIVEAWAY IS OPEN · TEST PREVIEW ✓";
+  $("giveawaySlots").textContent=testCount+" trader"+(testCount===1?" has":"s have")+" joined this Giveaway. (TEST PREVIEW — actual count is unchanged.)";
+  return;
+ }
  try{
   const {data,error}=await db.rpc("giveaway_public_status");if(error)throw error;
   const joined=Number(data?.joined||0);
