@@ -621,6 +621,13 @@ tr:hover td{background:rgba(85,168,255,.035)}
 
           <div class="panel">
             <div class="panel-head"><h3>Payout Requests</h3></div>
+            <div id="payoutStatusFilters" style="display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px 4px">
+              <button type="button" class="btn small" data-payout-filter="all" onclick="setPayoutFilter('all')">All <span id="payoutCountAll">0</span></button>
+              <button type="button" class="btn small" data-payout-filter="pending" onclick="setPayoutFilter('pending')">Pending <span id="payoutCountPending">0</span></button>
+              <button type="button" class="btn small green" data-payout-filter="approved" onclick="setPayoutFilter('approved')">Approved <span id="payoutCountApproved">0</span></button>
+              <button type="button" class="btn small red" data-payout-filter="rejected" onclick="setPayoutFilter('rejected')">Rejected <span id="payoutCountRejected">0</span></button>
+              <button type="button" class="btn small gold" data-payout-filter="paid" onclick="setPayoutFilter('paid')">Paid <span id="payoutCountPaid">0</span></button>
+            </div>
             <div class="table-wrap">
               <table>
   <thead>
@@ -939,6 +946,7 @@ let ordersData = [];
 let kycData = [];
 let accountsData = [];
 let payoutsData = [];
+let payoutStatusFilter = "all";
 let challengeRequestsData = [];
 let giveawayEntriesData = [];
 let supportTicketsData = [];
@@ -1697,17 +1705,49 @@ async function loadPayouts() {
   }
 }
 
+
+function updatePayoutFilterCounts() {
+  const counts = {
+    all: payoutsData.length,
+    pending: payoutsData.filter(p => p.status === "pending").length,
+    approved: payoutsData.filter(p => p.status === "approved").length,
+    rejected: payoutsData.filter(p => p.status === "rejected").length,
+    paid: payoutsData.filter(p => p.status === "paid").length
+  };
+  Object.entries(counts).forEach(([status, count]) => {
+    const el = $("payoutCount" + status.charAt(0).toUpperCase() + status.slice(1));
+    if (el) el.textContent = count;
+  });
+}
+function setPayoutFilter(status) {
+  if (!["all", "pending", "approved", "rejected", "paid"].includes(status)) return;
+  payoutStatusFilter = status;
+  document.querySelectorAll("[data-payout-filter]").forEach(button => {
+    const active = button.dataset.payoutFilter === status;
+    button.style.outline = active ? "2px solid #d6ad55" : "none";
+    button.style.opacity = active ? "1" : ".72";
+  });
+  renderPayouts();
+}
 function renderPayouts() {
   const tbody = $("payoutsTable");
   if (!tbody) return;
 
+  updatePayoutFilterCounts();
   if (!payoutsData.length) {
     tbody.innerHTML =
       '<tr><td colspan="11" class="empty">No payout requests found.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = payoutsData.map(item => {
+  const visiblePayouts = payoutStatusFilter === "all"
+    ? payoutsData
+    : payoutsData.filter(item => String(item.status || "").toLowerCase() === payoutStatusFilter);
+  if (!visiblePayouts.length) {
+    tbody.innerHTML = `<tr><td colspan="11" class="empty">No ${escapeHTML(payoutStatusFilter)} payout requests.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = visiblePayouts.map(item => {
     const account = item.trading_account || {};
 
     const accountLabel = [
