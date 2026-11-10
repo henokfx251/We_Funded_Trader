@@ -828,7 +828,7 @@ body:not(:has(.chartbox)){
   background:#f4f7fb!important;color:#334155!important;
   font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
 }
-body:not(:has(.chartbox)) *{color:inherit!important}
+/* Removed blanket inherit rule: it erased semantic text contrast and icon colors. */
 body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6){color:#0f172a!important}
 body:not(:has(.chartbox)) :is(p,small,label,.muted,.description,.subtitle,.helper-text,.nav-label,.loading-text){color:#64748b!important}
 body:not(:has(.chartbox)) :is(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar,.sidebar,.side-nav,.dashboard-sidebar,.app-sidebar,.main,.content,main,.page,.section,.container,.wrap,#loading,#denied,footer){
@@ -997,3 +997,75 @@ body:not(:has(.chartbox)) .message.success,
 body:not(:has(.chartbox)) .agreement-message.accepted{color:#15803d!important}
 body:not(:has(.chartbox)) .message.error,
 body:not(:has(.chartbox)) .agreement-message.needs-attention{color:#dc2626!important}
+
+
+/* WFT GLOBAL CONTRAST RESET v17 — explicit text/surface pairing */
+body:not(:has(.chartbox)){
+  background:#f4f7fb!important;
+  color:#263449!important;
+  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
+  font-weight:400!important;
+}
+/* All ordinary page text defaults to dark ink on light surfaces. */
+body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6,p,li,label,small,span,div,td,th,summary,legend){
+  color:#334155;
+  font-weight:400;
+}
+body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6){color:#172033!important;font-weight:600!important}
+body:not(:has(.chartbox)) :is(p,li,small,label,.muted,.description,.subtitle,.helper-text,.nav-label){color:#64748b!important}
+/* Light page, header, content and cards */
+body:not(:has(.chartbox)) :is(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar,.main,.content,main,.page,.section,.container,.wrap,footer){
+  background:#ffffff!important;color:#334155!important;border-color:#e2e8f0!important;
+}
+body:not(:has(.chartbox)) :is(.content,main,.page,.section,.container,.wrap){background:#f4f7fb!important}
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper){
+  background:#ffffff!important;color:#334155!important;border:1px solid #e2e8f0!important;
+  box-shadow:0 4px 18px rgba(15,23,42,.045)!important;
+}
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper) :is(h1,h2,h3,h4,h5,h6,p,li,label,span,small,strong,b,div){
+  color:#334155!important;
+}
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper) :is(h1,h2,h3,h4,h5,h6){color:#172033!important;font-weight:600!important}
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper) :is(p,li,small,label){color:#64748b!important}
+/* Sidebar is the only intentionally dark navigation surface. */
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav){
+  background:#10243b!important;color:#e2e8f0!important;border-color:#243b56!important;
+}
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(a,button,span,small,.nav-label,.brand,.logo){
+  color:#dbe7f5!important;font-weight:400!important;
+}
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(.nav-btn.active,.nav-link.active,a.active,.active){
+  background:#1e3a5f!important;color:#ffffff!important;
+}
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(.nav-label){color:#9fb3cc!important}
+/* Hamburger/menu buttons: dark button, white icon — visible on white headers. */
+body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle,.menu-toggle button){
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  min-width:42px!important;min-height:42px!important;
+  background:#10243b!important;color:#ffffff!important;
+  border:1px solid #294563!important;border-radius:9px!important;
+  font-size:22px!important;font-weight:500!important;line-height:1!important;
+  opacity:1!important;visibility:visible!important;
+}
+body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle,.menu-toggle button) *{color:#ffffff!important}
+/* Hero areas use readable dark text on pale blue rather than inherited white. */
+body:not(:has(.chartbox)) :is(.hero,.hero-section,.dashboard-welcome,.challenge-hero){
+  background:linear-gradient(135deg,#eaf2ff 0%,#ffffff 70%,#f1f6ff 100%)!important;
+  color:#172033!important;border:1px solid #dbe7f5!important;
+}
+body:not(:has(.chartbox)) :is(.hero,.hero-section,.dashboard-welcome,.challenge-hero) :is(h1,h2,h3,h4,p,span,small,strong,div){
+  color:#172033!important;
+}
+body:not(:has(.chartbox)) :is(.hero,.hero-section,.dashboard-welcome,.challenge-hero) :is(.gold,.highlight,.hero-tag,.welcome-kicker,.hero-kicker){color:#1d4ed8!important}
+/* Inputs and table data */
+body:not(:has(.chartbox)) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
+  background:#ffffff!important;color:#172033!important;border:1px solid #cbd5e1!important;
+}
+body:not(:has(.chartbox)) :is(input,textarea)::placeholder{color:#94a3b8!important}
+body:not(:has(.chartbox)) :is(table,tbody,tr,td){background:#ffffff!important;color:#334155!important;border-color:#e2e8f0!important}
+body:not(:has(.chartbox)) :is(th,thead){background:#f1f5f9!important;color:#334155!important}
+/* Semantic status colors stay colored, regular weight. */
+body:not(:has(.chartbox)) :is(.success,.text-success,.status-success,.positive,.approved,.paid,.active){color:#15803d!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(.error,.text-danger,.status-danger,.danger,.negative,.rejected,.failed,.breached){color:#dc2626!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(.warning,.text-warning,.pending,.status-pending){color:#b45309!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(.status,.status-badge,.badge,.pill,.tag){font-weight:400!important}
