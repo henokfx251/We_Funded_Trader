@@ -308,182 +308,145 @@ body :where(.active,.selected,.program.active,.size-btn.active){border-color:#e8
 @media(max-width:650px){body{font-size:14px}main{width:100%;padding-left:14px;padding-right:14px}}
 
 
+
+
 /* =========================================================
-   WFT PREMIUM LIGHT THEME v1
-   Presentation-only layer. Keeps all existing HTML/JS logic.
+   WFT PREMIUM LIGHT SYSTEM — SINGLE AUTHORITATIVE LAYER v18
+   One shared theme for all pages. Terminal chart stays dark.
    ========================================================= */
 :root{
-  color-scheme:light!important;
-  --wft-bg:#f4f7fb!important;
-  --wft-bg-deep:#edf2f8!important;
-  --wft-panel:#ffffff!important;
-  --wft-panel-2:#f8faff!important;
-  --wft-panel-3:#edf3fb!important;
-  --wft-line:#e2e8f0!important;
-  --wft-line-gold:#bfdbfe!important;
-  --wft-text:#172033!important;
-  --wft-muted:#64748b!important;
-  --wft-gold:#2563eb!important;
-  --wft-gold-2:#1d4ed8!important;
-  --wft-blue:#2563eb!important;
-  --wft-green:#059669!important;
-  --wft-red:#dc2626!important;
-  --bg:#f4f7fb!important;
-  --sidebar:#ffffff!important;
-  --panel:#ffffff!important;
-  --panel2:#f8faff!important;
-  --border:#e2e8f0!important;
-  --line:#e2e8f0!important;
-  --gold:#2563eb!important;
-  --gold2:#1d4ed8!important;
-  --blue:#2563eb!important;
-  --blue2:#60a5fa!important;
-  --text:#172033!important;
-  --muted:#64748b!important;
+  color-scheme:light;
+  --wft-page:#f4f7fb;
+  --wft-surface:#ffffff;
+  --wft-surface-soft:#f8fafc;
+  --wft-ink:#172033;
+  --wft-body:#334155;
+  --wft-muted:#64748b;
+  --wft-border:#e2e8f0;
+  --wft-blue:#2563eb;
+  --wft-blue-dark:#1d4ed8;
+  --wft-green:#15803d;
+  --wft-red:#dc2626;
+  --wft-amber:#b45309;
 }
-body{
-  background:#f4f7fb!important;
-  background-image:none!important;
-  color:#172033!important;
+html:not(:has(.chartbox)){background:var(--wft-page)!important;color-scheme:light!important}
+body:not(:has(.chartbox)){
+  background:var(--wft-page)!important;background-image:none!important;
+  color:var(--wft-body)!important;
   font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
-  -webkit-font-smoothing:antialiased;
+  font-size:14px;font-weight:400;line-height:1.6;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
 }
-body :where(h1,h2,h3,h4,h5,h6,.page-title,.section-title,.card-title,.panel-title,.title,.heading,.hero-title){
-  color:#172033!important;
+body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6){
+  color:var(--wft-ink)!important;font-weight:600!important;
 }
-body :where(p,small,.muted,.sub,.subtitle,.description,.helper-text,.small-text,.text-muted,.nav-label){
-  color:#64748b!important;
+body:not(:has(.chartbox)) :is(p,li,small,label,.muted,.small,.description,.subtitle,.helper-text,.text-muted){
+  color:var(--wft-muted)!important;font-weight:400!important;
 }
-body :where(a:not(.btn):not(.button):not(.nav-btn):not(.nav-link)){
-  color:#1d4ed8;
+body:not(:has(.chartbox)) :is(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar){
+  background:#fff!important;color:var(--wft-body)!important;
+  border-color:var(--wft-border)!important;box-shadow:0 2px 12px rgba(15,23,42,.045)!important;
 }
-body :where(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.stat,.rule,.box){
-  background:#fff!important;
-  color:#172033!important;
-  border:1px solid #e2e8f0!important;
-  box-shadow:0 8px 26px rgba(15,23,42,.055)!important;
+body:not(:has(.chartbox)) :is(.main,.content,main,.page,.section,.container,.wrap,.page-content,.main-content,.dashboard-content){
+  background:var(--wft-page)!important;color:var(--wft-body)!important;
 }
-body :where(.sidebar,.side-nav,.dashboard-sidebar,.app-sidebar){
-  background:#fff!important;
-  border-right:1px solid #e2e8f0!important;
-  box-shadow:4px 0 24px rgba(15,23,42,.035);
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card){
+  background:#fff!important;color:var(--wft-body)!important;
+  border:1px solid var(--wft-border)!important;
+  box-shadow:0 5px 20px rgba(15,23,42,.045)!important;
 }
-body :where(.topbar,.top-bar,.dashboard-header,.app-header,.navbar,header){
-  background:rgba(255,255,255,.96)!important;
-  color:#172033!important;
-  border-color:#e2e8f0!important;
-  box-shadow:0 4px 18px rgba(15,23,42,.035);
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card) :is(h1,h2,h3,h4,h5,h6,strong,b,summary){
+  color:var(--wft-ink)!important;
 }
-body :where(.brand,.logo,.logo span,.brand-name,.brand-name span){
-  color:#1d4ed8!important;
+body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper,.platform-box,.step-card,.rule-card) :is(p,li,small,label,.muted,.description,.subtitle){
+  color:var(--wft-muted)!important;
 }
-body :where(.nav-btn,.nav-link,.sidebar a,.side-nav a,.dashboard-sidebar a){
-  color:#475569!important;
+/* Keep the customer/admin navigation rail consistently navy. */
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav){
+  background:#10243b!important;color:#e2e8f0!important;
+  border-color:#243b56!important;
 }
-body :where(.nav-btn:hover,.nav-btn.active,.nav-link:hover,.nav-link.active,.sidebar a.active,.side-nav a.active,.dashboard-sidebar a.active){
-  color:#1d4ed8!important;
-  background:#eff6ff!important;
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(a,button,span,small,.nav-label,.brand,.logo,.ico,.nav-icon){
+  color:#dbe7f5!important;font-weight:400!important;
 }
-body :where(.nav-btn.logout,.logout){color:#dc2626!important}
-body :where(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
-  color:#172033!important;
-  background:#fff!important;
-  border:1px solid #cbd5e1!important;
-  box-shadow:none;
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(.nav-btn.active,.nav-link.active,a.active,.active){
+  background:#1e3a5f!important;color:#fff!important;
 }
-body :where(input,textarea)::placeholder{color:#94a3b8!important}
-body :where(select option){background:#fff!important;color:#172033!important}
-body :where(label,.field-label){color:#334155!important}
-body :where(button,.btn,.submit,.primary-btn,.btn-primary,.button-primary,.cta-button,.buy-button,.action-primary,button.primary){
-  border-radius:11px;
+body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) .nav-label{color:#9fb3cc!important}
+body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle){
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  min-width:42px!important;min-height:42px!important;padding:8px 12px!important;
+  background:#10243b!important;color:#fff!important;border:1px solid #294563!important;
+  border-radius:9px!important;font-size:22px!important;line-height:1!important;
+  opacity:1!important;visibility:visible!important;
 }
-body :where(.btn-primary,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,.submit,button.primary){
-  color:#fff!important;
-  background:linear-gradient(135deg,#3b82f6,#1d4ed8)!important;
-  border:1px solid #2563eb!important;
-  box-shadow:0 7px 18px rgba(37,99,235,.18)!important;
+body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle) *{color:#fff!important}
+/* Homepage masthead and hero intentionally retain the premium navy treatment. */
+body:not(:has(.chartbox)) .hero{
+  background:linear-gradient(135deg,#102b49 0%,#0b1c31 100%)!important;
+  color:#f8fafc!important;border-color:#1d3b5b!important;
 }
-body :where(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn,.back-button){
-  color:#334155!important;
-  background:#fff!important;
-  border:1px solid #cbd5e1!important;
+body:not(:has(.chartbox)) .hero :is(h1,h2,h3,h4,p,span,small,strong,.hero-description,.hero-trust,.hero-tag){
+  color:#f8fafc!important;
 }
-body :where(.badge,.pill,.status-badge,.tag,.hero-tag){
-  color:#1d4ed8!important;
-  background:#eff6ff!important;
-  border-color:#bfdbfe!important;
+body:not(:has(.chartbox)) .hero :is(.gold,.highlight){color:#93c5fd!important}
+body:not(:has(.chartbox)) .hero .hero-tag{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.25)!important}
+body:not(:has(.chartbox)) header :is(a,button,span,.logo,.nav-links a,.nav-actions){color:#f8fafc!important}
+body:not(:has(.chartbox)) header .nav-actions a[href="Login.html"],
+body:not(:has(.chartbox)) header .nav-actions a.btn-outline{
+  color:#111827!important;background:#fff!important;border:1px solid #cbd5e1!important;
 }
-body :where(table){background:#fff!important;color:#172033!important}
-body :where(th){background:#f1f5f9!important;color:#475569!important}
-body :where(td){color:#334155!important}
-body :where(tbody tr:hover){background:#f8fafc!important}
-body :where(.hero){
-  background:linear-gradient(135deg,#eff6ff 0%,#fff 55%,#f8fafc 100%)!important;
-  color:#172033!important;
+body:not(:has(.chartbox)) .nav-links{background:#10243b!important}
+body:not(:has(.chartbox)) .hero-trust,
+body:not(:has(.chartbox)) .hero-trust span{color:#fff!important}
+/* All ordinary content sections, including challenge selection, stay light. */
+body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome){
+  background:linear-gradient(135deg,#eaf2ff 0%,#fff 70%,#f1f6ff 100%)!important;
+  color:var(--wft-ink)!important;border:1px solid #dbe7f5!important;
 }
-body :where(.hero h1,.hero h2,.hero-content h1){color:#172033!important}
-body :where(.hero h1 span,.gold,.text-gold,.highlight,.highlight-text,.accent-gold,.brand-gold,.gold-text,.price-highlight,.section-eyebrow,.eyebrow.gold,.badge-gold,.price,.starting,.amount,.total-price){
-  color:#2563eb!important;
+body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome) :is(h1,h2,h3,h4,p,span,small,strong,div){
+  color:var(--wft-ink)!important;
 }
-body :where(.section){background:transparent}
-body :where(.promo){
-  background:linear-gradient(135deg,#eff6ff,#f8fbff)!important;
-  border:1px solid #bfdbfe!important;
+body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome) :is(.hero-kicker,.hero-tag,.welcome-kicker){color:#1d4ed8!important}
+body:not(:has(.chartbox)) #selectedRulesPanel h2{color:#172033!important}
+body:not(:has(.chartbox)) .section-heading :is(h1,h2,h3,p,.eyebrow){color:#172033!important}
+body:not(:has(.chartbox)) .section-heading .gold{color:#1d4ed8!important}
+/* Inputs, selects, buttons and tables */
+body:not(:has(.chartbox)) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
+  background:#fff!important;color:#172033!important;border:1px solid #cbd5e1!important;
+  box-shadow:none!important;
 }
-body :where(.program,.program.active,.rule,.stat){
-  background:#fff!important;
-  color:#172033!important;
-  border-color:#dbe4f0!important;
+body:not(:has(.chartbox)) :is(input,textarea)::placeholder{color:#94a3b8!important}
+body:not(:has(.chartbox)) select option{background:#fff!important;color:#172033!important}
+body:not(:has(.chartbox)) :is(label,.field-label,.field label){color:#475569!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(button,.btn,.button,.submit,.primary-btn,.btn-primary,.button-primary,.cta-button,.buy-button,.action-primary,button.primary){
+  font-family:inherit!important;
 }
-body :where(.program h3,.program p,.rule h3,.rule p,.stat strong,.stat small){
-  color:#334155!important;
+body:not(:has(.chartbox)) :is(.btn-primary,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,.submit,button.primary){
+  background:#2563eb!important;color:#fff!important;border:1px solid #2563eb!important;
 }
-body :where(.wallet-card,.wallet-address){
-  background:#f8fafc!important;
-  color:#172033!important;
-  border-color:#dbe4f0!important;
+body:not(:has(.chartbox)) :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn,header .nav-actions a.btn-outline){
+  background:#fff!important;color:#1e293b!important;border:1px solid #cbd5e1!important;
 }
-body :where(.certificate-paper){
-  background:linear-gradient(145deg,#fff,#f8fafc)!important;
-  border-color:#bfdbfe!important;
-}
-body :where(.certificate-title,.certificate-kicker,.certificate-recipient){
-  color:#1d4ed8!important;
-}
-body :where(.certificate-copy){color:#475569!important}
-body :where(.footer,footer){color:#64748b!important}
-body :where(.menu-btn,.menu-toggle,.menu-toggle button){
-  color:#1e293b!important;
-  background:#eff6ff!important;
-  border-color:#dbe4f0!important;
-}
-body :where(.admin-pill){
-  color:#047857!important;
-  background:#ecfdf5!important;
-  border-color:#a7f3d0!important;
-}
-body :where(.spinner){border-color:#dbeafe!important;border-top-color:#2563eb!important}
-body :where(.auth-shell .card){
-  background:#fff!important;
-  border-color:#e2e8f0!important;
-  box-shadow:0 18px 55px rgba(15,23,42,.09)!important;
-}
-body :where(.field input){background:#fff!important;color:#172033!important}
-body :where(.field label){color:#334155!important}
-body :where(.message.info){color:#475569!important}
-body :where(.referral-note){background:#eff6ff!important;color:#1e40af!important;border-color:#bfdbfe!important}
-
-/* Trading terminal intentionally keeps its dark chart workspace for contrast. */
+body:not(:has(.chartbox)) :is(table,tbody,tr,td){background:#fff!important;color:#334155!important;border-color:#e2e8f0!important}
+body:not(:has(.chartbox)) :is(th,thead){background:#f1f5f9!important;color:#334155!important}
+body:not(:has(.chartbox)) tbody tr:hover{background:#f8fafc!important}
+/* Brand and data highlights */
+body:not(:has(.chartbox)) :is(.gold,.text-gold,.highlight,.highlight-text,.accent-gold,.brand-gold,.gold-text,.price-highlight,.section-eyebrow,.eyebrow,.section-kicker,.price,.starting,.amount,.total-price,.balance){color:#1d4ed8!important}
+body:not(:has(.chartbox)) .stat-card h2{color:#1d4ed8!important}
+/* Status text uses restrained semantic colors and normal weight. */
+body:not(:has(.chartbox)) :is(.success,.text-success,.status-success,.positive,.approved,.paid,.status.approved,.status.paid){color:#15803d!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(.error,.text-danger,.status-danger,.danger,.negative,.rejected,.failed,.breached,.status.rejected,.status.failed){color:#dc2626!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(.warning,.text-warning,.pending,.status-pending,.status.pending){color:#b45309!important;font-weight:400!important}
+body:not(:has(.chartbox)) :is(.status,.status-badge,.badge,.pill,.tag){font-weight:400!important;letter-spacing:0!important}
+body:not(:has(.chartbox)) :is(.status.approved,.status.paid,.badge.approved,.badge.paid){background:#ecfdf5!important;color:#15803d!important;border-color:#bbf7d0!important}
+body:not(:has(.chartbox)) :is(.status.rejected,.status.failed,.badge.rejected,.badge.failed){background:#fef2f2!important;color:#dc2626!important;border-color:#fecaca!important}
+body:not(:has(.chartbox)) :is(.status.pending,.badge.pending){background:#fffbeb!important;color:#b45309!important;border-color:#fde68a!important}
+/* Terminal: preserve its dark workspace and chart controls. */
 body:has(.chartbox){
-  --bg:#050a13!important;
-  --panel:#0b1524!important;
-  --panel2:#101f32!important;
-  --line:#24364b!important;
-  --gold:#e8b84b!important;
-  --gold2:#f7d98c!important;
-  --blue:#55a8ff!important;
-  --text:#f5f8fc!important;
-  --muted:#91a9c2!important;
+  --bg:#050a13!important;--panel:#0b1524!important;--panel2:#101f32!important;
+  --line:#24364b!important;--gold:#e8b84b!important;--gold2:#f7d98c!important;
+  --blue:#55a8ff!important;--text:#f5f8fc!important;--muted:#91a9c2!important;
   color-scheme:dark!important;
   background:radial-gradient(ellipse at 55% -20%,#183653 0,transparent 48%),#050a13!important;
   color:#f5f8fc!important;
@@ -498,574 +461,8 @@ body:has(.chartbox) :where(.metric.gold){color:#f7d98c!important}
 body:has(.chartbox) :where(.chartbox){background:#091522!important;border-color:#29445f!important}
 body:has(.chartbox) :where(.charttools button,.tab,.order-tabs button,.mode-tabs button){background:#0a1828!important;color:#a9bfd5!important;border-color:#2b4058!important}
 body:has(.chartbox) :where(.simtag){color:#75e4b8!important;background:#0b2a22!important;border-color:#22654d!important}
-
-@media(max-width:700px){
-  body :where(.content){padding:18px!important}
-  body :where(.stats){gap:11px}
-  body :where(.card,.panel,.stat-card){box-shadow:0 5px 18px rgba(15,23,42,.045)!important}
-}
-
-
-/* =========================================================
-   WFT LIGHT THEME — CONTRAST & LEGACY PAGE OVERRIDES v2
-   Loaded after legacy theme rules. UI-only; terminal remains dark.
-   ========================================================= */
-html:not(:has(.chartbox)),html:not(:has(.chartbox)) body{
-  background:#f4f7fb!important;
-  color:#334155!important;
-  color-scheme:light!important;
-}
-body:not(:has(.chartbox)){
-  background:#f4f7fb!important;
-  background-image:none!important;
-  color:#334155!important;
-}
-body:not(:has(.chartbox)) *{
-  color:#334155!important;
-  border-color:#e2e8f0;
-}
-body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6,.page-title,.section-title,.card-title,.panel-title,.title,.heading,.hero-title,.panel-head h3){
-  color:#0f172a!important;
-}
-body:not(:has(.chartbox)) :is(p,small,.small,.muted,.sub,.subtext,.subtitle,.description,.helper-text,.small-text,.text-muted,.nav-label,.loading-text,.footer,.certificate-copy,.certificate-signoff){
-  color:#64748b!important;
-}
-body:not(:has(.chartbox)) a:not(.btn):not(.button):not(.nav-btn):not(.nav-link){
-  color:#1d4ed8!important;
-}
-body:not(:has(.chartbox)) :is(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar,.sidebar,.side-nav,.dashboard-sidebar,.app-sidebar,.main,.content,.wrap,main,#loading,#denied){
-  background:#fff!important;
-  color:#334155!important;
-}
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.stat,.rule,.box,.fee,.payment,.check,.referral-box,.certificate-paper,.auth-shell .card,.container){
-  background:#fff!important;
-  color:#334155!important;
-  border:1px solid #e2e8f0!important;
-  box-shadow:0 8px 26px rgba(15,23,42,.055)!important;
-}
-body:not(:has(.chartbox)) :is(.hero,.hero-section){
-  background:linear-gradient(135deg,#eff6ff 0%,#fff 60%,#f8fafc 100%)!important;
-  color:#0f172a!important;
-}
-body:not(:has(.chartbox)) :is(.promo,.referral-note,.status,.message.info){
-  background:#eff6ff!important;
-  color:#1e40af!important;
-  border-color:#bfdbfe!important;
-}
-body:not(:has(.chartbox)) :is(.program,.program.active,.rule,.fee,.stat,.payment,.check,.agreement-area,.size-btn,.referral-box){
-  background:#f8fafc!important;
-  color:#334155!important;
-  border-color:#dbe4f0!important;
-}
-body:not(:has(.chartbox)) :is(.program h3,.program p,.program .starting,.rule h3,.rule p,.stat strong,.stat small,.promo strong,.promo p,.hero-trust,.note,.agreement-label,.agreement-message){
-  color:#334155!important;
-}
-body:not(:has(.chartbox)) :is(.brand,.logo,.brand-name,.brand span,.logo span,.gold,.text-gold,.highlight,.highlight-text,.accent-gold,.brand-gold,.gold-text,.price-highlight,.section-eyebrow,.eyebrow,.section-kicker,.price,.starting,.amount,.total-price,.balance,.certificate-title,.certificate-kicker,.certificate-recipient){
-  color:#1d4ed8!important;
-}
-body:not(:has(.chartbox)) :is(.nav-btn,.nav-link,.sidebar a,.side-nav a,.dashboard-sidebar a){
-  color:#475569!important;
-  background:transparent!important;
-}
-body:not(:has(.chartbox)) :is(.nav-btn:hover,.nav-btn.active,.nav-link:hover,.nav-link.active,.sidebar a.active,.side-nav a.active,.dashboard-sidebar a.active){
-  color:#1d4ed8!important;
-  background:#eff6ff!important;
-}
-body:not(:has(.chartbox)) :is(.nav-btn.logout,.logout){color:#dc2626!important}
-body:not(:has(.chartbox)) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
-  background:#fff!important;
-  color:#172033!important;
-  border:1px solid #cbd5e1!important;
-  box-shadow:none!important;
-}
-body:not(:has(.chartbox)) :is(input,textarea)::placeholder{color:#94a3b8!important}
-body:not(:has(.chartbox)) select option{background:#fff!important;color:#172033!important}
-body:not(:has(.chartbox)) :is(label,.field-label,.field label){color:#334155!important}
-body:not(:has(.chartbox)) :is(button,.btn,.button,.submit,.primary-btn,.btn-primary,.button-primary,.cta-button,.buy-button,.action-primary,button.primary){
-  color:#1e40af!important;
-  background:#eff6ff!important;
-  border:1px solid #bfdbfe!important;
-}
-body:not(:has(.chartbox)) :is(.btn-primary,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,.submit,button.primary){
-  color:#fff!important;
-  background:linear-gradient(135deg,#3b82f6,#1d4ed8)!important;
-  border:1px solid #2563eb!important;
-  box-shadow:0 7px 18px rgba(37,99,235,.18)!important;
-}
-body:not(:has(.chartbox)) :is(.btn.gold,.btn.green,.btn.red,.btn.gray,.status,.status.pending,.status.approved,.status.paid,.status.active,.status.rejected,.status.failed,.status.breached,.success,.error,.danger,.positive,.negative,.admin-pill){
-  border-radius:999px;
-}
-body:not(:has(.chartbox)) :is(.btn.gold){background:#dbeafe!important;color:#1e40af!important;border-color:#bfdbfe!important}
-body:not(:has(.chartbox)) :is(.btn.green,.success,.positive,.status.approved,.status.paid,.status.active,.admin-pill){background:#ecfdf5!important;color:#047857!important;border-color:#a7f3d0!important}
-body:not(:has(.chartbox)) :is(.btn.red,.error,.danger,.negative,.status.rejected,.status.failed,.status.breached){background:#fef2f2!important;color:#b91c1c!important;border-color:#fecaca!important}
-body:not(:has(.chartbox)) :is(.status.pending,.warning){background:#fffbeb!important;color:#92400e!important;border-color:#fde68a!important}
-body:not(:has(.chartbox)) :is(table,thead,tbody,tr){background:#fff!important;color:#334155!important}
-body:not(:has(.chartbox)) th{background:#f1f5f9!important;color:#475569!important}
-body:not(:has(.chartbox)) td{background:transparent!important;color:#334155!important}
-body:not(:has(.chartbox)) tr:hover{background:#f8fafc!important}
-body:not(:has(.chartbox)) :is(.topbar,.top-bar,.dashboard-header,.app-header,header){
-  border-bottom:1px solid #e2e8f0!important;
-  box-shadow:0 4px 18px rgba(15,23,42,.035)!important;
-}
-body:not(:has(.chartbox)) :is(.spinner){border-color:#dbeafe!important;border-top-color:#2563eb!important}
-body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle,.menu-toggle button){
-  color:#1e293b!important;background:#eff6ff!important;border-color:#dbe4f0!important;
-}
-@media(max-width:700px){
- body:not(:has(.chartbox)) :is(.content,main){background:transparent!important}
-}
-
-
-/* WFT LIGHT THEME — TARGETED READABILITY FIX v3
-   Keep intentional navy hero panels readable; make dashboard data panels light. */
-body:not(:has(.chartbox)) .dashboard-welcome{
-  background:linear-gradient(115deg,#eaf2ff 0%,#f8fbff 68%,#edf5ff 100%)!important;
-  border:1px solid #d7e4f5!important;
-  box-shadow:0 12px 32px rgba(15,23,42,.08)!important;
-  color:#0f172a!important;
-}
-body:not(:has(.chartbox)) .dashboard-welcome :is(h1,h2,h3,p,.welcome-kicker,.muted,.gold-text){
-  color:#0f172a!important;
-}
-body:not(:has(.chartbox)) .dashboard-welcome .welcome-kicker{color:#1d4ed8!important}
-body:not(:has(.chartbox)) .dashboard-welcome .welcome-actions .btn-secondary{
-  background:#e8eef8!important;color:#1e293b!important;border-color:#cbd5e1!important;
-}
-body:not(:has(.chartbox)) .stats-grid .stat-card,
-body:not(:has(.chartbox)) .grid-2 > .panel,
-body:not(:has(.chartbox)) .content > .panel,
-body:not(:has(.chartbox)) .page .panel,
-body:not(:has(.chartbox)) .page .info-card,
-body:not(:has(.chartbox)) .page .account-card{
-  background:#fff!important;
-  color:#334155!important;
-  border:1px solid #e2e8f0!important;
-  box-shadow:0 8px 24px rgba(15,23,42,.055)!important;
-}
-body:not(:has(.chartbox)) .stat-card :is(span,h2,small),
-body:not(:has(.chartbox)) .panel :is(h1,h2,h3,h4,p,span,strong,small,div),
-body:not(:has(.chartbox)) .info-card :is(h1,h2,h3,h4,p,span,strong,small,div),
-body:not(:has(.chartbox)) .account-card :is(h1,h2,h3,h4,p,span,strong,small,div){
-  color:#334155!important;
-}
-body:not(:has(.chartbox)) .stat-card h2{color:#1d4ed8!important}
-body:not(:has(.chartbox)) .panel h3{color:#0f172a!important}
-body:not(:has(.chartbox)) .empty,
-body:not(:has(.chartbox)) #overviewAccounts,
-body:not(:has(.chartbox)) #overviewOrders,
-body:not(:has(.chartbox)) #overviewActivity{
-  background:#f8fafc!important;
-  color:#64748b!important;
-  border:1px dashed #cbd5e1!important;
-}
-body:not(:has(.chartbox)) .overview-account-row{
-  background:transparent!important;border-bottom-color:#e2e8f0!important;
-}
-body:not(:has(.chartbox)) .overview-account-row :is(strong,small,span,div){
-  color:#334155!important;
-}
-body:not(:has(.chartbox)) .overview-account-values{color:#1d4ed8!important}
-body:not(:has(.chartbox)) .badge{background:#e2e8f0!important;color:#334155!important}
-body:not(:has(.chartbox)) .badge:is(.active,.paid,.approved){background:#dcfce7!important;color:#166534!important}
-body:not(:has(.chartbox)) .badge.pending{background:#fef3c7!important;color:#92400e!important}
-body:not(:has(.chartbox)) .badge:is(.rejected,.failed,.disabled){background:#fee2e2!important;color:#991b1b!important}
-
-/* Homepage: preserve the navy hero/header but enforce white readable copy. */
-body:not(:has(.chartbox)) .hero{
-  background:linear-gradient(135deg,#102b49 0%,#0b1c31 100%)!important;
-  color:#f8fafc!important;
-}
-body:not(:has(.chartbox)) .hero :is(h1,h2,h3,p,.hero-description,.hero-trust,.hero-tag){
-  color:#f8fafc!important;
-}
-body:not(:has(.chartbox)) .hero h1 span,
-body:not(:has(.chartbox)) .hero .gold{color:#93c5fd!important}
-body:not(:has(.chartbox)) .hero .hero-tag{
-  background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.25)!important;
-}
-body:not(:has(.chartbox)) header,
-body:not(:has(.chartbox)) header :is(a,button,span,.logo,.nav-links a,.nav-actions){
-  color:#f8fafc!important;
-}
-body:not(:has(.chartbox)) .nav-links{background:#10243b!important}
-body:not(:has(.chartbox)) .promo{
-  background:#fff!important;color:#334155!important;border-color:#dbe4f0!important;
-}
-body:not(:has(.chartbox)) .promo :is(h1,h2,h3,p,span,strong,small){color:#334155!important}
-body:not(:has(.chartbox)) .promo .gold{color:#1d4ed8!important}
-body:not(:has(.chartbox)) .section :is(.card,.challenge-card,.account-card,.rule-card,.step-card,.faq-item,.platform-box){
-  background:#fff!important;color:#334155!important;border-color:#e2e8f0!important;
-}
-body:not(:has(.chartbox)) .section :is(.card,.challenge-card,.account-card,.rule-card,.step-card,.faq-item,.platform-box) :is(h1,h2,h3,h4,p,li,span,strong,small){
-  color:#334155!important;
-}
-body:not(:has(.chartbox)) .section-heading :is(h1,h2,h3,p,.eyebrow){color:#334155!important}
-body:not(:has(.chartbox)) .section-heading .gold{color:#1d4ed8!important}
-
-
-/* Homepage navigation: keep Login label dark on its light outline button. */
-body:not(:has(.chartbox)) header .nav-actions a[href="Login.html"],
-body:not(:has(.chartbox)) header .nav-actions a.btn-outline{
-  color:#172033!important;
-  background:#ffffff!important;
-  border:1px solid #cbd5e1!important;
-}
-
-
-/* Homepage requested text contrast adjustments */
-body:not(:has(.chartbox)) header .nav-actions a[href="Login.html"]{
-  color:#111827!important;
-  background:#ffffff!important;
-  border:1px solid #cbd5e1!important;
-}
-body:not(:has(.chartbox)) .hero .hero-trust,
-body:not(:has(.chartbox)) .hero .hero-trust span{
-  color:#ffffff!important;
-}
-
-
-/* =========================================================
-   WFT PREMIUM LIGHT DESIGN SYSTEM — shared across every page
-   Simple, readable typography and consistent contrast.
-   Trading chart workspace remains intentionally dark.
-   ========================================================= */
-:root{
-  --wft-page:#f5f7fb;
-  --wft-surface:#ffffff;
-  --wft-surface-soft:#f8fafc;
-  --wft-ink:#1e293b;
-  --wft-muted:#64748b;
-  --wft-border:#e2e8f0;
-  --wft-blue:#2563eb;
-  --wft-blue-dark:#1d4ed8;
-}
-body:not(:has(.chartbox)){
-  background:var(--wft-page)!important;
-  color:var(--wft-ink)!important;
-  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
-  font-size:14px;
-  font-weight:400;
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-}
-body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6,strong,b){
-  font-weight:600!important;
-  letter-spacing:-.018em;
-}
-body:not(:has(.chartbox)) :is(p,li,label,small,span,a,button,input,select,textarea){
-  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
-}
-body:not(:has(.chartbox)) :is(p,li,label,.muted,.description,.subtitle,.text-muted){
-  color:var(--wft-muted);
-}
-body:not(:has(.chartbox)) :is(.content,.main,.page,.section,.container,.page-content){
-  color:var(--wft-ink);
-}
-body:not(:has(.chartbox)) :is(.panel,.card,.stat-card,.info-card,.feature-card,.challenge-card,.program-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.activity-card){
-  background:var(--wft-surface)!important;
-  color:var(--wft-ink)!important;
-  border:1px solid var(--wft-border)!important;
-  box-shadow:0 5px 20px rgba(15,23,42,.045)!important;
-}
-body:not(:has(.chartbox)) :is(.panel,.card,.stat-card,.info-card,.feature-card,.challenge-card,.program-card,.account-card,.order-card,.reward-card,.faq-item,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.activity-card) :is(h1,h2,h3,h4,h5,p,span,strong,small,label,li,div){
-  color:inherit;
-}
-body:not(:has(.chartbox)) :is(.panel,.card,.stat-card,.info-card,.feature-card,.challenge-card,.program-card,.account-card,.order-card,.reward-card,.faq-item,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.activity-card) :is(h1,h2,h3,h4){
-  color:#0f172a!important;
-}
-body:not(:has(.chartbox)) :is(.panel,.card,.stat-card,.info-card,.feature-card,.challenge-card,.program-card,.account-card,.order-card,.reward-card,.faq-item,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.activity-card) :is(p,small,.muted,.description){
-  color:#64748b!important;
-}
-body:not(:has(.chartbox)) :is(input,select,textarea){
-  background:#fff!important;color:#1e293b!important;
-  border:1px solid #cbd5e1!important;
-}
-body:not(:has(.chartbox)) :is(input,select,textarea)::placeholder{color:#94a3b8!important}
-body:not(:has(.chartbox)) :is(table,thead,tbody,tr,td,th){color:#334155}
-body:not(:has(.chartbox)) :is(th,thead){background:#f1f5f9!important;color:#334155!important}
-body:not(:has(.chartbox)) :is(td,tr){border-color:#e2e8f0!important}
-body:not(:has(.chartbox)) :is(.sidebar,.side-nav,.nav-menu){
-  background:#fff!important;color:#334155!important;border-color:#e2e8f0!important;
-}
-body:not(:has(.chartbox)) :is(.sidebar,.side-nav,.nav-menu) :is(a,button,span,small){
-  color:#475569!important;
-}
-body:not(:has(.chartbox)) :is(.sidebar,.side-nav,.nav-menu) :is(a.active,.active){
-  background:#eff6ff!important;color:#1d4ed8!important;
-}
-body:not(:has(.chartbox)) :is(.topbar,.top-nav,.navbar){
-  background:rgba(255,255,255,.96)!important;color:#1e293b!important;
-  border-color:#e2e8f0!important;
-}
-body:not(:has(.chartbox)) .topbar :is(h1,h2,h3,span,a,button){color:#1e293b}
-body:not(:has(.chartbox)) :is(.hero,.dashboard-welcome){
-  background:linear-gradient(120deg,#173452,#10243b)!important;color:#fff!important;
-}
-body:not(:has(.chartbox)) :is(.hero,.dashboard-welcome) :is(h1,h2,h3,p,span,.muted,.hero-description,.hero-trust){
-  color:#f8fafc!important;
-}
-body:not(:has(.chartbox)) :is(.hero,.dashboard-welcome) :is(.hero-tag,.welcome-kicker){
-  color:#bfdbfe!important;
-}
-body:not(:has(.chartbox)) :is(.btn-primary,.primary-btn,.button-primary){
-  background:#2563eb!important;color:#fff!important;border-color:#2563eb!important;
-}
-body:not(:has(.chartbox)) :is(.btn-outline,.btn-secondary,.button-secondary){
-  background:#fff!important;color:#1e293b!important;border:1px solid #cbd5e1!important;
-}
-body:not(:has(.chartbox)) a{color:#1d4ed8}
-body:not(:has(.chartbox)) footer{background:#fff!important;color:#64748b!important;border-color:#e2e8f0!important}
 @media(max-width:760px){
- body:not(:has(.chartbox)){font-size:13px}
- body:not(:has(.chartbox)) :is(.panel,.card,.stat-card){box-shadow:0 3px 14px rgba(15,23,42,.04)!important}
+  body:not(:has(.chartbox)){font-size:14px}
+  body:not(:has(.chartbox)) :is(.content,main){padding-left:14px!important;padding-right:14px!important}
+  body:not(:has(.chartbox)) :is(.card,.panel,.stat-card){box-shadow:0 3px 14px rgba(15,23,42,.04)!important}
 }
-
-
-/* WFT LIGHT THEME CASCADE REPAIR — authoritative final layer */
-:root{color-scheme:light!important}
-body:not(:has(.chartbox)){
-  background:#f4f7fb!important;color:#334155!important;
-  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
-}
-/* Removed blanket inherit rule: it erased semantic text contrast and icon colors. */
-body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6){color:#0f172a!important}
-body:not(:has(.chartbox)) :is(p,small,label,.muted,.description,.subtitle,.helper-text,.nav-label,.loading-text){color:#64748b!important}
-body:not(:has(.chartbox)) :is(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar,.sidebar,.side-nav,.dashboard-sidebar,.app-sidebar,.main,.content,main,.page,.section,.container,.wrap,#loading,#denied,footer){
- background:#fff!important;color:#334155!important;border-color:#e2e8f0!important;
-}
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.certificate-paper,.risk-alert-panel,.risk-alert-item,.reward-task-card,.reward-box,.final-cta,.promo,.rule-card,.step-card,.platform-box){
- background:#fff!important;color:#334155!important;border:1px solid #e2e8f0!important;
- box-shadow:0 6px 22px rgba(15,23,42,.05)!important;
-}
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.certificate-paper,.risk-alert-panel,.risk-alert-item,.reward-task-card,.reward-box,.final-cta,.promo,.rule-card,.step-card,.platform-box) :is(h1,h2,h3,h4,h5,h6){color:#172033!important}
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.settings-card,.payout-card,.kyc-card,.activity-card,.certificate-paper,.risk-alert-panel,.risk-alert-item,.reward-task-card,.reward-box,.final-cta,.promo,.rule-card,.step-card,.platform-box) :is(p,small,label,.muted,.description){color:#64748b!important}
-body:not(:has(.chartbox)) :is(.hero,.hero-section,.dashboard-welcome){
- background:linear-gradient(135deg,#eaf2ff 0%,#ffffff 58%,#f1f6ff 100%)!important;
- color:#172033!important;border:1px solid #dbe7f5!important;
-}
-body:not(:has(.chartbox)) :is(.hero,.hero-section,.dashboard-welcome) :is(h1,h2,h3,h4,p,span,small,strong,div){
- color:#172033!important;
-}
-body:not(:has(.chartbox)) :is(.hero,.hero-section,.dashboard-welcome) :is(.gold,.highlight,.hero-tag,.welcome-kicker){color:#1d4ed8!important}
-body:not(:has(.chartbox)) :is(.nav-btn,.nav-link,.sidebar a,.side-nav a,.dashboard-sidebar a){color:#475569!important}
-body:not(:has(.chartbox)) :is(.nav-btn.active,.nav-link.active,.sidebar a.active,.side-nav a.active,.dashboard-sidebar a.active){background:#eff6ff!important;color:#1d4ed8!important}
-body:not(:has(.chartbox)) :is(.gold,.text-gold,.highlight,.highlight-text,.accent-gold,.brand-gold,.gold-text,.logo span,.price-highlight,.section-eyebrow,.eyebrow,.section-kicker,.price,.starting,.amount,.total-price,.balance){color:#1d4ed8!important}
-body:not(:has(.chartbox)) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background:#fff!important;color:#172033!important;border:1px solid #cbd5e1!important}
-body:not(:has(.chartbox)) :is(input,textarea)::placeholder{color:#94a3b8!important}
-body:not(:has(.chartbox)) :is(.btn-primary,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,.submit,button.primary){background:#2563eb!important;color:#fff!important;border-color:#2563eb!important}
-body:not(:has(.chartbox)) :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn){background:#fff!important;color:#1e293b!important;border:1px solid #cbd5e1!important}
-body:not(:has(.chartbox)) :is(th,thead){background:#f1f5f9!important;color:#334155!important}
-body:not(:has(.chartbox)) :is(td,tbody,tr,table){background:#fff!important;color:#334155!important;border-color:#e2e8f0!important}
-body:not(:has(.chartbox)) :is(.status.pending,.warning){background:#fffbeb!important;color:#92400e!important}
-body:not(:has(.chartbox)) :is(.status.approved,.status.paid,.status.active,.success,.positive){background:#ecfdf5!important;color:#047857!important}
-body:not(:has(.chartbox)) :is(.status.rejected,.status.failed,.danger,.negative,.error){background:#fef2f2!important;color:#b91c1c!important}
-
-
-/* =========================================================
-   WFT LIGHT THEME — FINAL NAVIGATION / DASHBOARD / CHALLENGE FIX
-   Explicit component colors replace the old blanket inherit rule.
-   ========================================================= */
-@media (prefers-color-scheme: dark){
-  body:not(:has(.chartbox)){color-scheme:light!important}
-}
-body:not(:has(.chartbox)){
-  background:#f4f7fb!important;
-  color:#334155!important;
-  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
-  font-weight:400!important;
-}
-/* Dashboard sidebar: consistent deep-navy rail with readable light labels */
-body:not(:has(.chartbox)) .sidebar,
-body:not(:has(.chartbox)) .dashboard-sidebar,
-body:not(:has(.chartbox)) .app-sidebar,
-body:not(:has(.chartbox)) .side-nav{
-  background:#10243b!important;
-  color:#e2e8f0!important;
-  border-right:1px solid #243b56!important;
-}
-body:not(:has(.chartbox)) .sidebar :is(.brand,.logo,.nav-label),
-body:not(:has(.chartbox)) .dashboard-sidebar :is(.brand,.logo,.nav-label),
-body:not(:has(.chartbox)) .app-sidebar :is(.brand,.logo,.nav-label),
-body:not(:has(.chartbox)) .side-nav :is(.brand,.logo,.nav-label){
-  color:#cbd5e1!important;
-}
-body:not(:has(.chartbox)) .sidebar :is(.nav-btn,.nav-link,a,button),
-body:not(:has(.chartbox)) .dashboard-sidebar :is(.nav-btn,.nav-link,a,button),
-body:not(:has(.chartbox)) .app-sidebar :is(.nav-btn,.nav-link,a,button),
-body:not(:has(.chartbox)) .side-nav :is(.nav-btn,.nav-link,a,button){
-  color:#dbe7f5!important;
-  background-color:transparent!important;
-  font-weight:400!important;
-}
-body:not(:has(.chartbox)) .sidebar :is(.nav-btn:hover,.nav-btn.active,.nav-link:hover,.nav-link.active,a.active),
-body:not(:has(.chartbox)) .dashboard-sidebar :is(.nav-btn:hover,.nav-btn.active,.nav-link:hover,.nav-link.active,a.active),
-body:not(:has(.chartbox)) .app-sidebar :is(.nav-btn:hover,.nav-btn.active,.nav-link:hover,.nav-link.active,a.active),
-body:not(:has(.chartbox)) .side-nav :is(.nav-btn:hover,.nav-btn.active,.nav-link:hover,.nav-link.active,a.active){
-  background:#1e3a5f!important;
-  color:#ffffff!important;
-}
-body:not(:has(.chartbox)) .sidebar .nav-btn.logout,
-body:not(:has(.chartbox)) .sidebar a.logout{color:#fca5a5!important}
-/* Main workspace and top navigation */
-body:not(:has(.chartbox)) .main,
-body:not(:has(.chartbox)) .content,
-body:not(:has(.chartbox)) main,
-body:not(:has(.chartbox)) .page{
-  background:#f4f7fb!important;
-  color:#334155!important;
-}
-body:not(:has(.chartbox)) :is(.topbar,.top-bar,.dashboard-header,.app-header,.navbar){
-  background:#ffffff!important;
-  color:#1e293b!important;
-  border-color:#e2e8f0!important;
-  box-shadow:0 2px 12px rgba(15,23,42,.04)!important;
-}
-body:not(:has(.chartbox)) :is(.topbar,.top-bar,.dashboard-header,.app-header,.navbar) :is(h1,h2,h3,p,span,a,button){
-  color:#334155!important;
-}
-/* Dashboard content cards and data */
-body:not(:has(.chartbox)) :is(.stat-card,.panel,.info-card,.account-card,.order-card,.reward-card,.activity-card,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.table-card,.content-card){
-  background:#ffffff!important;
-  color:#334155!important;
-  border:1px solid #e2e8f0!important;
-  box-shadow:0 4px 18px rgba(15,23,42,.045)!important;
-}
-body:not(:has(.chartbox)) :is(.stat-card,.panel,.info-card,.account-card,.order-card,.reward-card,.activity-card,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.table-card,.content-card) :is(h1,h2,h3,h4,h5,strong,b){
-  color:#172033!important;
-}
-body:not(:has(.chartbox)) :is(.stat-card,.panel,.info-card,.account-card,.order-card,.reward-card,.activity-card,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.table-card,.content-card) :is(p,small,label,td,th,span,div){
-  color:inherit;
-}
-/* Status words: semantic colors, regular weight, no heavy badges */
-body:not(:has(.chartbox)) :is(.success,.text-success,.status-success,.positive,.approved,.paid,.active){
-  color:#15803d!important;
-  font-weight:400!important;
-}
-body:not(:has(.chartbox)) :is(.error,.text-danger,.status-danger,.danger,.negative,.rejected,.failed,.breached){
-  color:#dc2626!important;
-  font-weight:400!important;
-}
-body:not(:has(.chartbox)) :is(.warning,.text-warning,.pending,.status-pending){
-  color:#b45309!important;
-  font-weight:400!important;
-}
-body:not(:has(.chartbox)) :is(.status,.status-badge,.badge,.pill,.tag){
-  font-weight:400!important;
-  letter-spacing:0!important;
-}
-body:not(:has(.chartbox)) :is(.status.approved,.status.paid,.status.active,.badge.approved,.badge.paid,.badge.active){
-  background:#ecfdf5!important;color:#15803d!important;border-color:#bbf7d0!important;
-}
-body:not(:has(.chartbox)) :is(.status.rejected,.status.failed,.status.breached,.badge.rejected,.badge.failed){
-  background:#fef2f2!important;color:#dc2626!important;border-color:#fecaca!important;
-}
-body:not(:has(.chartbox)) :is(.status.pending,.badge.pending){
-  background:#fffbeb!important;color:#b45309!important;border-color:#fde68a!important;
-}
-/* Challenges page: light program, rule, form and selection surfaces */
-body:not(:has(.chartbox)) .challenge-hero{
-  background:linear-gradient(135deg,#eaf2ff,#ffffff 72%)!important;
-  color:#172033!important;border:1px solid #dbe7f5!important;
-  box-shadow:0 8px 26px rgba(15,23,42,.05)!important;
-}
-body:not(:has(.chartbox)) .challenge-hero :is(h1,h2,h3,p,span,small,strong,div){
-  color:#172033!important;
-}
-body:not(:has(.chartbox)) :is(.program,.rule,.stat,.agreement-area,.promo){
-  background:#ffffff!important;color:#334155!important;
-  border:1px solid #e2e8f0!important;
-  box-shadow:0 4px 16px rgba(15,23,42,.045)!important;
-}
-body:not(:has(.chartbox)) :is(.program,.rule,.stat,.agreement-area,.promo) :is(h1,h2,h3,h4,p,span,small,strong,label){
-  color:#334155!important;
-}
-body:not(:has(.chartbox)) .program:is(.active,:hover){
-  background:#eff6ff!important;border-color:#93c5fd!important;
-}
-body:not(:has(.chartbox)) :is(.program,.rule,.stat) :is(.starting,.price,strong){
-  color:#1d4ed8!important;
-}
-body:not(:has(.chartbox)) :is(input,select,textarea){
-  background:#ffffff!important;color:#172033!important;border:1px solid #cbd5e1!important;
-}
-body:not(:has(.chartbox)) :is(label,.field-label){color:#475569!important;font-weight:400!important}
-body:not(:has(.chartbox)) :is(.message,.success,.error,.agreement-message){
-  font-weight:400!important;
-}
-body:not(:has(.chartbox)) .message.success,
-body:not(:has(.chartbox)) .agreement-message.accepted{color:#15803d!important}
-body:not(:has(.chartbox)) .message.error,
-body:not(:has(.chartbox)) .agreement-message.needs-attention{color:#dc2626!important}
-
-
-/* WFT GLOBAL CONTRAST RESET v17 — explicit text/surface pairing */
-body:not(:has(.chartbox)){
-  background:#f4f7fb!important;
-  color:#263449!important;
-  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
-  font-weight:400!important;
-}
-/* All ordinary page text defaults to dark ink on light surfaces. */
-body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6,p,li,label,small,span,div,td,th,summary,legend){
-  color:#334155;
-  font-weight:400;
-}
-body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6){color:#172033!important;font-weight:600!important}
-body:not(:has(.chartbox)) :is(p,li,small,label,.muted,.description,.subtitle,.helper-text,.nav-label){color:#64748b!important}
-/* Light page, header, content and cards */
-body:not(:has(.chartbox)) :is(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar,.main,.content,main,.page,.section,.container,.wrap,footer){
-  background:#ffffff!important;color:#334155!important;border-color:#e2e8f0!important;
-}
-body:not(:has(.chartbox)) :is(.content,main,.page,.section,.container,.wrap){background:#f4f7fb!important}
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper){
-  background:#ffffff!important;color:#334155!important;border:1px solid #e2e8f0!important;
-  box-shadow:0 4px 18px rgba(15,23,42,.045)!important;
-}
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper) :is(h1,h2,h3,h4,h5,h6,p,li,label,span,small,strong,b,div){
-  color:#334155!important;
-}
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper) :is(h1,h2,h3,h4,h5,h6){color:#172033!important;font-weight:600!important}
-body:not(:has(.chartbox)) :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.settings-card,.payout-card,.kyc-card,.activity-card,.rule,.stat,.agreement-area,.promo,.certificate-paper) :is(p,li,small,label){color:#64748b!important}
-/* Sidebar is the only intentionally dark navigation surface. */
-body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav){
-  background:#10243b!important;color:#e2e8f0!important;border-color:#243b56!important;
-}
-body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(a,button,span,small,.nav-label,.brand,.logo){
-  color:#dbe7f5!important;font-weight:400!important;
-}
-body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(.nav-btn.active,.nav-link.active,a.active,.active){
-  background:#1e3a5f!important;color:#ffffff!important;
-}
-body:not(:has(.chartbox)) :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav) :is(.nav-label){color:#9fb3cc!important}
-/* Hamburger/menu buttons: dark button, white icon — visible on white headers. */
-body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle,.menu-toggle button){
-  display:inline-flex!important;align-items:center!important;justify-content:center!important;
-  min-width:42px!important;min-height:42px!important;
-  background:#10243b!important;color:#ffffff!important;
-  border:1px solid #294563!important;border-radius:9px!important;
-  font-size:22px!important;font-weight:500!important;line-height:1!important;
-  opacity:1!important;visibility:visible!important;
-}
-body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle,.menu-toggle button) *{color:#ffffff!important}
-/* Hero areas use readable dark text on pale blue rather than inherited white. */
-body:not(:has(.chartbox)) :is(.hero,.hero-section,.dashboard-welcome,.challenge-hero){
-  background:linear-gradient(135deg,#eaf2ff 0%,#ffffff 70%,#f1f6ff 100%)!important;
-  color:#172033!important;border:1px solid #dbe7f5!important;
-}
-body:not(:has(.chartbox)) :is(.hero,.hero-section,.dashboard-welcome,.challenge-hero) :is(h1,h2,h3,h4,p,span,small,strong,div){
-  color:#172033!important;
-}
-body:not(:has(.chartbox)) :is(.hero,.hero-section,.dashboard-welcome,.challenge-hero) :is(.gold,.highlight,.hero-tag,.welcome-kicker,.hero-kicker){color:#1d4ed8!important}
-/* Inputs and table data */
-body:not(:has(.chartbox)) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
-  background:#ffffff!important;color:#172033!important;border:1px solid #cbd5e1!important;
-}
-body:not(:has(.chartbox)) :is(input,textarea)::placeholder{color:#94a3b8!important}
-body:not(:has(.chartbox)) :is(table,tbody,tr,td){background:#ffffff!important;color:#334155!important;border-color:#e2e8f0!important}
-body:not(:has(.chartbox)) :is(th,thead){background:#f1f5f9!important;color:#334155!important}
-/* Semantic status colors stay colored, regular weight. */
-body:not(:has(.chartbox)) :is(.success,.text-success,.status-success,.positive,.approved,.paid,.active){color:#15803d!important;font-weight:400!important}
-body:not(:has(.chartbox)) :is(.error,.text-danger,.status-danger,.danger,.negative,.rejected,.failed,.breached){color:#dc2626!important;font-weight:400!important}
-body:not(:has(.chartbox)) :is(.warning,.text-warning,.pending,.status-pending){color:#b45309!important;font-weight:400!important}
-body:not(:has(.chartbox)) :is(.status,.status-badge,.badge,.pill,.tag){font-weight:400!important}
