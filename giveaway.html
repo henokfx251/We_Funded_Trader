@@ -226,11 +226,15 @@ $("copyGiveawayReferral")?.addEventListener("click",async()=>{
 });
 
 async function loadGiveawayStatus(){
- // Visible test preview for checking the participant-count UI.
- // This is not the real Supabase participant total.
- const testCount=50;
- $("giveawayLiveStatus").textContent="GIVEAWAY IS OPEN · TEST PREVIEW ✓";
- $("giveawaySlots").textContent=testCount+" traders have joined this Giveaway. (TEST PREVIEW — actual count is unchanged.)";
+ try{
+  const {data,error}=await db.rpc("giveaway_public_status");if(error)throw error;
+  const joined=Number(data?.joined||0);
+  $("giveawayLiveStatus").textContent="GIVEAWAY IS OPEN ✓";
+  $("giveawaySlots").textContent=joined+" trader"+(joined===1?" has":"s have")+" joined this Giveaway.";
+ }catch(e){
+  $("giveawayLiveStatus").textContent="GIVEAWAY";
+  $("giveawaySlots").textContent="Participant count is temporarily unavailable.";
+ }
 }
 async function load(){
  $("entryPanel").classList.remove("hidden");
