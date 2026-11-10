@@ -1568,34 +1568,31 @@ $("supportTicketForm")?.addEventListener("submit", async event => {
     return toast("The total attachment size must be 100 MB or less.", true);
   }
   button.disabled = true;
-  message.textContent = "Submitting ticket and uploading attachments...";
-  const uploadedPaths = [];
+  message.textContent = "Uploading attachments and submitting ticket...";
   try {
-    const { data, error } = await supabase.from("support_tickets").insert({
-      user_id: currentUser.id,
-      difficulty: $("ticketDifficulty").value,
-      subject: $("ticketSubject").value.trim(),
-      question: $("ticketQuestion").value.trim()
-    }).select("id,created_at").single();
-    if (error) throw error;
-
+    // Generate the ticket UUID before upload so attachments can be included in
+    // the initial INSERT without granting customers UPDATE access to ticket replies/status.
+    const ticketId = crypto.randomUUID();
     const attachments = [];
     for (const file of files) {
       const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-100) || "attachment";
-      const path = `${currentUser.id}/${data.id}/${crypto.randomUUID()}_${cleanName}`;
+      const path = `${currentUser.id}/${ticketId}/${crypto.randomUUID()}_${cleanName}`;
       const { error: uploadError } = await supabase.storage.from("support-ticket-files").upload(path, file, {
         contentType: file.type,
         upsert: false
       });
       if (uploadError) throw uploadError;
-      uploadedPaths.push(path);
       attachments.push({path, name:file.name, type:file.type, size:file.size});
     }
-    if (attachments.length) {
-      const { error: updateError } = await supabase.from("support_tickets")
-        .update({attachments}).eq("id", data.id).eq("user_id", currentUser.id);
-      if (updateError) throw updateError;
-    }
+    const { data, error } = await supabase.from("support_tickets").insert({
+      id: ticketId,
+      user_id: currentUser.id,
+      difficulty: $("ticketDifficulty").value,
+      subject: $("ticketSubject").value.trim(),
+      question: $("ticketQuestion").value.trim(),
+      attachments
+    }).select("id,created_at").single();
+    if (error) throw error;
     $("supportTicketForm").reset();
     $("ticketDifficulty").value = "normal";
     updateTicketDatePreview();
