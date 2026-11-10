@@ -7,7 +7,7 @@
 <title>WFT Trading Terminal</title>
 
 <style>
-:root{--bg:#050a13;--panel:#0b1524;--panel2:#101f32;--line:#24364b;--gold:#e8b84b;--gold2:#f7d98c;--blue:#55a8ff;--text:#f5f8fc;--muted:#91a9c2;--green:#28d7a0;--red:#ff6474}
+:root{--bg:#050a13;--panel:#0b1524;--panel2:#101f32;--line:#24364b;--gold:#155eef;--gold2:#bfdbfe;--blue:#55a8ff;--text:#f5f8fc;--muted:#91a9c2;--green:#28d7a0;--red:#ff6474}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 55% -20%,#183653 0,transparent 48%),var(--bg);color:var(--text);font:14px Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
 button,input,select{font:inherit}button{cursor:pointer}
 .top{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--line);background:#07111ff2;position:sticky;top:0;z-index:20;backdrop-filter:blur(15px)}
@@ -17,7 +17,7 @@ main{max-width:1600px;margin:auto;padding:16px 18px 34px}
 .accountbar{display:grid;grid-template-columns:minmax(210px,1.4fr) repeat(4,minmax(100px,1fr));gap:9px;margin-bottom:12px}
 .panel{background:linear-gradient(145deg,#102137,#091421);border:1px solid #263b52;border-radius:13px;padding:12px;min-width:0;box-shadow:0 10px 28px #0005}
 .metric-label{font-size:9px;color:#9aafc5;text-transform:uppercase;letter-spacing:.85px;font-weight:700}.metric{font-size:19px;font-weight:750;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.metric.gold{color:var(--gold2)}.metric.green{color:var(--green)}.metric.red{color:var(--red)}.hint{font-size:10px;color:#9aadc1;margin-top:4px;font-weight:400}
-select,input{background:#071321;color:var(--text);border:1px solid #2a4059;border-radius:8px;padding:10px;width:100%;outline:none}select:focus,input:focus{border-color:var(--gold);box-shadow:0 0 0 2px #e8b84b20}
+select,input{background:#071321;color:var(--text);border:1px solid #2a4059;border-radius:8px;padding:10px;width:100%;outline:none}select:focus,input:focus{border-color:var(--gold);box-shadow:0 0 0 2px #155eef20}
 .workspace{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;align-items:start}.side{position:sticky;top:78px;max-height:calc(100vh - 90px);overflow:auto;padding-right:2px}.chart-column{min-width:0}
 .chartpanel{padding:12px}.charttop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.marketpick{display:flex;align-items:center;gap:9px;min-width:0}.marketpick select{width:auto;min-width:155px;color:var(--gold2);font-weight:850}.quote{display:flex;gap:7px;font-size:10px;color:#a9bfd5}.quote b{color:#fff}
 .chartbox{height:560px;min-height:560px;display:block;position:relative;border:1px solid #29445f;border-radius:10px;overflow:hidden;background:#091522}.chartbox canvas{display:block;width:100%;height:100%;min-height:100%}.charttools{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.charttools button,.tab{background:#0a1828;color:#a9bfd5;border:1px solid #2b4058;border-radius:7px;padding:8px 10px;font-size:10px;font-weight:850}.charttools button.active,.tab.active{border-color:#438fe9;color:#b7d8ff;background:#142b45}
@@ -52,7 +52,7 @@ select,input{background:#071321;color:var(--text);border:1px solid #2a4059;borde
 #terminalAccessGate a{display:inline-block;margin-top:10px;padding:10px 16px;border-radius:9px;background:var(--gold);color:#111827;text-decoration:none;font-weight:850;font-size:12px}
 body:not(.terminal-locked) #terminalAccessGate{display:none}
 </style>
-<link rel="stylesheet" href="wft-global.css?v=20">
+<link rel="stylesheet" href="wft-global.css?v=21">
 </head>
 <body class="terminal-locked">
 <header class="top">
@@ -87,7 +87,7 @@ body:not(.terminal-locked) #terminalAccessGate{display:none}
   <div class="statusline" id="challengeStatus">Waiting for account…</div>
   <div class="statusline" id="monitorStatus" aria-live="polite">Monitor refreshes automatically every 5 seconds while this page is open.</div>
  </section>
- <div class="disclaimer" style="margin-top:8px">Indicative market reference data: <a href="https://crystalballmarkets.com/markets" target="_blank" rel="noopener noreferrer" style="color:#f7d98c">Rates by Crystal Ball Markets</a>. Updated by WFT server; for demo simulation only, not dealing prices.</div><div class="disclaimer">TradingView charts are for market analysis. BUY/SELL, SL/TP and pending orders execute only in the WFT Demo Simulation on your active challenge account. No orders are sent to a live broker.</div>
+ <div class="disclaimer" style="margin-top:8px">Indicative market reference data: <a href="https://crystalballmarkets.com/markets" target="_blank" rel="noopener noreferrer" style="color:#bfdbfe">Rates by Crystal Ball Markets</a>. Updated by WFT server; for demo simulation only, not dealing prices.</div><div class="disclaimer">TradingView charts are for market analysis. BUY/SELL, SL/TP and pending orders execute only in the WFT Demo Simulation on your active challenge account. No orders are sent to a live broker.</div>
 </main>
 
 <div class="confirm-overlay" id="tradeConfirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
