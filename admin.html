@@ -621,8 +621,8 @@ tr:hover td{background:rgba(85,168,255,.035)}
 
           <div class="panel">
             <div class="panel-head"><h3>Payout Requests</h3></div>
-            <div id="payoutDemoNotice" style="display:none;padding:12px 16px 0;color:#d6ad55;font-size:11px;font-weight:700;letter-spacing:.08em">DEMO COUNTS · ADMIN-ONLY PREVIEW · REAL PAYOUT RECORDS ARE UNCHANGED</div>
-            <div id="payoutDemoBanner" style="display:none;margin:12px 16px 0;padding:10px 12px;border:1px solid #d6ad55;border-radius:10px;color:#d6ad55;background:rgba(214,173,85,.08)">DEMO PREVIEW ONLY — 25 Pending, 17 Approved, 6 Rejected (48 total). Fictional names and payout details; no database records or payments are changed.</div>
+            <div id="payoutDemoNotice" style="display:none;padding:12px 16px 0;color:#d6ad55;font-size:11px;font-weight:700;letter-spacing:.08em">SAMPLE PAYOUT LIST · FICTIONAL ENTRIES · LIVE PAYOUT RECORDS ARE UNCHANGED</div>
+            <div id="payoutDemoBanner" style="display:none;margin:12px 16px 0;padding:10px 12px;border:1px solid #d6ad55;border-radius:10px;color:#d6ad55;background:rgba(214,173,85,.08)">SAMPLE PAYOUT LIST — 25 Pending, 17 Approved, 6 Rejected (48 total). Names and amounts are illustrative only; live payout records and payments are unchanged.</div>
             <div id="payoutStatusFilters" style="display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px 4px">
               <button type="button" class="btn small" data-payout-filter="all" onclick="setPayoutFilter('all')">All <span id="payoutCountAll">0</span></button>
               <button type="button" class="btn small" data-payout-filter="pending" onclick="setPayoutFilter('pending')">Pending <span id="payoutCountPending">0</span></button>
@@ -1731,18 +1731,18 @@ function getPayoutDisplayRows() {
   ];
   statuses.forEach((status, index) => {
     rows.push({
-      id: "DEMO-" + String(index + 1).padStart(3, "0"),
+      id: "SAMPLE-" + String(index + 1).padStart(3, "0"),
       user_id: demoNames[index],
-      account_profit: 100,
-      trader_share: 80,
-      company_share: 20,
-      payout_amount: 80,
+      account_profit: [125, 187.5, 250, 312.5, 375, 437.5, 500, 562.5, 625, 750][index % 10],
+      trader_share: [100, 150, 200, 250, 300, 350, 400, 450, 500, 600][index % 10],
+      company_share: [25, 37.5, 50, 62.5, 75, 87.5, 100, 112.5, 125, 150][index % 10],
+      payout_amount: [100, 150, 200, 250, 300, 350, 400, 450, 500, 600][index % 10],
       network: index % 2 ? "TRC20" : "BEP20",
-      wallet_address: "DEMO WALLET — NOT REAL",
+      wallet_address: "SAMPLE WALLET — NOT REAL",
       status,
       requested_at: new Date(Date.now() - index * 3600000).toISOString(),
-      admin_note: "DEMO PREVIEW ONLY",
-      trading_account: { account_name: "Demo Account " + (index + 1), platform: "MT5", account_size: 5000 },
+      admin_note: "SAMPLE ENTRY — NOT A REAL REQUEST",
+      trading_account: { account_name: "WFT Account " + (index + 1), platform: "MT5", account_size: 5000 },
       is_demo: true
     });
   });
@@ -1806,7 +1806,7 @@ function renderPayouts() {
         : ""
     ].filter(Boolean).join(" / ");
 
-    let actions = item.is_demo ? '<span class="badge">Demo only</span>' : "—";
+    let actions = item.is_demo ? '<span class="badge">Sample</span>' : "—";
 
     if (!item.is_demo && item.status === "pending") {
       actions = `
