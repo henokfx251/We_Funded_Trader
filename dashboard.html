@@ -13,8 +13,8 @@
   --sidebar:#091525;
   --panel:#101d30;
   --panel2:#14243a;
-  --gold:#e8b84b;
-  --gold2:#f5d27c;
+  --gold:#155eef;
+  --gold2:#2875ff;
   --text:#f4f7fb;
   --muted:#94a3b8;
   --line:#26374d;
@@ -275,7 +275,7 @@ a { color:var(--gold); text-decoration:none; }
     width:100%!important;
     min-height:100vh!important;
     margin:0!important;
-    border:8px double #b58a2a!important;
+    border:8px double #155eef!important;
     border-radius:0!important;
     background:#fff!important;
     color:#172033!important;
@@ -283,13 +283,13 @@ a { color:var(--gold); text-decoration:none; }
     print-color-adjust:exact;
     -webkit-print-color-adjust:exact;
   }
-  body.printing-certificate .certificate-paper.is-printing:before{border-color:#d5b66d!important}
+  body.printing-certificate .certificate-paper.is-printing:before{border-color:#2875ff!important}
   body.printing-certificate .certificate-paper.is-printing .certificate-title,
   body.printing-certificate .certificate-paper.is-printing .certificate-recipient,
   body.printing-certificate .certificate-paper.is-printing .certificate-meta strong{color:#172033!important}
   body.printing-certificate .certificate-paper.is-printing .certificate-copy,
   body.printing-certificate .certificate-paper.is-printing .certificate-signoff{color:#39465c!important}
-  body.printing-certificate .certificate-paper.is-printing .certificate-meta div{border-color:#d7c18a!important}
+  body.printing-certificate .certificate-paper.is-printing .certificate-meta div{border-color:#bfdbfe!important}
   body.printing-certificate .certificate-actions{display:none!important}
 }
 
@@ -403,7 +403,7 @@ th {
 }
 .badge.pending {
   background:#493719;
-  color:#fcd34d;
+  color:#155eef;
 }
 .badge.rejected,.badge.failed,.badge.disabled {
   background:#4a2027;
@@ -650,7 +650,7 @@ hr {
 .reward-progress-label{display:flex;justify-content:space-between;gap:10px;margin:14px 0 7px;color:var(--muted);font-size:11px}
 .reward-progress-label strong{color:var(--gold2)}
 .reward-progress{height:7px;overflow:hidden;border-radius:10px;background:#26374d}
-.reward-progress span{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#b8892f,#f5d27c)}
+.reward-progress span{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#155eef,#2875ff)}
 .reward-milestone-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:13px;font-size:11px}
 .reward-milestone-footer strong{font-size:15px;color:var(--gold2)}
 .reward-milestone-footer span{color:var(--muted);text-align:right}
@@ -659,18 +659,18 @@ hr {
 
 /* Premium Payout Center — scoped styles only */
 #page-payout .payout-welcome{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-#page-payout .payout-kicker{display:block;color:#e8b84b;font-size:10px;font-weight:900;letter-spacing:1.8px;margin-bottom:7px}
+#page-payout .payout-kicker{display:block;color:#155eef;font-size:10px;font-weight:900;letter-spacing:1.8px;margin-bottom:7px}
 #page-payout .payout-welcome h1{margin:0 0 8px;color:#f4f7fb}
-#page-payout .payout-secure{display:inline-flex;align-items:center;gap:9px;padding:10px 13px;border:1px solid rgba(232,184,75,.28);border-radius:999px;background:rgba(232,184,75,.07);color:#f5d27c;font-size:11px;font-weight:700}
+#page-payout .payout-secure{display:inline-flex;align-items:center;gap:9px;padding:10px 13px;border:1px solid rgba(232,184,75,.28);border-radius:999px;background:rgba(232,184,75,.07);color:#2875ff;font-size:11px;font-weight:700}
 #page-payout .payout-secure-dot{width:7px;height:7px;border-radius:50%;background:#4cdb9a;box-shadow:0 0 10px rgba(76,219,154,.65)}
 #page-payout .payout-hero{padding:22px;background:radial-gradient(ellipse at 50% 0%,rgba(232,184,75,.08),transparent 55%),linear-gradient(145deg,#101d30,#0b1727);border-color:rgba(232,184,75,.22)}
 #page-payout .payout-section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:17px}
 #page-payout .payout-section-heading h3{margin:0 0 6px;color:#f4f7fb;font-size:19px}
 #page-payout .payout-section-heading p{margin:0}
-#page-payout .payout-rule-tag,#page-payout .payout-step-indicator,#page-payout .payout-history-label{padding:7px 10px;border:1px solid rgba(232,184,75,.25);border-radius:7px;color:#f5d27c;background:rgba(232,184,75,.06);font-size:9px;font-weight:900;letter-spacing:1px}
+#page-payout .payout-rule-tag,#page-payout .payout-step-indicator,#page-payout .payout-history-label{padding:7px 10px;border:1px solid rgba(232,184,75,.25);border-radius:7px;color:#2875ff;background:rgba(232,184,75,.06);font-size:9px;font-weight:900;letter-spacing:1px}
 #page-payout .payout-program-grid{gap:15px}
 #page-payout .payout-program{position:relative;overflow:hidden;margin:0;padding:20px;border-radius:14px;background:linear-gradient(155deg,#14243a,#0c192a);border:1px solid rgba(148,163,184,.18)}
-#page-payout .payout-one-step{border-top:2px solid #e8b84b}
+#page-payout .payout-one-step{border-top:2px solid #155eef}
 #page-payout .payout-instant{border-top:2px solid #62b0ff}
 #page-payout .payout-program-top{display:flex;justify-content:space-between;align-items:center}
 #page-payout .payout-program-label{color:#9aabc0;font-size:9px;font-weight:800;letter-spacing:1.4px}
@@ -679,7 +679,7 @@ hr {
 #page-payout .payout-split{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:15px}
 #page-payout .payout-split>div{padding:12px;border-radius:10px;background:rgba(232,184,75,.09);border:1px solid rgba(232,184,75,.18)}
 #page-payout .payout-instant .payout-split>div{background:rgba(98,176,255,.07);border-color:rgba(98,176,255,.18)}
-#page-payout .payout-split strong{display:block;color:#f5d27c;font-size:27px;line-height:1.1}
+#page-payout .payout-split strong{display:block;color:#2875ff;font-size:27px;line-height:1.1}
 #page-payout .payout-instant .payout-split strong{color:#8fc5ff}
 #page-payout .payout-split span{display:block;margin-top:5px;color:#a9b8ca;font-size:10px}
 #page-payout .payout-split .payout-company{background:rgba(255,255,255,.025);border-color:rgba(148,163,184,.14)}
@@ -690,13 +690,13 @@ hr {
 #page-payout .payout-rule-list strong{color:#f4f7fb;text-align:right}
 #page-payout .payout-challenge-note{margin-top:13px;padding:12px;border-radius:9px;background:rgba(232,184,75,.055);border:1px solid rgba(232,184,75,.14)}
 #page-payout .payout-instant .payout-challenge-note{background:rgba(98,176,255,.05);border-color:rgba(98,176,255,.14)}
-#page-payout .payout-challenge-note strong{color:#f5d27c;font-size:11px}
+#page-payout .payout-challenge-note strong{color:#2875ff;font-size:11px}
 #page-payout .payout-instant .payout-challenge-note strong{color:#8fc5ff}
 #page-payout .payout-challenge-note p{margin:6px 0 0;color:#c0ccda;font-size:11px;line-height:1.65}
 #page-payout .payout-footnote{margin:11px 0 0;color:#9aabc0;font-size:10px;line-height:1.6}
 #page-payout .payout-timing-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}
 #page-payout .payout-timing-grid>div{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid rgba(148,163,184,.14);border-radius:10px;background:rgba(7,17,31,.45);min-width:0}
-#page-payout .payout-timing-icon{display:grid;place-items:center;flex:0 0 35px;height:35px;border-radius:9px;background:rgba(232,184,75,.1);color:#f5d27c;font-size:13px;font-weight:900}
+#page-payout .payout-timing-icon{display:grid;place-items:center;flex:0 0 35px;height:35px;border-radius:9px;background:rgba(232,184,75,.1);color:#2875ff;font-size:13px;font-weight:900}
 #page-payout .payout-timing-grid strong{display:block;color:#f4f7fb;font-size:10px}
 #page-payout .payout-timing-grid small{display:block;margin-top:4px;color:#9aabc0;font-size:9px;line-height:1.4}
 #page-payout .payout-disclaimer{margin:14px 0 0;padding-top:12px;border-top:1px solid rgba(148,163,184,.12);color:#9aabc0;font-size:10px;line-height:1.6}
@@ -710,15 +710,15 @@ hr {
 #page-payout .payout-preview-grid,#page-payout .payout-wallet-grid{gap:12px}
 #page-payout .payout-preview-box{padding:11px 13px;border:1px solid rgba(148,163,184,.15);border-radius:10px;background:#0b1727}
 #page-payout .payout-preview-box label{margin:0 0 7px;color:#9aabc0;font-size:10px}
-#page-payout .payout-preview-box input{background:#101d30;border-color:#26374d;font-weight:800;color:#f5d27c}
+#page-payout .payout-preview-box input{background:#101d30;border-color:#26374d;font-weight:800;color:#2875ff}
 #page-payout .payout-form-note{margin:15px 0;padding:13px;border:1px solid rgba(232,184,75,.16);border-radius:9px;background:rgba(232,184,75,.045)}
-#page-payout .payout-form-note strong{color:#f5d27c;font-size:11px}
+#page-payout .payout-form-note strong{color:#2875ff;font-size:11px}
 #page-payout .payout-form-note p{margin:5px 0 0;line-height:1.6}
 #page-payout .payout-submit-btn{min-width:220px;font-weight:900}
 #page-payout .payout-submit-btn span{margin-left:8px;font-size:17px}
 #page-payout .payout-history-panel .table-wrap{border:1px solid rgba(148,163,184,.12);border-radius:9px}
 #page-payout .payout-history-panel table{margin:0}
-#page-payout .payout-history-panel th{background:#0c1929;color:#f5d27c}
+#page-payout .payout-history-panel th{background:#0c1929;color:#2875ff}
 @media(max-width:900px){
  #page-payout .payout-timing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  #page-payout .payout-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -759,7 +759,7 @@ hr {
   background:#081525;
 }
 .reward-task-card input:focus,.reward-task-card select:focus{
-  outline:none;border-color:#e8b84b;box-shadow:0 0 0 3px rgba(232,184,75,.1);
+  outline:none;border-color:#155eef;box-shadow:0 0 0 3px rgba(232,184,75,.1);
 }
 .reward-progress{height:9px;background:#26374d}
 .reward-progress span{box-shadow:0 0 12px rgba(232,184,75,.22)}
@@ -770,7 +770,7 @@ hr {
 @media(prefers-reduced-motion:reduce){.reward-task-card{transition:none}.reward-task-card:hover{transform:none}}
 
 </style>
-<link rel="stylesheet" href="wft-global.css?v=20">
+<link rel="stylesheet" href="wft-global.css?v=21">
 </head>
 
 <body>
@@ -1449,7 +1449,7 @@ function statusBadge(status) {
   const color = ["approved","paid","active","passed","completed"].includes(s)
     ? "#22c55e"
     : ["rejected","failed","breached"].includes(s)
-      ? "#ef4444" : "#eab308";
+      ? "#ef4444" : "#155eef";
   const label = s === "needs_review" || s === "submitted" ? "Pending Review" : (status || "Pending");
   return `<span style="color:${color};font-weight:700">${safe(label)}</span>`;
 }
