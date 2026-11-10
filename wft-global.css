@@ -710,3 +710,15 @@ body:not(:has(.chartbox)) header .nav-actions a.btn-outline{
   background:#ffffff!important;
   border:1px solid #cbd5e1!important;
 }
+
+
+/* Homepage requested text contrast adjustments */
+body:not(:has(.chartbox)) header .nav-actions a[href="Login.html"]{
+  color:#111827!important;
+  background:#ffffff!important;
+  border:1px solid #cbd5e1!important;
+}
+body:not(:has(.chartbox)) .hero .hero-trust,
+body:not(:has(.chartbox)) .hero .hero-trust span{
+  color:#ffffff!important;
+}
