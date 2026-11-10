@@ -614,3 +614,90 @@ body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle,.menu-toggle button){
 @media(max-width:700px){
  body:not(:has(.chartbox)) :is(.content,main){background:transparent!important}
 }
+
+
+/* WFT LIGHT THEME — TARGETED READABILITY FIX v3
+   Keep intentional navy hero panels readable; make dashboard data panels light. */
+body:not(:has(.chartbox)) .dashboard-welcome{
+  background:linear-gradient(115deg,#eaf2ff 0%,#f8fbff 68%,#edf5ff 100%)!important;
+  border:1px solid #d7e4f5!important;
+  box-shadow:0 12px 32px rgba(15,23,42,.08)!important;
+  color:#0f172a!important;
+}
+body:not(:has(.chartbox)) .dashboard-welcome :is(h1,h2,h3,p,.welcome-kicker,.muted,.gold-text){
+  color:#0f172a!important;
+}
+body:not(:has(.chartbox)) .dashboard-welcome .welcome-kicker{color:#1d4ed8!important}
+body:not(:has(.chartbox)) .dashboard-welcome .welcome-actions .btn-secondary{
+  background:#e8eef8!important;color:#1e293b!important;border-color:#cbd5e1!important;
+}
+body:not(:has(.chartbox)) .stats-grid .stat-card,
+body:not(:has(.chartbox)) .grid-2 > .panel,
+body:not(:has(.chartbox)) .content > .panel,
+body:not(:has(.chartbox)) .page .panel,
+body:not(:has(.chartbox)) .page .info-card,
+body:not(:has(.chartbox)) .page .account-card{
+  background:#fff!important;
+  color:#334155!important;
+  border:1px solid #e2e8f0!important;
+  box-shadow:0 8px 24px rgba(15,23,42,.055)!important;
+}
+body:not(:has(.chartbox)) .stat-card :is(span,h2,small),
+body:not(:has(.chartbox)) .panel :is(h1,h2,h3,h4,p,span,strong,small,div),
+body:not(:has(.chartbox)) .info-card :is(h1,h2,h3,h4,p,span,strong,small,div),
+body:not(:has(.chartbox)) .account-card :is(h1,h2,h3,h4,p,span,strong,small,div){
+  color:#334155!important;
+}
+body:not(:has(.chartbox)) .stat-card h2{color:#1d4ed8!important}
+body:not(:has(.chartbox)) .panel h3{color:#0f172a!important}
+body:not(:has(.chartbox)) .empty,
+body:not(:has(.chartbox)) #overviewAccounts,
+body:not(:has(.chartbox)) #overviewOrders,
+body:not(:has(.chartbox)) #overviewActivity{
+  background:#f8fafc!important;
+  color:#64748b!important;
+  border:1px dashed #cbd5e1!important;
+}
+body:not(:has(.chartbox)) .overview-account-row{
+  background:transparent!important;border-bottom-color:#e2e8f0!important;
+}
+body:not(:has(.chartbox)) .overview-account-row :is(strong,small,span,div){
+  color:#334155!important;
+}
+body:not(:has(.chartbox)) .overview-account-values{color:#1d4ed8!important}
+body:not(:has(.chartbox)) .badge{background:#e2e8f0!important;color:#334155!important}
+body:not(:has(.chartbox)) .badge:is(.active,.paid,.approved){background:#dcfce7!important;color:#166534!important}
+body:not(:has(.chartbox)) .badge.pending{background:#fef3c7!important;color:#92400e!important}
+body:not(:has(.chartbox)) .badge:is(.rejected,.failed,.disabled){background:#fee2e2!important;color:#991b1b!important}
+
+/* Homepage: preserve the navy hero/header but enforce white readable copy. */
+body:not(:has(.chartbox)) .hero{
+  background:linear-gradient(135deg,#102b49 0%,#0b1c31 100%)!important;
+  color:#f8fafc!important;
+}
+body:not(:has(.chartbox)) .hero :is(h1,h2,h3,p,.hero-description,.hero-trust,.hero-tag){
+  color:#f8fafc!important;
+}
+body:not(:has(.chartbox)) .hero h1 span,
+body:not(:has(.chartbox)) .hero .gold{color:#93c5fd!important}
+body:not(:has(.chartbox)) .hero .hero-tag{
+  background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.25)!important;
+}
+body:not(:has(.chartbox)) header,
+body:not(:has(.chartbox)) header :is(a,button,span,.logo,.nav-links a,.nav-actions){
+  color:#f8fafc!important;
+}
+body:not(:has(.chartbox)) .nav-links{background:#10243b!important}
+body:not(:has(.chartbox)) .promo{
+  background:#fff!important;color:#334155!important;border-color:#dbe4f0!important;
+}
+body:not(:has(.chartbox)) .promo :is(h1,h2,h3,p,span,strong,small){color:#334155!important}
+body:not(:has(.chartbox)) .promo .gold{color:#1d4ed8!important}
+body:not(:has(.chartbox)) .section :is(.card,.challenge-card,.account-card,.rule-card,.step-card,.faq-item,.platform-box){
+  background:#fff!important;color:#334155!important;border-color:#e2e8f0!important;
+}
+body:not(:has(.chartbox)) .section :is(.card,.challenge-card,.account-card,.rule-card,.step-card,.faq-item,.platform-box) :is(h1,h2,h3,h4,p,li,span,strong,small){
+  color:#334155!important;
+}
+body:not(:has(.chartbox)) .section-heading :is(h1,h2,h3,p,.eyebrow){color:#334155!important}
+body:not(:has(.chartbox)) .section-heading .gold{color:#1d4ed8!important}
