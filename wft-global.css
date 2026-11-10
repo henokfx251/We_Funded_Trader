@@ -722,3 +722,101 @@ body:not(:has(.chartbox)) .hero .hero-trust,
 body:not(:has(.chartbox)) .hero .hero-trust span{
   color:#ffffff!important;
 }
+
+
+/* =========================================================
+   WFT PREMIUM LIGHT DESIGN SYSTEM — shared across every page
+   Simple, readable typography and consistent contrast.
+   Trading chart workspace remains intentionally dark.
+   ========================================================= */
+:root{
+  --wft-page:#f5f7fb;
+  --wft-surface:#ffffff;
+  --wft-surface-soft:#f8fafc;
+  --wft-ink:#1e293b;
+  --wft-muted:#64748b;
+  --wft-border:#e2e8f0;
+  --wft-blue:#2563eb;
+  --wft-blue-dark:#1d4ed8;
+}
+body:not(:has(.chartbox)){
+  background:var(--wft-page)!important;
+  color:var(--wft-ink)!important;
+  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
+  font-size:14px;
+  font-weight:400;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+body:not(:has(.chartbox)) :is(h1,h2,h3,h4,h5,h6,strong,b){
+  font-weight:600!important;
+  letter-spacing:-.018em;
+}
+body:not(:has(.chartbox)) :is(p,li,label,small,span,a,button,input,select,textarea){
+  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
+}
+body:not(:has(.chartbox)) :is(p,li,label,.muted,.description,.subtitle,.text-muted){
+  color:var(--wft-muted);
+}
+body:not(:has(.chartbox)) :is(.content,.main,.page,.section,.container,.page-content){
+  color:var(--wft-ink);
+}
+body:not(:has(.chartbox)) :is(.panel,.card,.stat-card,.info-card,.feature-card,.challenge-card,.program-card,.account-card,.order-card,.reward-card,.faq-item,.table-wrap,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.activity-card){
+  background:var(--wft-surface)!important;
+  color:var(--wft-ink)!important;
+  border:1px solid var(--wft-border)!important;
+  box-shadow:0 5px 20px rgba(15,23,42,.045)!important;
+}
+body:not(:has(.chartbox)) :is(.panel,.card,.stat-card,.info-card,.feature-card,.challenge-card,.program-card,.account-card,.order-card,.reward-card,.faq-item,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.activity-card) :is(h1,h2,h3,h4,h5,p,span,strong,small,label,li,div){
+  color:inherit;
+}
+body:not(:has(.chartbox)) :is(.panel,.card,.stat-card,.info-card,.feature-card,.challenge-card,.program-card,.account-card,.order-card,.reward-card,.faq-item,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.activity-card) :is(h1,h2,h3,h4){
+  color:#0f172a!important;
+}
+body:not(:has(.chartbox)) :is(.panel,.card,.stat-card,.info-card,.feature-card,.challenge-card,.program-card,.account-card,.order-card,.reward-card,.faq-item,.form-card,.settings-card,.wallet-card,.payout-card,.kyc-card,.activity-card) :is(p,small,.muted,.description){
+  color:#64748b!important;
+}
+body:not(:has(.chartbox)) :is(input,select,textarea){
+  background:#fff!important;color:#1e293b!important;
+  border:1px solid #cbd5e1!important;
+}
+body:not(:has(.chartbox)) :is(input,select,textarea)::placeholder{color:#94a3b8!important}
+body:not(:has(.chartbox)) :is(table,thead,tbody,tr,td,th){color:#334155}
+body:not(:has(.chartbox)) :is(th,thead){background:#f1f5f9!important;color:#334155!important}
+body:not(:has(.chartbox)) :is(td,tr){border-color:#e2e8f0!important}
+body:not(:has(.chartbox)) :is(.sidebar,.side-nav,.nav-menu){
+  background:#fff!important;color:#334155!important;border-color:#e2e8f0!important;
+}
+body:not(:has(.chartbox)) :is(.sidebar,.side-nav,.nav-menu) :is(a,button,span,small){
+  color:#475569!important;
+}
+body:not(:has(.chartbox)) :is(.sidebar,.side-nav,.nav-menu) :is(a.active,.active){
+  background:#eff6ff!important;color:#1d4ed8!important;
+}
+body:not(:has(.chartbox)) :is(.topbar,.top-nav,.navbar){
+  background:rgba(255,255,255,.96)!important;color:#1e293b!important;
+  border-color:#e2e8f0!important;
+}
+body:not(:has(.chartbox)) .topbar :is(h1,h2,h3,span,a,button){color:#1e293b}
+body:not(:has(.chartbox)) :is(.hero,.dashboard-welcome){
+  background:linear-gradient(120deg,#173452,#10243b)!important;color:#fff!important;
+}
+body:not(:has(.chartbox)) :is(.hero,.dashboard-welcome) :is(h1,h2,h3,p,span,.muted,.hero-description,.hero-trust){
+  color:#f8fafc!important;
+}
+body:not(:has(.chartbox)) :is(.hero,.dashboard-welcome) :is(.hero-tag,.welcome-kicker){
+  color:#bfdbfe!important;
+}
+body:not(:has(.chartbox)) :is(.btn-primary,.primary-btn,.button-primary){
+  background:#2563eb!important;color:#fff!important;border-color:#2563eb!important;
+}
+body:not(:has(.chartbox)) :is(.btn-outline,.btn-secondary,.button-secondary){
+  background:#fff!important;color:#1e293b!important;border:1px solid #cbd5e1!important;
+}
+body:not(:has(.chartbox)) a{color:#1d4ed8}
+body:not(:has(.chartbox)) footer{background:#fff!important;color:#64748b!important;border-color:#e2e8f0!important}
+@media(max-width:760px){
+ body:not(:has(.chartbox)){font-size:13px}
+ body:not(:has(.chartbox)) :is(.panel,.card,.stat-card){box-shadow:0 3px 14px rgba(15,23,42,.04)!important}
+}
