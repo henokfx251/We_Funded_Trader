@@ -95,7 +95,7 @@ let programs=[
 ];
 programs.forEach(p=>{p.profitableDays=3;p.minDailyProfit="0.25%";});
 programs.sort((a,b)=>a.price-b.price||(a.code==="2step_standard"?-1:b.code==="2step_standard"?1:a.name.localeCompare(b.name)));
-const sizes=[2500,5000,10000,25000,50000,100000,200000,300000];
+const sizes=[2500,5000,10000,25000,50000,100000];
 let selected=programs.find(p=>p.code==="2step_standard")||programs[0],selectedSize=2500,couponApplied=false,livePrograms={},rulesAgreed=false;
 const money=n=>"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 function basePrice(){const p=livePrograms[selected.code]||selected.price;return p*selectedSize/2500}
