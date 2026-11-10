@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07111f">
-<title>WFT | 100 Trader Giveaway</title>
+<title>WFT | Trader Giveaway</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f5f8ff;--panel:#ffffff;--panel2:#edf3ff;--gold:#155eef;--text:#14213d;--muted:#687891;--line:#dce5f2;--green:#15803d;--red:#dc2626}
@@ -30,16 +30,16 @@ label{display:block;font-weight:700;margin-top:12px;color:#465875}.btn{border:0;
 <header><div class="brand">WE FUNDED <span>TRADER</span></div><nav style="display:flex;gap:14px;flex-wrap:wrap"><a href="dashboard.html?page=reward">Rewards</a><a href="wallet.html">Wallet</a><a href="dashboard.html">← Dashboard</a></nav></header>
 <main>
 <section class="card hero">
-  <p class="gold">LIMITED GIVEAWAY · MAXIMUM 100 TRADERS</p>
-  <div class="fee"><strong id="giveawayLiveStatus">Checking Giveaway status...</strong><div style="height:9px;background:#07111f;border-radius:20px;overflow:hidden;margin-top:10px"><div id="giveawayProgressBar" style="height:100%;width:0;background:var(--gold)"></div></div><p class="small" id="giveawaySlots">Loading available places...</p></div>
-  <h1>Join the WFT 100 Trader Giveaway</h1>
+  <p class="gold">WFT COMMUNITY GIVEAWAY</p>
+  <div class="fee"><strong id="giveawayLiveStatus">Loading participant count...</strong><p class="small" id="giveawaySlots">Loading total participants...</p></div>
+  <h1>Join the WFT Trader Giveaway</h1>
   <p class="muted">Complete all five social follow tasks, refer 2 people who activate a WFT account, then redeem the $5,000 Instant Pro reward by paying the one-time $5 USDT fee. The $5 redemption fee is credited to your WFT Wallet Balance after Admin approval.</p>
   <p><strong class="gold">Important:</strong> The $5 redemption fee is credited to your WFT Wallet Balance after Admin approval, following the existing Giveaway wallet-credit rule.</p>
 </section>
 <section class="card">
   <h2>Giveaway Reward</h2>
   <div class="fee"><span class="gold">ONLY REWARD</span><strong>$5,000 Instant Pro</strong><p class="small">One-time redemption fee: <strong>$5 USDT</strong></p></div>
-  <p class="small">Only 100 entries are accepted. One entry per user. No other account size or program can be redeemed in this giveaway.</p>
+  <p class="small">One entry per user. No other account size or program can be redeemed in this giveaway.</p>
 </section>
 <section class="card hidden" id="entryCreate">
   <h2>Step 3. Redeem $5,000 Instant Pro</h2>
@@ -228,12 +228,10 @@ $("copyGiveawayReferral")?.addEventListener("click",async()=>{
 async function loadGiveawayStatus(){
  try{
   const {data,error}=await db.rpc("giveaway_public_status");if(error)throw error;
-  const joined=Number(data?.joined||0),remaining=Number(data?.remaining||0);
-  $("giveawayLiveStatus").textContent=data?.is_live?"GIVEAWAY IS LIVE ✓":"GIVEAWAY FULL";
-  $("giveawaySlots").textContent=joined+" / 100 joined · "+remaining+" places remaining";
-  $("giveawayProgressBar").style.width=Math.min(100,joined)+"%";
-  if(!data?.is_live){$("createEntry").disabled=true;$("createStatus").textContent="Giveaway is full. Registration is closed.";}
- }catch(e){$("giveawaySlots").textContent="Could not load live capacity.";}
+  const joined=Number(data?.joined||0);
+  $("giveawayLiveStatus").textContent="GIVEAWAY IS OPEN ✓";
+  $("giveawaySlots").textContent=joined+" trader"+(joined===1?" has":"s have")+" joined this Giveaway.";
+ }catch(e){$("giveawayLiveStatus").textContent="GIVEAWAY";$("giveawaySlots").textContent="Participant count is temporarily unavailable."}
 }
 async function load(){
  $("entryPanel").classList.remove("hidden");
@@ -259,7 +257,7 @@ async function load(){
  }
 }
 $("createEntry").addEventListener("click",async()=>{
- $("createEntry").disabled=true;message("createStatus","Checking referral eligibility and available places...");
+ $("createEntry").disabled=true;message("createStatus","Checking your giveaway eligibility...");
  try{
   const {data,error}=await db.rpc("create_giveaway_entry",{p_account_size:Number($("accountSize").value)});
   if(error)throw error;
