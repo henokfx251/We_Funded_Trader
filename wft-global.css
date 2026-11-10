@@ -189,70 +189,96 @@ body:not(:has(.chartbox)) :is(input,select,textarea){max-width:100%}
 }
 
 
-/* v21 — strict blue-only accent policy */
-:root{--wft-accent:#155eef!important;--gold:#155eef!important;--gold2:#bfdbfe!important}
-body:not(:has(.chartbox)) :is(.gold,.gold-text,.text-gold,.eyebrow,.price,.starting,.amount,.total-price,.highlight,.warning,.text-warning,.pending,.status-pending,.status.pending,.badge.pending){
- color:#155eef!important;
-}
-body:not(:has(.chartbox)) :is(.pending,.status-pending,.status.pending,.badge.pending,.warning,.text-warning){
- background:#eaf2ff!important;color:#155eef!important;border-color:#bfd4ff!important;
-}
-body:not(:has(.chartbox)) :is(.gold,.gold-text,.text-gold,.btn.gold,.btn.gold:hover,.btn.gold:focus){
- color:#155eef!important;
-}
-body:not(:has(.chartbox)) :is(.btn.gold,.btn.gold:hover,.btn.gold:focus){
- background:linear-gradient(120deg,#2875ff,#155eef)!important;color:#fff!important;border-color:#155eef!important;
-}
-body:has(.chartbox){--gold:#55a8ff!important;--gold2:#bfdbfe!important}
 
-
-/* v22 — LIGHT WHITE BACKGROUNDS ACROSS EVERY WFT PAGE, INCLUDING TERMINAL */
+/* =========================================================
+   WFT DESIGN SYSTEM v23 — SINGLE BLUE & WHITE AUTHORITY
+   ========================================================= */
 :root{
- --wft-page:#f7f9fd!important;--wft-white:#fff!important;
- --wft-ink:#14213d!important;--wft-text:#34445f!important;
- color-scheme:light!important;
+ --wft-blue:#155eef;--wft-blue-strong:#1248c7;--wft-blue-dark:#103b91;
+ --wft-blue-soft:#eaf2ff;--wft-page:#f7f9fd;--wft-white:#fff;
+ --wft-ink:#14213d;--wft-text:#34445f;--wft-muted:#687891;
+ --wft-border:#dce5f2;--wft-green:#15803d;--wft-red:#dc2626;
+ --bg:#f7f9fd;--panel:#fff;--panel2:#f0f5ff;
+ --gold:#155eef;--gold2:#2875ff;--blue:#155eef;--blue2:#2875ff;
+ --text:#14213d;--muted:#687891;--line:#dce5f2;
+ color-scheme:light;
 }
 html,body{
- background:#f7f9fd!important;background-color:#f7f9fd!important;
+ margin:0!important;background:#f7f9fd!important;background-color:#f7f9fd!important;
  background-image:none!important;color:#34445f!important;color-scheme:light!important;
 }
-body:has(.chartbox){
- background:#f7f9fd!important;background-color:#f7f9fd!important;
- background-image:none!important;color:#34445f!important;color-scheme:light!important;
- --bg:#f7f9fd!important;--panel:#fff!important;--panel2:#f0f5fc!important;
- --line:#dce5f2!important;--gold:#155eef!important;--gold2:#2875ff!important;
- --blue:#155eef!important;--text:#14213d!important;--muted:#687891!important;
+body{font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;line-height:1.55}
+body :is(h1,h2,h3,h4,h5,h6){color:#14213d!important}
+body :is(p,li,label,small,.muted,.description,.subtitle,.helper-text,.text-muted){color:#687891}
+body :is(header,.navbar,.topbar,.top-bar,.dashboard-header,.site-header){
+ background:#fff!important;color:#14213d!important;border-color:#dce5f2!important;
+ box-shadow:0 4px 18px rgba(20,55,110,.05)!important;
 }
-body:has(.chartbox) :is(.top,.panel,.chartbox){
- background:#fff!important;background-image:none!important;
- color:#34445f!important;border-color:#dce5f2!important;
- box-shadow:0 4px 18px rgba(16,45,90,.055)!important;
-}
-body:has(.chartbox) :is(h1,h2,h3,h4,h5,h6,p,small,label,.metric-label,.hint,.muted,.toplink){
- color:#34445f!important;
-}
-body:has(.chartbox) :is(.metric,.metric-value,.metric.gold){color:#155eef!important}
-body:has(.chartbox) :is(input,select,textarea){
- background:#fff!important;color:#14213d!important;border-color:#cbd8eb!important;
-}
-body:has(.chartbox) :is(.charttools button,.tab,.order-tabs button,.mode-tabs button){
- background:#eaf2ff!important;color:#155eef!important;border-color:#cbd8eb!important;
-}
-body:has(.chartbox) :is(.chartbox canvas,canvas){background:#fff!important}
-body:has(.chartbox) :is(.simtag){color:#15803d!important;background:#ecfdf5!important;border-color:#bbf7d0!important}
+body :is(header a,.navbar a,.topbar a,.top-bar a,.dashboard-header a,.site-header a){color:#34445f}
+body :is(.logo,.brand,.brand-name){color:#155eef!important}
 body :is(.main,.content,main,.page,.section,.container,.wrap,.page-content,.main-content,.dashboard-content){
- background-color:#f7f9fd!important;background-image:none!important;
+ background-color:transparent!important;background-image:none!important;
 }
-body :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.account-card,.order-card,.reward-card,.settings-card,.payout-card,.kyc-card,.activity-card,.table-wrap,.agreement-area,.certificate-paper,.platform-box){
- background-color:#fff!important;background-image:none!important;
-}
-body :is([style*="#050a13"],[style*="#07111f"],[style*="#071321"],[style*="#0b1524"],[style*="#101f32"],[style*="#091421"],[style*="#0a1828"],[style*="#091522"],[style*="#102137"],[style*="#07111F"],[style*="#071321"]){
+body :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.account-card,.order-card,.reward-card,.settings-card,.payout-card,.kyc-card,.activity-card,.table-wrap,.agreement-area,.certificate-paper,.platform-box,.feature,.faq-item){
  background:#fff!important;background-color:#fff!important;background-image:none!important;
  color:#34445f!important;border-color:#dce5f2!important;
+ box-shadow:0 8px 24px rgba(20,55,110,.055)!important;
 }
-body :is(.gold,.gold-text,.text-gold,.eyebrow,.price,.starting,.amount,.total-price,.highlight,.warning,.text-warning,.pending,.status-pending,.status.pending,.badge.pending){
- color:#155eef!important;
+body :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.account-card,.order-card,.reward-card,.settings-card,.payout-card,.kyc-card,.activity-card,.feature):hover{
+ border-color:#bfd4ff!important;
 }
-body :is(.pending,.status-pending,.status.pending,.badge.pending,.warning,.text-warning){
- background:#eaf2ff!important;color:#155eef!important;border-color:#bfd4ff!important;
+body :is(.gold,.gold-text,.text-gold,.eyebrow,.price,.starting,.amount,.total-price,.highlight,.pending,.status-pending,.status.pending,.badge.pending){color:#155eef!important}
+body :is(.btn-primary,.btn.primary,.button-primary,.primary-btn,.btn.blue){
+ background:#155eef!important;background-image:linear-gradient(135deg,#155eef,#1248c7)!important;
+ color:#fff!important;border:1px solid #155eef!important;
+ box-shadow:0 6px 18px rgba(21,94,239,.16)!important;
+}
+body :is(.btn-primary,.btn.primary,.button-primary,.primary-btn,.btn.blue):hover{
+ background:#1248c7!important;color:#fff!important;transform:translateY(-1px)
+}
+body :is(.btn-outline,.btn-secondary,.btn.gray,.secondary,.button-secondary){
+ background:#fff!important;color:#155eef!important;border:1px solid #c9d8ef!important;
+}
+body :is(input,select,textarea){
+ background:#fff!important;color:#14213d!important;border:1px solid #cbd8eb!important;
+ border-radius:10px;max-width:100%;
+}
+body :is(input,select,textarea):focus{
+ outline:0!important;border-color:#155eef!important;box-shadow:0 0 0 3px rgba(21,94,239,.12)!important;
+}
+body :is(table){background:#fff!important;color:#34445f!important;border-color:#dce5f2!important}
+body :is(th){background:#f0f5ff!important;color:#14213d!important}
+body :is(td){border-color:#edf1f7!important;color:#34445f}
+body :is(footer,.footer,.site-footer){
+ background:#fff!important;background-image:none!important;color:#34445f!important;
+ border-top:1px solid #dce5f2!important;
+}
+body :is(footer p,footer a,footer small,.footer p,.footer a,.footer small,.footer-bottom){color:#687891!important}
+body :is(footer a,.footer a):hover{color:#155eef!important}
+body :is(.promo,.reward-box,.final-cta){
+ background:linear-gradient(125deg,#fff,#f0f5ff)!important;color:#14213d!important;
+ border:1px solid #cbdcf7!important;
+}
+body :is(.promo,.reward-box,.final-cta) :is(h1,h2,h3,p,span,strong,small){color:#14213d!important}
+body :is(.final-cta .btn-primary,.promo .btn-primary,.reward-box .btn-primary){color:#fff!important}
+body :is(.badge,.status,.status-badge){border-radius:999px!important}
+body :is(.badge.pending,.status.pending,.status-pending){background:#eaf2ff!important;color:#155eef!important;border-color:#bfd4ff!important}
+body :is(.badge.paid,.badge.approved,.status.success,.status.approved){background:#ecfdf5!important;color:#15803d!important;border-color:#bbf7d0!important}
+body :is(.badge.failed,.badge.rejected,.status.rejected,.status.failed){background:#fef2f2!important;color:#dc2626!important;border-color:#fecaca!important}
+@media(max-width:760px){
+ body :is(.container,.wrap,.content,main){width:auto!important;max-width:100%!important}
+ body :is(.section){padding-top:54px!important;padding-bottom:54px!important}
+ body :is(.stats,.stats-grid,.accounts-grid,.grid-2,.grid-3,.challenge-types,.account-grid){
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important
+ }
+ body :is(.page-heading,.panel-head,.topbar){gap:10px;flex-wrap:wrap}
+ body :is(.table-wrap,.table-responsive){overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+ body table{min-width:620px}
+}
+@media(max-width:480px){
+ body :is(.stats,.stats-grid,.account-grid,.accounts-grid,.grid-2,.grid-3,.challenge-types){
+  grid-template-columns:minmax(0,1fr)!important
+ }
+ body :is(.content,main,.main){padding-left:12px!important;padding-right:12px!important}
+ body :is(.btn,.button,.btn-primary,.btn-outline){max-width:100%;white-space:normal}
 }
