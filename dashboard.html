@@ -1332,6 +1332,9 @@ hr {
       <input id="ticketSubject" type="text" minlength="4" maxlength="160" required placeholder="Example: Payment verification issue">
       <label for="ticketQuestion">Your Question</label>
       <textarea id="ticketQuestion" minlength="10" maxlength="5000" required placeholder="Describe your issue and include any useful details..."></textarea>
+      <label for="ticketAttachments">Attach Screenshots or Videos (up to 5 files, 100 MB total)</label>
+      <input id="ticketAttachments" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/quicktime,video/webm" multiple>
+      <div class="small muted">Accepted: JPG, PNG, WEBP, GIF, MP4, MOV and WEBM. Your files are private and visible only to you and authorized WFT support staff.</div>
       <div class="info-card" style="margin-top:14px">
         <div class="small muted">Date and time on your device</div>
         <strong id="ticketDatePreview">—</strong>
@@ -1507,7 +1510,7 @@ async function loadSupportTickets() {
   container.textContent = "Loading your tickets...";
   const { data, error } = await supabase
     .from("support_tickets")
-    .select("id,subject,question,difficulty,status,admin_reply,replied_at,created_at")
+    .select("id,subject,question,difficulty,status,admin_reply,replied_at,created_at,attachments")
     .eq("user_id", currentUser.id)
     .order("created_at", { ascending: false });
   if (error) {
@@ -1519,17 +1522,30 @@ async function loadSupportTickets() {
     return;
   }
   const statusLabel = value => ({open:"Open",in_progress:"In Progress",resolved:"Resolved"}[value] || value);
-  container.innerHTML = data.map(ticket => `
+  const rows = await Promise.all(data.map(async ticket => {
+    const files = await Promise.all((Array.isArray(ticket.attachments) ? ticket.attachments : []).map(async file => {
+      const { data: signed, error: signError } = await supabase.storage.from("support-ticket-files").createSignedUrl(file.path, 3600);
+      if (signError || !signed?.signedUrl) return "";
+      const url = safe(signed.signedUrl);
+      const label = safe(file.name || "Attachment");
+      if (String(file.type || "").startsWith("video/")) {
+        return `<div style="margin-top:9px"><video controls playsinline preload="metadata" style="max-width:100%;max-height:280px;border-radius:9px" src="${url}"></video><div class="small muted">${label}</div></div>`;
+      }
+      return `<a href="${url}" target="_blank" rel="noopener" style="display:inline-block;margin:8px 8px 0 0"><img src="${url}" alt="${label}" style="width:110px;height:90px;object-fit:cover;border-radius:8px;border:1px solid var(--line)"><div class="small">${label}</div></a>`;
+    }));
+    return `
     <div class="info-card" style="margin-bottom:12px">
       <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
         <strong class="gold-text">${safe(ticket.subject)}</strong>
         <span class="badge ${safe(ticket.status)}">${safe(statusLabel(ticket.status))}</span>
       </div>
-      <div class="small muted" style="margin:8px 0">Ticket #${safe(ticket.id.slice(0,8).toUpperCase())} · ${safe(ticket.difficulty.replace("_"," "))} · ${safe(new Date(ticket.created_at).toLocaleString())}</div>
+      <div class="small muted" style="margin:8px 0">Ticket #${safe(ticket.id.slice(0,8).toUpperCase())} · ${safe(String(ticket.difficulty || "").replace("_"," "))} · ${safe(new Date(ticket.created_at).toLocaleString())}</div>
       <p style="white-space:pre-wrap;line-height:1.6;font-size:13px">${safe(ticket.question)}</p>
+      ${files.filter(Boolean).length ? `<div style="margin-top:10px"><strong class="small">Attachments</strong><div>${files.join("")}</div></div>` : ""}
       ${ticket.admin_reply ? `<div style="border-left:3px solid var(--gold);padding:10px 12px;background:#101d30;border-radius:6px;margin-top:12px"><strong class="gold-text">WFT Support Reply</strong><p style="white-space:pre-wrap;font-size:13px;line-height:1.6">${safe(ticket.admin_reply)}</p><div class="small muted">${ticket.replied_at ? safe(new Date(ticket.replied_at).toLocaleString()) : ""}</div></div>` : '<div class="small muted">Waiting for WFT support response.</div>'}
-    </div>
-  `).join("");
+    </div>`;
+  }));
+  container.innerHTML = rows.join("");
 }
 function updateTicketDatePreview() {
   const el = $("ticketDatePreview");
@@ -1542,8 +1558,18 @@ $("supportTicketForm")?.addEventListener("submit", async event => {
   if (!currentUser) return toast("Please sign in again to submit a ticket.", true);
   const button = $("submitTicketBtn");
   const message = $("ticketFormMessage");
+  const files = Array.from($("ticketAttachments")?.files || []);
+  const maxBytes = 100 * 1024 * 1024;
+  if (files.length > 5) return toast("You can attach up to 5 files.", true);
+  if (files.some(file => !(file.type.startsWith("image/") || file.type.startsWith("video/")))) {
+    return toast("Only image and video files are allowed.", true);
+  }
+  if (files.reduce((sum, file) => sum + file.size, 0) > maxBytes) {
+    return toast("The total attachment size must be 100 MB or less.", true);
+  }
   button.disabled = true;
-  message.textContent = "Submitting ticket...";
+  message.textContent = "Submitting ticket and uploading attachments...";
+  const uploadedPaths = [];
   try {
     const { data, error } = await supabase.from("support_tickets").insert({
       user_id: currentUser.id,
@@ -1552,6 +1578,24 @@ $("supportTicketForm")?.addEventListener("submit", async event => {
       question: $("ticketQuestion").value.trim()
     }).select("id,created_at").single();
     if (error) throw error;
+
+    const attachments = [];
+    for (const file of files) {
+      const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-100) || "attachment";
+      const path = `${currentUser.id}/${data.id}/${crypto.randomUUID()}_${cleanName}`;
+      const { error: uploadError } = await supabase.storage.from("support-ticket-files").upload(path, file, {
+        contentType: file.type,
+        upsert: false
+      });
+      if (uploadError) throw uploadError;
+      uploadedPaths.push(path);
+      attachments.push({path, name:file.name, type:file.type, size:file.size});
+    }
+    if (attachments.length) {
+      const { error: updateError } = await supabase.from("support_tickets")
+        .update({attachments}).eq("id", data.id).eq("user_id", currentUser.id);
+      if (updateError) throw updateError;
+    }
     $("supportTicketForm").reset();
     $("ticketDifficulty").value = "normal";
     updateTicketDatePreview();
@@ -1559,6 +1603,7 @@ $("supportTicketForm")?.addEventListener("submit", async event => {
     toast("Support ticket submitted successfully.");
     await loadSupportTickets();
   } catch (error) {
+    console.error("Support ticket submission:", error);
     message.textContent = error.message || "Ticket submission failed.";
     toast(message.textContent, true);
   } finally {
