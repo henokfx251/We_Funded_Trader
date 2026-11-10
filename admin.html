@@ -621,12 +621,13 @@ tr:hover td{background:rgba(85,168,255,.035)}
 
           <div class="panel">
             <div class="panel-head"><h3>Payout Requests</h3></div>
+            <div style="padding:12px 16px 0;color:#d6ad55;font-size:11px;font-weight:700;letter-spacing:.08em">DEMO COUNTS · UI TEST ONLY · REAL PAYOUT RECORDS ARE UNCHANGED</div>
             <div id="payoutStatusFilters" style="display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px 4px">
               <button type="button" class="btn small" data-payout-filter="all" onclick="setPayoutFilter('all')">All <span id="payoutCountAll">0</span></button>
-              <button type="button" class="btn small" data-payout-filter="pending" onclick="setPayoutFilter('pending')">Pending <span id="payoutCountPending">0</span></button>
-              <button type="button" class="btn small green" data-payout-filter="approved" onclick="setPayoutFilter('approved')">Approved <span id="payoutCountApproved">0</span></button>
-              <button type="button" class="btn small red" data-payout-filter="rejected" onclick="setPayoutFilter('rejected')">Rejected <span id="payoutCountRejected">0</span></button>
-              <button type="button" class="btn small gold" data-payout-filter="paid" onclick="setPayoutFilter('paid')">Paid <span id="payoutCountPaid">0</span></button>
+              <button type="button" class="btn small" data-payout-filter="pending" onclick="setPayoutFilter('pending')">Pending <span id="payoutCountPending">5</span></button>
+              <button type="button" class="btn small green" data-payout-filter="approved" onclick="setPayoutFilter('approved')">Approved <span id="payoutCountApproved">50</span></button>
+              <button type="button" class="btn small red" data-payout-filter="rejected" onclick="setPayoutFilter('rejected')">Rejected <span id="payoutCountRejected">20</span></button>
+              <button type="button" class="btn small gold" data-payout-filter="paid" onclick="setPayoutFilter('paid')">Paid <span id="payoutCountPaid">25</span></button>
             </div>
             <div class="table-wrap">
               <table>
@@ -1707,16 +1708,17 @@ async function loadPayouts() {
 
 
 function updatePayoutFilterCounts() {
-  const counts = {
+  const realCounts = {
     all: payoutsData.length,
     pending: payoutsData.filter(p => p.status === "pending").length,
     approved: payoutsData.filter(p => p.status === "approved").length,
     rejected: payoutsData.filter(p => p.status === "rejected").length,
     paid: payoutsData.filter(p => p.status === "paid").length
   };
-  Object.entries(counts).forEach(([status, count]) => {
+  const demoCounts = { pending: 5, approved: 50, rejected: 20, paid: 25 };
+  Object.entries(realCounts).forEach(([status, realCount]) => {
     const el = $("payoutCount" + status.charAt(0).toUpperCase() + status.slice(1));
-    if (el) el.textContent = count;
+    if (el) el.textContent = status === "all" ? realCount : demoCounts[status];
   });
 }
 function setPayoutFilter(status) {
