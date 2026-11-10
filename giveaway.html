@@ -33,29 +33,21 @@ label{display:block;font-weight:700;margin-top:12px;color:#465875}.btn{border:0;
   <p class="gold">LIMITED GIVEAWAY · MAXIMUM 100 TRADERS</p>
   <div class="fee"><strong id="giveawayLiveStatus">Checking Giveaway status...</strong><div style="height:9px;background:#07111f;border-radius:20px;overflow:hidden;margin-top:10px"><div id="giveawayProgressBar" style="height:100%;width:0;background:var(--gold)"></div></div><p class="small" id="giveawaySlots">Loading available places...</p></div>
   <h1>Join the WFT 100 Trader Giveaway</h1>
-  <p class="muted">Complete all five social follow tasks, refer 2 people who activate a WFT account, choose your account size, then submit the one-time activation fee. Your confirmed activation fee is credited 100% to your WFT Wallet Balance after Admin approval.</p>
-  <p><strong class="gold">Important:</strong> This is an activation fee, not a direct challenge purchase. You can use the Wallet Balance later to buy any challenge and apply a coupon at checkout.</p>
+  <p class="muted">Complete all five social follow tasks, refer 2 people who activate a WFT account, then redeem the $5,000 Instant Pro reward by paying the one-time $5 USDT fee. The $5 redemption fee is credited to your WFT Wallet Balance after Admin approval.</p>
+  <p><strong class="gold">Important:</strong> The $5 redemption fee is credited to your WFT Wallet Balance after Admin approval, following the existing Giveaway wallet-credit rule.</p>
 </section>
 <section class="card">
-  <h2>Activation Fee by Account Size</h2>
-  <div class="grid">
-    <div class="fee">$2,500 <strong>$1</strong></div><div class="fee">$5,000 <strong>$3</strong></div>
-    <div class="fee">$10,000 <strong>$5</strong></div><div class="fee">$25,000 <strong>$10</strong></div>
-    <div class="fee">$50,000 <strong>$20</strong></div>
-  </div>
-  <p class="small">Only 100 entries are accepted. One entry per user.</p>
+  <h2>Giveaway Reward</h2>
+  <div class="fee"><span class="gold">ONLY REWARD</span><strong>$5,000 Instant Pro</strong><p class="small">One-time redemption fee: <strong>$5 USDT</strong></p></div>
+  <p class="small">Only 100 entries are accepted. One entry per user. No other account size or program can be redeemed in this giveaway.</p>
 </section>
 <section class="card hidden" id="entryCreate">
-  <h2>Step 3. Choose Account Size & Activation Fee</h2>
-  <label for="accountSize">Account Size</label>
+  <h2>Step 3. Redeem $5,000 Instant Pro</h2>
+  <label for="accountSize">Giveaway Reward</label>
   <select id="accountSize">
-    <option value="2500">$2,500 — $1 activation fee</option>
-    <option value="5000">$5,000 — $3 activation fee</option>
-    <option value="10000">$10,000 — $5 activation fee</option>
-    <option value="25000">$25,000 — $10 activation fee</option>
-    <option value="50000">$50,000 — $20 activation fee</option>
+    <option value="5000">$5,000 Instant Pro — $5 USDT redemption fee</option>
   </select>
-  <button class="btn" id="createEntry">Redeem My Giveaway Size</button>
+  <button class="btn" id="createEntry">Redeem $5,000 Instant Pro</button>
   <p class="small">Already have a WFT account? <a href="Login.html?next=giveaway.html">Log in here</a>. New traders can <a href="register.html">create an account</a> first.</p>
   <div class="status" id="createStatus">Sign in to join the giveaway.</div>
 </section>
@@ -103,7 +95,7 @@ label{display:block;font-weight:700;margin-top:12px;color:#465875}.btn{border:0;
 <script type="module">
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2";
 const db=createClient("https://vxcwfirfgxrxafbirnwu.supabase.co","sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv");
-const fees={2500:1,5000:3,10000:5,25000:10,50000:20};
+const fees={5000:5};
 const addresses={BEP20:"0xc6e6d92df291cd2f48e83dbf656817f1712d8cfa",TRC20:"TS52ntAQWhtnwFRgSASm5ugD7h35Mow9N4"};
 let session=null,entry=null,socialProofPath=null,socialFollowConfirmed=false;
 const $=id=>document.getElementById(id);
@@ -112,7 +104,7 @@ function message(id,text,kind=""){ $(id).textContent=text;$(id).className="statu
 function renderEntry(){
  if(!entry)return;
  $("entryCreate").classList.add("hidden");$("entryPanel").classList.remove("hidden");
- $("chosenSize").textContent="$"+Number(entry.account_size).toLocaleString();
+ $("chosenSize").textContent="$"+Number(entry.account_size).toLocaleString()+" Instant Pro";
  $("chosenFee").textContent=money(entry.activation_fee);
  $("entryStatus").textContent="Entry: "+entry.entry_status+" · Referrals recorded: "+entry.referral_count+"/2 · Payment: "+entry.payment_status;
  $("socialConfirm").checked=!!entry.social_follow_confirmed;
