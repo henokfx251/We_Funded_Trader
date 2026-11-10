@@ -204,3 +204,55 @@ body:not(:has(.chartbox)) :is(.btn.gold,.btn.gold:hover,.btn.gold:focus){
  background:linear-gradient(120deg,#2875ff,#155eef)!important;color:#fff!important;border-color:#155eef!important;
 }
 body:has(.chartbox){--gold:#55a8ff!important;--gold2:#bfdbfe!important}
+
+
+/* v22 — LIGHT WHITE BACKGROUNDS ACROSS EVERY WFT PAGE, INCLUDING TERMINAL */
+:root{
+ --wft-page:#f7f9fd!important;--wft-white:#fff!important;
+ --wft-ink:#14213d!important;--wft-text:#34445f!important;
+ color-scheme:light!important;
+}
+html,body{
+ background:#f7f9fd!important;background-color:#f7f9fd!important;
+ background-image:none!important;color:#34445f!important;color-scheme:light!important;
+}
+body:has(.chartbox){
+ background:#f7f9fd!important;background-color:#f7f9fd!important;
+ background-image:none!important;color:#34445f!important;color-scheme:light!important;
+ --bg:#f7f9fd!important;--panel:#fff!important;--panel2:#f0f5fc!important;
+ --line:#dce5f2!important;--gold:#155eef!important;--gold2:#2875ff!important;
+ --blue:#155eef!important;--text:#14213d!important;--muted:#687891!important;
+}
+body:has(.chartbox) :is(.top,.panel,.chartbox){
+ background:#fff!important;background-image:none!important;
+ color:#34445f!important;border-color:#dce5f2!important;
+ box-shadow:0 4px 18px rgba(16,45,90,.055)!important;
+}
+body:has(.chartbox) :is(h1,h2,h3,h4,h5,h6,p,small,label,.metric-label,.hint,.muted,.toplink){
+ color:#34445f!important;
+}
+body:has(.chartbox) :is(.metric,.metric-value,.metric.gold){color:#155eef!important}
+body:has(.chartbox) :is(input,select,textarea){
+ background:#fff!important;color:#14213d!important;border-color:#cbd8eb!important;
+}
+body:has(.chartbox) :is(.charttools button,.tab,.order-tabs button,.mode-tabs button){
+ background:#eaf2ff!important;color:#155eef!important;border-color:#cbd8eb!important;
+}
+body:has(.chartbox) :is(.chartbox canvas,canvas){background:#fff!important}
+body:has(.chartbox) :is(.simtag){color:#15803d!important;background:#ecfdf5!important;border-color:#bbf7d0!important}
+body :is(.main,.content,main,.page,.section,.container,.wrap,.page-content,.main-content,.dashboard-content){
+ background-color:#f7f9fd!important;background-image:none!important;
+}
+body :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.wallet-card,.account-card,.order-card,.reward-card,.settings-card,.payout-card,.kyc-card,.activity-card,.table-wrap,.agreement-area,.certificate-paper,.platform-box){
+ background-color:#fff!important;background-image:none!important;
+}
+body :is([style*="#050a13"],[style*="#07111f"],[style*="#071321"],[style*="#0b1524"],[style*="#101f32"],[style*="#091421"],[style*="#0a1828"],[style*="#091522"],[style*="#102137"],[style*="#07111F"],[style*="#071321"]){
+ background:#fff!important;background-color:#fff!important;background-image:none!important;
+ color:#34445f!important;border-color:#dce5f2!important;
+}
+body :is(.gold,.gold-text,.text-gold,.eyebrow,.price,.starting,.amount,.total-price,.highlight,.warning,.text-warning,.pending,.status-pending,.status.pending,.badge.pending){
+ color:#155eef!important;
+}
+body :is(.pending,.status-pending,.status.pending,.badge.pending,.warning,.text-warning){
+ background:#eaf2ff!important;color:#155eef!important;border-color:#bfd4ff!important;
+}
