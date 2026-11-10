@@ -1664,7 +1664,7 @@ async function loadPayouts() {
 
   if (tbody) {
     tbody.innerHTML =
-      '<tr><td colspan="11" class="empty">Loading payouts...</td></tr>';
+      '<tr><td colspan="14" class="empty">Loading payouts...</td></tr>';
   }
 
   try {
@@ -1711,7 +1711,7 @@ async function loadPayouts() {
 
     if (tbody) {
       tbody.innerHTML =
-        `<tr><td colspan="11" class="empty">Error: ${escapeHTML(error.message)}</td></tr>`;
+        `<tr><td colspan="14" class="empty">Error: ${escapeHTML(error.message)}</td></tr>`;
     }
   }
 }
@@ -1857,7 +1857,7 @@ function renderPayouts() {
     return `
       <tr>
         <td>${escapeHTML(String(item.user_id || "").slice(0, 24))}</td>
-        <td><strong>${escapeHTML(item.trader_name || "Registered Trader")}</strong></td>
+        <td><strong>${escapeHTML(item.trader_name || "—")}</strong></td>
         <td>${escapeHTML(item.country || "—")}</td>
         <td>${escapeHTML(item.account_type || account.account_type || "—")}</td>
         <td>${escapeHTML(accountLabel || "—")}</td>
