@@ -48,20 +48,12 @@ body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle){
  border-radius:10px!important;font-size:22px!important;line-height:1!important;opacity:1!important;visibility:visible!important;
 }
 body:not(:has(.chartbox)) :is(.menu-btn,.menu-toggle) *{color:#fff!important}
-/* Homepage blue hero and masthead */
-body:not(:has(.chartbox)) .hero{
- background:linear-gradient(125deg,#155eef 0%,#1248c7 58%,#103b91 100%)!important;
- color:#fff!important;border-color:#155eef!important;box-shadow:0 14px 34px rgba(21,94,239,.16)!important;
-}
-body:not(:has(.chartbox)) .hero :is(h1,h2,h3,h4,p,span,small,strong,.hero-description,.hero-trust,.hero-tag){color:#fff!important}
-body:not(:has(.chartbox)) .hero :is(.gold,.highlight){color:#bfdbfe!important}
-body:not(:has(.chartbox)) .hero .hero-tag{background:rgba(255,255,255,.13)!important;border-color:rgba(255,255,255,.3)!important}
+/* Homepage hero colors are controlled locally by index.html */
 body:not(:has(.chartbox)):has(.hero) header{background:#fff!important;color:var(--wft-ink)!important;border-color:var(--wft-border)!important}
 body:not(:has(.chartbox)):has(.hero) header :is(a,button,span,.logo,.nav-links a,.nav-actions){color:var(--wft-ink)!important}
 body:not(:has(.chartbox)):has(.hero) header .nav-actions a[href="Login.html"],
 body:not(:has(.chartbox)):has(.hero) header .nav-actions a.btn-outline{background:#fff!important;color:var(--wft-blue)!important;border:1px solid #b9cdf3!important}
 body:not(:has(.chartbox)) .nav-links{background:#fff!important}
-body:not(:has(.chartbox)) .hero-trust,body:not(:has(.chartbox)) .hero-trust span{color:#fff!important}
 /* Light-blue feature and welcome panels */
 body:not(:has(.chartbox)) :is(.challenge-hero,.hero-section,.dashboard-welcome){
  background:linear-gradient(135deg,#eaf2ff 0%,#fff 76%)!important;color:var(--wft-ink)!important;border:1px solid #d4e3ff!important;
