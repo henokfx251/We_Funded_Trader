@@ -761,6 +761,35 @@ footer{background:#081321;border-top-color:#263b54}
  .promo{border-radius:15px}
 }
 
+/* WFT HOMEPAGE BLUE & WHITE FINISH */
+:root{--bg:#f7f9fd!important;--panel:#fff!important;--panel2:#f0f5ff!important;--gold:#155eef!important;--gold2:#1248c7!important;--text:#14213d!important;--muted:#687891!important;--line:#dce5f2!important;--shadow:0 12px 32px rgba(20,55,110,.08)!important}
+html,body{background:#f7f9fd!important;background-image:none!important;color:#34445f!important;color-scheme:light!important;font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important}
+header{background:rgba(255,255,255,.97)!important;border-bottom:1px solid #dce5f2!important;box-shadow:0 4px 18px rgba(20,55,110,.05)!important}
+.logo{color:#155eef!important}.nav-links{color:#52627c!important}.nav-links a:hover{color:#155eef!important;background:#eaf2ff!important}
+.menu-toggle{background:#fff!important;color:#155eef!important;border-color:#dce5f2!important}
+.hero{background:linear-gradient(135deg,#fff 0%,#f0f5ff 60%,#e8f1ff 100%)!important}.hero:before,.hero:after{border-color:rgba(21,94,239,.12)!important}
+.hero-tag{background:#eaf2ff!important;border-color:#bfd4ff!important;color:#155eef!important}
+.hero h1{color:#14213d!important}.hero h1 span{background:none!important;color:#155eef!important;-webkit-text-fill-color:#155eef!important}
+.hero-description,.hero-trust{color:#52627c!important}.hero-trust span{background:#fff!important;border:1px solid #dce5f2!important;color:#34445f!important}.hero-trust span:before{color:#155eef!important}
+.btn-primary{background:linear-gradient(135deg,#155eef,#1248c7)!important;color:#fff!important;box-shadow:0 8px 22px rgba(21,94,239,.18)!important}
+.btn-outline{background:#fff!important;color:#155eef!important;border-color:#c9d8ef!important}
+.promo,.reward-box{background:linear-gradient(120deg,#fff,#f0f5ff)!important;border:1px solid #cbdcf7!important;box-shadow:0 14px 36px rgba(20,55,110,.08)!important}
+.promo p,.reward-box p,.card p,.section-heading p{color:#687891!important}
+.card,.platform-item,.final-cta,.reward-highlight{background:#fff!important;color:#14213d!important;border:1px solid #dce5f2!important;box-shadow:0 8px 24px rgba(20,55,110,.055)!important}
+.card:hover{border-color:#9bbcf5!important;box-shadow:0 14px 32px rgba(21,94,239,.10)!important}
+.card h3,.promo h2,.reward-box h2,.final-cta h2{color:#14213d!important}
+.challenge-card li,.reward-points li{color:#34445f!important;border-bottom-color:#edf1f7!important}
+.challenge-card li:before,.reward-points li:before{color:#155eef!important}
+.account-card.featured,.challenge-card.featured{background:#f4f8ff!important;border-color:#9bbcf5!important}
+.account-price,.account-card .account-price,.promo-side strong,.reward-highlight strong{color:#155eef!important}
+.reward-section{background:#f0f5ff!important}.reward-highlight{background:#f7faff!important}
+.rule-card .rule-icon{background:#eaf2ff!important;color:#155eef!important;border-color:#d2e2ff!important}
+.final-cta{background:linear-gradient(135deg,#fff,#f0f5ff)!important}
+footer{background:#fff!important;border-top:1px solid #dce5f2!important}
+.footer-brand p,.footer-col a,.footer-bottom{color:#687891!important}.footer-col a:hover{color:#155eef!important}
+.faq-item summary{color:#14213d!important}.faq-item p{color:#687891!important}
+@media(max-width:700px){.nav-links{background:#fff!important;border-bottom:1px solid #dce5f2!important}.nav-links a{border-bottom-color:#edf1f7!important}}
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -879,90 +908,50 @@ footer{border-top:1px solid rgba(232,184,75,.16)}
       <h2>Find Your <span class="gold">Funding Program</span></h2>
       <p>
         Choose from seven programs across 2-Step, 1-Step and Instant Funding.
-        Each program has its own profit target and drawdown rules. All 2-Step, 1-Step and Instant accounts require 3 profitable days, with at least 0.25% profit on each counted day.
+        Every program has its own rules. All programs require at least 3 profitable days, with a minimum 0.25% profit on each counted day.
       </p>
     </div>
 
     <div class="challenge-types">
-      <article class="card challenge-card featured"><span class="type-label">1-STEP · STANDARD</span><span class="type-icon">🎯</span><h3>1-Step Standard</h3><p>10% target · 5% max loss · 3% daily loss. 3 profitable days, each at least 0.25%. Funded payout consistency: 50%.</p><a class="btn btn-primary btn-block" href="challenges.html">Choose Program ↗</a></article>
-      <article class="card challenge-card"><span class="type-label">INSTANT · PLUS</span><span class="type-icon">⚡</span><h3>Instant Plus</h3><p>Instant access · 3% max loss · 1% daily loss. Funded payout consistency: 30%.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
-      <article class="card challenge-card"><span class="type-label">2-STEP · PRO</span><span class="type-icon">🚀</span><h3>2-Step Pro</h3><p>Phase targets 6% + 6% · 6% max loss · 3% daily loss.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
-      <article class="card challenge-card"><span class="type-label">INSTANT · STANDARD</span><span class="type-icon">⚡</span><h3>Instant Standard</h3><p>Instant access · 5% max loss · no daily loss limit. Closed positions only; no restart. Funded payout consistency: 30%.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
-      <article class="card challenge-card"><span class="type-label">INSTANT · PRO</span><span class="type-icon">📈</span><h3>Instant Pro</h3><p>Instant access · 5% trailing equity max loss · 2% equity daily loss. Funded payout consistency: 30%.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
-      <article class="card challenge-card"><span class="type-label">2-STEP · STANDARD</span><span class="type-icon">📊</span><h3>2-Step Standard</h3><p>Phase targets 10% + 5% · 8% max loss · 4% daily loss with rolling 24-hour reset.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
-      <article class="card challenge-card"><span class="type-label">1-STEP · PRO</span><span class="type-icon">🛡️</span><h3>1-Step Pro</h3><p>6% target · 6% trailing equity max loss · 3% equity daily loss. Funded payout consistency: 50%.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card featured"><span class="type-label">1-STEP · STANDARD</span><span class="type-icon">🎯</span><h3>1-Step Standard</h3><p>From $30 · 10% target · 5% static max loss · 3% static daily loss. 3 profitable days at 0.25% minimum. Funded consistency: 50%.</p><a class="btn btn-primary btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card"><span class="type-label">INSTANT · PLUS</span><span class="type-icon">⚡</span><h3>Instant Plus</h3><p>From $30 · Instant access · 3% static max loss · 1% static daily loss. Funded consistency: 30%.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card"><span class="type-label">2-STEP · PRO</span><span class="type-icon">🚀</span><h3>2-Step Pro</h3><p>From $25 · Phase targets 6% + 6% · 6% static max loss · 3% daily loss.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card"><span class="type-label">INSTANT · STANDARD</span><span class="type-icon">⚡</span><h3>Instant Standard</h3><p>From $25 · Instant access · 5% static max loss · no daily loss limit. Closed positions only; no restart. Funded consistency: 30%.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card"><span class="type-label">INSTANT · PRO</span><span class="type-icon">📈</span><h3>Instant Pro</h3><p>From $20 · Instant access · 5% trailing equity max loss · 2% equity daily loss. Funded consistency: 30%.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card"><span class="type-label">2-STEP · STANDARD</span><span class="type-icon">📊</span><h3>2-Step Standard</h3><p>From $15 · Phase targets 10% + 5% · 8% static max loss · 4% daily loss with rolling 24-hour reset.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
+      <article class="card challenge-card"><span class="type-label">1-STEP · PRO</span><span class="type-icon">🛡️</span><h3>1-Step Pro</h3><p>From $15 · 6% target · 6% trailing equity max loss · 3% equity daily loss. Funded consistency: 50%.</p><a class="btn btn-outline btn-block" href="challenges.html">Choose Program ↗</a></article>
     </div>
   </div>
 </section>
 
 <!-- ACCOUNT SIZES -->
-<section class="section" id="account-sizes">
-  <div class="container">
-    <div class="section-heading">
-      <div class="eyebrow">Choose Your Account</div>
-      <h2>Account Sizes & <span class="gold">Pricing</span></h2>
-      <p>
-        Choose an account size that matches your goals and trading plan.
-        View the available options below.
-      </p>
-    </div>
-
-    <div class="account-grid">
-      <article class="card account-card"><p>STARTER</p><div class="account-size">$2,500</div><div class="small-note">Choose any of the 7 programs</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
-      <article class="card account-card featured"><p>POPULAR</p><div class="account-size">$5,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-primary btn-block" href="challenges.html">View Pricing</a></article>
-      <article class="card account-card"><p>GROWTH</p><div class="account-size">$10,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
-      <article class="card account-card"><p>ADVANCED</p><div class="account-size">$25,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
-      <article class="card account-card"><p>PRO</p><div class="account-size">$50,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
-      <article class="card account-card"><p>ELITE</p><div class="account-size">$100,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
-      <article class="card account-card"><p>PREMIUM</p><div class="account-size">$200,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
-      <article class="card account-card"><p>MAX</p><div class="account-size">$300,000</div><div class="small-note">Program-based proportional pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
-    </div>
-    <p class="muted" style="text-align:center;margin-top:22px">Each program has its own $2,500 starting price. Larger account prices scale proportionally. Select your program to see the exact price and available discount.</p>
-  </div>
-</section>
+<section class="section" id="account-sizes"><div class="container">
+<div class="section-heading"><div class="eyebrow">Choose Your Account</div><h2>Account Sizes & <span class="gold">Pricing</span></h2><p>Choose from six available account sizes. Each program has its own starting price, shown on the Challenges page.</p></div>
+<div class="account-grid">
+<article class="card account-card"><p>STARTER</p><div class="account-size">$2,500</div><div class="small-note">All 7 programs available</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
+<article class="card account-card featured"><p>POPULAR</p><div class="account-size">$5,000</div><div class="small-note">Program-based pricing</div><a class="btn btn-primary btn-block" href="challenges.html">View Pricing</a></article>
+<article class="card account-card"><p>GROWTH</p><div class="account-size">$10,000</div><div class="small-note">Program-based pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
+<article class="card account-card"><p>ADVANCED</p><div class="account-size">$25,000</div><div class="small-note">Program-based pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
+<article class="card account-card"><p>PRO</p><div class="account-size">$50,000</div><div class="small-note">Program-based pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
+<article class="card account-card"><p>ELITE</p><div class="account-size">$100,000</div><div class="small-note">Program-based pricing</div><a class="btn btn-outline btn-block" href="challenges.html">View Pricing</a></article>
+</div>
+<p class="muted" style="text-align:center;margin-top:22px">Available sizes: $2,500 · $5,000 · $10,000 · $25,000 · $50,000 · $100,000. Visit Challenges for exact program pricing and eligible discounts.</p>
+</div></section>
 
 <!-- REWARDS UPDATE -->
-<section class="section reward-section" id="rewards">
-  <div class="container">
-    <div class="section-heading">
-      <div class="eyebrow">WFT REWARDS PROGRAM</div>
-      <h2>Get Rewarded for <span class="gold">Supporting WFT</span></h2>
-      <p>Complete eligible community tasks, submit your proof and earn rewards after admin approval.</p>
-    </div>
-
-    <div class="reward-box">
-      <div>
-        <div class="eyebrow gold">NEW REWARDS UPDATE</div>
-        <h2>Follow. Share. <span class="gold">Earn Rewards.</span></h2>
-        <p>
-          Take part in WFT community activities and selected trading milestones.
-          Approved rewards are added to your reward balance and can be used as
-          purchase credit toward your next WE FUNDED TRADER challenge.
-        </p>
-
-        <ul class="reward-points">
-          <li><strong>Social Follow Tasks:</strong> Earn $0.50 for each approved follow task.</li>
-          <li><strong>Social Posted Tasks:</strong> Share WFT promotions, Challenge Passed Certificates or Payout Certificates, then submit your post link or screenshot as proof.</li>
-          <li><strong>WFT Milestone Tasks:</strong> Eligible activities may include purchasing a challenge, passing a challenge, and receiving or requesting a payout.</li>
-          <li><strong>Admin Review:</strong> Submitted tasks and evidence must be reviewed and approved before rewards are credited.</li>
-          <li><strong>Use Your Rewards:</strong> Apply your approved reward balance as credit toward a future WFT challenge purchase.</li>
-        </ul>
-
-        <a class="btn btn-primary" href="register.html">Join WFT Rewards ↗</a>
-        <a class="btn btn-outline" href="Login.html" style="margin-left:8px">Log In</a>
-      </div>
-
-      <div class="reward-highlight">
-        <strong>$0.50</strong>
-        <span>PER APPROVED SOCIAL FOLLOW TASK</span>
-        <div class="reward-limit">
-          CHALLENGE PURCHASE CREDIT
-          <div><span>Rewards are not cash withdrawals. Approval is required before credit is added.</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<section class="section reward-section" id="rewards"><div class="container">
+<div class="section-heading"><div class="eyebrow">WFT REWARDS PROGRAM</div><h2>Complete Tasks. <span class="gold">Earn Points.</span></h2><p>Submit eligible task proof. Points are credited after admin review and approval.</p></div>
+<div class="reward-box"><div><div class="eyebrow gold">WFT REWARDS</div><h2>Earn 50 Points. <span class="gold">Unlock a 5K Account.</span></h2>
+<p>Take part in WFT community and website activities. Every approved task earns 50 points. Once you reach the redemption requirement, redeem your reward directly from your dashboard.</p>
+<ul class="reward-points">
+<li><strong>Social Follow Tasks:</strong> Instagram, TikTok, YouTube, X, Telegram and Discord.</li>
+<li><strong>Social Posted Tasks:</strong> Share approved WFT content and submit your post link or screenshot.</li>
+<li><strong>Website Tasks:</strong> Complete eligible tasks published in the WFT dashboard.</li>
+<li><strong>Admin Review:</strong> Every submission must be reviewed and approved before points are credited.</li>
+<li><strong>One-Time Redemption:</strong> Each user can redeem one 5K 1-Step account once only.</li>
+</ul><a class="btn btn-primary" href="register.html">Join WFT Rewards ↗</a> <a class="btn btn-outline" href="Login.html">Log In</a></div>
+<div class="reward-highlight"><strong>50</strong><span>POINTS PER APPROVED TASK</span><div class="reward-limit">REDEEM YOUR REWARD<div><span>50 points = one $5,000 1-Step account · Redeemable once per user.</span></div></div></div>
+</div></div></section>
 
 <!-- TRADING RULES -->
 <section class="section" id="rules">
@@ -1107,16 +1096,16 @@ footer{border-top:1px solid rgba(232,184,75,.16)}
       <p>Answers about WFT programs, trading rules, pricing and discounts.</p>
     </div>
     <div class="faq-list">
-      <details class="card faq-item"><summary>Which funding programs does WFT offer?</summary><p>WFT offers seven programs: 2-Step Standard, 2-Step Pro, 1-Step Standard, 1-Step Pro, Instant Standard, Instant Plus and Instant Pro.</p></details>
+      <details class="card faq-item"><summary>Which funding programs does WFT offer?</summary><p>WFT offers seven programs: 2-Step Standard, 2-Step Pro, 1-Step Standard, 1-Step Pro, Instant Standard, Instant Plus and Instant Pro. Each program has its own rules and price.</p></details>
       <details class="card faq-item"><summary>What are the profit targets?</summary><p>2-Step Standard: 10% in Phase 1 and 5% in Phase 2. 2-Step Pro: 6% in each phase. 1-Step Standard: 10%. 1-Step Pro: 6%. Instant programs do not have an evaluation target.</p></details>
       <details class="card faq-item"><summary>How do the drawdown rules work?</summary><p>Each program has its own maximum and daily loss limits. Static limits use the stated fixed reference. 1-Step Pro and Instant Pro use equity-based rules, with maximum loss trailing the highest recorded equity. Floating losses count where equity is used.</p></details>
       <details class="card faq-item"><summary>When does daily drawdown reset?</summary><p>2-Step Standard uses a rolling 24-hour reset from the account start time. Programs marked Daily Reset use the broker server day. Instant Standard has no daily drawdown limit.</p></details>
-      <details class="card faq-item"><summary>What is the minimum profitable-day requirement?</summary><p>All 2-Step, 1-Step and Instant accounts require at least 3 profitable days. Each counted day must reach at least 0.25% profit.</p></details>
+      <details class="card faq-item"><summary>What is the minimum profitable-day requirement?</summary><p>All seven WFT programs require at least 3 profitable days. Each counted day must reach at least 0.25% profit.</p></details>
       <details class="card faq-item"><summary>Can I restart an Instant Standard account?</summary><p>No. Instant Standard is closed-positions-only and does not offer a restart.</p></details>
-      <details class="card faq-item"><summary>Which account sizes are available?</summary><p>$2,500, $5,000, $10,000, $25,000, $50,000, $100,000, $200,000 and $300,000. The selected program's $2,500 base price scales proportionally with account size.</p></details>
+      <details class="card faq-item"><summary>Which account sizes are available?</summary><p>$2,500, $5,000, $10,000, $25,000, $50,000 and $100,000. No $200,000 or $300,000 accounts are currently offered.</p></details>
       <details class="card faq-item"><summary>How do WFT discount codes work?</summary><p>NEW50 gives eligible first-time customers 50% off their first order. WFT20 gives an ongoing 20% discount and WFT10 gives an ongoing 10% discount. Only one coupon code can be applied to an order. NEW50 eligibility is checked against your order history.</p></details>
       <details class="card faq-item"><summary>Which consistency rule applies to each account?</summary><p>All Instant Funding accounts (Instant Standard, Instant Plus and Instant Pro) use a 30% consistency rule. All 1-Step funded accounts (1-Step Standard and 1-Step Pro) use a 50% consistency rule. 2-Step Standard and 2-Step Pro have no consistency rule.</p></details>
-      <details class="card faq-item"><summary>What is the trader profit split and payout schedule?</summary><p>1-Step funded accounts have an 80% trader / 20% company split. 2-Step funded accounts have an 85% trader / 15% company split, with no consistency rule. Instant Funding accounts have a 75% trader / 25% company split. The stated payout schedule is the first payout after 14 days and then every 14 days, with a $50 minimum and 1–3 business day processing.</p></details>
+      <details class="card faq-item"><summary>What is the trader profit split and payout schedule?</summary><p>1-Step Standard and Pro: 80% trader / 20% WFT. 2-Step Standard and Pro: 85% trader / 15% WFT. Instant Standard, Plus and Pro: 75% trader / 25% WFT. Payouts start after 14 days and then every 14 days, with a $50 minimum and 1–3 business day processing.</p></details>
       <details class="card faq-item"><summary>Does the WFT TradingView Terminal execute trades?</summary><p>No. The WFT TradingView Terminal is for chart analysis only. It does not execute broker trades.</p></details>
     </div>
   </div>
