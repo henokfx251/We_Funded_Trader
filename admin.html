@@ -630,11 +630,19 @@ tr:hover td{background:rgba(85,168,255,.035)}
               <button type="button" class="btn small red" data-payout-filter="rejected" onclick="setPayoutFilter('rejected')">Rejected <span id="payoutCountRejected">0</span></button>
               <button type="button" class="btn small gold" data-payout-filter="paid" onclick="setPayoutFilter('paid')">Paid <span id="payoutCountPaid">0</span></button>
             </div>
+            <div id="payoutSampleSummary" class="stats" style="display:none;padding:14px 16px">
+              <div class="stat-card"><div class="stat-label">Yearly Requested Volume</div><div class="stat-value" id="payoutYearVolume">$0</div></div>
+              <div class="stat-card"><div class="stat-label">Average Request</div><div class="stat-value" id="payoutAverage">$0</div></div>
+              <div class="stat-card"><div class="stat-label">Largest Request</div><div class="stat-value" id="payoutLargest">$0</div></div>
+            </div>
             <div class="table-wrap">
               <table>
   <thead>
     <tr>
       <th>User ID</th>
+      <th>Trader</th>
+      <th>Country</th>
+      <th>Account Type</th>
       <th>Account</th>
       <th>Account Profit</th>
       <th>Trader Share</th>
@@ -648,7 +656,7 @@ tr:hover td{background:rgba(85,168,255,.035)}
     </tr>
   </thead>
   <tbody id="payoutsTable">
-    <tr><td colspan="11" class="empty">Loading payouts...</td></tr>
+    <tr><td colspan="14" class="empty">Loading payouts...</td></tr>
   </tbody>
               </table>
                   
@@ -1729,10 +1737,17 @@ function getPayoutDisplayRows() {
     ...Array(17).fill("approved"),
     ...Array(6).fill("rejected")
   ];
+  const countries = ["Ethiopia","United States","United Kingdom","Kenya","Nigeria","Canada","Germany","South Africa","UAE","Ghana","Ethiopia","Australia"];
+  const accountTypes = ["1-Step Evaluation","Instant Funding","1-Step Evaluation","Instant Funding","1-Step Evaluation","Instant Funding"];
+  const accountSizes = [2500,5000,10000,25000,50000,100000];
+  const platforms = ["MT5","MT4"];
   statuses.forEach((status, index) => {
     rows.push({
       id: "SAMPLE-" + String(index + 1).padStart(3, "0"),
-      user_id: demoNames[index],
+      user_id: "WFT-" + String(7300 + index).padStart(5, "0"),
+      trader_name: demoNames[index],
+      country: countries[index % countries.length],
+      account_type: accountTypes[index % accountTypes.length],
       account_profit: [125, 187.5, 250, 312.5, 375, 437.5, 500, 562.5, 625, 750][index % 10],
       trader_share: [100, 150, 200, 250, 300, 350, 400, 450, 500, 600][index % 10],
       company_share: [25, 37.5, 50, 62.5, 75, 87.5, 100, 112.5, 125, 150][index % 10],
@@ -1742,7 +1757,12 @@ function getPayoutDisplayRows() {
       status,
       requested_at: new Date(Date.now() - index * 3600000).toISOString(),
       admin_note: "SAMPLE ENTRY — NOT A REAL REQUEST",
-      trading_account: { account_name: "WFT Account " + (index + 1), platform: "MT5", account_size: 5000 },
+      trading_account: {
+        account_name: "WFT-" + ["EVAL","INSTANT"][index % 2] + "-" + String(2100 + index),
+        account_type: accountTypes[index % accountTypes.length],
+        platform: platforms[index % platforms.length],
+        account_size: accountSizes[index % accountSizes.length]
+      },
       is_demo: true
     });
   });
@@ -1782,9 +1802,19 @@ function renderPayouts() {
   const demoNotice = $("payoutDemoNotice");
   if (demoBanner) demoBanner.style.display = payoutDemoPreview ? "block" : "none";
   if (demoNotice) demoNotice.style.display = payoutDemoPreview ? "block" : "none";
+  const sampleSummary = $("payoutSampleSummary");
+  if (sampleSummary) sampleSummary.style.display = payoutDemoPreview ? "grid" : "none";
+  if (payoutDemoPreview && payoutRows.length) {
+    const total = payoutRows.reduce((sum, row) => sum + Number(row.payout_amount || 0), 0);
+    const average = total / payoutRows.length;
+    const largest = Math.max(...payoutRows.map(row => Number(row.payout_amount || 0)));
+    $("payoutYearVolume").textContent = money(total);
+    $("payoutAverage").textContent = money(average);
+    $("payoutLargest").textContent = money(largest);
+  }
   if (!payoutRows.length) {
     tbody.innerHTML =
-      '<tr><td colspan="11" class="empty">No payout requests found.</td></tr>';
+      '<tr><td colspan="14" class="empty">No payout requests found.</td></tr>';
     return;
   }
 
@@ -1792,7 +1822,7 @@ function renderPayouts() {
     ? payoutRows
     : payoutRows.filter(item => String(item.status || "").toLowerCase() === payoutStatusFilter);
   if (!visiblePayouts.length) {
-    tbody.innerHTML = `<tr><td colspan="11" class="empty">No ${escapeHTML(payoutStatusFilter)} payout requests.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="14" class="empty">No ${escapeHTML(payoutStatusFilter)} payout requests.</td></tr>`;
     return;
   }
   tbody.innerHTML = visiblePayouts.map(item => {
@@ -1827,6 +1857,9 @@ function renderPayouts() {
     return `
       <tr>
         <td>${escapeHTML(String(item.user_id || "").slice(0, 24))}</td>
+        <td><strong>${escapeHTML(item.trader_name || "Registered Trader")}</strong></td>
+        <td>${escapeHTML(item.country || "—")}</td>
+        <td>${escapeHTML(item.account_type || account.account_type || "—")}</td>
         <td>${escapeHTML(accountLabel || "—")}</td>
         <td>${money(item.account_profit)}</td>
         <td>${money(item.trader_share)}</td>
