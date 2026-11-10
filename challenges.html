@@ -48,10 +48,10 @@ label{font-size:13px;letter-spacing:.2px;color:#dce8f5}
 .program.active{border:1px solid var(--gold);background:linear-gradient(145deg,#193c5f,#10253c);box-shadow:0 0 0 2px #155eef24,0 12px 30px #0004}
 .program.active:before{content:"SELECTED";position:absolute;right:12px;top:12px;color:#171b20;background:var(--gold);border-radius:20px;padding:4px 8px;font-size:9px;font-weight:950;letter-spacing:.6px}
 .program h3{font-size:16px;padding-right:62px;color:#fff!important}.program p{margin-top:12px;font-size:11px;color:#d3dfed!important;line-height:1.75}.program .starting{color:var(--gold-soft);font-size:18px;margin-top:12px}
-.size-options{gap:10px}.size-btn{min-height:47px;background:#0b1a2b;border-color:#344d69;border-radius:11px;font-size:13px}.size-btn.active{background:linear-gradient(135deg,#155eef,#155eef);color:#17202a!important;border-color:#bfdbfe;box-shadow:0 0 0 3px #155eef22}
+.size-options{gap:10px}.size-btn{min-height:47px;background:#0b1a2b;border-color:#344d69;border-radius:11px;font-size:13px}.size-btn.active{background:linear-gradient(135deg,#155eef,#155eef);color:#fff!important;border-color:#bfdbfe;box-shadow:0 0 0 3px #155eef22}
 #coupon{background:#081626;border-color:#3a526d}#coupon:focus{border-color:#80bfff;outline:2px solid #2588ff33}
 .price{font-size:clamp(32px,5vw,42px);color:var(--gold-soft);letter-spacing:-1px;margin:16px 0 5px}
-button.primary{background:linear-gradient(120deg,#155eef,#155eef);color:#142033!important;border:1px solid #bfdbfe;border-radius:12px;font-weight:950;box-shadow:0 8px 22px #155eef22}button.primary:hover{background:linear-gradient(120deg,#bfdbfe,#155eef);box-shadow:0 12px 28px #155eef35}
+button.primary{background:linear-gradient(120deg,#155eef,#155eef);color:#fff!important;border:1px solid #bfdbfe;border-radius:12px;font-weight:950;box-shadow:0 8px 22px #155eef22}button.primary:hover{background:linear-gradient(120deg,#1248c7,#155eef);color:#fff!important;box-shadow:0 12px 28px #155eef35}
 button.primary:disabled{background:#44566b;color:#b8c5d3!important;border-color:#53667b;opacity:.7}
 .agreement-area{align-items:flex-start;background:#0a192a;border-color:#344b65}.agreement-label{justify-content:flex-start;text-align:left;line-height:1.5}.agreement-message{text-align:left}
 #selectedRulesPanel{border-color:#314b67}.rule{background:linear-gradient(145deg,#152d47,#0b1b2d);border-color:#304b68}.rule h3{color:var(--gold-soft)}.rule p{color:#dce6f1}
@@ -67,7 +67,7 @@ footer{background:#081321;color:#a9bad0;border-top-color:#263b54}
  <div class="hero-kicker"><span class="live-dot"></span> WE FUNDED TRADER · FUNDING PROGRAMS</div>
  <h1>Trade Your Plan.<br><span>Earn Your Funding.</span></h1>
  <p class="sub">Choose a challenge that fits your strategy, select your account size, and review every rule before checkout.</p>
- <div class="hero-tags"><span>7 Funding Programs</span><span>$2.5K – $300K Accounts</span><span>Rules shown upfront</span></div>
+ <div class="hero-tags"><span>7 Funding Programs</span><span>8 Account Sizes · $2.5K – $300K</span><span>Rules shown upfront</span></div>
 </section>
 <section class="promo"><strong>WFT DISCOUNT CODES</strong><p><b>NEW50:</b> 50% OFF for first-time customers on their first order. <b>WFT20:</b> 20% ongoing discount. <b>WFT10:</b> 10% ongoing discount. Enter one code at checkout; only one coupon can be used per order.</p></section>
 <section class="panel">
@@ -95,7 +95,7 @@ let programs=[
 ];
 programs.forEach(p=>{p.profitableDays=3;p.minDailyProfit="0.25%";});
 programs.sort((a,b)=>a.price-b.price||(a.code==="2step_standard"?-1:b.code==="2step_standard"?1:a.name.localeCompare(b.name)));
-const sizes=[2500,5000,10000,25000,50000,100000,300000];
+const sizes=[2500,5000,10000,25000,50000,100000,200000,300000];
 let selected=programs.find(p=>p.code==="2step_standard")||programs[0],selectedSize=2500,couponApplied=false,livePrograms={},rulesAgreed=false;
 const money=n=>"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 function basePrice(){const p=livePrograms[selected.code]||selected.price;return p*selectedSize/2500}
