@@ -169,6 +169,18 @@ body .hero .hero-trust span{
 body .hero .hero-trust span:before{color:#15803d!important}
 body .hero .btn-primary{background:#155eef!important;color:#fff!important;border-color:#155eef!important}
 body .hero .btn-outline{background:#fff!important;color:#155eef!important;border-color:#c5d6f3!important}
+
+/* Hard override: Get Funded must render as solid black, never gradient/transparent */
+html body main section.hero .hero-content h1 span{
+ color:#000!important;
+ -webkit-text-fill-color:#000!important;
+ background:transparent!important;
+ background-color:transparent!important;
+ background-image:none!important;
+ -webkit-background-clip:initial!important;
+ background-clip:initial!important;
+ opacity:1!important;
+}
 </style>
 </head>
 
