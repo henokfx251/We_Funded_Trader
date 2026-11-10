@@ -880,7 +880,7 @@ hr {
     <div class="auto-pass-icon">✓</div>
     <div>
       <h3>Automatic Challenge Review</h3>
-      <p class="muted">No manual request is needed. When your 1-Step account reaches the 10% profit target and completes 5 profitable days with at least 0.5% profit each, WFT automatically sends it to Admin for review.</p>
+      <p class="muted">WFT monitors your account against the selected program's profit target, drawdown limits and minimum profitable-day requirements. When an eligible evaluation meets its applicable rules, it can be sent to Admin for review.</p>
       <p class="auto-pass-note">Admin approval is still required before your funded account is activated.</p>
     </div>
   </div>
@@ -901,9 +901,9 @@ hr {
 
   <div class="info-card">
     <h3>Challenge Rules</h3>
-    <p><b>1-Step Evaluation:</b> 10% profit target, 3% daily drawdown, 5% maximum drawdown, at least 5 profitable days and 0.5% minimum profit per profitable day. Funded payout consistency: 50%.</p>
-    <p><b>Instant Funding:</b> No evaluation phase. Each Instant program follows its own maximum/daily drawdown limits. Funded payout consistency: 30% for every Instant account.</p>
-    <p><b>2-Step Evaluation:</b> Follow the selected 2-Step program's phase targets and drawdown limits. No consistency rule applies to 2-Step accounts.</p>
+    <p><b>1-Step Standard:</b> 10% target, 5% static maximum loss, 3% static daily loss. <b>1-Step Pro:</b> 6% target, 6% trailing equity maximum loss, 3% equity daily loss. Both require 3 profitable days at 0.25% minimum. Funded payout consistency: 50%.</p>
+    <p><b>2-Step Standard:</b> Phase targets 10% + 5%, 8% static maximum loss, 4% daily loss with a rolling 24-hour reset. <b>2-Step Pro:</b> Phase targets 6% + 6%, 6% static maximum loss, 3% daily loss. Both require 3 profitable days at 0.25% minimum and have no funded consistency rule.</p>
+    <p><b>Instant Standard:</b> 5% static maximum loss, no daily loss limit, closed positions only and no restart. <b>Instant Pro:</b> 5% trailing equity maximum loss and 2% equity daily loss. <b>Instant Plus:</b> 3% static maximum loss and 1% static daily loss. All Instant programs require 3 profitable days at 0.25% minimum and have 30% funded consistency.</p>
     <p class="muted">Your terminal balance, equity, floating P/L and account status update from WFT virtual trading records.</p>
   </div>
 </section>
@@ -1043,7 +1043,7 @@ hr {
         </div>
         <div class="payout-challenge-note">
           <strong>1-Step challenge rules</strong>
-          <p>10% profit target · 3% daily drawdown · 5% maximum drawdown · At least 5 profitable days, each reaching 0.5% profit.</p>
+          <p>1-Step Standard: 10% target · 5% static maximum loss · 3% static daily loss. 1-Step Pro: 6% target · 6% trailing equity maximum loss · 3% equity daily loss. Both require at least 3 profitable days, each reaching 0.25% profit.</p>
         </div>
         <p class="payout-footnote">Consistency: your best profitable day must not exceed 50% of your total positive profits.</p>
       </article>
@@ -1086,7 +1086,7 @@ hr {
         </div>
         <div class="payout-challenge-note">
           <strong>Instant account rules</strong>
-          <p>No evaluation phase · 5% maximum drawdown · No daily drawdown limit · Only closed positions count toward profit.</p>
+          <p>Instant Standard: 5% static maximum loss, no daily loss limit, closed positions only and no restart. Instant Pro: 5% trailing equity maximum loss and 2% equity daily loss. Instant Plus: 3% static maximum loss and 1% static daily loss. All require 3 profitable days at 0.25% minimum.</p>
         </div>
         <p class="payout-footnote">Consistency: your best profitable day must not exceed 30% of your total positive profits.</p>
       </article>
@@ -1179,6 +1179,7 @@ hr {
       <h1>Rewards Center</h1>
       <p class="muted">Earn rewards and every approved reward is added directly to your WFT Wallet Balance.</p>
       <a class="btn" href="wallet.html">View Wallet Balance</a>
+      <a class="btn btn-secondary" href="giveaway.html">Join 100 Trader Giveaway</a>
     </div>
   </div>
 
