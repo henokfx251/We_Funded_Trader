@@ -436,3 +436,90 @@ body :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-car
 body :is(input,select,textarea){background:#172d47!important}
 body :is(footer){background:#102137!important}
 body :is(.hero){background:radial-gradient(ellipse at 15% 10%,rgba(37,99,235,.26),transparent 38%),radial-gradient(ellipse at 88% 85%,rgba(14,165,233,.16),transparent 35%),linear-gradient(135deg,#142b46 0%,#1a3553 52%,#142942 100%)!important}
+
+
+/* WFT FINAL THEME OVERRIDE — White canvas, dark readable text, blue accents */
+:root{
+ color-scheme:light!important;
+ --bg:#f5f8ff!important;--page:#f5f8ff!important;--sidebar:#fff!important;
+ --panel:#fff!important;--panel2:#edf3ff!important;
+ --text:#111827!important;--ink:#111827!important;--muted:#52627a!important;
+ --line:#dbe5f2!important;--border:#dbe5f2!important;
+ --blue:#155eef!important;--blue2:#2875ff!important;
+ --gold:#155eef!important;--gold2:#2875ff!important;
+ --wft-page:#f5f8ff!important;--wft-white:#fff!important;
+ --wft-ink:#111827!important;--wft-text:#26364d!important;--wft-muted:#52627a!important;
+ --wft-border:#dbe5f2!important;
+}
+html,body,html:not(:has(.chartbox)),body:not(:has(.chartbox)){
+ background:#f5f8ff!important;background-color:#f5f8ff!important;
+ background-image:none!important;color:#26364d!important;color-scheme:light!important;
+}
+body:has(.chartbox){
+ background:#f5f8ff!important;background-color:#f5f8ff!important;
+ background-image:none!important;color:#26364d!important;color-scheme:light!important;
+}
+body :is(h1,h2,h3,h4,h5,h6,strong,b,legend,summary){color:#111827!important}
+body :is(p,li,label,small,.muted,.description,.subtitle,.helper-text,.text-muted){color:#52627a!important}
+body :is(header,.navbar,.topbar,.top-bar,.dashboard-header,.site-header,.app-header){
+ background:#fff!important;background-image:none!important;color:#111827!important;
+ border-color:#dbe5f2!important;box-shadow:0 4px 18px rgba(20,55,110,.06)!important;
+}
+body :is(.main,.content,main,.page,.section,.container,.wrap,.page-content,.main-content,.dashboard-content,.layout){
+ background:transparent!important;background-color:transparent!important;background-image:none!important;color:#26364d!important;
+}
+body :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav){
+ background:#fff!important;background-image:none!important;color:#1f2937!important;
+ border-color:#dbe5f2!important;box-shadow:4px 0 22px rgba(20,55,110,.06)!important;
+}
+body :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav) :is(a,button,span,small,.nav-label,.brand,.logo,.ico,.nav-icon,.nav-btn,.nav-link){
+ color:#26364d!important;
+}
+body :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav) :is(.nav-btn.active,.nav-link.active,a.active,.active,[aria-current="page"]){
+ background:#eaf2ff!important;color:#155eef!important;border-color:#d4e3ff!important;
+}
+body :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.ticket,.stat,.reward-box,.promo,.platform-item,.reward-highlight,.settings-card,.payout-card,.kyc-card,.activity-card,.table-wrap,.agreement-area,.certificate-paper,.platform-box,.faq-item,.feature){
+ background:#fff!important;background-image:none!important;color:#26364d!important;
+ border-color:#dbe5f2!important;box-shadow:0 8px 24px rgba(20,55,110,.055)!important;
+}
+body :is(input,select,textarea){
+ background:#fff!important;background-image:none!important;color:#111827!important;
+ border-color:#cbd5e1!important;box-shadow:none!important;
+}
+body :is(input,select,textarea)::placeholder{color:#8492a6!important;opacity:1}
+body :is(button,.btn,.button,.btn-primary,.btn-primary-sm,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,[type=submit]){
+ background:#155eef!important;background-image:linear-gradient(135deg,#2875ff,#155eef)!important;
+ color:#fff!important;border-color:#155eef!important;
+}
+body :is(.btn-outline,.btn-secondary,.secondary,.button-secondary,.outline-btn){
+ background:#fff!important;background-image:none!important;color:#155eef!important;border-color:#c5d6f3!important;
+}
+body a{color:#155eef}
+body :is(table,tbody,tr,td){background:#fff!important;color:#26364d!important;border-color:#dbe5f2!important}
+body :is(th,thead){background:#edf3ff!important;color:#1f3150!important}
+body :is(footer,.footer,.site-footer){background:#fff!important;background-image:none!important;color:#52627a!important;border-color:#dbe5f2!important}
+body :is(.hero,.challenge-hero,.hero-section,.dashboard-welcome,.welcome,.payout-welcome){
+ background:linear-gradient(135deg,#eaf2ff 0%,#fff 82%)!important;color:#111827!important;border-color:#d4e3ff!important;
+}
+body :is(.hero,.challenge-hero,.hero-section,.dashboard-welcome,.welcome,.payout-welcome) :is(h1,h2,h3,h4,p,span,small,strong,div){color:#111827!important}
+body:has(.chartbox) :is(.chartbox,.tradingview-widget-container,.tv-lightweight-charts,.chart-container,canvas){
+ background-color:#0b1726!important;
+}
+@media(min-width:1200px){
+ body :is(.container,.wrap,.content,.page-content,.main-content,.dashboard-content){
+  width:calc(100% - 64px)!important;max-width:1840px!important;
+  margin-left:auto!important;margin-right:auto!important;
+ }
+ body :is(.content,.page-content,.main-content,.dashboard-content){padding-left:36px!important;padding-right:36px!important}
+ body :is(.section,.section-inner,.hero-inner,.footer-inner){max-width:1840px!important;width:calc(100% - 64px)!important;margin-left:auto!important;margin-right:auto!important}
+ body :is(.main){min-width:0!important}
+}
+@media(min-width:1600px){
+ body :is(.container,.wrap,.content,.page-content,.main-content,.dashboard-content,.section-inner,.hero-inner,.footer-inner){
+  max-width:1960px!important;width:calc(100% - 80px)!important;
+ }
+}
+@media(max-width:760px){
+ body :is(.container,.wrap,.content,.page-content,.main-content,.dashboard-content){width:auto!important;max-width:100%!important}
+ body :is(.content,.page-content,.main-content,.dashboard-content){padding-left:14px!important;padding-right:14px!important}
+}
