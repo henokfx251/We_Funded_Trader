@@ -419,3 +419,20 @@ body :is(.menu-toggle){background:#10243c!important;border-color:#35577d!importa
 @media(prefers-reduced-motion:reduce){
   body *,body *:before,body *:after{transition:none!important;scroll-behavior:auto!important}
 }
+
+/* WFT softer navy: lift the page from near-black to a clearer slate-navy */
+html,body{background:#122238!important}
+body{
+ background:
+  radial-gradient(ellipse at 12% 0%,rgba(59,130,246,.17),transparent 36%),
+  radial-gradient(ellipse at 92% 18%,rgba(14,165,233,.10),transparent 32%),
+  #122238!important;
+}
+body :is(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar){background:rgba(19,38,60,.97)!important}
+body :is(.sidebar,.side-nav,.sidenav){background:linear-gradient(180deg,#172d47 0%,#122238 100%)!important}
+body :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.ticket,.stat,.reward-box,.promo,.final-cta,.platform-item,.reward-highlight){
+ background:linear-gradient(145deg,rgba(27,48,73,.98),rgba(21,39,61,.99))!important;
+}
+body :is(input,select,textarea){background:#172d47!important}
+body :is(footer){background:#102137!important}
+body :is(.hero){background:radial-gradient(ellipse at 15% 10%,rgba(37,99,235,.26),transparent 38%),radial-gradient(ellipse at 88% 85%,rgba(14,165,233,.16),transparent 35%),linear-gradient(135deg,#142b46 0%,#1a3553 52%,#142942 100%)!important}
