@@ -523,3 +523,45 @@ body:has(.chartbox) :is(.chartbox,.tradingview-widget-container,.tv-lightweight-
  body :is(.container,.wrap,.content,.page-content,.main-content,.dashboard-content){width:auto!important;max-width:100%!important}
  body :is(.content,.page-content,.main-content,.dashboard-content){padding-left:14px!important;padding-right:14px!important}
 }
+
+
+/* WFT v27 — FORCE CLEAN WHITE THEME ACROSS EVERY HTML PAGE */
+:root{
+ color-scheme:light!important;
+ --bg:#f7f9fd!important;--page:#f7f9fd!important;--panel:#fff!important;--panel2:#eef4ff!important;
+ --text:#172033!important;--ink:#172033!important;--muted:#59677d!important;
+ --line:#dce5f2!important;--border:#dce5f2!important;
+ --blue:#155eef!important;--blue2:#2875ff!important;--gold:#155eef!important;--gold2:#2875ff!important;
+}
+html,body{
+ color-scheme:light!important;background:#f7f9fd!important;background-color:#f7f9fd!important;
+ background-image:none!important;color:#263449!important;
+}
+body :is(main,header,footer,nav,aside,section,article,.container,.wrap,.content,.main,.page,.page-content,.main-content,.dashboard-content,.layout,.content-area,.workspace,.panel,.card,.box,.modal,.modal-content,.dropdown-menu,.table-wrap,.form-card,.stat-card,.metric-card,.challenge-card,.account-card,.order-card,.reward-card,.settings-card,.payout-card,.kyc-card,.activity-card,.faq-item,.feature-card,.program-card,.wallet-card,.certificate-paper,.platform-box,.agreement-area,.promo,.reward-box,.welcome,.dashboard-welcome,.hero,.hero-section,.challenge-hero,.topbar,.top-bar,.navbar,.site-header,.app-header,.dashboard-header,.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav){
+ background-color:#fff!important;background-image:none!important;color:#263449!important;border-color:#dce5f2!important;
+}
+body :is(h1,h2,h3,h4,h5,h6,strong,b,legend,summary){color:#172033!important}
+body :is(p,li,label,small,.muted,.description,.subtitle,.helper-text,.text-muted){color:#59677d!important}
+body :is(a,.link){color:#155eef!important}
+body :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav) :is(a,button,span,small,.nav-label,.brand,.logo,.ico,.nav-icon,.nav-btn,.nav-link){color:#263449!important}
+body :is(.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav) :is(.nav-btn.active,.nav-link.active,a.active,.active,[aria-current="page"]){background:#eaf2ff!important;color:#155eef!important}
+body :is(button,.btn,.button,.btn-primary,.btn-primary-sm,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,[type=submit]){
+ background:#155eef!important;background-image:linear-gradient(135deg,#2875ff,#155eef)!important;color:#fff!important;border-color:#155eef!important;
+}
+body :is(.btn-outline,.btn-secondary,.secondary,.button-secondary,.outline-btn){background:#fff!important;background-image:none!important;color:#155eef!important;border-color:#c5d6f3!important}
+body :is(input,select,textarea){background:#fff!important;color:#172033!important;border-color:#cbd5e1!important}
+body :is(table,thead,tbody,tr,th,td){background:#fff!important;color:#263449!important;border-color:#dce5f2!important}
+body :is(th,thead){background:#edf3ff!important;color:#172033!important}
+body :is(.hero,.hero-section,.challenge-hero,.welcome,.dashboard-welcome,.payout-welcome,.final-cta,.promo,.reward-box){
+ background:linear-gradient(135deg,#eaf2ff,#fff)!important;color:#172033!important;border-color:#d4e3ff!important;
+}
+body :is(.hero,.hero-section,.challenge-hero,.welcome,.dashboard-welcome,.payout-welcome,.promo,.reward-box) :is(h1,h2,h3,h4,p,span,small,strong,div){color:#172033!important}
+body:has(.chartbox) :is(.chartbox,.tradingview-widget-container,.tv-lightweight-charts,.chart-container,canvas,iframe){background-color:#0b1726!important}
+@media(min-width:1200px){
+ body :is(.container,.wrap,.content,.page-content,.main-content,.dashboard-content,.section-inner,.hero-inner,.footer-inner){width:calc(100% - 64px)!important;max-width:1960px!important;margin-left:auto!important;margin-right:auto!important}
+ body :is(.content,.page-content,.main-content,.dashboard-content){padding-left:36px!important;padding-right:36px!important}
+}
+@media(max-width:760px){
+ body :is(.container,.wrap,.content,.page-content,.main-content,.dashboard-content){width:auto!important;max-width:100%!important}
+ body :is(.content,.page-content,.main-content,.dashboard-content){padding-left:14px!important;padding-right:14px!important}
+}
