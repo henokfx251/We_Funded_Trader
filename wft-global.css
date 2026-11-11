@@ -565,3 +565,17 @@ body:has(.chartbox) :is(.chartbox,.tradingview-widget-container,.tv-lightweight-
  body :is(.container,.wrap,.content,.page-content,.main-content,.dashboard-content){width:auto!important;max-width:100%!important}
  body :is(.content,.page-content,.main-content,.dashboard-content){padding-left:14px!important;padding-right:14px!important}
 }
+
+
+/* WFT v28 — BLACK READABLE TEXT; KEEP THE BRIGHT BLUE BUTTON DESIGN */
+html,body{color:#111827!important}
+body :is(h1,h2,h3,h4,h5,h6,p,li,label,legend,summary,strong,b,th,td,.title,.heading,.nav-label,.brand,.logo,.stat-value,.metric-value,.card-title,.section-title,.form-label,.field-label){color:#111827!important}
+body :is(small,.muted,.description,.subtitle,.helper-text,.text-muted,.hint,.caption,.secondary-text){color:#475569!important}
+body a:not(.btn):not(.button):not(.nav-btn):not(.nav-link){color:#155eef!important}
+/* Preserve the existing bright blue CTA/button treatment and its white text */
+body :is(button,.btn,.button,.btn-primary,.btn-primary-sm,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,[type=submit]){
+ background-color:#155eef!important;
+ background-image:linear-gradient(135deg,#2875ff,#155eef)!important;
+ color:#fff!important;
+ border-color:#155eef!important;
+}
