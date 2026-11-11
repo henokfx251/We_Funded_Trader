@@ -77,6 +77,18 @@ body:not(.terminal-locked) #terminalAccessGate{display:none}
 .trade-screen .demo-quote{background:#050a11!important;border-color:#2b4058!important}
 .trade-screen .back-chart{color:#83bdff!important}
 @media(max-width:760px){.trade-screen .trade-ticket{padding:12px!important}.trade-screen .trade-ticket-head{gap:8px;align-items:flex-start}.trade-screen .trade-ticket-head>div:last-child{max-width:65%}.trade-screen .trade-ticket-head select{max-width:100%!important}}
+/* WFT LIGHT TERMINAL SHELL — chart canvas intentionally remains dark */
+:root{--bg:#f4f7fc;--panel:#fff;--panel2:#eef4ff;--line:#d9e2ef;--text:#17243b;--muted:#5b6b82;--gold:#155eef;--gold2:#155eef;--blue:#155eef}
+body{background:var(--bg)!important;color:var(--text)!important}.top{background:rgba(255,255,255,.96)!important;color:#17243b!important;border-color:var(--line)!important}
+.brand,.brand small{color:#155eef!important}.toplink{color:#34445f!important;background:#f7faff!important;border-color:var(--line)!important}
+.panel,.data-panel{background:#fff!important;color:#17243b!important;border-color:var(--line)!important;box-shadow:0 5px 18px rgba(25,55,100,.05)!important}
+.metric-label,.hint,.muted,.empty,.field label,.order-est,.statusline,.trade-disclaimer,.demo-quote .quote-note{color:#64748b!important}.metric,.chart-screen-title,.side h2,.trade-ticket h2{color:#17243b!important}
+select,input{background:#fff!important;color:#17243b!important;border-color:#cbd7e7!important}.chartbox{background:#0b1726!important}
+.charttools button,.tab,.view-tab,.mode-tabs button,.order-tabs button{background:#f3f6fb!important;color:#42536d!important;border-color:#d4deeb!important}
+.charttools button.active,.tab.active,.view-tab.active{background:#e4efff!important;color:#155eef!important;border-color:#8fb4f5!important}
+.order-tabs button.active.buy{background:#e7f8f0!important;color:#147447!important}.order-tabs button.active.sell{background:#fff0f1!important;color:#b42332!important}
+th{color:#64748b!important}td{color:#34445f!important;border-color:#e5ebf3!important}.rule,.disclaimer,.demo-quote,.confirm-box,.confirm-item{background:#fff!important;color:#17243b!important;border-color:var(--line)!important}
+.rule b,.confirm-title,.confirm-item b{color:#17243b!important}.rule span,.confirm-sub,.confirm-warning,.confirm-item span,.demo-quote span,.demo-quote .quote-note{color:#64748b!important}.confirm-overlay{background:#17243b99!important}
 </style>
 <link rel="stylesheet" href="wft-global.css?v=24">
 </head>
