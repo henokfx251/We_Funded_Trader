@@ -138,23 +138,39 @@ footer{padding:42px 0 23px;border-top:1px solid var(--line);background:#fff;colo
 
 
 
-<style id="wft-hero-black-text-fix">
-/* Only the requested hero copy is black; buttons and other sections stay unchanged. */
-html body main .hero .hero-tag,
-html body main .hero .hero-content h1,
-html body main .hero .hero-content h1 span,
-html body main .hero .hero-description {
-  color: #000 !important;
-  -webkit-text-fill-color: #000 !important;
+<style id="wft-premium-home-fix">
+/* Homepage-specific corrections: readable contrast and consistent surfaces */
+html,body{background:#07111f!important;color:#dbe6f5!important;color-scheme:dark}
+header{background:rgba(9,21,37,.97)!important;border-bottom:1px solid #263b56!important;box-shadow:0 8px 28px rgba(0,0,0,.24)!important}
+.nav-links{color:#dbe6f5!important}.nav-links a{color:#dbe6f5!important}.nav-links a:hover{color:#93c5fd!important}
+.logo{color:#60a5fa!important}.logo span{color:#dbeafe!important}
+.menu-toggle{background:#10243c!important;color:#f4f7fb!important;border-color:#35577d!important}
+.hero{background:radial-gradient(ellipse at 14% 18%,rgba(37,99,235,.22),transparent 34%),radial-gradient(ellipse at 88% 72%,rgba(14,165,233,.12),transparent 32%),linear-gradient(135deg,#081525 0%,#0d2038 52%,#091728 100%)!important;border-color:#263b56!important}
+.hero .hero-tag{background:#102746!important;color:#bfdbfe!important;border-color:#35577d!important}
+.hero .hero-content h1{color:#f4f7fb!important;-webkit-text-fill-color:#f4f7fb!important}
+.hero .hero-content h1 span{background:linear-gradient(100deg,#60a5fa 8%,#93c5fd 52%,#38bdf8 100%)!important;background-clip:text!important;-webkit-background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important}
+.hero .hero-description{color:#b7c8dc!important}
+.hero .hero-trust{color:#dbeafe!important}.hero .hero-trust span{background:#10243c!important;color:#dbeafe!important;border-color:#35577d!important}
+.section{background:transparent!important;color:#dbe6f5!important}
+.section-heading h2,.section-heading p{color:#f4f7fb!important}
+.section-heading p{color:#a9b9ce!important}
+.card,.challenge-card,.account-card,.rule-card,.step-card,.platform-item,.faq-item,.reward-box,.final-cta{
+ background:linear-gradient(145deg,#11243b,#0b1a2d)!important;color:#dbe6f5!important;border:1px solid #263f5e!important;box-shadow:0 12px 32px rgba(0,0,0,.22)!important
 }
-html body main .hero .hero-content h1 span {
-  background: none !important;
-  background-image: none !important;
-  -webkit-background-clip: initial !important;
-  background-clip: initial !important;
-}
+.card h3,.challenge-card h3,.account-card h3,.rule-card h3,.step-card h3,.platform-item strong,.faq-item summary{color:#f4f7fb!important}
+.card p,.challenge-card p,.account-card p,.rule-card p,.step-card p,.platform-item span,.faq-item p{color:#a9b9ce!important}
+.challenge-card.featured,.account-card.featured{background:linear-gradient(145deg,#142f50,#10223a)!important;border-color:#3975bd!important}
+.challenge-card li,.reward-points li{color:#cbd8e8!important;border-color:#263b56!important}
+.promo{background:linear-gradient(110deg,#f1f6ff,#dceaff)!important;color:#14213d!important;border-color:#b8cfee!important}
+.promo h2{color:#14213d!important}.promo p,.promo-side small{color:#536782!important}
+.promo-side strong,.promo-label,.promo-code{color:#155eef!important}
+.reward-box h2,.final-cta h2{color:#f4f7fb!important}
+.reward-highlight{background:#10243c!important;border-color:#35577d!important}
+.reward-highlight span,.final-cta p{color:#a9b9ce!important}
+footer{background:#081321!important;color:#a9b9ce!important;border-color:#263b56!important}
+.footer-col h4{color:#f4f7fb!important}.footer-col a{color:#a9b9ce!important}
+@media(max-width:700px){.nav-links{background:#091525!important;border-color:#263b56!important}.nav-links a{color:#dbe6f5!important;border-color:#263b56!important}}
 </style>
-
 </head>
 
 <body>
