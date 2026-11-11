@@ -274,3 +274,148 @@ body :is(.badge.failed,.badge.rejected,.status.rejected,.status.failed){backgrou
  body :is(.content,main,.main){padding-left:12px!important;padding-right:12px!important}
  body :is(.btn,.button,.btn-primary,.btn-outline){max-width:100%;white-space:normal}
 }
+
+
+/* =========================================================
+   WFT PREMIUM DARK NAVY SYSTEM — unified site-wide layer
+   Shared by homepage, customer/admin dashboards, auth,
+   challenge, wallet, giveaway and terminal pages.
+   ========================================================= */
+:root{
+  color-scheme:dark;
+  --wft-blue:#3b82f6;--wft-blue-strong:#2563eb;--wft-blue-dark:#1747a6;
+  --wft-blue-soft:#102746;--wft-page:#07111f;--wft-white:#0f1d30;
+  --wft-ink:#f4f7fb;--wft-text:#dbe6f5;--wft-muted:#9aabc0;
+  --wft-border:#263b56;--wft-green:#22c55e;--wft-red:#fb7185;--wft-accent:#60a5fa;
+  --bg:#07111f;--sidebar:#091525;--panel:#101d30;--panel2:#14243a;
+  --blue:#3b82f6;--blue2:#60a5fa;--blue-dark:#1747a6;
+  --gold:#3b82f6;--gold2:#60a5fa;--text:#f4f7fb;--muted:#9aabc0;
+  --line:#263b56;--border:#263b56;--green:#22c55e;--red:#fb7185;
+  --page:#07111f;--white:#0f1d30;--soft:#102746;--ink:#f4f7fb;
+  --radius:16px;--shadow:0 18px 48px rgba(0,0,0,.28);
+}
+html,html:not(:has(.chartbox)){
+  background:#07111f!important;color-scheme:dark!important;
+}
+body,body:not(:has(.chartbox)){
+  background:
+    radial-gradient(ellipse at 12% 0%,rgba(37,99,235,.13),transparent 34%),
+    radial-gradient(ellipse at 92% 18%,rgba(14,165,233,.07),transparent 30%),
+    #07111f!important;
+  color:#dbe6f5!important;
+  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
+  -webkit-font-smoothing:antialiased;
+}
+body :is(h1,h2,h3,h4,h5,h6){color:#f4f7fb!important;letter-spacing:-.025em}
+body :is(p,li,small,label,.muted,.description,.subtitle,.helper-text,.text-muted){color:#a9b9ce}
+body :is(header,.topbar,.top-bar,.dashboard-header,.app-header,.navbar){
+  background:rgba(9,21,37,.94)!important;color:#f4f7fb!important;
+  border-color:#263b56!important;box-shadow:0 8px 28px rgba(0,0,0,.2)!important;
+  backdrop-filter:blur(16px);
+}
+body :is(.sidebar,.side-nav,.sidenav){
+  background:linear-gradient(180deg,#0b192b 0%,#081321 100%)!important;
+  color:#dbe6f5!important;border-color:#263b56!important;
+}
+body :is(.main,.content,main,.page,.section,.container,.wrap,.page-content,.main-content,.dashboard-content){
+  color:#dbe6f5;
+}
+body :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.ticket,.stat,.reward-box,.promo,.final-cta,.platform-item,.reward-highlight){
+  background:linear-gradient(145deg,rgba(17,34,55,.97),rgba(11,25,42,.98))!important;
+  color:#dbe6f5!important;border:1px solid #263f5e!important;
+  border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.2)!important;
+}
+body :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.feature-card,.challenge-card,.program,.account-card):hover{
+  border-color:#3975bd!important;box-shadow:0 18px 38px rgba(0,0,0,.28)!important;
+}
+body :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card,.form-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.ticket,.stat) :is(h1,h2,h3,h4,strong,b){
+  color:#f4f7fb!important;
+}
+body :is(input,select,textarea){
+  color:#f4f7fb!important;background:#081525!important;
+  border:1px solid #314968!important;border-radius:10px!important;
+}
+body :is(input,select,textarea)::placeholder{color:#7186a3!important;opacity:1}
+body :is(input,select,textarea):focus{
+  outline:0!important;border-color:#60a5fa!important;
+  box-shadow:0 0 0 3px rgba(59,130,246,.18)!important;
+}
+body :is(button,.btn,.button,.btn-primary,.btn-outline,[type=submit]){
+  border-radius:10px;transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease;
+}
+body :is(button,.btn,.button,.btn-primary,[type=submit]):not(.nav-btn):not(.menu-toggle){
+  background:linear-gradient(135deg,#2563eb,#3b82f6)!important;
+  color:#fff!important;border:1px solid #3b82f6!important;
+  box-shadow:0 7px 20px rgba(37,99,235,.2);
+}
+body :is(button,.btn,.button,.btn-primary,[type=submit]):not(:disabled):hover{
+  transform:translateY(-2px);box-shadow:0 11px 26px rgba(37,99,235,.28)!important;
+}
+body :is(.btn-outline,.secondary,.btn-secondary){
+  background:#11243b!important;color:#bfdbfe!important;border:1px solid #35577d!important;
+  box-shadow:none!important;
+}
+body :is(a){color:#7db4ff}
+body :is(a:hover){color:#bfdbfe}
+body :is(.nav-btn,.nav-link,.menu-toggle){
+  color:#b8c9df!important;
+}
+body :is(.nav-btn:hover,.nav-btn.active,.nav-link:hover){
+  background:#142d4b!important;color:#93c5fd!important;
+}
+body :is(table){color:#dbe6f5!important;border-color:#263b56!important}
+body :is(th){background:#132943!important;color:#cfe2ff!important}
+body :is(td){border-color:#263b56!important}
+body :is(tr:hover td){background:rgba(59,130,246,.06)!important}
+body :is(hr,.divider){border-color:#263b56!important}
+body :is(.badge,.pill,.status){border-radius:999px}
+body :is(.empty,.empty-state){color:#91a5c0!important}
+body :is(.toast,.notice,.alert){border-color:#35577d}
+body :is(footer){background:#081321!important;color:#a9b9ce!important;border-color:#263b56!important}
+body :is(.reward-section){background:transparent!important}
+body :is(.hero){
+  background:
+    radial-gradient(ellipse at 15% 10%,rgba(37,99,235,.22),transparent 38%),
+    radial-gradient(ellipse at 88% 85%,rgba(14,165,233,.12),transparent 35%),
+    linear-gradient(135deg,#081525 0%,#0d2038 52%,#091728 100%)!important;
+  border-color:#263b56!important;
+}
+html body main .hero .hero-tag,
+html body main .hero .hero-content h1,
+html body main .hero .hero-description{
+  color:#f4f7fb!important;-webkit-text-fill-color:#f4f7fb!important;
+}
+html body main .hero .hero-content h1 span{
+  background:linear-gradient(100deg,#60a5fa 8%,#93c5fd 52%,#38bdf8 100%)!important;
+  background-clip:text!important;-webkit-background-clip:text!important;
+  color:transparent!important;-webkit-text-fill-color:transparent!important;
+}
+body :is(.hero-tag,.hero-trust span){
+  background:rgba(16,39,68,.82)!important;color:#dbeafe!important;border-color:#35577d!important;
+}
+body :is(.hero-description,.section-heading p,.promo p,.reward-box p){color:#a9b9ce!important}
+body :is(.promo,.reward-box,.final-cta,.reward-highlight){
+  background:linear-gradient(145deg,#10243c,#0b1a2d)!important;
+}
+body :is(.promo-label,.promo-side strong,.reward-highlight strong,.gold,.eyebrow,.type-label,.account-price,.step-number){
+  color:#7db4ff!important;
+}
+body :is(.challenge-card.featured,.account-card.featured){
+  background:linear-gradient(145deg,#142f50,#10223a)!important;border-color:#3975bd!important;
+}
+body :is(.challenge-card li,.reward-points li){border-color:#263b56!important;color:#cbd8e8!important}
+body :is(.rule-icon){background:#142d4b!important;color:#93c5fd!important}
+body :is(.faq-item summary){color:#f4f7fb!important}
+body :is(.faq-item p){color:#a9b9ce!important}
+body :is(.promo-code){color:#93c5fd!important;border-color:#4779b2!important}
+body :is(.hero-trust span:before,.challenge-card li:before,.reward-points li:before){color:#4ade80!important}
+body :is(.menu-toggle){background:#10243c!important;border-color:#35577d!important}
+@media(max-width:760px){
+  body :is(.container,.wrap,main){max-width:100%!important}
+  body :is(.topbar,.top-bar,.dashboard-header){padding-left:14px!important;padding-right:14px!important}
+  body :is(.card,.panel,.stat-card,.metric-card,.content-card,.info-card){border-radius:14px!important}
+  body :is(.table-wrap,.table-responsive){overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+}
+@media(prefers-reduced-motion:reduce){
+  body *,body *:before,body *:after{transition:none!important;scroll-behavior:auto!important}
+}
