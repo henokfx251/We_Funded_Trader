@@ -17,6 +17,11 @@
   --wft-border:#155eef;
   --wft-radius:14px;
   --wft-shadow:0 8px 24px rgba(0,0,0,.08);
+  /* Legacy page variables now resolve to the same three-color palette */
+  --bg:#ffffff;--page:#ffffff;--sidebar:#155eef;--panel:#ffffff;--panel2:#ffffff;
+  --border:#155eef;--line:#155eef;--text:#000000;--ink:#000000;--muted:#000000;
+  --blue:#155eef;--blue2:#155eef;--blue-dark:#155eef;--gold:#155eef;--gold2:#155eef;
+  --green:#000000;--red:#000000;--danger:#000000;--success:#000000;
 }
 
 *{box-sizing:border-box}
@@ -30,9 +35,8 @@ body{
   font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
   -webkit-font-smoothing:antialiased;
 }
-body :is(h1,h2,h3,h4,h5,h6,p,li,small,label,legend,summary,strong,b,span,div,td,th,dt,dd,figcaption,caption){
-  color:#000000;
-}
+body *{color:#000000!important;}
+body :is(h1,h2,h3,h4,h5,h6,p,li,small,label,legend,summary,strong,b,span,div,td,th,dt,dd,figcaption,caption){color:#000000!important;}
 body :is(main,.main,.content,.page,.section,.page-content,.main-content,.dashboard-content,.content-area,.workspace,.layout,.container,.wrap,article,section,footer,.footer,.site-footer){
   background-color:#ffffff!important;
   background-image:none!important;
