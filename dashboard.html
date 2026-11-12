@@ -788,6 +788,40 @@ input::placeholder,textarea::placeholder{color:#8290a4!important}.empty{backgrou
 html,body{background:#fff!important;color:#111827!important}body{font-family:Inter,Arial,sans-serif!important}body :is(h1,h2,h3,h4,h5,h6,p,label,small,li,td,th,legend,summary,.muted,.text-muted,.description,.subtitle){color:#111827!important}body :is(a,.link){color:#155eef!important}body :is(input,select,textarea){background:#fff!important;color:#111827!important;border-color:#cbd5e1!important}body :is(input,select,textarea)::placeholder{color:#64748b!important;opacity:1}body :is(button,.btn,[type=button],[type=submit]){background-color:#155eef!important;color:#fff!important;border-color:#155eef!important}body :is(.card,.panel,.box,.modal-content,.dropdown-menu,.sidebar,.topbar,.navbar,.header,.form-card,.auth-card,.stat-card,.challenge-card,.order-card,.content-card){background-color:#fff!important;color:#111827!important;border-color:#dbe5f2!important;box-shadow:0 8px 28px rgba(15,35,75,.07)!important}body :is(.sidebar a,.nav-link,.menu-item){color:#1f2937!important}body :is(.sidebar a.active,.nav-link.active,.menu-item.active){background:#eaf1ff!important;color:#155eef!important}body :is(.chartbox,.tradingview-widget-container,.tv-lightweight-charts,.chart-container){background:#0b1726!important}
 </style>
 <link rel="stylesheet" href="wft-global.css?v=28">
+<style id="wft-fyt-inspired-dashboard">
+:root{color-scheme:light;--bg:#f4f8ff;--sidebar:#fff;--panel:#fff;--panel2:#f7faff;--gold:#155eef;--gold2:#2875ff;--text:#111827;--muted:#64748b;--line:#e2e8f0;--green:#16a34a;--red:#dc2626;--blue:#2563eb}
+body{background:var(--bg)!important;color:#111827!important}
+.sidebar{background:#fff!important;border-right:1px solid #e5eaf2!important;box-shadow:8px 0 28px rgba(15,23,42,.035)}
+.brand{color:#155eef!important}.brand small,.nav-label{color:#8492a6!important}
+.nav-btn,.nav-link{color:#334155!important}.nav-btn:hover,.nav-btn.active,.nav-link:hover{background:#edf4ff!important;color:#155eef!important}
+.nav-btn.logout{color:#dc2626!important}
+.topbar{background:rgba(255,255,255,.97)!important;border-bottom:1px solid #e5eaf2!important;backdrop-filter:blur(12px)}
+.topbar h2{color:#111827}.menu-btn{color:#111827!important}.top-right{color:#475569!important}
+.avatar{background:#eaf1ff!important;color:#155eef!important;border:1px solid #d8e5ff}
+.content{max-width:1850px!important;padding:28px clamp(15px,2.2vw,38px)!important}
+.panel,.stat-card,.info-card,.account-card,.client-account-card,.reward-task-card,.certificate-paper,.faq-item,.kyc-status{background:#fff!important;color:#111827!important;border-color:#e4eaf2!important;box-shadow:0 8px 26px rgba(15,23,42,.045)!important}
+.panel h3,.info-card h3,.welcome h1,.detail-value,.account-card h3{color:#111827}.muted,.stat-card span,.detail-label,th,label{color:#64748b}
+.stat-card{border-radius:16px!important}.stat-card h2{color:#155eef!important}
+input,select,textarea{background:#fff!important;color:#111827!important;border-color:#d8e1ee!important}input::placeholder,textarea::placeholder{color:#94a3b8}label{color:#475569!important}
+.empty{background:#f8fafc!important;color:#64748b!important;border-color:#dbe4ef!important}
+th,td{border-bottom-color:#e8edf4!important;color:#334155}
+.badge{background:#eef2f7;color:#475569}.badge.pending{background:#fff7e6;color:#9a6700}.badge.active,.badge.paid,.badge.approved{background:#eaf8ef;color:#15803d}
+.btn{background:linear-gradient(135deg,#2875ff,#155eef)!important;color:#fff!important;box-shadow:0 5px 13px rgba(21,94,239,.17)}.btn:hover{filter:brightness(1.04)}.btn-secondary{background:#eaf1ff!important;color:#155eef!important;box-shadow:none}
+.dashboard-welcome{background:linear-gradient(115deg,#fff,#f4f8ff 70%,#edf4ff)!important;border:1px solid #dce8fb!important;box-shadow:0 12px 30px rgba(21,94,239,.055)!important}
+.dashboard-welcome h1,.dashboard-welcome .gold-text{color:#111827!important}.welcome-kicker,.account-overline{color:#155eef!important}.dashboard-welcome p{color:#64748b!important}
+.wft-promo-strip{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:19px 22px;margin:0 0 20px;border:1px solid #dce8fb;border-radius:16px;background:linear-gradient(105deg,#eaf2ff,#fff 75%);box-shadow:0 8px 22px rgba(21,94,239,.045)}
+.wft-promo-copy{display:grid;gap:5px}.wft-promo-kicker{font-size:9px;letter-spacing:1.7px;font-weight:900;color:#155eef}.wft-promo-copy strong{font-size:16px;color:#111827}.wft-promo-copy small{font-size:12px;color:#64748b}
+.wft-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 20px}
+.wft-shortcut{display:flex;align-items:center;gap:12px;min-width:0;padding:15px;border:1px solid #e3eaf4;border-radius:14px;background:#fff;color:#111827;text-decoration:none;box-shadow:0 5px 18px rgba(15,23,42,.035);transition:transform .18s,border-color .18s}
+.wft-shortcut:hover{transform:translateY(-2px);border-color:#b8d0ff}.shortcut-icon{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:12px;background:#edf4ff;color:#155eef;font-size:18px;font-weight:800}
+.wft-shortcut strong,.wft-shortcut small{display:block}.wft-shortcut strong{font-size:12px}.wft-shortcut small{margin-top:4px;color:#64748b;font-size:10px}.shortcut-arrow{margin-left:auto;color:#155eef;font-size:17px}
+.topbar-search{display:flex;align-items:center;gap:8px;width:min(360px,34vw);height:38px;padding:0 12px;border:1px solid #e1e8f2;border-radius:10px;background:#f8fafc;color:#94a3b8}
+.topbar-search input{width:100%;padding:0;border:0!important;outline:0;background:transparent!important;font-size:12px;box-shadow:none!important}
+.mobile-bottom-nav{display:none}
+@media(min-width:1500px){.content{max-width:1950px!important}.stats-grid{gap:16px}}
+@media(max-width:760px){body{padding-bottom:68px}.topbar{height:62px;padding:0 12px}.topbar-search{width:min(44vw,210px);height:35px}.topbar-search input{font-size:11px}.top-right{gap:6px}.top-right #profileEmailTop{max-width:95px}.content{padding:16px 12px 24px!important}.wft-promo-strip{align-items:flex-start;flex-direction:column;padding:16px}.wft-promo-strip .btn{width:100%;text-align:center}.wft-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.wft-shortcut{padding:12px 10px;gap:8px}.shortcut-icon{width:32px;height:32px;flex-basis:32px}.wft-shortcut small{font-size:9px}.mobile-bottom-nav{position:fixed;display:grid;grid-template-columns:repeat(5,1fr);inset:auto 0 0;z-index:120;height:64px;padding:7px 5px max(7px,env(safe-area-inset-bottom));border-top:1px solid #e2e8f0;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);box-shadow:0 -6px 22px rgba(15,23,42,.07)}.mobile-bottom-nav a{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;color:#64748b;text-decoration:none}.mobile-bottom-nav a span{font-size:18px;line-height:1}.mobile-bottom-nav a small{font-size:9px;font-weight:700}.mobile-bottom-nav a:hover{color:#155eef}}
+@media(max-width:430px){.topbar-search{width:38vw}.topbar-search input{min-width:0}.topbar h2{font-size:14px}.top-right #profileEmailTop{display:none}}
+</style>
 </head>
 
 <body>
@@ -828,6 +862,7 @@ html,body{background:#fff!important;color:#111827!important}body{font-family:Int
     <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu">☰</button>
     <h2 id="topTitle">Overview</h2>
   </div>
+  <div class="topbar-search"><span aria-hidden="true">⌕</span><input id="dashboardSearch" type="search" placeholder="Search dashboard menu..." aria-label="Search dashboard menu"></div>
   <div class="top-right">
     <span id="profileEmailTop"></span>
     <div class="avatar" id="avatar">T</div>
@@ -850,6 +885,7 @@ html,body{background:#fff!important;color:#111827!important}body{font-family:Int
     </div>
   </div>
 
+  <div class="wft-promo-strip"><div class="wft-promo-copy"><span class="wft-promo-kicker">YOUR NEXT MILESTONE</span><strong>Trade with a plan. Grow with WFT.</strong><small>Manage your funded journey, track progress and stay on top of your account.</small></div><a class="btn" href="challenges.html">Explore Accounts →</a></div>
   <div class="stats-grid">
     <div class="stat-card"><span>Total Accounts</span><h2 id="statAccounts">0</h2><small>All account records</small></div>
     <div class="stat-card"><span>Active Accounts</span><h2 id="statActive">0</h2><small>Currently tradable</small></div>
@@ -858,6 +894,14 @@ html,body{background:#fff!important;color:#111827!important}body{font-family:Int
     <div class="stat-card"><span>Total Profit</span><h2 id="statProfit">$0.00</h2><small>All account results</small></div>
   </div>
 
+  <div class="wft-shortcuts">
+    <a class="wft-shortcut" href="wallet.html"><span class="shortcut-icon">◉</span><span><strong>WFT Wallet</strong><small>Balance & transactions</small></span><span class="shortcut-arrow">→</span></a>
+    <a class="wft-shortcut" href="customer-payout.html"><span class="shortcut-icon">↗</span><span><strong>Payout Center</strong><small>Request & track payouts</small></span><span class="shortcut-arrow">→</span></a>
+    <a class="wft-shortcut" href="customer-rewards.html"><span class="shortcut-icon">★</span><span><strong>Rewards</strong><small>Earn wallet credits</small></span><span class="shortcut-arrow">→</span></a>
+    <a class="wft-shortcut" href="customer-certificate.html"><span class="shortcut-icon">♧</span><span><strong>Certificates</strong><small>Your achievements</small></span><span class="shortcut-arrow">→</span></a>
+    <a class="wft-shortcut" href="giveaway.html"><span class="shortcut-icon">🎁</span><span><strong>Giveaways</strong><small>Join WFT campaigns</small></span><span class="shortcut-arrow">→</span></a>
+    <a class="wft-shortcut" href="customer-affiliate.html"><span class="shortcut-icon">♧</span><span><strong>Affiliate</strong><small>Referral commissions</small></span><span class="shortcut-arrow">→</span></a>
+  </div>
   <div class="grid-2">
     <div class="panel">
       <h3>Account Summary</h3>
@@ -1427,6 +1471,9 @@ html,body{background:#fff!important;color:#111827!important}body{font-family:Int
 </div>
 </main>
 
+<nav class="mobile-bottom-nav" aria-label="Quick navigation">
+  <a href="dashboard.html?page=overview"><span>⌂</span><small>Home</small></a><a href="challenges.html"><span>＋</span><small>Buy</small></a><a href="customer-payout.html"><span>↗</span><small>Payouts</small></a><a href="customer-rewards.html"><span>★</span><small>Rewards</small></a><a href="customer-settings.html"><span>⚙</span><small>Account</small></a>
+</nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script type="module">
@@ -2574,6 +2621,10 @@ const { data, error } = await supabase.auth.getSession();
     toast("Dashboard error: " + err.message, true);
   }
 }
+
+
+const dashboardSearch=document.getElementById("dashboardSearch");
+dashboardSearch?.addEventListener("input",()=>{const term=dashboardSearch.value.trim().toLowerCase();document.querySelectorAll(".sidebar [data-page],.sidebar .nav-link").forEach(item=>{item.style.display=!term||item.textContent.toLowerCase().includes(term)?"":"none";});document.querySelectorAll(".sidebar .nav-label").forEach(label=>{let next=label.nextElementSibling,visible=false;while(next&&!next.classList.contains("nav-label")){if(next.matches(".nav-btn,.nav-link")&&next.style.display!=="none")visible=true;next=next.nextElementSibling;}label.style.display=!term||visible?"":"none";});});
 
 startDashboard();
 </script>
