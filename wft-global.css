@@ -766,3 +766,25 @@ body :is(.success,.error,.warning,.danger,.positive,.negative,.status,.badge,.pi
  border-color:#155eef!important;
 }
 body :is(svg,[class*="icon"],[class*="fa-"],i){color:inherit!important}
+
+
+/* WFT v32 — FIX WHITE-BACKGROUND / WHITE-TEXT CONTRAST */
+body, body *{
+  color:#000000!important;
+}
+/* Text inside explicitly blue surfaces stays white */
+body :is(header,.topbar,.top-bar,.navbar,.site-header,.app-header,.dashboard-header,.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav,.hero,.hero-section,.challenge-hero,.final-cta,.blue-section,.blue-banner,.blue-card,.blue-panel),
+body :is(header,.topbar,.top-bar,.navbar,.site-header,.app-header,.dashboard-header,.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav,.hero,.hero-section,.challenge-hero,.final-cta,.blue-section,.blue-banner,.blue-card,.blue-panel) *{
+  color:#ffffff!important;
+}
+/* Blue action buttons have white labels */
+body :is(button,.btn,.button,.btn-primary,.btn-primary-sm,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,[type=submit]){
+  color:#ffffff!important;
+}
+/* White controls and outlined buttons always have black labels */
+body :is(input,select,textarea,.btn-outline,.btn-secondary,.secondary,.button-secondary,.outline-btn){
+  background:#ffffff!important;
+  background-color:#ffffff!important;
+  color:#000000!important;
+}
+body :is(input,select,textarea)::placeholder{color:#000000!important;opacity:1}
