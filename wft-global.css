@@ -309,3 +309,14 @@ body :is(.hero,.hero-section,.challenge-hero,.blue-section,.blue-banner,.blue-ca
 }
 body :is(.hero-tag,.hero-trust span){background:#ffffff!important;color:#000000!important}
 body :is(.hero-tag,.hero-trust span) *{color:#000000!important;-webkit-text-fill-color:#000000!important}
+
+
+/* WFT PROFESSIONAL UI POLISH v37 — shared quality and accessibility layer */
+:root{--wft-brand:#155eef;--wft-border:#e4eaf3;--wft-shadow:0 8px 24px rgba(16,24,40,.055)}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+:where(a,button,input,select,textarea,summary):focus-visible{outline:3px solid rgba(21,94,239,.38)!important;outline-offset:2px}
+:where(input,select,textarea){border-radius:9px}
+:where(button,.btn,[type=button],[type=submit]){transition:background-color .16s ease,border-color .16s ease,box-shadow .16s ease,transform .16s ease}
+:where(img,video,iframe){max-width:100%}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}body *,body *:before,body *:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
