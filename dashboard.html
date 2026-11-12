@@ -858,7 +858,7 @@ th,td{border-bottom-color:#e8edf4!important;color:#334155}
     <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu">☰</button>
     <h2 id="topTitle">Overview</h2>
   </div>
-  <div class="topbar-search"><span aria-hidden="true">⌕</span><input id="dashboardSearch" type="search" placeholder="Search dashboard menu..." aria-label="Search dashboard menu"></div>
+  <div class="topbar-search" role="search"><span class="dashboard-search-icon" aria-hidden="true">⌕</span><input id="dashboardSearch" type="search" placeholder="Search dashboard menu..." aria-label="Search dashboard menu" aria-autocomplete="list" aria-controls="dashboardSearchResults" aria-expanded="false" autocomplete="off"><div id="dashboardSearchResults" class="dashboard-search-results" role="listbox" aria-label="Dashboard menu results" hidden></div></div>
   <div class="top-right">
     <span id="profileEmailTop"></span>
     <div class="avatar" id="avatar">T</div>
@@ -1468,7 +1468,7 @@ th,td{border-bottom-color:#e8edf4!important;color:#334155}
 </main>
 
 <nav class="mobile-bottom-nav" aria-label="Quick navigation">
-  <a href="dashboard.html?page=overview"><span>⌂</span><small>Home</small></a><a href="challenges.html"><span>＋</span><small>Buy</small></a><a href="customer-payout.html"><span>↗</span><small>Payouts</small></a><a href="customer-rewards.html"><span>★</span><small>Rewards</small></a><a href="customer-settings.html"><span>⚙</span><small>Account</small></a>
+  <a href="dashboard.html?page=overview" aria-label="Home"><span aria-hidden="true">⌂</span><small>Home</small></a><a href="challenges.html" aria-label="Buy a challenge"><span aria-hidden="true">＋</span><small>Buy</small></a><a href="customer-payout.html" aria-label="Payouts"><span aria-hidden="true">↗</span><small>Payouts</small></a><a href="customer-rewards.html" aria-label="Rewards"><span aria-hidden="true">★</span><small>Rewards</small></a><a href="customer-settings.html" aria-label="Account settings"><span aria-hidden="true">⚙</span><small>Account</small></a>
 </nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -2619,8 +2619,152 @@ const { data, error } = await supabase.auth.getSession();
 }
 
 
-const dashboardSearch=document.getElementById("dashboardSearch");
-dashboardSearch?.addEventListener("input",()=>{const term=dashboardSearch.value.trim().toLowerCase();document.querySelectorAll(".sidebar [data-page],.sidebar .nav-link").forEach(item=>{item.style.display=!term||item.textContent.toLowerCase().includes(term)?"":"none";});document.querySelectorAll(".sidebar .nav-label").forEach(label=>{let next=label.nextElementSibling,visible=false;while(next&&!next.classList.contains("nav-label")){if(next.matches(".nav-btn,.nav-link")&&next.style.display!=="none")visible=true;next=next.nextElementSibling;}label.style.display=!term||visible?"":"none";});});
+const dashboardSearch = $("dashboardSearch");
+const dashboardSearchResults = $("dashboardSearchResults");
+let dashboardSearchMatches = [];
+let dashboardSearchActiveIndex = -1;
+
+function getDashboardMenuItems() {
+  return [...document.querySelectorAll(".sidebar a.nav-btn[data-page],.sidebar a.nav-link")];
+}
+
+function filterDashboardMenu(term) {
+  const labels = document.querySelectorAll(".sidebar .nav-label");
+  const items = getDashboardMenuItems();
+  items.forEach(item => {
+    item.style.display = !term || item.textContent.toLowerCase().includes(term) ? "" : "none";
+  });
+  labels.forEach(label => {
+    let next = label.nextElementSibling;
+    let visible = false;
+    while (next && !next.classList.contains("nav-label")) {
+      if (next.matches(".nav-btn,.nav-link") && next.style.display !== "none") visible = true;
+      next = next.nextElementSibling;
+    }
+    label.style.display = !term || visible ? "" : "none";
+  });
+}
+
+function closeDashboardSearch(clearValue = false) {
+  if (clearValue && dashboardSearch) dashboardSearch.value = "";
+  filterDashboardMenu("");
+  dashboardSearchMatches = [];
+  dashboardSearchActiveIndex = -1;
+  if (dashboardSearchResults) {
+    dashboardSearchResults.replaceChildren();
+    dashboardSearchResults.hidden = true;
+  }
+  dashboardSearch?.setAttribute("aria-expanded", "false");
+  dashboardSearch?.removeAttribute("aria-activedescendant");
+}
+
+function activateDashboardSearchItem(item) {
+  if (!item) return;
+  closeDashboardSearch(true);
+  item.click();
+}
+
+function renderDashboardSearchResults(term) {
+  if (!dashboardSearchResults || !dashboardSearch) return;
+  dashboardSearchResults.replaceChildren();
+  dashboardSearchActiveIndex = -1;
+  dashboardSearchMatches = getDashboardMenuItems().filter(item =>
+    item.textContent.toLowerCase().includes(term)
+  );
+
+  if (!dashboardSearchMatches.length) {
+    const empty = document.createElement("div");
+    empty.className = "dashboard-search-empty";
+    empty.textContent = "No matching dashboard menu";
+    dashboardSearchResults.append(empty);
+  } else {
+    dashboardSearchMatches.forEach((item, index) => {
+      const option = document.createElement("button");
+      option.type = "button";
+      option.className = "dashboard-search-result";
+      option.id = "dashboard-search-option-" + index;
+      option.setAttribute("role", "option");
+      option.setAttribute("aria-selected", "false");
+      option.textContent = item.textContent.trim().replace(/\\s+/g, " ");
+      option.addEventListener("click", () => activateDashboardSearchItem(item));
+      dashboardSearchResults.append(option);
+    });
+  }
+  dashboardSearchResults.hidden = false;
+  dashboardSearch.setAttribute("aria-expanded", "true");
+}
+
+function setDashboardSearchActive(index) {
+  const options = [...(dashboardSearchResults?.querySelectorAll(".dashboard-search-result") || [])];
+  if (!options.length) return;
+  dashboardSearchActiveIndex = (index + options.length) % options.length;
+  options.forEach((option, i) => {
+    const active = i === dashboardSearchActiveIndex;
+    option.setAttribute("aria-selected", String(active));
+    if (active) {
+      dashboardSearch?.setAttribute("aria-activedescendant", option.id);
+      option.scrollIntoView({ block: "nearest" });
+    }
+  });
+}
+
+dashboardSearch?.addEventListener("input", () => {
+  const term = dashboardSearch.value.trim().toLowerCase();
+  filterDashboardMenu(term);
+  if (!term) {
+    closeDashboardSearch();
+    return;
+  }
+  renderDashboardSearchResults(term);
+});
+
+dashboardSearch?.addEventListener("keydown", event => {
+  if (event.key === "ArrowDown" && !dashboardSearchResults?.hidden) {
+    event.preventDefault();
+    setDashboardSearchActive(dashboardSearchActiveIndex + 1);
+  } else if (event.key === "ArrowUp" && !dashboardSearchResults?.hidden) {
+    event.preventDefault();
+    setDashboardSearchActive(dashboardSearchActiveIndex < 0 ? dashboardSearchMatches.length - 1 : dashboardSearchActiveIndex - 1);
+  } else if (event.key === "Enter") {
+    event.preventDefault();
+    const index = dashboardSearchActiveIndex >= 0 ? dashboardSearchActiveIndex : 0;
+    if (dashboardSearchMatches.length) activateDashboardSearchItem(dashboardSearchMatches[index]);
+    else toast("No matching dashboard menu found.", true);
+  } else if (event.key === "Escape") {
+    closeDashboardSearch(true);
+  }
+});
+
+dashboardSearch?.addEventListener("focus", () => {
+  const term = dashboardSearch.value.trim().toLowerCase();
+  if (term) {
+    filterDashboardMenu(term);
+    renderDashboardSearchResults(term);
+  }
+});
+
+document.addEventListener("click", event => {
+  if (!event.target.closest(".topbar-search") && dashboardSearchResults && !dashboardSearchResults.hidden) {
+    dashboardSearchResults.hidden = true;
+    dashboardSearch?.setAttribute("aria-expanded", "false");
+    dashboardSearch?.removeAttribute("aria-activedescendant");
+  }
+});
+
+function updateMobileBottomNav() {
+  const file = window.location.pathname.split("/").pop() || "dashboard.html";
+  const page = new URLSearchParams(window.location.search).get("page") || "overview";
+  const activeHref = file === "dashboard.html" && page === "overview"
+    ? "dashboard.html?page=overview"
+    : file;
+  document.querySelectorAll(".mobile-bottom-nav a").forEach(link => {
+    const target = link.getAttribute("href");
+    const active = target === activeHref || (file === "dashboard.html" && target === "dashboard.html?page=overview" && page === "overview");
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+}
+updateMobileBottomNav();
 
 startDashboard();
 </script>
