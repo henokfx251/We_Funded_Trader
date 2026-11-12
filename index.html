@@ -224,6 +224,78 @@ body .platform-item *,body .faq-item *{color:#000000!important;-webkit-text-fill
 
 
 
+
+<style id="wft-professional-homepage-v1">
+/* Professional prop-firm presentation: clean white, black and WFT blue. */
+:root{--wft-blue:#155eef;--wft-ink:#101828;--wft-muted:#475467;--wft-line:#e4eaf3;--wft-soft:#f5f8ff}
+html{scroll-padding-top:92px}
+body{background:#fff!important;color:var(--wft-ink)!important;font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif!important;line-height:1.65}
+header{background:rgba(255,255,255,.97)!important;border-bottom:1px solid var(--wft-line)!important;box-shadow:0 4px 18px rgba(16,24,40,.045)!important;backdrop-filter:blur(12px)}
+.navbar{min-height:76px}
+.logo,.logo span{color:var(--wft-blue)!important;font-weight:950;letter-spacing:.3px}
+.nav-links{gap:clamp(10px,1.35vw,20px);color:var(--wft-ink)!important}
+.nav-links a,.nav-links a:hover{color:var(--wft-ink)!important;font-weight:700}
+.nav-links a:hover{color:var(--wft-blue)!important}
+.btn{min-height:46px;border-radius:10px;font-weight:800;letter-spacing:.05px;box-shadow:none;transition:transform .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease}
+.btn-primary,.btn-primary:hover{background:var(--wft-blue)!important;color:#fff!important;border:1px solid var(--wft-blue)!important;box-shadow:0 7px 18px rgba(21,94,239,.16)!important}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(21,94,239,.22)!important}
+.btn-outline,.btn-outline:hover{background:#fff!important;color:var(--wft-ink)!important;border:1px solid #cbd5e1!important}
+.btn-outline:hover{border-color:var(--wft-blue)!important;color:var(--wft-blue)!important;background:#f7faff!important}
+.hero{padding:clamp(72px,9vw,112px) 0 76px!important;background:radial-gradient(ellipse at 12% 8%,rgba(21,94,239,.075),transparent 34%),linear-gradient(180deg,#fff 0%,#fbfcff 100%)!important;border-bottom:1px solid var(--wft-line)!important}
+.hero-content{max-width:850px}
+.hero-tag{background:#f1f6ff!important;border:1px solid #d8e5ff!important;color:#1749a6!important;box-shadow:none!important;font-size:11px;letter-spacing:1.15px}
+.hero h1,.hero h1 span{color:var(--wft-ink)!important;-webkit-text-fill-color:var(--wft-ink)!important;font-weight:900;letter-spacing:-2.5px}
+.hero h1 span{color:var(--wft-blue)!important;-webkit-text-fill-color:var(--wft-blue)!important}
+.hero-description{color:var(--wft-muted)!important;-webkit-text-fill-color:var(--wft-muted)!important;max-width:660px;font-size:clamp(15px,1.7vw,18px);line-height:1.8}
+.hero-trust{gap:10px;margin-top:30px}
+.hero-trust span{background:#fff!important;border:1px solid var(--wft-line)!important;color:#344054!important;box-shadow:0 3px 10px rgba(16,24,40,.025)!important}
+.hero-trust span:before{color:var(--wft-blue)!important}
+.promo-wrap{margin-top:28px}
+.promo{border:1px solid #d8e5ff!important;border-radius:18px!important;background:linear-gradient(110deg,#fff,#f6f9ff)!important;box-shadow:0 12px 30px rgba(16,24,40,.055)!important;padding:clamp(22px,3.5vw,34px)!important}
+.promo h2{font-size:clamp(23px,3vw,32px);letter-spacing:-.6px}
+.promo p{max-width:650px;line-height:1.75;color:var(--wft-muted)!important}
+.promo-side strong{font-size:clamp(34px,4vw,46px)}
+.section{padding:clamp(58px,7vw,82px) 0!important}
+.section-heading{margin-bottom:34px}
+.section-heading h2{color:var(--wft-ink)!important;font-weight:850;letter-spacing:-1px}
+.section-heading p{color:var(--wft-muted)!important;line-height:1.75}
+.eyebrow,.type-label,.account-price,.step-number{color:var(--wft-blue)!important}
+.card,.challenge-card,.account-card,.rule-card,.step-card,.platform-item,.faq-item{border:1px solid var(--wft-line)!important;border-radius:15px!important;background:#fff!important;box-shadow:0 5px 18px rgba(16,24,40,.035)!important}
+.card:hover{transform:translateY(-3px);border-color:#bfd2f7!important;box-shadow:0 14px 28px rgba(16,24,40,.075)!important}
+.card h3,.challenge-card h3,.account-card .account-size,.rule-card h3,.step-card h3{color:var(--wft-ink)!important}
+.card p,.challenge-card p,.rule-card p,.step-card p{color:var(--wft-muted)!important}
+.challenge-card.featured,.account-card.featured{background:#f7f9ff!important;border-color:#b9cdf5!important}
+.challenge-card li,.reward-points li{color:#344054!important;border-color:#edf0f5!important}
+.challenge-card li:before,.reward-points li:before{color:var(--wft-blue)!important}
+.account-card .account-price,.reward-highlight strong,.promo-side strong{color:var(--wft-blue)!important}
+.reward-section{background:#f7f9fd!important}
+.reward-box{border:1px solid var(--wft-line)!important;border-radius:20px!important;box-shadow:0 10px 28px rgba(16,24,40,.05)!important}
+.reward-highlight{background:#f7f9ff!important;border:1px solid #dce6f8!important}
+.rule-card .rule-icon{background:#edf3ff!important;color:var(--wft-blue)!important;border-radius:12px}
+.final-cta{background:linear-gradient(135deg,#f3f7ff,#fff)!important;border:1px solid #dce6f8!important;border-radius:20px!important;box-shadow:0 10px 28px rgba(16,24,40,.045)!important}
+.final-cta h2{color:var(--wft-ink)!important}
+.final-cta p{color:var(--wft-muted)!important}
+.faq-item summary{color:var(--wft-ink)!important}
+.faq-item p{color:var(--wft-muted)!important;line-height:1.75}
+footer{background:#fff!important;border-top:1px solid var(--wft-line)!important}
+.footer-brand p,.footer-col a,.footer-bottom{color:var(--wft-muted)!important}
+.footer-col h4{color:var(--wft-ink)!important}
+.footer-col a:hover{color:var(--wft-blue)!important}
+:where(a,button,input,select,textarea,summary):focus-visible{outline:3px solid rgba(21,94,239,.35)!important;outline-offset:3px}
+@media(max-width:900px){.nav-links{gap:10px}.nav-links a{font-size:11px}.navbar{gap:10px}}
+@media(max-width:700px){
+ .navbar{min-height:66px}
+ .nav-links{background:#fff!important;border-top:1px solid var(--wft-line)!important;border-bottom:1px solid var(--wft-line)!important;box-shadow:0 14px 22px rgba(16,24,40,.07)}
+ .nav-links a{background:#fff!important;color:var(--wft-ink)!important;border-color:#edf0f5!important}
+ .hero{padding:62px 0 54px!important}
+ .hero h1{letter-spacing:-1.5px!important}
+ .hero-trust{justify-content:center}
+ .promo{gap:18px}
+}
+@media(max-width:480px){.section{padding:54px 0!important}.hero-buttons .btn{width:100%}.card{padding:21px}.footer-grid{gap:22px}}
+@media(prefers-reduced-motion:reduce){.btn,.card{transition:none!important}}
+</style>
+
 </head>
 
 <body>
