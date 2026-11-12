@@ -299,3 +299,13 @@ body a:not(.btn):not(.button):not(.nav-btn):not(.nav-link){color:#155eef!importa
 body :is(header,.topbar,.top-bar,.navbar,.site-header,.app-header,.dashboard-header,.top,.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav,.nav-links,.mobile-bottom-nav) a{color:#ffffff!important;-webkit-text-fill-color:#ffffff!important}
 body :is(.nav-btn.active,.nav-link.active,.sidebar a.active,.nav-links a.active,[aria-current="page"]){background:#ffffff!important;color:#000000!important;-webkit-text-fill-color:#000000!important}
 body :is(.nav-btn.active,.nav-link.active,.sidebar a.active,.nav-links a.active,[aria-current="page"]) *{color:#000000!important;-webkit-text-fill-color:#000000!important}
+
+/* Restore readable white lettering only on explicitly blue shared surfaces. */
+body :is(.hero,.hero-section,.challenge-hero,.blue-section,.blue-banner,.blue-card,.blue-panel){
+ background:#155eef!important;background-color:#155eef!important;color:#ffffff!important;
+}
+body :is(.hero,.hero-section,.challenge-hero,.blue-section,.blue-banner,.blue-card,.blue-panel) *{
+ color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;
+}
+body :is(.hero-tag,.hero-trust span){background:#ffffff!important;color:#000000!important}
+body :is(.hero-tag,.hero-trust span) *{color:#000000!important;-webkit-text-fill-color:#000000!important}
