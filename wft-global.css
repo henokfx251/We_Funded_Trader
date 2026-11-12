@@ -693,3 +693,76 @@ body :is(input,select,textarea){
 }
 body :is(input,select,textarea)::placeholder{color:#64748b!important}
 body a:not(.btn):not(.button):not(.nav-btn):not(.nav-link){color:#111827!important}
+
+
+/* WFT v31 — ONLY BLUE, WHITE AND BLACK. NO OTHER UI COLORS. */
+:root{
+ color-scheme:light!important;
+ --wft-blue:#155eef!important;
+ --wft-blue-light:#2875ff!important;
+ --wft-white:#ffffff!important;
+ --wft-black:#000000!important;
+ --wft-page:#ffffff!important;
+ --wft-panel:#ffffff!important;
+ --wft-text:#000000!important;
+ --wft-muted:#000000!important;
+ --wft-border:#155eef!important;
+}
+html,body{
+ background:#ffffff!important;
+ background-color:#ffffff!important;
+ background-image:none!important;
+ color:#000000!important;
+}
+body,body *{
+ border-color:#155eef!important;
+}
+body :is(main,section,article,.container,.wrap,.content,.main,.page,.page-content,.main-content,.dashboard-content,.layout,.content-area,.workspace,.panel,.card,.box,.modal,.modal-content,.dropdown-menu,.table-wrap,.form-card,.stat-card,.metric-card,.challenge-card,.account-card,.order-card,.reward-card,.settings-card,.payout-card,.kyc-card,.activity-card,.faq-item,.feature-card,.program-card,.wallet-card,.certificate-paper,.platform-box,.agreement-area,.promo,.reward-box,.welcome,.dashboard-welcome,footer,.footer,.site-footer,table,thead,tbody,tr,td,th){
+ background:#ffffff!important;
+ background-color:#ffffff!important;
+ background-image:none!important;
+ color:#000000!important;
+}
+body :is(h1,h2,h3,h4,h5,h6,p,span,small,strong,b,label,li,div,a,th,td,legend,summary,.muted,.description,.subtitle,.helper-text,.text-muted,.hint,.caption,.secondary-text,.nav-label,.brand,.logo){
+ color:#000000!important;
+}
+/* Blue panels and navigation: all text inside is white */
+body :is(header,.topbar,.top-bar,.navbar,.site-header,.app-header,.dashboard-header,.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav,.hero,.hero-section,.challenge-hero,.final-cta,.blue-section,.blue-banner,.blue-card,.blue-panel){
+ background:#155eef!important;
+ background-color:#155eef!important;
+ background-image:none!important;
+ color:#ffffff!important;
+}
+body :is(header,.topbar,.top-bar,.navbar,.site-header,.app-header,.dashboard-header,.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav,.hero,.hero-section,.challenge-hero,.final-cta,.blue-section,.blue-banner,.blue-card,.blue-panel) *{
+ color:#ffffff!important;
+}
+body :is(button,.btn,.button,.btn-primary,.btn-primary-sm,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,[type=submit]){
+ background:#155eef!important;
+ background-color:#155eef!important;
+ background-image:none!important;
+ color:#ffffff!important;
+ border-color:#155eef!important;
+}
+body :is(.btn-outline,.btn-secondary,.secondary,.button-secondary,.outline-btn){
+ background:#ffffff!important;
+ background-color:#ffffff!important;
+ background-image:none!important;
+ color:#000000!important;
+ border-color:#155eef!important;
+}
+body :is(input,select,textarea){
+ background:#ffffff!important;
+ background-color:#ffffff!important;
+ background-image:none!important;
+ color:#000000!important;
+ border-color:#155eef!important;
+}
+body :is(input,select,textarea)::placeholder{color:#000000!important;opacity:1}
+body a:not(.btn):not(.button):not(.nav-btn):not(.nav-link){color:#000000!important}
+body :is(.success,.error,.warning,.danger,.positive,.negative,.status,.badge,.pill,.tag,.alert,.toast,.notification,.profit,.loss,.green,.red,.yellow,.orange,.purple){
+ background:#ffffff!important;
+ background-image:none!important;
+ color:#000000!important;
+ border-color:#155eef!important;
+}
+body :is(svg,[class*="icon"],[class*="fa-"],i){color:inherit!important}
