@@ -257,3 +257,45 @@ body .mobile-bottom-nav a:focus-visible{outline:2px solid #155eef!important;outl
   html{scroll-behavior:auto!important}
   body *,body *::before,body *::after{transition:none!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
 }
+
+ 
+/* FINAL GLOBAL TEXT-CONTRAST FIX v36
+   White content surfaces use black text; blue controls retain white text.
+   This is deliberately scoped so icons and existing page behavior remain intact. */
+html,body{background:#ffffff!important;color:#000000!important;color-scheme:light!important}
+body :is(main,.main,.content,.page,.section,.page-content,.main-content,.dashboard-content,.content-area,.workspace,article,section,footer,.footer,.site-footer){
+ background-color:#ffffff!important;background-image:none!important;color:#000000!important;
+}
+body :is(h1,h2,h3,h4,h5,h6,p,li,small,label,legend,summary,strong,b,span,div,td,th,dt,dd,figcaption,caption,.muted,.text-muted,.description,.subtitle,.helper-text,.hint,.caption,.loading-text){
+ color:#000000!important;-webkit-text-fill-color:#000000!important;
+}
+body :is(.card,.panel,.box,.modal,.modal-content,.dropdown-menu,.form-card,.auth-card,.stat-card,.metric-card,.info-card,.content-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.reward-task-card,.settings-card,.payout-card,.kyc-card,.activity-card,.faq-item,.certificate-paper,.platform-box,.agreement-area,.table-wrap,.risk-alert-panel,.risk-alert-item,.step-card,.rule-card,.platform-item,.ticket,.stat,.empty,.empty-state,.toast,.notice,.alert){
+ background:#ffffff!important;background-color:#ffffff!important;background-image:none!important;color:#000000!important;
+}
+body :is(.card,.panel,.box,.modal,.modal-content,.dropdown-menu,.form-card,.auth-card,.stat-card,.metric-card,.info-card,.content-card,.table-card,.section-card,.feature-card,.challenge-card,.program-card,.program,.wallet-card,.account-card,.order-card,.reward-card,.reward-task-card,.settings-card,.payout-card,.kyc-card,.activity-card,.faq-item,.certificate-paper,.platform-box,.agreement-area,.table-wrap,.risk-alert-panel,.risk-alert-item,.step-card,.rule-card,.platform-item,.ticket,.stat,.empty,.empty-state,.toast,.notice,.alert) *{
+ color:#000000!important;-webkit-text-fill-color:#000000!important;
+}
+body :is(header,.topbar,.top-bar,.navbar,.site-header,.app-header,.dashboard-header,.top,.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav,.nav-links,.mobile-bottom-nav){
+ background:#155eef!important;background-color:#155eef!important;color:#ffffff!important;
+}
+body :is(header,.topbar,.top-bar,.navbar,.site-header,.app-header,.dashboard-header,.top,.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav,.nav-links,.mobile-bottom-nav) *{
+ color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;
+}
+body :is(button,.btn,.button,.submit,.btn-primary,.btn-primary-sm,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,[type=submit],[type=button]){
+ background:#155eef!important;color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;
+}
+body :is(button,.btn,.button,.submit,.btn-primary,.btn-primary-sm,.primary-btn,.button-primary,.cta-button,.buy-button,.action-primary,[type=submit],[type=button]) *{
+ color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;
+}
+body :is(.btn-outline,.btn-secondary,.secondary,.secondary-btn,.button-secondary,.outline-btn,.btn.gray,.btn-white,.white-button){
+ background:#ffffff!important;color:#000000!important;-webkit-text-fill-color:#000000!important;
+}
+body :is(.btn-outline,.btn-secondary,.secondary,.secondary-btn,.button-secondary,.outline-btn,.btn.gray,.btn-white,.white-button) *{
+ color:#000000!important;-webkit-text-fill-color:#000000!important;
+}
+body :is(input,select,textarea){background:#ffffff!important;color:#000000!important;-webkit-text-fill-color:#000000!important}
+body :is(input,select,textarea)::placeholder{color:#000000!important;opacity:.7}
+body a:not(.btn):not(.button):not(.nav-btn):not(.nav-link){color:#155eef!important;-webkit-text-fill-color:#155eef!important}
+body :is(header,.topbar,.top-bar,.navbar,.site-header,.app-header,.dashboard-header,.top,.sidebar,.dashboard-sidebar,.app-sidebar,.side-nav,.sidenav,.nav-links,.mobile-bottom-nav) a{color:#ffffff!important;-webkit-text-fill-color:#ffffff!important}
+body :is(.nav-btn.active,.nav-link.active,.sidebar a.active,.nav-links a.active,[aria-current="page"]){background:#ffffff!important;color:#000000!important;-webkit-text-fill-color:#000000!important}
+body :is(.nav-btn.active,.nav-link.active,.sidebar a.active,.nav-links a.active,[aria-current="page"]) *{color:#000000!important;-webkit-text-fill-color:#000000!important}
