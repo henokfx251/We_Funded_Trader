@@ -191,6 +191,37 @@ body:has(.chartbox) :is(.charttools button.active,.tab.active,.view-tab.active,.
   color:#ffffff!important;
 }
 
+
+/* Page-specific surfaces and inline legacy colors normalized */
+body :is(.welcome,.dashboard-welcome,.payout-welcome,.promo,.reward-box,.reward-highlight,.certificate-meta,.rule,.disclaimer,.demo-quote,.confirm-box,.confirm-item,.trade-ticket,.terminal-view,.accountbar,.statusline,.simtag,.metric,.chart-screen-title,.side,.trade-symbol-pill,.risk-alert-copy,.risk-alert-empty){
+  background:#ffffff!important;
+  background-color:#ffffff!important;
+  background-image:none!important;
+  color:#000000!important;
+  border-color:#155eef!important;
+  box-shadow:none!important;
+}
+body :is(.welcome,.dashboard-welcome,.payout-welcome,.promo,.reward-box,.reward-highlight,.certificate-meta,.rule,.disclaimer,.demo-quote,.confirm-box,.confirm-item,.trade-ticket,.terminal-view,.accountbar,.statusline,.simtag,.metric,.chart-screen-title,.side,.trade-symbol-pill,.risk-alert-copy,.risk-alert-empty) *{
+  color:#000000!important;
+}
+body #deniedText{color:#000000!important}
+body .spinner{border-color:#155eef!important;border-top-color:#000000!important}
+body #payoutDemoNotice,body #payoutDemoBanner{
+  background:#ffffff!important;
+  color:#000000!important;
+  border-color:#155eef!important;
+}
+body [style*="background:#0a1322"],body [style*="background: #0a1322"],
+body [style*="background:#101d30"],body [style*="background: #101d30"]{
+  background:#ffffff!important;
+  background-color:#ffffff!important;
+  color:#000000!important;
+}
+body [style*="background:#0a1322"] *,body [style*="background: #0a1322"] *,
+body [style*="background:#101d30"] *,body [style*="background: #101d30"] *{
+  color:#000000!important;
+}
+
 /* Responsive safeguards — geometry stays page-specific */
 @media(max-width:760px){
   body :is(.content,main,.main,.page-content,.main-content){max-width:100%!important}
