@@ -192,6 +192,53 @@ footer{background:#ffffff!important;background-image:none!important;color:#00000
 </style>
 
 <link rel="stylesheet" href="wft-global.css?v=35">
+
+<style id="wft-homepage-contrast-fix">
+/* Contrast contract: every WFT blue surface has white readable text. */
+body header,body header *,body .hero,body .hero *,
+body .final-cta,body .final-cta *,
+body .btn-primary,body .btn-primary *,
+body .menu-toggle[aria-expanded="true"]{
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+}
+body header .btn-outline,body header .btn-outline *,
+body .hero .btn-outline,body .hero .btn-outline *,
+body .final-cta .btn-outline,body .final-cta .btn-outline *{
+  background:#ffffff!important;color:#000000!important;
+  -webkit-text-fill-color:#000000!important;border-color:#155eef!important;
+}
+body .hero .hero-tag,body .hero .hero-tag *,
+body .hero .hero-trust span,body .hero .hero-trust span *{
+  background:#ffffff!important;color:#000000!important;
+  -webkit-text-fill-color:#000000!important;
+}
+body .hero .hero-tag:before{background:#155eef!important}
+body .promo,body .promo *,body .card,body .card *,
+body .reward-box,body .reward-box *,body .reward-highlight,
+body .reward-highlight *,body .platform-item,body .platform-item *,
+body .faq-item,body .faq-item *,body footer,body footer *{
+  color:#000000!important;-webkit-text-fill-color:#000000!important;
+}
+body .promo,body .card,body .reward-box,body .reward-highlight,
+body .platform-item,body .faq-item,body footer{
+  background-color:#ffffff!important;
+}
+body .promo-label,body .promo-code,body .promo-side strong,
+body .eyebrow:not(.hero .eyebrow),body .account-price,
+body .type-label,body .step-number{color:#155eef!important;-webkit-text-fill-color:#155eef!important}
+body .final-cta .eyebrow,body .final-cta h2,body .final-cta p,
+body .final-cta .gold{color:#ffffff!important;-webkit-text-fill-color:#ffffff!important}
+body .final-cta .btn-outline,body .final-cta .btn-outline *{
+  background:#ffffff!important;color:#000000!important;-webkit-text-fill-color:#000000!important;
+}
+@media(max-width:700px){
+  body header .nav-links,body header .nav-links a,body header .nav-links a *{
+    background:#155eef!important;color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;
+  }
+}
+</style>
+
 </head>
 
 <body>
