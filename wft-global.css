@@ -1,98 +1,27 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-/* WFT CLEAN TRADING DESIGN v40
-   Simple white surfaces, black text, blue actions.
-   Shared visual styles only; page layout and scripts stay in each HTML file. */
-:root{
-  color-scheme:light;
-  --wft-blue:#155eef;
-  --wft-blue-hover:#104fc7;
-  --wft-black:#111827;
-  --wft-muted:#64748b;
-  --wft-border:#e5e7eb;
-  --wft-white:#ffffff;
-}
+/* WFT CLEAN SIMPLE DESIGN v42 */
+:root{color-scheme:light;--wft-blue:#155eef;--wft-blue-hover:#104fc7;--wft-black:#111827;--wft-muted:#64748b;--wft-border:#e5e7eb;--wft-white:#fff}
 *{box-sizing:border-box}
-html{background:#fff!important;scroll-behavior:smooth}
-body{
-  margin:0;
-  background:#fff!important;
-  color:var(--wft-black)!important;
-  font-family:Inter,Arial,sans-serif!important;
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
-}
-body *{
-  text-shadow:none!important;
-  box-shadow:none!important;
-  background-image:none!important;
-}
-body :is(header,nav,main,section,article,aside,footer,form,
-  .container,.wrapper,.content,.card,.panel,.modal,.dropdown-menu,
-  .sidebar,.topbar,.navbar,.hero,.hero-section,.challenge-hero,
-  .auth-card,.checkout-card,.dashboard-card,.stat-card,.table-wrap,
-  .table-container,.account-card,.info-card,.feature-card,.price-card){
-  background-color:#fff!important;
-  color:var(--wft-black)!important;
-}
-body :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,b,li,td,th,legend){
-  color:var(--wft-black);
-}
-body :is(p,small,.muted,.subtitle,.description,.text-muted,.helper-text){
-  color:var(--wft-muted);
-}
-body a:not(.btn):not(.button):not([role="button"]){
-  color:var(--wft-blue)!important;
-  text-decoration:none;
-}
+html,body{min-height:100%;margin:0;background:#fff!important;color:var(--wft-black)!important;font-family:Inter,Arial,sans-serif!important;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{padding-bottom:0!important}
+body *{text-shadow:none!important;box-shadow:none!important;background-image:none!important;backdrop-filter:none!important}
+body :is(header,nav,main,section,article,aside,footer,form,.container,.wrapper,.content,.card,.panel,.modal,.dropdown-menu,.sidebar,.topbar,.navbar,.hero,.hero-section,.challenge-hero,.auth-card,.checkout-card,.dashboard-card,.stat-card,.table-wrap,.table-container,.account-card,.info-card,.feature-card,.price-card,.promo,.promo-banner,.welcome-card,.summary-card,.activity-card,.reward-card,.payout-card){background-color:#fff!important;color:var(--wft-black)!important}
+body :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,b,li,td,th,legend){color:var(--wft-black)}
+body :is(p,small,.muted,.subtitle,.description,.text-muted,.helper-text,.hint){color:var(--wft-muted)}
+body a:not(.btn):not(.button):not([role="button"]){color:var(--wft-blue)!important;text-decoration:none}
 body a:not(.btn):not(.button):not([role="button"]):hover{text-decoration:underline}
-body :is(button,input[type="submit"],input[type="button"],input[type="reset"],
-  .btn,.button,.btn-primary,.primary-btn,.primary-button,.cta-button,
-  .buy-button,.action-primary,[role="button"]){
-  background:var(--wft-blue)!important;
-  background-color:var(--wft-blue)!important;
-  color:#fff!important;
-  border:1px solid var(--wft-blue)!important;
-  border-radius:6px!important;
-  box-shadow:none!important;
-  text-shadow:none!important;
-  font-weight:600;
-  cursor:pointer;
-}
-body :is(button,input[type="submit"],input[type="button"],.btn,.button,
-  .btn-primary,.primary-btn,.primary-button,.cta-button,.buy-button,[role="button"]) *{
-  color:#fff!important;
-}
-body :is(button,.btn,.button,.btn-primary,.primary-btn,.primary-button,
-  .cta-button,.buy-button,[role="button"]):hover{
-  background:var(--wft-blue-hover)!important;
-  background-color:var(--wft-blue-hover)!important;
-  color:#fff!important;
-}
-body :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){
-  background:#fff!important;
-  color:var(--wft-black)!important;
-  border:1px solid #cbd5e1!important;
-  border-radius:6px!important;
-  box-shadow:none!important;
-}
+body :is(button,input[type="submit"],input[type="button"],input[type="reset"],.btn,.button,.btn-primary,.primary-btn,.primary-button,.cta-button,.buy-button,.action-primary,[role="button"]){background:var(--wft-blue)!important;background-color:var(--wft-blue)!important;color:#fff!important;border:1px solid var(--wft-blue)!important;border-radius:6px!important;box-shadow:none!important;text-shadow:none!important;font-weight:600;cursor:pointer}
+body :is(button,input[type="submit"],input[type="button"],.btn,.button,.btn-primary,.primary-btn,.primary-button,.cta-button,.buy-button,[role="button"])*{color:#fff!important}
+body :is(button,.btn,.button,.btn-primary,.primary-btn,.primary-button,.cta-button,.buy-button,[role="button"]):hover{background:var(--wft-blue-hover)!important;background-color:var(--wft-blue-hover)!important;color:#fff!important}
+body :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){background:#fff!important;color:var(--wft-black)!important;border:1px solid #cbd5e1!important;border-radius:6px!important;box-shadow:none!important}
 body :is(input,textarea)::placeholder{color:#94a3b8!important;opacity:1}
-body :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,
-  .outline-btn,.white-button){
-  background:#fff!important;
-  color:var(--wft-blue)!important;
-  border:1px solid var(--wft-blue)!important;
-}
-body :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,
-  .outline-btn,.white-button) *{color:var(--wft-blue)!important}
+body :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn,.white-button){background:#fff!important;color:var(--wft-blue)!important;border:1px solid var(--wft-blue)!important}
+body :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn,.white-button)*{color:var(--wft-blue)!important}
+body :is(.card,.panel,.stat-card,.feature-card,.price-card,.account-card,.info-card,.auth-card,.checkout-card,.promo,.promo-banner,.summary-card,.activity-card,.reward-card,.payout-card){border:1px solid var(--wft-border)!important;border-radius:8px!important}
+body :is(.hero:before,.hero:after,.hero-section:before,.hero-section:after,.decoration,.decorative,.glow,.orb,.background-orb){display:none!important;content:none!important}
+body .mobile-bottom-nav{display:none!important}
 body :is(table,th,td){border-color:var(--wft-border)}
-body :is(.card,.panel,.stat-card,.feature-card,.price-card,.account-card,
-  .info-card,.auth-card,.checkout-card){
-  border:1px solid var(--wft-border)!important;
-  border-radius:8px!important;
-}
 :focus-visible{outline:2px solid var(--wft-blue)!important;outline-offset:2px}
 img,video,iframe{max-width:100%}
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}
-}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
