@@ -2612,14 +2612,16 @@ async function loadAll() {
     ["Rewards", loadRewards]
   ];
 
-  for (const [name, fn] of jobs) {
+  // These sections use independent Supabase reads. Load them concurrently
+  // so the dashboard does not wait for nine sequential network round-trips.
+  await Promise.all(jobs.map(async ([name, fn]) => {
     try {
       await fn();
     } catch (err) {
       console.error(name + " loading error:", err);
       toast(name + ": " + err.message, true);
     }
-  }
+  }));
 }
 
 $("logoutBtn")?.addEventListener("click", async () => {
