@@ -95,6 +95,16 @@ th{color:#64748b!important}td{color:#34445f!important;border-color:#e5ebf3!impor
 <link rel="stylesheet" href="wft-global.css?v=36">
 <style id="wft-tradingview-pro-theme-v43">
 /* WFT TradingView-style terminal skin — scoped to this page only */
+/* Keep the embedded TradingView iframe and its top toolbar inside a full visible viewport */
+#chart{position:relative!important;overflow:visible!important;isolation:isolate}
+#tv_chart_container{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:100%!important;z-index:2!important}
+#tv_chart_container iframe{display:block!important;visibility:visible!important;width:100%!important;height:100%!important;min-height:100%!important;border:0!important}
+.chartpanel.full-chart-panel{overflow:visible!important}
+@media(max-width:760px){
+ .chartbox{height:calc(100dvh - 160px)!important;min-height:560px!important}
+ #tv_chart_container{min-width:320px!important}
+}
+
 :root{color-scheme:dark;--bg:#0b0e11;--panel:#131722;--panel2:#1e222d;--line:#2a2e39;--text:#d1d4dc;--muted:#787b86;--gold:#2962ff;--gold2:#d1d4dc;--blue:#2962ff}
 html,body{min-height:100%;background:#0b0e11!important;color:#d1d4dc!important}
 body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
