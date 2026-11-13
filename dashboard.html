@@ -841,6 +841,47 @@ body .mobile-bottom-nav a[aria-current="page"]{border-radius:9px;background:#eef
 body .mobile-bottom-nav a:active{background:#e5efff!important}
 @media(min-width:761px){body .mobile-bottom-nav{display:none!important}}
 </style>
+
+<style id="wft-dashboard-overview-clean-v41">
+/* Minimal overview layout only */
+#page-overview .dashboard-welcome{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:4px 0 18px;margin:0 0 22px;border:0;border-bottom:1px solid #e5e7eb;
+  border-radius:0;background:#fff!important;box-shadow:none!important;
+}
+#page-overview .dashboard-welcome h1{margin:0 0 5px;font-size:25px;font-weight:650;color:#111827}
+#page-overview .dashboard-welcome p{margin:0;font-size:14px;color:#64748b}
+#page-overview .welcome-actions{display:flex;gap:8px}
+#page-overview .stats-grid.overview-stats{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 22px;
+}
+#page-overview .stat-card{
+  min-height:0;padding:17px 18px;margin:0;border:1px solid #e5e7eb!important;
+  border-radius:8px!important;background:#fff!important;box-shadow:none!important;
+  position:static;overflow:visible;
+}
+#page-overview .stat-card:after{display:none!important;content:none!important}
+#page-overview .stat-card>span{display:block;font-size:12px;color:#64748b!important}
+#page-overview .stat-card h2{margin:8px 0 0;font-size:23px;font-weight:650;color:#111827!important}
+#page-overview .overview-profit{display:block;margin-top:8px;font-size:11px;color:#64748b!important}
+#page-overview .overview-profit strong{color:#155eef!important;font-weight:650}
+#page-overview .overview-panels{gap:14px}
+#page-overview .overview-panels .panel{
+  min-width:0;padding:18px;margin:0;border:1px solid #e5e7eb!important;
+  border-radius:8px!important;background:#fff!important;box-shadow:none!important;
+}
+#page-overview .overview-panels .panel h3{margin:0 0 13px;font-size:15px;font-weight:650;color:#111827}
+#page-overview .overview-panels .empty{background:#fff!important;border:1px dashed #d1d5db;color:#64748b;padding:18px}
+@media(max-width:900px){#page-overview .stats-grid.overview-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){
+  #page-overview .dashboard-welcome{align-items:flex-start;flex-direction:column}
+  #page-overview .dashboard-welcome h1{font-size:21px}
+  #page-overview .welcome-actions .btn{width:auto}
+  #page-overview .overview-panels{grid-template-columns:1fr}
+  #page-overview .stat-card{padding:14px}
+  #page-overview .stat-card h2{font-size:20px}
+}
+</style>
 </head>
 
 <body>
@@ -894,36 +935,37 @@ body .mobile-bottom-nav a:active{background:#e5efff!important}
 <section class="page active" id="page-overview">
   <div class="welcome dashboard-welcome">
     <div>
-      <div class="welcome-kicker">WE FUNDED TRADER · CLIENT PORTAL</div>
-      <h1>Welcome back, <span class="gold-text" id="welcomeName">Trader</span></h1>
-      <p class="muted">Your trading journey, accounts and performance — all in one place.</p>
+      <h1>Welcome back, <span id="welcomeName">Trader</span></h1>
+      <p class="muted">Your trading accounts at a glance.</p>
     </div>
     <div class="welcome-actions">
-      <a class="btn" href="challenges.html">＋ Buy Challenge</a>
-      <a class="btn btn-secondary" href="virtual-terminal.html">Open Terminal ↗</a>
+      <a class="btn" href="challenges.html">Buy Challenge</a>
     </div>
   </div>
 
-  <div class="wft-promo-strip"><div class="wft-promo-copy"><span class="wft-promo-kicker">YOUR NEXT MILESTONE</span><strong>Trade with a plan. Grow with WFT.</strong><small>Manage your funded journey, track progress and stay on top of your account.</small></div><a class="btn" href="challenges.html">Explore Accounts →</a></div>
-  <div class="stats-grid">
-    <div class="stat-card"><span>Total Accounts</span><h2 id="statAccounts">0</h2><small>All account records</small></div>
-    <div class="stat-card"><span>Active Accounts</span><h2 id="statActive">0</h2><small>Currently tradable</small></div>
-    <div class="stat-card balance-stat"><span>Total Balance</span><h2 id="statBalance">$0.00</h2><small>Failed accounts excluded</small></div>
-    <div class="stat-card"><span>Total Equity</span><h2 id="statEquity">$0.00</h2><small>Active account equity</small></div>
-    <div class="stat-card"><span>Total Profit</span><h2 id="statProfit">$0.00</h2><small>All account results</small></div>
+  <div class="stats-grid overview-stats">
+    <div class="stat-card">
+      <span>Total Accounts</span>
+      <h2 id="statAccounts">0</h2>
+    </div>
+    <div class="stat-card">
+      <span>Active Accounts</span>
+      <h2 id="statActive">0</h2>
+    </div>
+    <div class="stat-card">
+      <span>Total Balance</span>
+      <h2 id="statBalance">$0.00</h2>
+      <small class="overview-profit">Total Profit: <strong id="statProfit">$0.00</strong></small>
+    </div>
+    <div class="stat-card">
+      <span>Total Equity</span>
+      <h2 id="statEquity">$0.00</h2>
+    </div>
   </div>
 
-  <div class="wft-shortcuts">
-    <a class="wft-shortcut" href="wallet.html"><span class="shortcut-icon">◉</span><span><strong>WFT Wallet</strong><small>Balance & transactions</small></span><span class="shortcut-arrow">→</span></a>
-    <a class="wft-shortcut" href="customer-payout.html"><span class="shortcut-icon">↗</span><span><strong>Payout Center</strong><small>Request & track payouts</small></span><span class="shortcut-arrow">→</span></a>
-    <a class="wft-shortcut" href="customer-rewards.html"><span class="shortcut-icon">★</span><span><strong>Rewards</strong><small>Earn wallet credits</small></span><span class="shortcut-arrow">→</span></a>
-    <a class="wft-shortcut" href="customer-certificate.html"><span class="shortcut-icon">♧</span><span><strong>Certificates</strong><small>Your achievements</small></span><span class="shortcut-arrow">→</span></a>
-    <a class="wft-shortcut" href="giveaway.html"><span class="shortcut-icon">🎁</span><span><strong>Giveaways</strong><small>Join WFT campaigns</small></span><span class="shortcut-arrow">→</span></a>
-    <a class="wft-shortcut" href="customer-affiliate.html"><span class="shortcut-icon">♧</span><span><strong>Affiliate</strong><small>Referral commissions</small></span><span class="shortcut-arrow">→</span></a>
-  </div>
-  <div class="grid-2">
+  <div class="grid-2 overview-panels">
     <div class="panel">
-      <h3>Account Summary</h3>
+      <h3>Trading Accounts</h3>
       <div id="overviewAccounts" class="empty">Loading accounts...</div>
     </div>
     <div class="panel">
@@ -931,12 +973,7 @@ body .mobile-bottom-nav a:active{background:#e5efff!important}
       <div id="overviewOrders" class="empty">Loading orders...</div>
     </div>
   </div>
-  <div class="panel">
-    <h3>Recent Activity</h3>
-    <div id="overviewActivity" class="empty">Loading activity...</div>
-  </div>
 </section>
-
 
 <!-- CHALLENGE -->
 <section class="page" id="page-challenge">
