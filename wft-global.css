@@ -320,3 +320,66 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
 :where(button,.btn,[type=button],[type=submit]){transition:background-color .16s ease,border-color .16s ease,box-shadow .16s ease,transform .16s ease}
 :where(img,video,iframe){max-width:100%}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}body *,body *:before,body *:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+
+
+/* =========================================================
+   WFT UNIFIED WHITE / BLACK / BLUE THEME v39
+   Visual-only overrides. No page scripts or business logic.
+   ========================================================= */
+html, html body {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #111111 !important;
+}
+html body * {
+  color: #111111 !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+html body :is(header, nav, main, section, article, aside, footer, form,
+  .container, .wrapper, .content, .card, .panel, .modal, .dropdown-menu,
+  .sidebar, .topbar, .navbar, .hero, .challenge-hero, .auth-card,
+  .checkout-card, .dashboard-card, .stat-card, .table-wrap, .table-container) {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #111111 !important;
+}
+html body :is(button, input[type="submit"], input[type="button"],
+  input[type="reset"], .btn, [class*="btn-"], [class*="-button"],
+  [role="button"], a.btn, a.button, a.cta, .primary-btn, .primary-button) {
+  background: #155eef !important;
+  background-color: #155eef !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  border-color: #155eef !important;
+}
+html body :is(button, input[type="submit"], input[type="button"],
+  input[type="reset"], .btn, [class*="btn-"], [class*="-button"],
+  [role="button"], a.btn, a.button, a.cta, .primary-btn, .primary-button) * {
+  color: #ffffff !important;
+}
+html body :is(button, input[type="submit"], input[type="button"],
+  .btn, [class*="btn-"], [class*="-button"], [role="button"],
+  a.btn, a.button, a.cta):hover {
+  background: #0b4bd4 !important;
+  background-color: #0b4bd4 !important;
+  color: #ffffff !important;
+}
+html body :is(input:not([type="checkbox"]):not([type="radio"]),
+  select, textarea) {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border-color: #cbd5e1 !important;
+}
+html body input::placeholder,
+html body textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+html body a:not(.btn):not(.button):not(.cta) {
+  color: #111111 !important;
+}
+html body :is(svg, i, .icon) {
+  color: inherit;
+}
