@@ -92,7 +92,7 @@ th{color:#64748b!important}td{color:#34445f!important;border-color:#e5ebf3!impor
 </style>
 
 
-<link rel="stylesheet" href="wft-global.css?v=36">
+<link rel="stylesheet" href="wft-global.css?v=42">
 <style id="wft-tradingview-pro-theme-v43">
 /* WFT TradingView-style terminal skin — scoped to this page only */
 .wft-timeframe-bar{display:flex;align-items:center;gap:5px;overflow-x:auto;white-space:nowrap;padding:7px 2px 9px;border-bottom:1px solid #2a2e39;margin-bottom:7px;scrollbar-width:thin}.wft-timeframe-bar span{font-size:9px;font-weight:800;letter-spacing:.08em;color:#787b86;margin-right:4px;flex:0 0 auto}.wft-timeframe-bar button{flex:0 0 auto;min-width:34px;padding:7px 9px;border:1px solid #363a45;border-radius:5px;background:#1e222d;color:#b2b5be;font-size:10px;font-weight:800}.wft-timeframe-bar button.active{background:#2962ff;color:#fff;border-color:#2962ff}.wft-timeframe-bar button:active{transform:scale(.97)}
@@ -239,10 +239,15 @@ function setWftChartInterval(interval,button){
  try{
   const nextUrl=new URL(frame.src);
   nextUrl.searchParams.set("interval",interval);
-  frame.src=nextUrl.toString();
-  document.querySelectorAll("[data-wft-interval]").forEach(b=>b.classList.toggle("active",b===button));
   setChartStatus("Changing chart timeframe…");
-  frame.addEventListener("load",()=>setChartStatus("TradingView chart ready · Timeframe updated",true),{once:true});
+  // Register the load handler before changing src so a fast reload cannot
+  // finish before the ready state is observed.
+  frame.addEventListener("load",()=>{
+   chartReady=true;
+   document.querySelectorAll("[data-wft-interval]").forEach(b=>b.classList.toggle("active",b===button));
+   setChartStatus("TradingView chart ready · Timeframe updated",true);
+  },{once:true});
+  frame.src=nextUrl.toString();
  }catch(e){setChartStatus("Could not change timeframe. Please refresh the chart.");}
 }
 document.querySelectorAll("[data-wft-interval]").forEach(button=>button.addEventListener("click",()=>setWftChartInterval(button.dataset.wftInterval,button)));
