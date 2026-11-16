@@ -1,323 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07111f">
-<title>WFT | Trader Giveaway</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#155eef">
+<title>WFT | 100 Trader Giveaway</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="wft-global.css?v=50">
 <style>
-:root{--bg:#f5f8ff;--panel:#ffffff;--panel2:#edf3ff;--gold:#155eef;--text:#14213d;--muted:#687891;--line:#dce5f2;--green:#15803d;--red:#dc2626}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,Arial,Helvetica,sans-serif;line-height:1.6}
-header{display:flex;justify-content:space-between;align-items:center;padding:18px max(18px,calc((100% - 1000px)/2));background:#fff;border-bottom:1px solid var(--line);gap:10px;position:sticky;top:0;z-index:5}
-.brand{font-weight:800;letter-spacing:1px;color:#14213d}.brand span{color:var(--gold)}a{color:var(--gold);text-decoration:none}
-main{max-width:1000px;margin:30px auto;padding:0 18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:23px;margin-bottom:18px;box-shadow:0 5px 22px rgba(16,45,90,.055)}
-.hero{background:linear-gradient(135deg,#eaf2ff,#fff);border-color:#cbdcf7;box-shadow:0 10px 30px rgba(21,94,239,.08)}.gold{color:var(--gold)}.muted{color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}.fee{background:#f7faff;border:1px solid var(--line);border-radius:14px;padding:16px;transition:transform .18s,border-color .18s}.fee strong{display:block;font-size:23px;color:var(--gold);margin-top:6px}
-select,input{width:100%;padding:13px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--text);margin:8px 0 14px}
-label{display:block;font-weight:700;margin-top:12px;color:#465875}.btn{border:0;border-radius:9px;padding:13px 17px;background:var(--gold);color:#fff;font-weight:800;cursor:pointer;transition:transform .18s,filter .18s;box-shadow:0 8px 22px rgba(21,94,239,.12)}.btn:hover{transform:translateY(-1px);filter:brightness(1.06)}.btn:disabled{opacity:.5;cursor:not-allowed}
-.check{display:flex;align-items:flex-start;gap:10px;background:var(--panel2);padding:12px;border-radius:10px;margin:8px 0}.check input{width:auto;margin:3px 0}
-.status{padding:12px;border-radius:10px;background:var(--panel2);margin-top:12px;white-space:pre-wrap}.success{color:var(--green)}.error{color:#dc2626}
-.hidden{display:none!important}.small{font-size:13px;color:var(--muted);line-height:1.5}
-.referral-box{margin-top:14px;padding:17px;border:1px solid #cbdcf7;border-radius:14px;background:linear-gradient(135deg,#f0f5ff,#fff)}
-.referral-link-row{display:flex;gap:9px;align-items:stretch;margin-top:10px}
-.referral-link-row input{flex:1;min-width:0;margin:0}
-.referral-link-row .btn{white-space:nowrap}
-@media(max-width:520px){.referral-link-row{flex-direction:column}.referral-link-row .btn{width:100%}}
-@media(max-width:600px){main{margin:16px auto}.card{padding:16px}header{padding:14px 16px}.brand{font-size:13px}}
-/* WFT LIGHT THEME POLISH */
-:root{--bg:#f4f7fc;--panel:#fff;--panel2:#eef4ff;--text:#17243b;--muted:#5b6b82;--line:#d9e2ef}
-body{background:var(--bg)!important;color:var(--text)!important}.card{background:#fff!important;color:#17243b!important;border-color:var(--line)!important;box-shadow:0 6px 22px rgba(25,55,100,.05)!important}
-label{color:#42536d!important}.small,.muted{color:#64748b!important}input,select{background:#fff!important;color:#17243b!important;border-color:#cbd7e7!important}
+:root{--bg:#f4f7fc;--panel:#fff;--panel2:#eef4ff;--blue:#155eef;--text:#17243b;--muted:#5b6b82;--line:#d9e2ef}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,Arial,sans-serif;line-height:1.6}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px max(18px,calc((100% - 1000px)/2));background:#fff;border-bottom:1px solid var(--line);gap:12px;position:sticky;top:0;z-index:5}
+.brand{font-weight:900;letter-spacing:.7px;color:#17243b}.brand span,a{color:var(--blue)}a{text-decoration:none}
+main{max-width:1000px;margin:26px auto;padding:0 18px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:17px;box-shadow:0 6px 22px rgba(25,55,100,.05)}
+.hero{background:linear-gradient(135deg,#eaf2ff,#fff);border-color:#cbdcf7}.blue{color:var(--blue)}.muted,.small{color:var(--muted)}.small{font-size:13px;line-height:1.55}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.tile{background:#f7faff;border:1px solid var(--line);border-radius:14px;padding:16px}.tile strong{display:block;font-size:20px;color:var(--blue);margin:5px 0}
+label{display:block;font-weight:700;color:#42536d;margin:12px 0 6px}select,input:not([type=checkbox]):not([type=file]){width:100%;padding:13px;border:1px solid #cbd7e7;border-radius:10px;background:#fff;color:#17243b;margin:6px 0 12px}
+input[type=file]{display:block;width:100%;margin:8px 0}
+.btn{display:inline-block;border:0;border-radius:10px;padding:12px 17px;background:var(--blue);color:#fff!important;font-weight:800;cursor:pointer;text-align:center}.btn:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;align-items:flex-start;gap:10px;background:var(--panel2);padding:13px;border-radius:11px;margin:12px 0}.check input{margin:4px 0 0}
+.status{padding:12px;border-radius:10px;background:var(--panel2);margin-top:12px;white-space:pre-wrap}.success{color:#166534}.error{color:#b91c1c}
+.hidden{display:none!important}.proof-state{margin-bottom:0}.fee-line{font-size:24px;font-weight:900;color:var(--blue)}
+@media(max-width:600px){main{margin:15px auto}.card{padding:16px}header{padding:13px 16px}.brand{font-size:13px}}
 </style>
-
-
-<link rel="stylesheet" href="wft-global.css?v=36">
 </head>
 <body>
-<header><div class="brand">WE FUNDED <span>TRADER</span></div><nav style="display:flex;gap:14px;flex-wrap:wrap"><a href="dashboard.html?page=reward">Rewards</a><a href="wallet.html">Wallet</a><a href="dashboard.html">← Dashboard</a></nav></header>
+<header><div class="brand">WE FUNDED <span>TRADER</span></div><nav style="display:flex;gap:14px;flex-wrap:wrap"><a href="wallet.html">Wallet</a><a href="dashboard.html">← Dashboard</a></nav></header>
 <main>
 <section class="card hero">
-  <p class="gold">WFT COMMUNITY GIVEAWAY</p>
-  <div class="fee"><strong id="giveawayLiveStatus">Loading participant count...</strong><p class="small" id="giveawaySlots">Loading total participants...</p></div>
-  <h1>Join the WFT Trader Giveaway</h1>
-  <p class="muted">Complete all five social follow tasks, refer 2 people who activate a WFT account, then redeem the $5,000 Instant Pro reward by paying the one-time $5 USDT fee. The $5 redemption fee is credited to your WFT Wallet Balance after Admin approval.</p>
-  <p><strong class="gold">Important:</strong> The $5 redemption fee is credited to your WFT Wallet Balance after Admin approval, following the existing Giveaway wallet-credit rule.</p>
+  <p class="blue"><strong>WFT COMMUNITY GIVEAWAY</strong></p>
+  <div class="tile"><strong id="giveawayLiveStatus">Loading Giveaway...</strong><span class="small" id="giveawaySlots">Checking participant spaces...</span></div>
+  <h1>100 Trader Giveaway</h1>
+  <p class="muted">Follow WFT on Discord and Telegram, choose one of the two One-Step accounts, review its rules, accept the terms and pay the one-time $5 activation fee.</p>
+  <p><strong class="blue">100 participants only.</strong> Registration closes automatically when all 100 places are taken.</p>
 </section>
-<section class="card">
-  <h2>Giveaway Reward</h2>
-  <div class="fee"><span class="gold">ONLY REWARD</span><strong>$5,000 Instant Pro</strong><p class="small">One-time redemption fee: <strong>$5 USDT</strong></p></div>
-  <p class="small">One entry per user. No other account size or program can be redeemed in this giveaway.</p>
+
+<section class="card" id="followPanel">
+  <h2>Step 1. Follow WFT</h2>
+  <p class="muted">Only these two follow tasks are required for this Giveaway.</p>
+  <div class="grid" id="socialLinksGrid"><div class="tile">Loading official follow links...</div></div>
+  <p class="small">Follow both official accounts and upload one screenshot for each. Screenshots are reviewed before you can continue. JPG, PNG or WEBP · maximum 5MB each.</p>
+  <div class="status" id="proofSummary">0 / 2 follow proofs approved.</div>
+  <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I followed both official WFT accounts and the screenshots are genuine.</span></label>
+  <button class="btn" id="confirmSocial" type="button">Confirm Both Follow Tasks</button>
+  <p class="small" id="proofStatus">Both screenshots must be approved before account selection is unlocked.</p>
 </section>
+
 <section class="card hidden" id="entryCreate">
-  <h2>Step 3. Redeem $5,000 Instant Pro</h2>
-  <label for="accountSize">Giveaway Reward</label>
+  <h2>Step 2. Choose Your Giveaway Account</h2>
+  <label for="accountSize">Select One-Step Account</label>
   <select id="accountSize">
-    <option value="5000">$5,000 Instant Pro — $5 USDT redemption fee</option>
+    <option value="5000|1step_standard">$5,000 — One-Step Standard</option>
+    <option value="10000|1step_pro">$10,000 — One-Step Pro</option>
   </select>
-  <button class="btn" id="createEntry">Redeem $5,000 Instant Pro</button>
-  <p class="small">Already have a WFT account? <a href="Login.html?next=giveaway.html">Log in here</a>. New traders can <a href="register.html">create an account</a> first.</p>
-  <div class="status" id="createStatus">Sign in to join the giveaway.</div>
-</section>
-<section class="card" id="entryPanel">
-  <h2>Step 1. Social Follow Tasks</h2>
-  <p>Follow the official WE FUNDED TRADER accounts on:</p>
-  <div class="grid" id="socialLinksGrid"><div class="fee">Loading official social links...</div></div>
-  <p class="small">X/Twitter is not part of this giveaway.</p>
-  <p class="small">For EACH platform: tap <strong>Follow Task</strong>, follow the WFT account, then upload a screenshot with <strong>Submit Proof</strong>. JPG, PNG or WEBP · maximum 5MB each. X is not included.</p>
-  <div class="status" id="proofSummary">0 / 5 social proofs submitted.</div>
-  <div class="referral-box hidden" id="referralStep">
-    <h3 class="gold">Step 2. Invite 2 Friends</h3>
-    <p>Share your personal WFT referral link. You need 2 referred traders with active WFT trading accounts to unlock account size selection.</p>
-    <label for="giveawayReferralLink">Your personal referral link</label>
-    <div class="referral-link-row">
-      <input id="giveawayReferralLink" type="text" readonly placeholder="Sign in to load your referral link">
-      <button class="btn" id="copyGiveawayReferral" type="button">Copy Link</button>
-    </div>
-    <p class="small" id="referralStatus">Sign in to display and copy your personal referral link.</p><p class="small" id="referralProgress">Active referrals: 0 / 2</p>
-    <a href="dashboard.html?page=affiliate" class="small">Open Affiliate Dashboard ↗</a>
+  <div class="tile" id="programRules">
+    <h3 class="blue" id="programTitle">One-Step Standard</h3>
+    <div class="grid" id="ruleGrid"></div>
   </div>
-  <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I completed all five follow tasks and the screenshots are genuine.</span></label>
-  <button class="btn" id="confirmSocial">Confirm All Follow Tasks</button>
-  <p class="small" id="proofStatus">Complete all 5 AI-approved follow proofs and refer 2 active traders to unlock Step 3.</p>
-  <div class="status" id="entryStatus"></div>
-  <div class="fee hidden" id="walletNextStep">
-    <h3 class="gold">Your Giveaway Wallet Credit is Ready</h3>
-    <p class="small">After Admin approval, your full activation fee is added to Wallet Balance. Rewards are also credited to this same Wallet Balance. You can use it to buy any WFT Challenge, and an eligible coupon discount can still be applied at checkout. The wallet credit is not a direct challenge purchase or a cash withdrawal.</p>
-    <label class="check"><input type="checkbox" id="walletTerms"><span>I understand how my Wallet Balance works and want to continue to Challenge Checkout.</span></label>
-    <button class="btn" id="continueCheckout" type="button" disabled>Continue to Challenge Checkout</button>
+  <div class="tile" style="margin-top:14px">
+    <span class="small">One-time Giveaway Activation Fee</span>
+    <div class="fee-line">$5.00 USDT</div>
+    <p class="small">After your payment is verified and an Admin approves your entry, the full $5 activation fee will be credited to your WFT Wallet Balance. It is wallet credit, not a cash withdrawal.</p>
   </div>
+  <h3>Giveaway Terms</h3>
+  <ul class="small">
+    <li>Only Discord Follow and Telegram Follow are required.</li>
+    <li>Choose either $5,000 One-Step Standard or $10,000 One-Step Pro.</li>
+    <li>One Giveaway entry per user.</li>
+    <li>Only 100 participants can register; the 100th entry closes registration.</li>
+    <li>The $5 USDT activation fee is credited in full to your WFT Wallet after blockchain verification and Admin approval.</li>
+    <li>Wallet credit can be used toward eligible WFT challenge purchases and is not withdrawable as cash.</li>
+    <li>You must follow the selected program rules shown above.</li>
+  </ul>
+  <label class="check"><input type="checkbox" id="giveawayTerms"><span>I have read and agree to the Giveaway Terms and the selected One-Step program rules.</span></label>
+  <button class="btn" id="createEntry" type="button" disabled>Accept Terms & Continue to Checkout</button>
+  <p class="small">Already have a WFT account? <a href="Login.html?next=giveaway.html">Log in here</a>. New traders can <a href="register.html">create an account</a>.</p>
+  <div class="status" id="createStatus">Complete both follow tasks to unlock account selection.</div>
 </section>
+
 <section class="card hidden" id="paymentPanel">
-  <h2>Step 4. Submit Activation Fee Payment</h2>
-  <p>Selected account: <strong id="chosenSize" class="gold"></strong> · Fee: <strong id="chosenFee" class="gold"></strong></p>
+  <h2>Step 3. Giveaway Checkout</h2>
+  <p>Selected account: <strong id="chosenAccount" class="blue"></strong></p>
+  <p>Activation fee: <strong class="blue">$5.00 USDT</strong></p>
   <label for="network">Payment Network</label>
   <select id="network"><option value="BEP20">USDT BEP20</option><option value="TRC20">USDT TRC20</option></select>
-  <div class="fee"><span id="addressLabel">USDT BEP20 Address</span><p id="receiveAddress" style="overflow-wrap:anywhere">0xc6e6d92df291cd2f48e83dbf656817f1712d8cfa</p><button class="btn" id="copyAddress">Copy Address</button></div>
+  <div class="tile"><span id="addressLabel">USDT BEP20 Address</span><p id="receiveAddress" style="overflow-wrap:anywhere;font-weight:700">0xc6e6d92df291cd2f48e83dbf656817f1712d8cfa</p><button class="btn" id="copyAddress" type="button">Copy Address</button></div>
   <label for="txHash">Transaction Hash</label>
   <input id="txHash" autocomplete="off" placeholder="Paste your transaction hash">
-  <button class="btn" id="verifyPayment">Submit & Verify Payment</button>
-  <p class="small">The system checks the USDT contract, receiving address, exact activation fee and required blockchain confirmations. After verification, Admin approval is required before the full fee is credited to your Wallet Balance.</p>
+  <button class="btn" id="verifyPayment" type="button">Submit & Verify $5 Payment</button>
+  <p class="small">The system checks the USDT contract, receiving address, exact $5 fee and required blockchain confirmations. After verification, Admin approval is required before the $5 is credited to your Wallet.</p>
+  <div class="status" id="entryStatus">Your Giveaway entry is ready for checkout.</div>
 </section>
 </main>
+
 <script type="module">
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2";
 const db=createClient("https://vxcwfirfgxrxafbirnwu.supabase.co","sb_publishable_Nw1NaKkhz0A7H5TxybSzHA_9zjTeDLv");
-const fees={5000:5};
 const addresses={BEP20:"0xc6e6d92df291cd2f48e83dbf656817f1712d8cfa",TRC20:"TS52ntAQWhtnwFRgSASm5ugD7h35Mow9N4"};
-let session=null,entry=null,socialProofPath=null,socialFollowConfirmed=false;
+const platforms=["discord","telegram"];
+const titles={discord:"Discord",telegram:"Telegram"};
+let session=null,entry=null,socialProofRows=[],socialProofCount=0,socialFollowConfirmed=false;
 const $=id=>document.getElementById(id);
-const money=n=>"$"+Number(n).toFixed(2);
-function message(id,text,kind=""){ $(id).textContent=text;$(id).className="status "+kind; }
+const money=n=>"$"+Number(n||0).toFixed(2);
+function message(id,text,kind=""){const el=$(id);if(el){el.textContent=text;el.className="status "+kind;}}
+function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function selectedProgram(){const [size,code]=$("accountSize").value.split("|");return {size:Number(size),code};}
+function programName(code){return code==="1step_pro"?"One-Step Pro":"One-Step Standard";}
+function renderRules(){
+ const {code}=selectedProgram(),pro=code==="1step_pro";
+ const rules=pro?[
+  ["Profit Target","6%"],["Daily Drawdown","3%"],["Maximum Drawdown","6% Trailing"],["Profitable Days","3 Days"],["Minimum Daily Profit","0.25%"]
+ ]:[
+  ["Profit Target","10%"],["Daily Drawdown","3% Static"],["Maximum Drawdown","5% Static"],["Profitable Days","3 Days"],["Minimum Daily Profit","0.25%"]
+ ];
+ $("programTitle").textContent=programName(code);
+ $("ruleGrid").innerHTML=rules.map(([k,v])=>'<div class="tile"><span class="small">'+k+'</span><strong>'+v+'</strong></div>').join("");
+}
 function renderEntry(){
  if(!entry)return;
- $("entryCreate").classList.add("hidden");$("entryPanel").classList.remove("hidden");
- $("chosenSize").textContent="$"+Number(entry.account_size).toLocaleString()+" Instant Pro";
- $("chosenFee").textContent=money(entry.activation_fee);
- $("entryStatus").textContent="Entry: "+entry.entry_status+" · Referrals recorded: "+entry.referral_count+"/2 · Payment: "+entry.payment_status;
- $("socialConfirm").checked=!!entry.social_follow_confirmed;
- socialProofPath=entry.social_proof_path||null;socialFollowConfirmed=!!entry.social_follow_confirmed;
- $("proofStatus").textContent="Your five social follow proofs are shown above.";
- if(entry.social_follow_confirmed)$("confirmSocial").disabled=true;
- if(entry.payment_status!=="verified"&&entry.entry_status!=="active")$("paymentPanel").classList.remove("hidden");
- else $("paymentPanel").classList.add("hidden");
- if(entry.payment_status==="verified"&&entry.entry_status!=="active")message("entryStatus","Payment verified. Waiting for Admin approval. Your full activation fee will be credited to Wallet after approval.","success");
- if(entry.entry_status==="active"){
-  message("entryStatus","Giveaway entry approved. Activation fee credited to Wallet Balance: "+money(entry.activation_fee)+".","success");
-  $("walletNextStep").classList.remove("hidden");
+ $("entryCreate").classList.add("hidden");
+ $("followPanel").classList.add("hidden");
+ $("paymentPanel").classList.toggle("hidden",entry.payment_status==="verified"||entry.entry_status==="active");
+ $("chosenAccount").textContent="$"+Number(entry.account_size).toLocaleString()+" "+programName(entry.program_code||"1step_standard");
+ if(entry.payment_status==="verified"&&entry.entry_status!=="active"){
+  message("entryStatus","Payment verified. Your entry is waiting for Admin approval. After approval, $5.00 will be credited to your WFT Wallet.","success");
+ }else if(entry.entry_status==="active"){
+  message("entryStatus","Giveaway approved. $5.00 activation fee credited to your WFT Wallet Balance.","success");
+ }else{
+  message("entryStatus","Entry created. Submit the $5.00 activation fee payment to continue.");
  }
- if(entry.payment_verification_message)message("entryStatus",entry.payment_verification_message);
 }
-const socialProofPlatforms=["instagram","tiktok","youtube","telegram","discord"];
-let socialProofRows=[];
-function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+async function loadGiveawayStatus(){
+ try{
+  const {data,error}=await db.rpc("giveaway_public_status");if(error)throw error;
+  const joined=Number(data?.joined||0),capacity=Number(data?.capacity||100),remaining=Number(data?.remaining??Math.max(0,capacity-joined));
+  $("giveawayLiveStatus").textContent=data?.is_live?"GIVEAWAY IS OPEN":"GIVEAWAY FULL";
+  $("giveawaySlots").textContent=joined+" / "+capacity+" participants · "+remaining+" places remaining";
+  if(!data?.is_live){$("followPanel").classList.add("hidden");$("entryCreate").classList.add("hidden");}
+ }catch(e){$("giveawayLiveStatus").textContent="GIVEAWAY";$("giveawaySlots").textContent="Participant count is temporarily unavailable.";}
+}
 async function loadSocialLinks(){
- const grid=$("socialLinksGrid");if(!grid)return;
- const {data,error}=await db.from("reward_task_catalog").select("title,platform,task_url").eq("category","follow").eq("is_active",true).order("sort_order",{ascending:true});
- const labels=["instagram","tiktok","youtube","telegram","discord"];
- const rows=(data||[]).filter(r=>labels.includes(String(r.platform||"").toLowerCase()));
- const links={};rows.forEach(r=>links[String(r.platform).toLowerCase()]=r.task_url);
+ const grid=$("socialLinksGrid");
+ const {data,error}=await db.from("reward_task_catalog").select("platform,task_url").eq("category","follow").eq("is_active",true).in("platform",platforms);
+ const links={};(data||[]).forEach(r=>links[String(r.platform).toLowerCase()]=r.task_url);
  if(!links.discord)links.discord="https://discord.gg/eVAH7bDzFg";
- const titles={instagram:"Instagram",tiktok:"TikTok",youtube:"YouTube",telegram:"Telegram",discord:"Discord"};
- grid.innerHTML=socialProofPlatforms.map(platform=>{
+ grid.innerHTML=platforms.map(platform=>{
   const url=links[platform]&&String(links[platform]).startsWith("https://")?links[platform]:"";
-  return '<div class="fee" data-platform="'+platform+'"><h3>'+titles[platform]+'</h3><a class="btn" style="display:inline-block" href="'+escapeHTML(url||"#")+'" '+(url?'target="_blank" rel="noopener"':'aria-disabled="true"')+'>Follow Task ↗</a><label for="proof-'+platform+'">Upload follow screenshot</label><input type="file" id="proof-'+platform+'" accept="image/jpeg,image/png,image/webp"><button class="btn submit-proof" type="button" data-platform="'+platform+'">Submit Proof</button><p class="small proof-state" id="state-'+platform+'">Not submitted</p></div>';
+  return '<div class="tile"><h3>'+titles[platform]+'</h3><a class="btn" href="'+escapeHTML(url||"#")+'" '+(url?'target="_blank" rel="noopener"':'aria-disabled="true"')+'>Follow on '+titles[platform]+' ↗</a><label for="proof-'+platform+'">Upload screenshot</label><input type="file" id="proof-'+platform+'" accept="image/jpeg,image/png,image/webp"><button class="btn submit-proof" type="button" data-platform="'+platform+'">Submit Proof</button><p class="small proof-state" id="state-'+platform+'">Not submitted</p></div>';
  }).join("");
- if(error)grid.insertAdjacentHTML("beforeend",'<p class="small">Could not load all task links. Please refresh.</p>');
+ if(error)grid.insertAdjacentHTML("beforeend",'<p class="small">Could not load all follow links. Please refresh.</p>');
  grid.querySelectorAll(".submit-proof").forEach(btn=>btn.addEventListener("click",()=>submitSocialProof(btn.dataset.platform)));
  if(session)await loadSocialProofRows();
 }
 async function loadSocialProofRows(){
- const {data,error}=await db.from("giveaway_social_task_proofs").select("platform,proof_path,review_status,submitted_at").eq("user_id",session.user.id);
- if(error){message("proofSummary","Could not load submitted proofs: "+error.message,"error");return;}
+ const {data,error}=await db.from("giveaway_social_task_proofs").select("platform,proof_path,review_status,submitted_at").eq("user_id",session.user.id).in("platform",platforms);
+ if(error){message("proofSummary","Could not load proofs: "+error.message,"error");return;}
  socialProofRows=data||[];
- socialProofPlatforms.forEach(platform=>{
-  const row=socialProofRows.find(x=>x.platform===platform);
-  const state=$("state-"+platform);
-  if(state)state.textContent=row?"Proof submitted · "+row.review_status:"Not submitted";
+ platforms.forEach(platform=>{
+  const row=socialProofRows.find(x=>x.platform===platform),state=$("state-"+platform);
+  if(state)state.textContent=row?"Proof "+row.review_status:"Not submitted";
  });
- const count=socialProofPlatforms.filter(p=>socialProofRows.some(x=>x.platform===p && x.review_status==="approved")).length;
- socialProofCount=count;
- $("proofSummary").textContent=count+" / 5 social proofs AI-approved.";
- if(count===5){$("referralStep").classList.remove("hidden");} updateEligibility();
-}
-let activeReferralCount=0, socialProofCount=0;
-function updateEligibility(){
- const ready=socialProofCount>=5 && activeReferralCount>=2 && !entry;
- $("entryCreate").classList.toggle("hidden",!ready);
- $("referralStep").classList.toggle("hidden",socialProofCount<5);
- $("proofStatus").textContent=socialProofCount+"/5 follow proofs · "+activeReferralCount+"/2 active referrals. "+(ready?"Step 3 is unlocked.":"Complete both requirements to unlock Step 3.");
-}
-async function loadGiveawayReferralProgress(){
- if(!session)return;
- const {data,error}=await db.rpc("get_giveaway_referral_progress");
- if(error){$("referralProgress").textContent="Could not check referral progress: "+error.message;return;}
- activeReferralCount=Number(data?.referral_count||0);
- $("referralProgress").textContent="Active referrals: "+activeReferralCount+" / 2"+(data?.eligible?" · Requirement completed ✓":" · Need "+Math.max(0,2-activeReferralCount)+" more active referral(s)");
+ socialProofCount=platforms.filter(p=>socialProofRows.some(x=>x.platform===p&&x.review_status==="approved")).length;
+ $("proofSummary").textContent=socialProofCount+" / 2 follow proofs approved.";
  updateEligibility();
 }
+function updateEligibility(){
+ const ready=socialProofCount===2&&socialFollowConfirmed&&!entry;
+ $("entryCreate").classList.toggle("hidden",!ready);
+ $("proofStatus").textContent=socialProofCount+"/2 proofs approved. "+(socialFollowConfirmed?"Follow confirmation complete.": "Confirm both follows after approval.")+(ready?" Choose your One-Step account below.":"");
+}
 async function submitSocialProof(platform){
- if(!session){message("createStatus","Please log in before submitting proof.","error");location.href="Login.html";return;}
+ if(!session){location.href="Login.html?next=giveaway.html";return;}
  const input=$("proof-"+platform),file=input?.files?.[0],btn=document.querySelector('.submit-proof[data-platform="'+platform+'"]');
  if(!file){message("proofSummary","Choose the "+platform+" screenshot first.","error");return;}
  if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>5*1024*1024){message("proofSummary","Use JPG, PNG or WEBP under 5MB.","error");return;}
  btn.disabled=true;$("state-"+platform).textContent="Uploading...";
  try{
   const path=session.user.id+"/"+platform+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^A-Za-z0-9._-]/g,"_");
-  const {error:upErr}=await db.storage.from("giveaway-proofs").upload(path,file,{contentType:file.type,upsert:false});
-  if(upErr)throw upErr;
-  const {error:saveErr}=await db.rpc("submit_giveaway_social_task_proof",{p_platform:platform,p_path:path});
-  if(saveErr)throw saveErr;
+  const {error:upErr}=await db.storage.from("giveaway-proofs").upload(path,file,{contentType:file.type,upsert:false});if(upErr)throw upErr;
+  const {error:saveErr}=await db.rpc("submit_giveaway_social_task_proof",{p_platform:platform,p_path:path});if(saveErr)throw saveErr;
   const {data:proofRow}=await db.from("giveaway_social_task_proofs").select("id").eq("user_id",session.user.id).eq("platform",platform).eq("proof_path",path).maybeSingle();
   if(proofRow?.id){
-   const aiReview=await db.functions.invoke("wft-ai-admin-bot",{body:{submission_id:proofRow.id,submission_type:"giveaway_social"}});
-   $("state-"+platform).textContent=aiReview.error?"Proof submitted · AI review waiting for configuration":(aiReview.data?.decision==="approved"?"AI approved · proof verified":aiReview.data?.decision==="rejected"?"AI rejected · please review your proof":"AI review pending further verification");
-  }else{
-   $("state-"+platform).textContent="Proof submitted · AI review queued";
-  }
+   const ai=await db.functions.invoke("wft-ai-admin-bot",{body:{submission_id:proofRow.id,submission_type:"giveaway_social"}});
+   $("state-"+platform).textContent=ai.error?"Submitted · waiting for review":ai.data?.decision==="approved"?"AI approved · awaiting Admin review":ai.data?.decision==="rejected"?"AI rejected · upload a new screenshot":"Submitted · review pending";
+  }else $("state-"+platform).textContent="Submitted · review queued";
   await loadSocialProofRows();
  }catch(e){$("state-"+platform).textContent="Submit failed. Try again.";message("proofSummary",e.message||"Could not submit proof.","error");}
  finally{btn.disabled=false;}
 }
-async function loadGiveawayReferralLink(){
-  const input=$("giveawayReferralLink"),status=$("referralStatus"),copy=$("copyGiveawayReferral");
-  if(!session){if(input)input.value="";if(copy)copy.disabled=true;return;}
-  if(copy)copy.disabled=true;
-  try{
-    const {data,error}=await db.from("referral_profiles").select("referral_code")
-      .eq("user_id",session.user.id).maybeSingle();
-    if(error)throw error;
-    const code=data?.referral_code;
-    if(!code){
-      if(input)input.value="";
-      if(status)status.textContent="No referral code is available yet. Open Affiliate Dashboard to initialize your referral profile.";
-      return;
-    }
-    const link=new URL("register.html",window.location.href);
-    link.searchParams.set("ref",code);
-    if(input)input.value=link.href;
-    if(status)status.textContent="Share this link with friends. Two active referred accounts are required.";
-    if(copy)copy.disabled=false;
-  }catch(error){if(status)status.textContent="Could not load referral link: "+(error.message||"Please try again.");}
-}
-$("copyGiveawayReferral")?.addEventListener("click",async()=>{
-  const input=$("giveawayReferralLink");
-  if(!input?.value){message("referralStatus","Your referral link is not available. Sign in and open Affiliate Dashboard.","error");return;}
-  try{
-    await navigator.clipboard.writeText(input.value);
-    message("referralStatus","Referral link copied. Share it with your friends.","success");
-  }catch{
-    input.focus();input.select();
-    const copied=document.execCommand("copy");
-    message("referralStatus",copied?"Referral link copied. Share it with your friends.":"Select the link and copy it manually.",copied?"success":"error");
-  }
-});
-
-async function loadGiveawayStatus(){
- try{
-  const {data,error}=await db.rpc("giveaway_public_status");if(error)throw error;
-  const joined=Number(data?.joined||0);
-  $("giveawayLiveStatus").textContent="GIVEAWAY IS OPEN ✓";
-  $("giveawaySlots").textContent=joined+" trader"+(joined===1?" has":"s have")+" joined this Giveaway.";
- }catch(e){
-  $("giveawayLiveStatus").textContent="GIVEAWAY";
-  $("giveawaySlots").textContent="Participant count is temporarily unavailable.";
- }
-}
-async function load(){
- $("entryPanel").classList.remove("hidden");
- loadGiveawayStatus();
- const {data,error}=await db.auth.getSession();
- if(error||!data.session){
-  $("createEntry").disabled=true;
-  message("createStatus","Please sign in to submit screenshots, use your referral link and redeem your giveaway size.","error");
-  await loadSocialLinks();
-  return;
- }
- session=data.session;
- await loadSocialLinks();
- await loadGiveawayReferralLink();
- await loadGiveawayReferralProgress();
- const {data:rows,error:entryError}=await db.from("giveaway_entries").select("*").eq("user_id",session.user.id).limit(1);
- if(entryError){message("createStatus","Could not load giveaway entry. Refresh the page.","error");return;}
- if(rows?.length){entry=rows[0];renderEntry();}
- else{
-  $("entryCreate").classList.add("hidden");
-  await loadSocialProofRows();
-  message("entryStatus","Submit all 5 AI-approved social proofs, then complete 2 active referrals before redeeming your giveaway size.");
- }
-}
-$("createEntry").addEventListener("click",async()=>{
- $("createEntry").disabled=true;message("createStatus","Checking your giveaway eligibility...");
- try{
-  const {data,error}=await db.rpc("create_giveaway_entry",{p_account_size:Number($("accountSize").value)});
-  if(error)throw error;
-  const {data:rows,error:loadError}=await db.from("giveaway_entries").select("*").eq("user_id",session.user.id).limit(1);
-  if(loadError)throw loadError;
-  entry=rows?.[0]||data;renderEntry();await loadGiveawayStatus();
- }catch(e){message("createStatus",e.message||"Could not create giveaway entry.","error");$("createEntry").disabled=false;}
-});
 $("confirmSocial").addEventListener("click",async()=>{
- if(!session){location.href="Login.html";return;}
- const count=socialProofPlatforms.filter(p=>socialProofRows.some(x=>x.platform===p && x.review_status==="approved")).length;
- if(count<5){message("entryStatus","All 5 follow screenshots must be AI-approved before you can confirm.","error");return;}
- if(!$("socialConfirm").checked){message("entryStatus","Confirm that all follow tasks and screenshots are genuine.","error");return;}
+ if(!session){location.href="Login.html?next=giveaway.html";return;}
+ if(socialProofCount<2){message("proofSummary","Both Discord and Telegram screenshots must be approved first.","error");return;}
+ if(!$("socialConfirm").checked){message("proofSummary","Please confirm that both follow tasks are genuine.","error");return;}
  $("confirmSocial").disabled=true;
- const {data,error}=await db.rpc("confirm_giveaway_social_follows");
- if(error){message("entryStatus",error.message,"error");$("confirmSocial").disabled=false;return;}
- socialFollowConfirmed=true;
- $("entryCreate").classList.remove("hidden");
- socialProofCount=5;
- await loadGiveawayReferralProgress();
- message("entryStatus","Step 1 complete. Complete 2 active referrals to unlock account size selection.","success");
+ try{
+  const {data,error}=await db.rpc("confirm_giveaway_social_follows");if(error)throw error;
+  socialFollowConfirmed=true;
+  $("followPanel").classList.add("hidden");$("entryCreate").classList.remove("hidden");
+  message("proofSummary","Both follow tasks confirmed. You can now choose your Giveaway account.","success");
+  updateEligibility();
+ }catch(e){message("proofSummary",e.message||"Could not confirm follow tasks.","error");$("confirmSocial").disabled=false;}
 });
-$("walletTerms").addEventListener("change",()=>{$("continueCheckout").disabled=!$("walletTerms").checked;});
-$("continueCheckout").addEventListener("click",()=>{if($("walletTerms").checked)location.href="challenges.html";});
-$("network").addEventListener("change",()=>{
- const n=$("network").value;$("addressLabel").textContent="USDT "+n+" Address";$("receiveAddress").textContent=addresses[n];
- $("txHash").placeholder=n==="BEP20"?"Paste BEP20 transaction hash":"Paste TRC20 transaction hash";
+$("accountSize").addEventListener("change",renderRules);
+$("giveawayTerms").addEventListener("change",()=>{$("createEntry").disabled=!$("giveawayTerms").checked;});
+$("createEntry").addEventListener("click",async()=>{
+ if(!session){location.href="Login.html?next=giveaway.html";return;}
+ if(!$("giveawayTerms").checked){message("createStatus","Accept the Giveaway Terms first.","error");return;}
+ const {size,code}=selectedProgram();
+ $("createEntry").disabled=true;message("createStatus","Creating your Giveaway entry...");
+ try{
+  const {data,error}=await db.rpc("create_giveaway_entry",{p_account_size:size,p_program_code:code,p_terms_accepted:true});if(error)throw error;
+  const {data:rows,error:loadError}=await db.from("giveaway_entries").select("*").eq("user_id",session.user.id).limit(1);if(loadError)throw loadError;
+  entry=rows?.[0]||data;renderEntry();await loadGiveawayStatus();
+  $("paymentPanel").scrollIntoView({behavior:"smooth",block:"start"});
+ }catch(e){message("createStatus",e.message||"Could not create Giveaway entry.","error");$("createEntry").disabled=false;}
 });
+$("network").addEventListener("change",()=>{const n=$("network").value;$("addressLabel").textContent="USDT "+n+" Address";$("receiveAddress").textContent=addresses[n];$("txHash").placeholder=n==="BEP20"?"Paste BEP20 transaction hash":"Paste TRC20 transaction hash";});
 $("copyAddress").addEventListener("click",async()=>{
  try{await navigator.clipboard.writeText(addresses[$("network").value]);$("copyAddress").textContent="Copied";}
  catch{message("entryStatus","Select and copy the wallet address manually.","error");}
 });
 $("verifyPayment").addEventListener("click",async()=>{
- if(!entry){message("entryStatus","Create your entry first.","error");return}
- if(!entry.social_follow_confirmed){message("entryStatus","Confirm your social follow tasks first.","error");return}
+ if(!entry){message("entryStatus","Create your Giveaway entry first.","error");return;}
  const network=$("network").value,hash=$("txHash").value.trim();
  $("verifyPayment").disabled=true;$("verifyPayment").textContent="Verifying...";
  try{
-  const {data:submitted,error:submitError}=await db.rpc("submit_giveaway_payment",{p_entry_id:entry.id,p_network:network,p_transaction_hash:hash});
-  if(submitError)throw submitError;
+  const {error:submitError}=await db.rpc("submit_giveaway_payment",{p_entry_id:entry.id,p_network:network,p_transaction_hash:hash});if(submitError)throw submitError;
   const {data,error}=await db.functions.invoke("verify-giveaway-payment",{body:{entry_id:entry.id,network,transaction_hash:hash}});
-  if(error){let m=error.message;try{const b=await error.context.clone().json();m=b.error||m}catch{}throw new Error(m)}
+  if(error){let m=error.message;try{const b=await error.context.clone().json();m=b.error||m}catch{}throw new Error(m);}
   if(!data?.success)throw new Error(data?.error||"Verification failed.");
   const v=data.verification||{};
   message("entryStatus",v.message+(v.confirmations?" Confirmations: "+v.confirmations:""),v.status==="verified"?"success":"");
   const {data:rows}=await db.from("giveaway_entries").select("*").eq("id",entry.id).limit(1);
   if(rows?.length){entry=rows[0];renderEntry();}
   if(v.status==="pending_confirmations"){$("verifyPayment").disabled=false;$("verifyPayment").textContent="Check Confirmations Again";}
-  else{$("verifyPayment").textContent="Payment Verified";}
+  else $("verifyPayment").textContent="Payment Verified";
  }catch(e){message("entryStatus",e.message||"Payment verification failed.","error");$("verifyPayment").disabled=false;$("verifyPayment").textContent="Try Again";}
 });
+async function load(){
+ renderRules();await loadGiveawayStatus();
+ const {data,error}=await db.auth.getSession();
+ if(error||!data.session){message("proofStatus","Please sign in to join the Giveaway.");await loadSocialLinks();return;}
+ session=data.session;
+ await loadSocialLinks();
+ const {data:rows,error:entryError}=await db.from("giveaway_entries").select("*").eq("user_id",session.user.id).limit(1);
+ if(entryError){message("proofStatus","Could not load your Giveaway entry. Refresh the page.","error");return;}
+ if(rows?.length){entry=rows[0];renderEntry();return;}
+ await loadSocialProofRows();
+ const {data:confirmed}=await db.from("giveaway_social_proofs").select("social_follow_confirmed").eq("user_id",session.user.id).maybeSingle();
+ socialFollowConfirmed=confirmed?.social_follow_confirmed===true;
+ if(socialFollowConfirmed){$("followPanel").classList.add("hidden");$("entryCreate").classList.remove("hidden");updateEligibility();}
+}
 load();
 </script>
 </body>
