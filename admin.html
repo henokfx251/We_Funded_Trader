@@ -403,6 +403,9 @@ tr:hover td{background:rgba(85,168,255,.035)}
       <button class="nav-btn" data-page="payouts" onclick="goPage('payouts',this)">
         <span class="nav-icon">＄</span> Payout Management
       </button>
+      <button class="nav-btn" data-page="affiliates" onclick="goPage('affiliates',this)">
+        <span class="nav-icon">♧</span> Affiliate Program
+      </button>
       <button class="nav-btn" data-page="giveaway" onclick="goPage('giveaway',this)">
         <span class="nav-icon">🎁</span> Giveaway Management
       </button>
@@ -945,6 +948,41 @@ tr:hover td{background:rgba(85,168,255,.035)}
   </div>
 </section>
 
+
+        <section class="page" id="page-affiliates">
+          <div class="page-heading">
+            <div>
+              <h1>WFT Affiliate Program</h1>
+              <p>Track referred registrations, paid buyers and commissions. Affiliate progress target: $125.</p>
+            </div>
+            <button class="btn" type="button" onclick="loadAffiliateManagement()">↻ Refresh Affiliates</button>
+          </div>
+          <div class="stats">
+            <div class="stat-card"><div class="stat-label">Affiliate Accounts</div><div class="stat-value" id="wftAffiliateAccounts">0</div></div>
+            <div class="stat-card"><div class="stat-label">Referred Registrations</div><div class="stat-value" id="wftAffiliateRegistrations">0</div></div>
+            <div class="stat-card"><div class="stat-label">Referred Buyers</div><div class="stat-value" id="wftAffiliateBuyers">0</div></div>
+            <div class="stat-card"><div class="stat-label">Commission Earned</div><div class="stat-value" id="wftAffiliateCommission">$0.00</div></div>
+            <div class="stat-card"><div class="stat-label">Progress to $125</div><div class="stat-value" id="wftAffiliateProgress">$0.00 / $125</div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>WFT Affiliate Accounts & Referred Customers</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Affiliate</th><th>Referral Code</th><th>Registered</th><th>Paid Buyers</th><th>Paid Order Revenue</th><th>Commission</th><th>Progress</th></tr></thead>
+                <tbody id="wftAffiliateTable"><tr><td colspan="7" class="empty">Loading affiliate data...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Referred Customer Purchase Details</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Affiliate</th><th>Referred Customer</th><th>Email</th><th>Paid Orders</th><th>Paid Revenue</th><th>Commission</th></tr></thead>
+                <tbody id="wftAffiliateCustomerTable"><tr><td colspan="6" class="empty">Loading referred customers...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
       </div>
 
       <div class="footer-note">WE FUNDED TRADER • ADMIN CONTROL CENTER</div>
@@ -1050,6 +1088,7 @@ function goPage(page, button) {
     kyc: "KYC Review",
     accounts: "Trading Accounts",
     payouts: "Payout Management",
+    affiliates: "WFT Affiliate Program",
     giveaway: "Giveaway Management",
     "challenge-requests": "Challenge Pass Requests",
     certificates: "Certificate Management",
@@ -1064,6 +1103,7 @@ function goPage(page, button) {
   if (page === "kyc") loadKYC();
   if (page === "accounts") loadTradingAccounts();
   if (page === "payouts") loadPayouts();
+  if (page === "affiliates") loadAffiliateManagement();
   if (page === "giveaway") loadGiveawayEntries();
   if (page === "challenge-requests") loadChallengeRequests();
   if (page === "certificates") loadIssuedCertificates();
@@ -1163,6 +1203,7 @@ async function refreshAll() {
     loadKYC(),
     loadTradingAccounts(),
     loadPayouts(),
+    loadAffiliateManagement(),
     loadGiveawayEntries(),
     loadChallengeRequests(),
     loadIssuedCertificates(),
@@ -1177,6 +1218,80 @@ async function refreshAll() {
   });
 
   showToast("Dashboard refresh completed.");
+}
+
+
+/* ================= WFT AFFILIATE MANAGEMENT ================= */
+async function loadAffiliateManagement() {
+  const affiliateBody = $("wftAffiliateTable");
+  const customerBody = $("wftAffiliateCustomerTable");
+  if (affiliateBody) affiliateBody.innerHTML = '<tr><td colspan="7" class="empty">Loading affiliate data...</td></tr>';
+  if (customerBody) customerBody.innerHTML = '<tr><td colspan="6" class="empty">Loading referred customers...</td></tr>';
+
+  const [profilesResult, attributionResult, commissionsResult, ordersResult] = await Promise.all([
+    db.from("referral_profiles").select("user_id,referral_code,created_at"),
+    db.from("referral_attributions").select("referrer_user_id,referred_user_id,referral_code,created_at"),
+    db.from("referral_commissions").select("referrer_user_id,referred_user_id,order_amount,commission_amount,status,order_id,created_at"),
+    db.from("orders").select("id,user_id,final_price,status,is_test,created_at")
+  ]);
+  const failure = [profilesResult,attributionResult,commissionsResult,ordersResult].find(x=>x.error);
+  if (failure) {
+    const message = escapeHTML(failure.error.message || "Could not load affiliate records.");
+    if (affiliateBody) affiliateBody.innerHTML = '<tr><td colspan="7" class="empty">'+message+'</td></tr>';
+    if (customerBody) customerBody.innerHTML = '<tr><td colspan="6" class="empty">'+message+'</td></tr>';
+    console.error("WFT affiliate management:", failure.error);
+    return;
+  }
+
+  const profiles = profilesResult.data || [];
+  const attributions = attributionResult.data || [];
+  const commissions = commissionsResult.data || [];
+  const orders = (ordersResult.data || []).filter(o=>String(o.status).toLowerCase()==="paid" && !o.is_test);
+  const ids = [...new Set([...profiles.map(x=>x.user_id),...attributions.map(x=>x.referred_user_id)])];
+  let profileRows = [];
+  if (ids.length) {
+    const {data,error} = await db.from("profiles").select("id,full_name,email").in("id",ids);
+    if (error) throw error;
+    profileRows = data || [];
+  }
+  const profileById = new Map(profileRows.map(p=>[p.id,p]));
+  const commissionTotal = rows => rows.reduce((sum,r)=>sum+Number(r.commission_amount||0),0);
+  const fmt = value => money(value);
+  const affiliateRows = profiles.map(p=>{
+    const refs = attributions.filter(a=>a.referrer_user_id===p.user_id);
+    const refIds = new Set(refs.map(a=>a.referred_user_id));
+    const buyers = new Set(orders.filter(o=>refIds.has(o.user_id)).map(o=>o.user_id));
+    const paidOrders = orders.filter(o=>refIds.has(o.user_id));
+    const revenue = paidOrders.reduce((sum,o)=>sum+Number(o.final_price||0),0);
+    const earned = commissionTotal(commissions.filter(c=>c.referrer_user_id===p.user_id && !["rejected"].includes(String(c.status).toLowerCase())));
+    return {profile:p,refs,buyers,paidOrders,revenue,earned};
+  });
+  const allRefs = attributions.length;
+  const allBuyers = new Set(orders.filter(o=>attributions.some(a=>a.referred_user_id===o.user_id)).map(o=>o.user_id)).size;
+  const allCommission = affiliateRows.reduce((sum,r)=>sum+r.earned,0);
+  if ($("wftAffiliateAccounts")) $("wftAffiliateAccounts").textContent=String(profiles.length);
+  if ($("wftAffiliateRegistrations")) $("wftAffiliateRegistrations").textContent=String(allRefs);
+  if ($("wftAffiliateBuyers")) $("wftAffiliateBuyers").textContent=String(allBuyers);
+  if ($("wftAffiliateCommission")) $("wftAffiliateCommission").textContent=fmt(allCommission);
+  if ($("wftAffiliateProgress")) $("wftAffiliateProgress").textContent=fmt(Math.min(allCommission,125))+" / $125";
+
+  if (affiliateBody) affiliateBody.innerHTML = affiliateRows.length ? affiliateRows.map(r=>{
+    const name = r.profile.full_name || r.profile.email || "WFT Affiliate";
+    const progress = Math.min(100,(r.earned/125)*100);
+    return '<tr><td>'+escapeHTML(name)+'</td><td>'+escapeHTML(r.profile.referral_code)+'</td><td>'+r.refs.length+'</td><td>'+r.buyers.size+'</td><td>'+fmt(r.revenue)+'</td><td>'+fmt(r.earned)+'</td><td>'+fmt(r.earned)+' / $125 ('+progress.toFixed(1)+'%)</td></tr>';
+  }).join("") : '<tr><td colspan="7" class="empty">No affiliate accounts found.</td></tr>';
+
+  if (customerBody) {
+    const customerRows = attributions.map(a=>{
+      const affiliate = profiles.find(p=>p.user_id===a.referrer_user_id);
+      const customer = profileById.get(a.referred_user_id);
+      const customerOrders = orders.filter(o=>o.user_id===a.referred_user_id);
+      const revenue = customerOrders.reduce((sum,o)=>sum+Number(o.final_price||0),0);
+      const earned = commissionTotal(commissions.filter(c=>c.referrer_user_id===a.referrer_user_id && c.referred_user_id===a.referred_user_id && !["rejected"].includes(String(c.status).toLowerCase())));
+      return {affiliate:affiliate?.full_name || "WFT Affiliate",customer:customer?.full_name || "Customer",email:customer?.email || "—",count:customerOrders.length,revenue,earned};
+    });
+    customerBody.innerHTML = customerRows.length ? customerRows.map(r=>'<tr><td>'+escapeHTML(r.affiliate)+'</td><td>'+escapeHTML(r.customer)+'</td><td>'+escapeHTML(r.email)+'</td><td>'+r.count+'</td><td>'+fmt(r.revenue)+'</td><td>'+fmt(r.earned)+'</td></tr>').join("") : '<tr><td colspan="6" class="empty">No referred users recorded yet.</td></tr>';
+  }
 }
 
 /* ================= GIVEAWAY MANAGEMENT ================= */
