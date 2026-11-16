@@ -1599,7 +1599,7 @@ async function loadKYC() {
   const { data, error } = await db
     .from("kyc_submissions")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("submitted_at", { ascending: false });
 
   if (error) {
     console.error("KYC:", error);
@@ -1608,7 +1608,15 @@ async function loadKYC() {
     return;
   }
 
-  kycData = data || [];
+  kycData = await Promise.all((data || []).map(async row => {
+    const paths = [row.front_file, row.back_file, row.selfie_file].filter(Boolean);
+    const links = await Promise.all(paths.map(async path => {
+      const { data: signed, error: signError } = await db.storage.from("kyc-documents").createSignedUrl(path, 300);
+      return signError || !signed?.signedUrl ? null : signed.signedUrl;
+    }));
+    row._signedDocs = links.filter(Boolean);
+    return row;
+  }));
   renderKYC();
   updateOverviewStats();
 }
@@ -1623,11 +1631,7 @@ function renderKYC() {
   }
 
   tbody.innerHTML = kycData.map(row => {
-    const documents = [
-      row.front_image_url || row.id_front_url || row.document_front,
-      row.back_image_url || row.id_back_url || row.document_back,
-      row.selfie_url
-    ].filter(Boolean);
+    const documents = row._signedDocs || [];
 
     const documentLinks = documents.length
       ? documents.map((url, i) =>
@@ -1639,7 +1643,7 @@ function renderKYC() {
       <tr>
         <td>${escapeHTML(String(row.user_id || "").slice(0, 12))}</td>
         <td>${statusBadge(row.status)}</td>
-        <td>${row.created_at ? new Date(row.created_at).toLocaleString() : "—"}</td>
+        <td>${row.submitted_at ? new Date(row.submitted_at).toLocaleString() : "—"}</td>
         <td>${documentLinks}</td>
         <td>
           ${row.status === "pending"
@@ -2583,7 +2587,7 @@ function renderRewardManagement(signedProofs = new Map()) {
       ? rewardBalanceLedgerData.map(row => `
         <tr>
           <td>${escapeHTML(String(row.user_id).slice(0,8))}</td>
-          <td>${row.created_at ? new Date(row.created_at).toLocaleString() : "—"}</td>
+          <td>${row.submitted_at ? new Date(row.submitted_at).toLocaleString() : "—"}</td>
           <td>${escapeHTML(row.description || "Wallet reward activity")}</td>
           <td style="color:${Number(row.amount) >= 0 ? "#4ade80" : "#f87171"};font-weight:700">${Number(row.amount) > 0 ? "+" : ""}${money(row.amount)}</td>
         </tr>`).join("")
@@ -2995,7 +2999,7 @@ async function loadKYC() {
   const { data, error } = await db
     .from("kyc_submissions")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("submitted_at", { ascending: false });
 
   if (error) {
     console.error("KYC:", error);
@@ -3004,7 +3008,15 @@ async function loadKYC() {
     return;
   }
 
-  kycData = data || [];
+  kycData = await Promise.all((data || []).map(async row => {
+    const paths = [row.front_file, row.back_file, row.selfie_file].filter(Boolean);
+    const links = await Promise.all(paths.map(async path => {
+      const { data: signed, error: signError } = await db.storage.from("kyc-documents").createSignedUrl(path, 300);
+      return signError || !signed?.signedUrl ? null : signed.signedUrl;
+    }));
+    row._signedDocs = links.filter(Boolean);
+    return row;
+  }));
   renderKYC();
   updateOverviewStats();
 }
@@ -3019,11 +3031,7 @@ function renderKYC() {
   }
 
   tbody.innerHTML = kycData.map(row => {
-    const documents = [
-      row.front_image_url || row.id_front_url || row.document_front,
-      row.back_image_url || row.id_back_url || row.document_back,
-      row.selfie_url
-    ].filter(Boolean);
+    const documents = row._signedDocs || [];
 
     const documentLinks = documents.length
       ? documents.map((url, i) =>
@@ -3035,7 +3043,7 @@ function renderKYC() {
       <tr>
         <td>${escapeHTML(String(row.user_id || "").slice(0, 12))}</td>
         <td>${statusBadge(row.status)}</td>
-        <td>${row.created_at ? new Date(row.created_at).toLocaleString() : "—"}</td>
+        <td>${row.submitted_at ? new Date(row.submitted_at).toLocaleString() : "—"}</td>
         <td>${documentLinks}</td>
         <td>
           ${row.status === "pending"
@@ -3979,7 +3987,7 @@ function renderRewardManagement(signedProofs = new Map()) {
       ? rewardBalanceLedgerData.map(row => `
         <tr>
           <td>${escapeHTML(String(row.user_id).slice(0,8))}</td>
-          <td>${row.created_at ? new Date(row.created_at).toLocaleString() : "—"}</td>
+          <td>${row.submitted_at ? new Date(row.submitted_at).toLocaleString() : "—"}</td>
           <td>${escapeHTML(row.description || "Wallet reward activity")}</td>
           <td style="color:${Number(row.amount) >= 0 ? "#4ade80" : "#f87171"};font-weight:700">${Number(row.amount) > 0 ? "+" : ""}${money(row.amount)}</td>
         </tr>`).join("")
@@ -4391,7 +4399,7 @@ async function loadKYC() {
   const { data, error } = await db
     .from("kyc_submissions")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("submitted_at", { ascending: false });
 
   if (error) {
     console.error("KYC:", error);
@@ -4400,7 +4408,15 @@ async function loadKYC() {
     return;
   }
 
-  kycData = data || [];
+  kycData = await Promise.all((data || []).map(async row => {
+    const paths = [row.front_file, row.back_file, row.selfie_file].filter(Boolean);
+    const links = await Promise.all(paths.map(async path => {
+      const { data: signed, error: signError } = await db.storage.from("kyc-documents").createSignedUrl(path, 300);
+      return signError || !signed?.signedUrl ? null : signed.signedUrl;
+    }));
+    row._signedDocs = links.filter(Boolean);
+    return row;
+  }));
   renderKYC();
   updateOverviewStats();
 }
@@ -4415,11 +4431,7 @@ function renderKYC() {
   }
 
   tbody.innerHTML = kycData.map(row => {
-    const documents = [
-      row.front_image_url || row.id_front_url || row.document_front,
-      row.back_image_url || row.id_back_url || row.document_back,
-      row.selfie_url
-    ].filter(Boolean);
+    const documents = row._signedDocs || [];
 
     const documentLinks = documents.length
       ? documents.map((url, i) =>
@@ -4431,7 +4443,7 @@ function renderKYC() {
       <tr>
         <td>${escapeHTML(String(row.user_id || "").slice(0, 12))}</td>
         <td>${statusBadge(row.status)}</td>
-        <td>${row.created_at ? new Date(row.created_at).toLocaleString() : "—"}</td>
+        <td>${row.submitted_at ? new Date(row.submitted_at).toLocaleString() : "—"}</td>
         <td>${documentLinks}</td>
         <td>
           ${row.status === "pending"
@@ -5375,7 +5387,7 @@ function renderRewardManagement(signedProofs = new Map()) {
       ? rewardBalanceLedgerData.map(row => `
         <tr>
           <td>${escapeHTML(String(row.user_id).slice(0,8))}</td>
-          <td>${row.created_at ? new Date(row.created_at).toLocaleString() : "—"}</td>
+          <td>${row.submitted_at ? new Date(row.submitted_at).toLocaleString() : "—"}</td>
           <td>${escapeHTML(row.description || "Wallet reward activity")}</td>
           <td style="color:${Number(row.amount) >= 0 ? "#4ade80" : "#f87171"};font-weight:700">${Number(row.amount) > 0 ? "+" : ""}${money(row.amount)}</td>
         </tr>`).join("")
