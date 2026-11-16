@@ -303,6 +303,89 @@ body .trade-screen .trade-symbol-pill *,body .demo-quote *,body .confirm-item *,
  .trade-layout{grid-template-columns:minmax(0,1fr)!important}
 }
 </style>
+
+<style id="wft-open-trade-final-readable-v2">
+/* Open Trade: enforce consistent light surfaces and readable contrast. */
+html,body{background:#f4f7fb!important;color:#111827!important;color-scheme:light!important}
+main,.trade-screen,.trade-layout{background:#f4f7fb!important;color:#111827!important}
+.top{background:#155eef!important;color:#fff!important}
+.top *{color:#fff!important}
+.trade-screen .trade-ticket,
+.trade-screen .data-panel,
+.trade-screen .confirm-box,
+.trade-screen .tabs,
+.trade-screen .tablewrap,
+.trade-screen .demo-quote,
+.trade-screen .trade-symbol-pill,
+.trade-screen .field,
+.trade-screen .order-est{
+ background:#fff!important;background-color:#fff!important;background-image:none!important;
+ color:#111827!important;border-color:#dbe3ee!important;box-shadow:0 4px 16px rgba(15,23,42,.05)!important
+}
+.trade-screen .trade-ticket h2,
+.trade-screen .trade-ticket-head h2,
+.trade-screen .trade-ticket *,
+.trade-screen .data-panel *,
+.trade-screen .demo-quote *,
+.trade-screen .trade-symbol-pill *{
+ color:#111827!important
+}
+.trade-screen .hint,
+.trade-screen .field label,
+.trade-screen .order-est span,
+.trade-screen .trade-disclaimer,
+.trade-screen .quote-note,
+.trade-screen .demo-quote span,
+.trade-screen .empty,
+.trade-screen .statusline,
+.trade-screen th{color:#64748b!important}
+.trade-screen input,
+.trade-screen select,
+.trade-screen textarea,
+.trade-screen select option,
+.trade-screen select optgroup{
+ background:#fff!important;background-color:#fff!important;color:#111827!important;
+ border:1px solid #cbd5e1!important;box-shadow:none!important;color-scheme:light!important
+}
+.trade-screen button,
+.trade-screen .order-tabs button,
+.trade-screen .mode-tabs button,
+.trade-screen .tabs button,
+.trade-screen .execute,
+.trade-screen .cancel-trade,
+.trade-screen .back-chart{
+ background:#155eef!important;background-color:#155eef!important;background-image:none!important;
+ color:#fff!important;border:1px solid #155eef!important;box-shadow:none!important
+}
+.trade-screen button:disabled{opacity:.5!important}
+.trade-screen .order-tabs button.active.buy,
+.trade-screen .order-tabs button.active.sell,
+.trade-screen .mode-tabs button.active,
+.trade-screen .tab.active{background:#155eef!important;color:#fff!important;border-color:#155eef!important}
+.trade-screen .execute.sell{background:#155eef!important;color:#fff!important;border-color:#155eef!important}
+.trade-screen .trade-symbol-pill{background:#eff6ff!important;color:#111827!important;border-color:#bfdbfe!important}
+.trade-screen .demo-quote{background:#f8faff!important}
+.trade-screen .demo-quote b{color:#111827!important}
+.trade-screen th{background:#f3f6fb!important;color:#334155!important}
+.trade-screen td{background:#fff!important;color:#111827!important;border-color:#e5eaf2!important}
+.trade-screen .confirm-overlay{background:rgba(255,255,255,.94)!important;backdrop-filter:none!important}
+.trade-screen .confirm-box{background:#fff!important;color:#111827!important}
+.trade-screen .confirm-box *{color:#111827!important}
+#terminalAccessGate{background:#f4f7fb!important}
+#terminalAccessGate .gate-card{background:#fff!important;color:#111827!important;border-color:#dbe3ee!important}
+#terminalAccessGate .gate-card *{color:#111827!important}
+#terminalAccessGate .gate-card a{background:#155eef!important;color:#fff!important}
+body .metric.gold{color:#155eef!important}
+@media(max-width:760px){
+ .trade-screen .trade-layout{grid-template-columns:minmax(0,1fr)!important}
+ .trade-screen .trade-ticket{width:100%!important}
+ .trade-screen .trade-ticket-head{gap:9px;align-items:flex-start}
+ .trade-screen .trade-ticket-head>div:last-child{max-width:68%}
+ .trade-screen .trade-ticket-head select{max-width:100%!important;min-width:0!important}
+ .trade-screen .demo-quote{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+</style>
+
 </head>
 <body class="terminal-locked">
 <header class="top">
