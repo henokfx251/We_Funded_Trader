@@ -1408,7 +1408,12 @@ function updateOverviewStats() {
     $("paidOrders").textContent =
       ordersData.filter(o => ["paid", "completed"].includes(o.status)).length;
   }
-  if ($("totalAccounts")) $("totalAccounts").textContent = accountsData.length;
+  // Pending account requests are not counted as created trading accounts.
+  if ($("totalAccounts")) {
+    $("totalAccounts").textContent = accountsData.filter(a =>
+      String(a.status || "").toLowerCase() !== "pending"
+    ).length;
+  }
   if ($("activeAccounts")) {
     $("activeAccounts").textContent =
       accountsData.filter(a => String(a.status || "").toLowerCase() === "active").length;
