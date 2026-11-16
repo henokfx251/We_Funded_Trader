@@ -2258,7 +2258,7 @@ async function loadCertificates() {
 
   const { data, error } = await supabase
     .from("certificates")
-    .select("id,user_id,certificate_number,issued_at,challenge_request_id,recipient_name,certificate_title,certificate_description,challenge_pass_requests(trading_account_id,trading_accounts(account_size,account_type))")
+    .select("id,user_id,certificate_number,issued_at,challenge_request_id,payout_request_id,certificate_type,recipient_name,certificate_title,certificate_description,challenge_pass_requests(trading_account_id,trading_accounts(account_size,account_type))")
     .eq("user_id", currentUser.id)
     .order("issued_at", { ascending: false });
 
@@ -2298,6 +2298,7 @@ async function loadCertificates() {
     return `
       <article class="certificate-paper" id="certificate-${safe(c.id)}">
         <div class="certificate-kicker">WE FUNDED TRADER · OFFICIAL RECOGNITION</div>
+        <div class="certificate-kicker">${safe(c.certificate_type === "payout" ? "PAYOUT RECOGNITION" : c.certificate_type === "challenge" ? "CHALLENGE PASS RECOGNITION" : "ACHIEVEMENT")}</div>
         <h2 class="certificate-title">${safe(certificateTitle)}</h2>
         <p class="certificate-copy">
           This certificate is proudly presented to
