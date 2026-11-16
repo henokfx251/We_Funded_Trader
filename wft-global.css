@@ -1,106 +1,21 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
-
-/* WFT LIGHT THEME — shared across every HTML page.
-   White surfaces = dark text. Blue surfaces = white text. */
+/* WFT shared foundation — intentionally non-destructive.
+   Each page owns its layout and component colors. Never globally repaint cards,
+   navigation, sections, or text: blue surfaces must retain white text. */
 :root{
- color-scheme:light;
- --wft-blue:#155eef;
- --wft-blue-hover:#104fc7;
- --wft-ink:#111827;
- --wft-muted:#64748b;
- --wft-border:#dbe3ee;
- --wft-white:#ffffff;
- --wft-soft:#f3f6fb;
+  color-scheme:light;
+  --wft-blue:#155eef;
+  --wft-blue-hover:#104fc7;
+  --wft-ink:#111827;
+  --wft-muted:#64748b;
+  --wft-border:#dbe3ee;
+  --wft-surface:#ffffff;
+  --wft-soft:#f3f6fb;
 }
-html{color-scheme:light!important;background:#fff!important}
-body{
- background:#fff!important;
- background-color:#fff!important;
- color:var(--wft-ink)!important;
- font-family:Inter,Arial,sans-serif;
-}
-body :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,b,li,td,th,legend,div,summary){
- text-shadow:none!important;
-}
-/* White content and navigation surfaces */
-body :is(header,nav,main,section,article,aside,footer,form,.content,.main,.sidebar,.topbar,.card,.panel,.modal,.dropdown-menu,.challenge-card,.account-card,.stat-card,.table-wrap,.table-container,.info-card,.feature-card,.price-card,.promo,.promo-banner,.welcome-card,.summary-card,.activity-card,.reward-card,.payout-card,.faq-item,.auth-card,.checkout-card){
- background-color:#fff!important;
- color:var(--wft-ink)!important;
-}
-body :is(.sidebar,.topbar,.navbar,.site-header,.admin-header,.dashboard-header){
- background:#fff!important;
- color:#111827!important;
- border-color:#e2e8f0!important;
-}
-body :is(.sidebar,.topbar,.navbar,.site-header,.admin-header,.dashboard-header) :is(a,p,span,small,strong,b,h1,h2,h3,h4,label){
- color:#111827!important;
-}
-/* Sidebar links remain white with dark labels; active/hover links are blue with white labels. */
-body .sidebar :is(.nav-btn,.nav-link){
- background:#fff!important;
- color:#111827!important;
- border:1px solid #e2e8f0!important;
-}
-body .sidebar :is(.nav-btn,.nav-link) :is(span,small,strong){color:inherit!important}
-body .sidebar :is(.nav-btn,.nav-link):is(:hover,.active){
- background:#155eef!important;
- color:#fff!important;
- border-color:#155eef!important;
-}
-body .sidebar :is(.nav-btn,.nav-link):is(:hover,.active) *{color:#fff!important}
-/* Blue surfaces always carry white text. */
-body :is(.hero,.final-cta,.blue-section,.blue-panel,.blue-card,.primary-banner,.promo-blue,.dashboard-blue){
- background:#155eef!important;
- background-image:none!important;
- color:#fff!important;
-}
-body :is(.hero,.final-cta,.blue-section,.blue-panel,.blue-card,.primary-banner,.promo-blue,.dashboard-blue) :is(h1,h2,h3,h4,p,span,small,strong,b,li,label,a){
- color:#fff!important;
-}
-/* Blue primary buttons */
-body :is(button,input[type=submit],input[type=button],input[type=reset],.btn-primary,.primary-btn,.primary-button,.cta-button,.buy-button,.action-primary,[role=button]){
- background:#155eef!important;
- background-color:#155eef!important;
- background-image:none!important;
- color:#fff!important;
- border:1px solid #155eef!important;
-}
-body :is(button,input[type=submit],input[type=button],input[type=reset],.btn-primary,.primary-btn,.primary-button,.cta-button,.buy-button,.action-primary,[role=button]) *{color:#fff!important}
-body :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn,.white-button){
- background:#fff!important;
- background-color:#fff!important;
- color:#111827!important;
- border:1px solid #cbd5e1!important;
-}
-body :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn,.white-button) *{color:#111827!important}
-/* Fields, cards, and tables */
-body :is(input:not([type=checkbox]):not([type=radio]),select,textarea){
- background:#fff!important;
- background-color:#fff!important;
- color:#111827!important;
- border:1px solid #cbd5e1!important;
-}
-body :is(input,textarea)::placeholder{color:#64748b!important;opacity:1}
-body :is(input[type=checkbox],input[type=radio]){accent-color:#155eef}
-body :is(.card,.panel,.challenge-card,.account-card,.stat-card,.info-card,.feature-card,.price-card,.auth-card,.checkout-card,.faq-item,.reward-card,.payout-card){
- border-color:#dbe3ee!important;
- box-shadow:0 5px 20px rgba(15,23,42,.05)!important;
-}
-body :is(.card,.panel,.challenge-card,.account-card,.stat-card,.info-card,.feature-card,.price-card,.auth-card,.checkout-card,.faq-item,.reward-card,.payout-card) :is(h1,h2,h3,h4,p,span,small,strong,b,li,label){
- color:#111827!important;
-}
-body :is(.muted,.small,.description,.subtitle,.helper-text,.hint,.footer-note){color:#64748b!important}
-body :is(th){background:#f3f6fb!important;color:#334155!important}
-body :is(.status,.badge,.pill,.tag){background:#eef2f7!important;color:#334155!important}
-body :is(.status.approved,.status.paid,.status.active,.badge.success){background:#dcfce7!important;color:#166534!important}
-body :is(.status.pending,.badge.warning){background:#fef3c7!important;color:#92400e!important}
-body :is(.status.rejected,.status.failed,.status.breached,.badge.danger){background:#fee2e2!important;color:#991b1b!important}
-body a:not(.btn):not(.button):not([role=button]){color:#155eef}
-:focus-visible{outline:2px solid #155eef!important;outline-offset:2px}
+*,*::before,*::after{box-sizing:border-box}
+html{max-width:100%;scroll-behavior:smooth}
+body{max-width:100%;-webkit-font-smoothing:antialiased}
 img,video,iframe{max-width:100%}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
-
-
-/* Containers are transparent so the homepage hero remains visible. */
-body .container{background:transparent!important;color:inherit!important}
-body .hero .container{background:transparent!important}
+input,select,textarea,button{font:inherit}
+input,select,textarea{max-width:100%}
+:focus-visible{outline:2px solid var(--wft-blue);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
