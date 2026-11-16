@@ -1390,9 +1390,18 @@ th,td{border-bottom-color:#e8edf4!important;color:#334155}
   </div>
   <div class="stats-grid">
     <div class="stat-card"><span>Total Referrals</span><h2 id="affiliateReferrals">0</h2></div>
+    <div class="stat-card"><span>Referred Buyers</span><h2 id="affiliateBuyers">0</h2></div>
     <div class="stat-card"><span>Total Commission</span><h2 id="affiliateCommission">$0.00</h2></div>
     <div class="stat-card"><span>Available Commission</span><h2 id="affiliateAvailable">$0.00</h2></div>
     <div class="stat-card"><span>Paid Commission</span><h2 id="affiliatePaid">$0.00</h2></div>
+  </div>
+  <div class="panel">
+    <h3>Next $125 Commission Target</h3>
+    <p class="muted small">Your next $125 is calculated only from real paid purchases made by users who register through your WFT referral link. WFT pays 10% of each eligible purchase.</p>
+    <div style="height:10px;background:#26374d;border-radius:20px;overflow:hidden;margin:12px 0">
+      <div id="affiliateNextBar" style="height:100%;width:0%;background:#155eef;border-radius:20px"></div>
+    </div>
+    <p><strong id="affiliateNextProgress">$0.00 / $125.00</strong> earned · <span id="affiliateNextRemaining">$125.00</span> remaining</p>
   </div>
   <div class="panel">
     <h3>Your Referral Link</h3>
@@ -2274,15 +2283,35 @@ async function loadAffiliate() {
   if (commissionError) throw commissionError;
 
   const list = commissions || [];
+  const { data: adjustments, error: adjustmentError } = await supabase
+    .from("affiliate_commission_adjustments")
+    .select("amount,status,description,created_at")
+    .eq("user_id", currentUser.id);
+  if (adjustmentError) throw adjustmentError;
+
+  const manualPaid = (adjustments || [])
+    .filter(a => a.status === "paid")
+    .reduce((s,a) => s + Number(a.amount || 0), 0);
+  const earnedFromReferrals = list
+    .filter(c => c.status !== "rejected")
+    .reduce((s,c) => s + Number(c.commission_amount || 0), 0);
+  const referredBuyers = new Set(list.map(c => c.referred_user_id)).size;
+  const nextTargetProgress = Math.min(100, earnedFromReferrals / 125 * 100);
+
   setText("affiliateReferrals", (referrals || []).length);
+  setText("affiliateBuyers", referredBuyers);
   setText("affiliateCommission", money(list.reduce((s,c) =>
-    s + Number(c.commission_amount || 0), 0)));
+    s + Number(c.commission_amount || 0), 0) + manualPaid));
   setText("affiliateAvailable", money(list
     .filter(c => c.status === "approved")
     .reduce((s,c) => s + Number(c.commission_amount || 0), 0)));
   setText("affiliatePaid", money(list
     .filter(c => c.status === "paid")
-    .reduce((s,c) => s + Number(c.commission_amount || 0), 0)));
+    .reduce((s,c) => s + Number(c.commission_amount || 0), 0) + manualPaid));
+  setText("affiliateNextProgress", money(earnedFromReferrals) + " / $125.00");
+  setText("affiliateNextRemaining", money(Math.max(0, 125 - earnedFromReferrals)));
+  const progressBar = $("affiliateNextBar");
+  if (progressBar) progressBar.style.width = nextTargetProgress + "%";
 
   setHTML("affiliateHistory", list.map(c => `
     <tr><td>${date(c.created_at)}</td>
