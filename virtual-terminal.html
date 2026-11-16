@@ -675,7 +675,7 @@ function renderMonitor(){
 }
 function isTradableAccount(){const a=accounts.find(x=>x.id===selectedAccount);return !!a&&String(a.status||"").toLowerCase()==="active";}
 function updateTradePermission(){const allowed=isTradableAccount();["buyBtn","sellBtn","executeBtn"].forEach(id=>{$(id).disabled=!allowed||busy;});document.querySelectorAll("[data-mode]").forEach(b=>b.disabled=!allowed);$("volume").disabled=!allowed;$("pendingPrice").disabled=!allowed;$("sl").disabled=!allowed;$("tp").disabled=!allowed;if(!allowed&&selectedAccount){const a=accounts.find(x=>x.id===selectedAccount);message("This account is "+(a?.status||"not active")+". Trading is disabled; you can view its available history and positions.","error");}}
-function showTerminalGate(text,title="Account Verification Required",link="dashboard.html"){document.body.classList.add("terminal-locked");$("terminalGateTitle").textContent=title;$("terminalGateMessage").textContent=text;$("terminalGateLink").href=link;$("terminalGateLink").textContent=link.includes("#kyc")?"Open KYC Verification":"Open Dashboard";}
+function showTerminalGate(text,title="Account Verification Required",link="dashboard.html"){document.body.classList.add("terminal-locked");$("terminalGateTitle").textContent=title;$("terminalGateMessage").textContent=text;$("terminalGateLink").href=link;$("terminalGateLink").textContent=link.includes("page=kyc")?"Open KYC Verification":"Open Dashboard";}
 async function loadAccounts(){
  const {data:sessionData,error:sessionError}=await db.auth.getSession();
  if(sessionError||!sessionData.session){showTerminalGate("Please sign in to your WFT account.","Sign In","Login.html");return;}
@@ -690,7 +690,7 @@ async function loadAccounts(){
  const kycStatus=String(kycRows?.[0]?.status||"").toLowerCase();
  if(needsKyc&&kycStatus!=="approved"){
   const msg=kycStatus==="pending"?"Your KYC documents are under review. The Trading Terminal will unlock after WFT Admin approves your KYC.":"KYC verification is required for Instant Funding and Giveaway accounts. Please submit your identity documents from Dashboard → KYC Verification. Terminal access unlocks after Admin approval.";
-  showTerminalGate(msg,kycStatus==="pending"?"KYC Under Review":"KYC Verification Required","dashboard.html#kyc");return;
+  showTerminalGate(msg,kycStatus==="pending"?"KYC Under Review":"KYC Verification Required","dashboard.html?page=kyc");return;
  }
  accounts=(data||[]).filter(a=>["active","passed","failed"].includes(String(a.status||"").toLowerCase()));
  if(!accounts.length){showTerminalGate("No eligible WFT trading account was found. The Terminal unlocks after WFT assigns an account.","Active Account Required");return;}
