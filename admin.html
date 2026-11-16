@@ -1276,7 +1276,7 @@ async function loadAffiliateManagement() {
   if ($("wftAffiliateProgress")) $("wftAffiliateProgress").textContent=fmt(Math.min(allCommission,125))+" / $125";
 
   if (affiliateBody) affiliateBody.innerHTML = affiliateRows.length ? affiliateRows.map(r=>{
-    const name = r.profile.full_name || r.profile.email || "WFT Affiliate";
+    const name = String(r.profile.referral_code||"").toUpperCase()==="C06FA0A4" ? "WFT" : (r.profile.full_name || r.profile.email || "WFT Affiliate");
     const progress = Math.min(100,(r.earned/125)*100);
     return '<tr><td>'+escapeHTML(name)+'</td><td>'+escapeHTML(r.profile.referral_code)+'</td><td>'+r.refs.length+'</td><td>'+r.buyers.size+'</td><td>'+fmt(r.revenue)+'</td><td>'+fmt(r.earned)+'</td><td>'+fmt(r.earned)+' / $125 ('+progress.toFixed(1)+'%)</td></tr>';
   }).join("") : '<tr><td colspan="7" class="empty">No affiliate accounts found.</td></tr>';
@@ -1284,11 +1284,12 @@ async function loadAffiliateManagement() {
   if (customerBody) {
     const customerRows = attributions.map(a=>{
       const affiliate = profiles.find(p=>p.user_id===a.referrer_user_id);
+      const affiliateName = String(affiliate?.referral_code||a.referral_code||"").toUpperCase()==="C06FA0A4" ? "WFT" : (affiliate?.full_name || "WFT Affiliate");
       const customer = profileById.get(a.referred_user_id);
       const customerOrders = orders.filter(o=>o.user_id===a.referred_user_id);
       const revenue = customerOrders.reduce((sum,o)=>sum+Number(o.final_price||0),0);
       const earned = commissionTotal(commissions.filter(c=>c.referrer_user_id===a.referrer_user_id && c.referred_user_id===a.referred_user_id && !["rejected"].includes(String(c.status).toLowerCase())));
-      return {affiliate:affiliate?.full_name || "WFT Affiliate",customer:customer?.full_name || "Customer",email:customer?.email || "—",count:customerOrders.length,revenue,earned};
+      return {affiliate:affiliateName,customer:customer?.full_name || "Customer",email:customer?.email || "—",count:customerOrders.length,revenue,earned};
     });
     customerBody.innerHTML = customerRows.length ? customerRows.map(r=>'<tr><td>'+escapeHTML(r.affiliate)+'</td><td>'+escapeHTML(r.customer)+'</td><td>'+escapeHTML(r.email)+'</td><td>'+r.count+'</td><td>'+fmt(r.revenue)+'</td><td>'+fmt(r.earned)+'</td></tr>').join("") : '<tr><td colspan="6" class="empty">No referred users recorded yet.</td></tr>';
   }
