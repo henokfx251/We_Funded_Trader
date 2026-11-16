@@ -145,6 +145,38 @@ footer{padding:42px 0 22px;border-top:1px solid var(--line);background:#fff;colo
 @media(max-width:480px){.section{padding:54px 0}.challenge-types,.account-grid,.rules-grid,.steps{grid-template-columns:1fr}.hero-buttons .btn{width:100%}.hero-trust{gap:7px}.footer-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column}.card{padding:21px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
 </style>
+<style id="wft-homepage-final-fix">
+/* Homepage-specific guard: keep the blue hero blue and its text white. */
+html,body{background:#f5f7fb!important;color:#344054!important}
+body{overflow-x:hidden!important;min-width:320px}
+header{background:rgba(255,255,255,.97)!important;color:#101828!important}
+header .navbar,header .container{background:transparent!important}
+.hero{display:block!important;position:relative!important;min-height:420px!important;width:100%!important;padding:clamp(68px,9vw,118px) 0 76px!important;background:linear-gradient(135deg,#155eef 0%,#2563eb 55%,#104fc7 100%)!important;color:#fff!important;overflow:hidden!important}
+.hero .container,.hero-content{background:transparent!important;color:#fff!important}
+.hero *{color:#fff!important}
+.hero h1,.hero h1 span{color:#fff!important;background:transparent!important}
+.hero h1 span{color:#ffe08a!important}
+.hero .hero-tag,.hero .hero-description,.hero .hero-trust span{color:#fff!important}
+.hero .btn-primary{background:#fff!important;color:#155eef!important;border-color:#fff!important}
+.hero .btn-primary *{color:#155eef!important}
+.hero .btn-outline{background:rgba(255,255,255,.12)!important;color:#fff!important;border-color:rgba(255,255,255,.55)!important}
+.hero .btn-outline *{color:#fff!important}
+.challenge-types,.account-grid,.rules-grid,.steps,.promo-wrap,.promo,.reward-box,.faq-list,.footer-grid{min-width:0}
+.card,.challenge-card,.account-card,.rule-card,.step-card,.faq-item,.promo,.reward-box,.platform-item{background:#fff!important;color:#111827!important}
+.card :is(h1,h2,h3,h4,p,span,li,strong,small),.challenge-card :is(h1,h2,h3,h4,p,span,li,strong,small),.account-card :is(h1,h2,h3,h4,p,span,li,strong,small){color:inherit}
+.btn-primary{background:#155eef!important;color:#fff!important;border-color:#155eef!important}
+.btn-primary *{color:#fff!important}
+.btn-outline{background:#fff!important;color:#111827!important;border-color:#cbd5e1!important}
+.btn-outline *{color:#111827!important}
+@media(max-width:700px){
+ .hero{min-height:0!important;padding:56px 0 48px!important}
+ .hero h1{font-size:clamp(36px,10vw,54px)!important;letter-spacing:-1.3px!important}
+ .hero-description{font-size:14px!important}
+ .hero-buttons{width:100%;padding:0 4px}
+ .hero-buttons .btn{width:100%;max-width:360px}
+ .promo-wrap{margin-top:16px!important}
+}
+</style>
 </head>
 
 <body>
