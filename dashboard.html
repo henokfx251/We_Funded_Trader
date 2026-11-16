@@ -1039,7 +1039,7 @@ body .btn-secondary *{color:#155eef!important}
 
   <section class="panel wft-performance-panel" id="overviewPerformanceStats">
     <div class="wft-performance-heading">
-      <div><h3>Account Performance Statistics</h3><p>Combined trading performance across your WFT accounts.</p></div>
+      <div><h3>Account Performance Statistics</h3><p>Combined trading performance across your active WFT accounts only.</p></div>
       <span id="performanceUpdated">Calculating statistics…</span>
     </div>
     <div class="wft-performance-grid">
@@ -1070,7 +1070,7 @@ body .btn-secondary *{color:#155eef!important}
         </table>
       </div>
     </div>
-    <p class="wft-performance-note">Win rate excludes breakeven trades. Statistics are calculated from closed WFT Demo Terminal trades; drawdown shows the current highest reading across your accounts.</p>
+    <p class="wft-performance-note">Win rate excludes breakeven trades. Statistics include active/funded accounts only and are calculated from closed WFT Demo Terminal trades; drawdown shows the highest current reading among those accounts.</p>
   </section>
 </section>
 
@@ -1952,8 +1952,9 @@ async function loadOrders() {
   setHTML('ordersTable', rows || emptyRow(10, 'No orders found.'));
 }
 async function loadOverviewTradeStatistics() {
+  // Performance statistics are restricted to active/funded accounts only.
   const ids = accounts
-    .filter(a => String(a.status || "").toLowerCase() !== "pending")
+    .filter(a => ["active","funded"].includes(String(a.status || "").toLowerCase()))
     .map(a => a.id)
     .filter(Boolean);
   const totals = {closed:0,wins:0,losses:0,breakeven:0,grossProfit:0,grossLoss:0,net:0,best:null,worst:null,open:0,pending:0,floating:0,dailyDD:0,overallDD:0};
