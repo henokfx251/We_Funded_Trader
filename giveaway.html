@@ -148,6 +148,7 @@ async function loadSocialLinks(){
  const {data,error}=await db.from("reward_task_catalog").select("platform,task_url").eq("category","follow").eq("is_active",true).in("platform",platforms);
  const links={};(data||[]).forEach(r=>links[String(r.platform).toLowerCase()]=r.task_url);
  if(!links.discord)links.discord="https://discord.gg/eVAH7bDzFg";
+ if(!links.telegram)links.telegram="https://t.me/WeFundedTrader";
  grid.innerHTML=platforms.map(platform=>{
   const url=links[platform]&&String(links[platform]).startsWith("https://")?links[platform]:"";
   return '<div class="tile"><h3>'+titles[platform]+'</h3><a class="btn" href="'+escapeHTML(url||"#")+'" '+(url?'target="_blank" rel="noopener"':'aria-disabled="true"')+'>Follow on '+titles[platform]+' ↗</a><label for="proof-'+platform+'">Upload screenshot</label><input type="file" id="proof-'+platform+'" accept="image/jpeg,image/png,image/webp"><button class="btn submit-proof" type="button" data-platform="'+platform+'">Submit Proof</button><p class="small proof-state" id="state-'+platform+'">Not submitted</p></div>';
