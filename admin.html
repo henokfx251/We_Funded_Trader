@@ -382,6 +382,14 @@ body :is(button,.btn,.primary-btn) *{color:#fff!important}
 body .btn-secondary{background:#eff6ff!important;color:#155eef!important;border-color:#bfdbfe!important}
 body .btn-secondary *{color:#155eef!important}
 </style>
+
+<style id="wft-certificate-center">
+.cert-auto-note{display:flex;flex-direction:column;gap:6px;padding:16px 18px;margin:0 0 18px;border:1px solid #bfd3f5;border-left:4px solid #155eef;border-radius:12px;background:#eaf2ff;color:#174ea6;font-size:12px;line-height:1.55}
+.cert-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.cert-panel{border-top:3px solid #155eef}.cert-payout{border-top-color:#0f9f83}.cert-panel-heading{display:flex;align-items:center;gap:12px;margin-bottom:18px}.cert-panel-heading h3{margin:0 0 5px;font-size:15px}.cert-panel-heading p{margin:0;color:#64748b;font-size:11px}.cert-panel-heading>span{display:grid;place-items:center;width:43px;height:43px;border-radius:12px;background:#eaf2ff;font-size:21px}
+.cert-type-pill{display:inline-block;padding:5px 9px;border-radius:20px;font-size:10px;font-weight:800;background:#eaf2ff;color:#155eef}.cert-type-pill.payout{background:#e8faf5;color:#087b65}.cert-type-pill.achievement{background:#eef2f7;color:#475569}
+@media(max-width:760px){.cert-panels{grid-template-columns:1fr}}
+</style>
+
 </head>
 
 <body>
@@ -832,57 +840,31 @@ body .btn-secondary *{color:#155eef!important}
             </div>
           </div>
         </section>
+
         <!-- CERTIFICATE MANAGEMENT -->
         <section class="page" id="page-certificates">
-          <div class="page-heading">
-            <div>
-              <h1>Certificate Management</h1>
-              <p>Issue official WFT certificates directly to registered traders.</p>
-            </div>
-            <button class="btn" onclick="loadIssuedCertificates()">Refresh Certificates</button>
+          <div class="page-heading"><div><h1>WFT Certificate Center</h1><p>Separate challenge achievements from completed payout records.</p></div><button class="btn" onclick="loadIssuedCertificates()">Refresh Certificates</button></div>
+          <div class="cert-auto-note"><strong>Automatic issuing is enabled</strong><span>Challenge certificates are generated after Admin approves a Challenge Pass Request. Payout certificates are generated only when an approved payout is marked Paid.</span></div>
+          <div class="cert-panels">
+            <div class="panel cert-panel"><div class="cert-panel-heading"><span>🏆</span><div><h3>Challenge Pass Certificate</h3><p>For verified 1-Step challenge completion</p></div></div>
+              <form id="issueChallengeCertificateForm" class="form-grid" onsubmit="issueWftCertificate(event,'challenge')">
+                <div class="field"><label for="challengeCertEmail">Customer Email</label><input id="challengeCertEmail" type="email" required placeholder="customer@example.com"></div>
+                <div class="field"><label for="challengeCertRecipient">Recipient Full Name</label><input id="challengeCertRecipient" required maxlength="120" placeholder="Full name"></div>
+                <div class="field full"><label for="challengeCertDescription">Description</label><textarea id="challengeCertDescription" rows="2" maxlength="1000"></textarea></div>
+                <div class="form-actions"><button class="btn" id="issueChallengeCertificateButton" type="submit">Issue Challenge Certificate</button></div>
+              </form></div>
+            <div class="panel cert-panel cert-payout"><div class="cert-panel-heading"><span>💳</span><div><h3>Payout Certificate</h3><p>For a successfully paid payout</p></div></div>
+              <form id="issuePayoutCertificateForm" class="form-grid" onsubmit="issueWftCertificate(event,'payout')">
+                <div class="field"><label for="payoutCertEmail">Customer Email</label><input id="payoutCertEmail" type="email" required placeholder="customer@example.com"></div>
+                <div class="field"><label for="payoutCertRecipient">Recipient Full Name</label><input id="payoutCertRecipient" required maxlength="120" placeholder="Full name"></div>
+                <div class="field full"><label for="payoutCertDescription">Description</label><textarea id="payoutCertDescription" rows="2" maxlength="1000"></textarea></div>
+                <div class="form-actions"><button class="btn" id="issuePayoutCertificateButton" type="submit">Issue Payout Certificate</button></div>
+              </form></div>
           </div>
-
-          <div class="notice">
-            Certificates issued here are delivered to the matching customer's Dashboard automatically.
-            Challenge pass certificates continue to be generated after an approved pass request.
-          </div>
-
-          <div class="panel">
-            <div class="panel-head"><h3>Issue New Certificate</h3></div>
-            <form id="issueCertificateForm" class="form-grid" onsubmit="issueWftCertificate(event)">
-              <div class="field">
-                <label for="certificateEmail">Customer Account Email</label>
-                <input id="certificateEmail" type="email" required placeholder="customer@example.com">
-              </div>
-              <div class="form-group">
-                <label for="certificateRecipient">Recipient Full Name</label>
-                <input id="certificateRecipient" type="text" required maxlength="120" placeholder="Full name as shown on certificate">
-              </div>
-              <div class="form-group">
-                <label for="certificateTitle">Certificate Title</label>
-                <input id="certificateTitle" type="text" required maxlength="120" value="Certificate of Achievement">
-              </div>
-              <div class="form-group">
-                <label for="certificateDescription">Achievement / Description</label>
-                <textarea id="certificateDescription" rows="3" maxlength="1000" placeholder="Describe the achievement being recognized"></textarea>
-              </div>
-              <div class="form-actions">
-                <button class="btn" id="issueCertificateButton" type="submit">Issue Certificate</button>
-              </div>
-            </form>
-          </div>
-
-          <div class="panel">
-            <div class="panel-head"><h3>Recently Issued Certificates</h3></div>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Certificate No.</th><th>Trader ID</th><th>Recipient</th><th>Title</th><th>Issued</th></tr></thead>
-                <tbody id="issuedCertificatesTable"><tr><td colspan="5" class="empty">Loading certificates...</td></tr></tbody>
-              </table>
-            </div>
+          <div class="panel"><div class="panel-head"><h3>Recently Issued Certificates</h3><select id="certificateTypeFilter" onchange="loadIssuedCertificates()"><option value="all">All</option><option value="challenge">Challenge</option><option value="payout">Payout</option><option value="achievement">Other</option></select></div>
+            <div class="table-wrap"><table><thead><tr><th>Certificate No.</th><th>Type</th><th>Trader ID</th><th>Recipient</th><th>Title</th><th>Issued</th></tr></thead><tbody id="issuedCertificatesTable"><tr><td colspan="6" class="empty">Loading certificates...</td></tr></tbody></table></div>
           </div>
         </section>
-
         <!-- WFT AI ADMIN BOT -->
 <section class="page" id="page-ai-bot">
   <div class="page-heading">
@@ -2135,69 +2117,48 @@ async function reviewPayout(id, action) {
 
 /* ================= CERTIFICATE MANAGEMENT ================= */
 
+
 async function loadIssuedCertificates() {
   const tbody = $("issuedCertificatesTable");
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="5" class="empty">Loading certificates...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="6" class="empty">Loading certificates...</td></tr>';
   try {
-    const { data, error } = await db.from("certificates")
-      .select("id,user_id,certificate_number,recipient_name,certificate_title,issued_at")
-      .order("issued_at", { ascending: false })
-      .limit(100);
+    const filter = $("certificateTypeFilter")?.value || "all";
+    let query = db.from("certificates").select("id,user_id,certificate_number,recipient_name,certificate_title,certificate_type,issued_at").order("issued_at", {ascending:false}).limit(100);
+    if (filter !== "all") query = query.eq("certificate_type",filter);
+    const {data,error} = await query;
     if (error) throw error;
-    if (!data || !data.length) {
-      tbody.innerHTML = '<tr><td colspan="5" class="empty">No certificates issued yet.</td></tr>';
-      return;
-    }
-    tbody.innerHTML = data.map(c => `
-      <tr>
-        <td>${escapeHTML(c.certificate_number || "—")}</td>
-        <td>${escapeHTML(String(c.user_id || "").slice(0, 8))}</td>
-        <td>${escapeHTML(c.recipient_name || "Challenge Pass")}</td>
-        <td>${escapeHTML(c.certificate_title || "Certificate of Achievement")}</td>
-        <td>${c.issued_at ? new Date(c.issued_at).toLocaleString() : "—"}</td>
-      </tr>
-    `).join("");
-  } catch (error) {
-    console.error("Issued certificates:", error);
-    tbody.innerHTML = `<tr><td colspan="5" class="empty">Error: ${escapeHTML(error.message)}</td></tr>`;
-  }
+    if (!data || !data.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">No certificates in this category yet.</td></tr>'; return; }
+    tbody.innerHTML = data.map(c => {
+      const type = c.certificate_type || "achievement";
+      const label = type === "challenge" ? "Challenge Pass" : type === "payout" ? "Payout" : "Achievement";
+      return "<tr><td>"+escapeHTML(c.certificate_number||"—")+"</td><td><span class='cert-type-pill "+escapeHTML(type)+"'>"+label+"</span></td><td>"+escapeHTML(String(c.user_id||"").slice(0,8))+"</td><td>"+escapeHTML(c.recipient_name||"WFT Trader")+"</td><td>"+escapeHTML(c.certificate_title||"Certificate of Achievement")+"</td><td>"+(c.issued_at?new Date(c.issued_at).toLocaleString():"—")+"</td></tr>";
+    }).join("");
+  } catch(error) { console.error("Issued certificates:",error); tbody.innerHTML='<tr><td colspan="6" class="empty">Error: '+escapeHTML(error.message)+'</td></tr>'; }
 }
 
-async function issueWftCertificate(event) {
+async function issueWftCertificate(event,type) {
   event.preventDefault();
-  const button = $("issueCertificateButton");
-  const email = $("certificateEmail").value.trim();
-  const recipient = $("certificateRecipient").value.trim();
-  const title = $("certificateTitle").value.trim();
-  const description = $("certificateDescription").value.trim();
-  if (!email || !recipient || !title) {
-    showToast("Email, recipient name, and certificate title are required.");
-    return;
-  }
-  if (!confirm("Issue this certificate to " + recipient + " (" + email + ")? It will appear in their customer Dashboard.")) return;
-  button.disabled = true;
-  button.textContent = "ISSUING...";
+  const payout = type === "payout";
+  const prefix = payout ? "payoutCert" : "challengeCert";
+  const button = $(payout ? "issuePayoutCertificateButton" : "issueChallengeCertificateButton");
+  const form = event.currentTarget;
+  const email = $(prefix+"Email").value.trim();
+  const recipient = $(prefix+"Recipient").value.trim();
+  const description = $(prefix+"Description").value.trim();
+  const title = payout ? "WFT Payout Completion Certificate" : "WFT 1-Step Challenge Pass Certificate";
+  if (!email || !recipient) { showToast("Customer email and recipient name are required."); return; }
+  const label = payout ? "Payout" : "Challenge Pass";
+  if (!confirm("Issue a "+label+" certificate to "+recipient+" ("+email+")?")) return;
+  button.disabled=true; const oldText=button.textContent; button.textContent="ISSUING...";
   try {
-    const { data, error } = await db.rpc("admin_issue_wft_certificate", {
-      p_email: email,
-      p_recipient_name: recipient,
-      p_certificate_title: title,
-      p_certificate_description: description || null
-    });
-    if (error) throw error;
-    if (!data || data.success !== true) throw new Error(data?.message || "Certificate could not be issued.");
-    showToast("Certificate issued successfully: " + data.certificate_number);
-    $("issueCertificateForm").reset();
-    $("certificateTitle").value = "Certificate of Achievement";
-    await loadIssuedCertificates();
-  } catch (error) {
-    console.error("Issue certificate:", error);
-    showToast("Certificate issue failed: " + error.message);
-  } finally {
-    button.disabled = false;
-    button.textContent = "Issue Certificate";
-  }
+    const {data,error}=await db.rpc("admin_issue_wft_certificate",{p_email:email,p_recipient_name:recipient,p_certificate_title:title,p_certificate_description:description||null});
+    if(error) throw error;
+    if(!data||data.success!==true) throw new Error(data?.message||"Certificate could not be issued.");
+    showToast(label+" certificate issued: "+data.certificate_number);
+    form.reset(); await loadIssuedCertificates();
+  } catch(error) { console.error("Issue certificate:",error); showToast("Certificate issue failed: "+error.message); }
+  finally { button.disabled=false; button.textContent=oldText; }
 }
 
 /* ================= CHALLENGE PASS REQUESTS ================= */
