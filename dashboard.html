@@ -920,6 +920,32 @@ body .btn-secondary *{color:#155eef!important}
 .active-accounts-panel .overview-account-row small{color:#64748b!important}
 @media(max-width:640px){.active-panel-heading{align-items:flex-start}.active-panel-heading .btn{width:100%}}
 </style>
+<style id="wft-account-performance-stats-v1">
+#page-overview .wft-performance-panel{margin-top:16px;padding:18px;background:#fff!important;border:1px solid #e5e7eb!important;border-radius:8px!important;color:#111827!important}
+#page-overview .wft-performance-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+#page-overview .wft-performance-heading h3{margin:0;color:#111827;font-size:16px}
+#page-overview .wft-performance-heading p{margin:5px 0 0;color:#64748b;font-size:12px}
+#page-overview #performanceUpdated{color:#64748b;font-size:11px}
+#page-overview .wft-performance-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+#page-overview .wft-performance-card{min-width:0;padding:13px;border:1px solid #e5e7eb;border-radius:8px;background:#fff!important}
+#page-overview .wft-performance-card span{display:block;color:#64748b;font-size:11px;line-height:1.4}
+#page-overview .wft-performance-card strong{display:block;margin-top:7px;color:#111827;font-size:19px;font-weight:700;overflow-wrap:anywhere}
+#page-overview .wft-performance-card small{display:block;margin-top:5px;color:#64748b;font-size:10px;line-height:1.4}
+#page-overview .wft-performance-card .positive{color:#16a34a!important}
+#page-overview .wft-performance-card .negative{color:#dc2626!important}
+#page-overview .wft-account-performance{margin-top:20px}
+#page-overview .wft-account-performance h4{margin:0 0 10px;color:#111827;font-size:14px}
+#page-overview .wft-performance-table-wrap{width:100%;overflow-x:auto}
+#page-overview .wft-performance-table{width:100%;min-width:570px;border-collapse:collapse}
+#page-overview .wft-performance-table th,#page-overview .wft-performance-table td{padding:11px 10px;text-align:left;border-bottom:1px solid #e5e7eb;color:#334155;font-size:11px;white-space:nowrap}
+#page-overview .wft-performance-table th{background:#f8fafc;color:#64748b;font-weight:700}
+#page-overview .wft-performance-table td:first-child{font-weight:700;color:#111827}
+#page-overview .wft-performance-table .positive{color:#16a34a;font-weight:700}
+#page-overview .wft-performance-table .negative{color:#dc2626;font-weight:700}
+#page-overview .wft-performance-note{margin:13px 0 0;color:#64748b;font-size:10px;line-height:1.5}
+@media(max-width:900px){#page-overview .wft-performance-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){#page-overview .wft-performance-panel{padding:13px}#page-overview .wft-performance-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#page-overview .wft-performance-card{padding:11px}#page-overview .wft-performance-card strong{font-size:17px}#page-overview .wft-performance-heading{flex-direction:column}}
+</style>
 </head>
 
 <body>
@@ -1010,6 +1036,42 @@ body .btn-secondary *{color:#155eef!important}
       <div id="overviewActiveAccounts" class="empty">Loading active accounts...</div>
     </div>
   </div>
+
+  <section class="panel wft-performance-panel" id="overviewPerformanceStats">
+    <div class="wft-performance-heading">
+      <div><h3>Account Performance Statistics</h3><p>Combined trading performance across your WFT accounts.</p></div>
+      <span id="performanceUpdated">Calculating statistics…</span>
+    </div>
+    <div class="wft-performance-grid">
+      <article class="wft-performance-card"><span>Closed Trades</span><strong id="perfClosedTrades">—</strong><small>Total completed trades</small></article>
+      <article class="wft-performance-card"><span>Win Rate</span><strong id="perfWinRate">—</strong><small id="perfWinLossCount">Wins / losses</small></article>
+      <article class="wft-performance-card"><span>Wins</span><strong id="perfWins">—</strong><small>Profitable closed trades</small></article>
+      <article class="wft-performance-card"><span>Losses</span><strong id="perfLosses">—</strong><small>Unprofitable closed trades</small></article>
+      <article class="wft-performance-card"><span>Breakeven</span><strong id="perfBreakeven">—</strong><small>Zero-profit trades</small></article>
+      <article class="wft-performance-card"><span>Net Realized P/L</span><strong id="perfNetProfit">—</strong><small>Closed-trade result</small></article>
+      <article class="wft-performance-card"><span>Gross Profit</span><strong id="perfGrossProfit">—</strong><small>Winning trades combined</small></article>
+      <article class="wft-performance-card"><span>Gross Loss</span><strong id="perfGrossLoss">—</strong><small>Losing trades combined</small></article>
+      <article class="wft-performance-card"><span>Profit Factor</span><strong id="perfProfitFactor">—</strong><small>Gross profit ÷ gross loss</small></article>
+      <article class="wft-performance-card"><span>Average Win</span><strong id="perfAverageWin">—</strong><small>Average profitable trade</small></article>
+      <article class="wft-performance-card"><span>Average Loss</span><strong id="perfAverageLoss">—</strong><small>Average losing trade</small></article>
+      <article class="wft-performance-card"><span>Best Trade</span><strong id="perfBestTrade">—</strong><small>Highest closed-trade profit</small></article>
+      <article class="wft-performance-card"><span>Worst Trade</span><strong id="perfWorstTrade">—</strong><small>Lowest closed-trade result</small></article>
+      <article class="wft-performance-card"><span>Open Positions</span><strong id="perfOpenPositions">—</strong><small id="perfFloatingPL">Floating P/L: —</small></article>
+      <article class="wft-performance-card"><span>Pending Orders</span><strong id="perfPendingOrders">—</strong><small>Orders waiting to trigger</small></article>
+      <article class="wft-performance-card"><span>Current Daily Drawdown</span><strong id="perfDailyDD">—</strong><small>Highest current daily DD across accounts</small></article>
+      <article class="wft-performance-card"><span>Current Overall Drawdown</span><strong id="perfOverallDD">—</strong><small>Highest current overall DD across accounts</small></article>
+    </div>
+    <div class="wft-account-performance">
+      <h4>Performance by Account</h4>
+      <div class="wft-performance-table-wrap">
+        <table class="wft-performance-table">
+          <thead><tr><th>Account</th><th>Closed Trades</th><th>Win Rate</th><th>Net P/L</th><th>Open</th><th>Pending</th></tr></thead>
+          <tbody id="performanceAccountRows"><tr><td colspan="6">Loading account performance…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <p class="wft-performance-note">Win rate excludes breakeven trades. Statistics are calculated from closed WFT Demo Terminal trades; drawdown shows the current highest reading across your accounts.</p>
+  </section>
 </section>
 
 <!-- CHALLENGE -->
@@ -1889,6 +1951,87 @@ async function loadOrders() {
 
   setHTML('ordersTable', rows || emptyRow(10, 'No orders found.'));
 }
+async function loadOverviewTradeStatistics() {
+  const ids = accounts
+    .filter(a => String(a.status || "").toLowerCase() !== "pending")
+    .map(a => a.id)
+    .filter(Boolean);
+  const totals = {closed:0,wins:0,losses:0,breakeven:0,grossProfit:0,grossLoss:0,net:0,best:null,worst:null,open:0,pending:0,floating:0,dailyDD:0,overallDD:0};
+  const accountRows = [];
+  let failedReads = 0;
+  const moneyText = value => (Number(value || 0) < 0 ? "-$" : "$") + Math.abs(Number(value || 0)).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+  const pctText = value => Number(value || 0).toFixed(2) + "%";
+  const safeAccountName = a => safe(a.account_name || String(a.id || "").slice(0,8));
+  const results = await Promise.all(ids.map(async id => {
+    const account = accounts.find(a => a.id === id);
+    try {
+      const {data,error} = await supabase.rpc("wft_virtual_terminal_action",{
+        p_action:"state",p_trading_account_id:id,p_symbol:"XAUUSD",
+        p_side:null,p_volume:null,p_stop_loss:null,p_take_profit:null,p_position_id:null
+      });
+      if(error) throw error;
+      const history = Array.isArray(data?.history) ? data.history : [];
+      const positions = Array.isArray(data?.positions) ? data.positions : [];
+      const pending = Array.isArray(data?.pending_orders) ? data.pending_orders : [];
+      const profits = history.map(t => Number(t.profit || 0)).filter(Number.isFinite);
+      const wins = profits.filter(p => p > 0);
+      const losses = profits.filter(p => p < 0);
+      const breakeven = profits.filter(p => p === 0);
+      const grossProfit = wins.reduce((sum,p)=>sum+p,0);
+      const grossLoss = Math.abs(losses.reduce((sum,p)=>sum+p,0));
+      const net = profits.reduce((sum,p)=>sum+p,0);
+      const floating = positions.reduce((sum,p)=>sum+Number(p.unrealized_pnl || 0),0);
+      const currentEquity = Number(data?.account?.equity ?? account.equity ?? account.balance ?? 0);
+      const initial = Number(account.initial_balance || account.account_size || 0);
+      const dailyReference = account.daily_loss_mode === "static"
+        ? Number(account.daily_dd_reference_balance || initial)
+        : Number(account.daily_reference_equity || initial);
+      const maxReference = account.max_loss_mode === "equity_trailing"
+        ? Number(account.highest_equity || initial) : initial;
+      const dailyDD = dailyReference > 0 ? Math.max(0,(dailyReference-currentEquity)/dailyReference*100) : 0;
+      const overallDD = maxReference > 0 ? Math.max(0,(maxReference-currentEquity)/maxReference*100) : 0;
+      return {account,historyCount:history.length,wins:wins.length,losses:losses.length,breakeven:breakeven.length,grossProfit,grossLoss,net,best:profits.length?Math.max(...profits):null,worst:profits.length?Math.min(...profits):null,open:positions.length,pending:pending.length,floating,dailyDD,overallDD};
+    } catch(error) {
+      console.warn("WFT performance stats unavailable for account",id,error);
+      failedReads++;
+      return {account,unavailable:true};
+    }
+  }));
+  results.forEach(row => {
+    if(row.unavailable){accountRows.push('<tr><td>'+safeAccountName(row.account)+'</td><td colspan="5">Trade history unavailable</td></tr>');return;}
+    totals.closed+=row.historyCount;totals.wins+=row.wins;totals.losses+=row.losses;totals.breakeven+=row.breakeven;
+    totals.grossProfit+=row.grossProfit;totals.grossLoss+=row.grossLoss;totals.net+=row.net;
+    if(row.best!==null)totals.best=totals.best===null?row.best:Math.max(totals.best,row.best);
+    if(row.worst!==null)totals.worst=totals.worst===null?row.worst:Math.min(totals.worst,row.worst);
+    totals.open+=row.open;totals.pending+=row.pending;totals.floating+=row.floating;
+    totals.dailyDD=Math.max(totals.dailyDD,row.dailyDD);totals.overallDD=Math.max(totals.overallDD,row.overallDD);
+    const decided=row.wins+row.losses;
+    const rate=decided?row.wins/decided*100:0;
+    accountRows.push('<tr><td>'+safeAccountName(row.account)+'</td><td>'+row.historyCount+'</td><td>'+pctText(rate)+'</td><td class="'+(row.net>=0?"positive":"negative")+'">'+moneyText(row.net)+'</td><td>'+row.open+'</td><td>'+row.pending+'</td></tr>');
+  });
+  const decided=totals.wins+totals.losses;
+  const rate=decided?totals.wins/decided*100:0;
+  const profitFactor=totals.grossLoss>0?(totals.grossProfit/totals.grossLoss).toFixed(2):(totals.grossProfit>0?"∞":"—");
+  const values={
+    perfClosedTrades:totals.closed,perfWinRate:decided?pctText(rate):"—",
+    perfWinLossCount:totals.wins+" wins · "+totals.losses+" losses",
+    perfWins:totals.wins,perfLosses:totals.losses,perfBreakeven:totals.breakeven,
+    perfNetProfit:moneyText(totals.net),perfGrossProfit:moneyText(totals.grossProfit),
+    perfGrossLoss:"-"+moneyText(totals.grossLoss).replace("-$","$"),
+    perfProfitFactor:profitFactor,perfAverageWin:totals.wins?moneyText(totals.grossProfit/totals.wins):"—",
+    perfAverageLoss:totals.losses?"-"+moneyText(totals.grossLoss/totals.losses).replace("-$","$"):"—",
+    perfBestTrade:totals.best===null?"—":moneyText(totals.best),
+    perfWorstTrade:totals.worst===null?"—":moneyText(totals.worst),
+    perfOpenPositions:totals.open,perfFloatingPL:"Floating P/L: "+moneyText(totals.floating),
+    perfPendingOrders:totals.pending,perfDailyDD:pctText(totals.dailyDD),perfOverallDD:pctText(totals.overallDD)
+  };
+  Object.entries(values).forEach(([id,value])=>setText(id,value));
+  const netEl=$("perfNetProfit");if(netEl)netEl.className=totals.net>=0?"positive":"negative";
+  const floatEl=$("perfFloatingPL");if(floatEl)floatEl.className=totals.floating>=0?"positive":"negative";
+  setHTML("performanceAccountRows",accountRows.join("")||'<tr><td colspan="6">No trading accounts yet.</td></tr>');
+  setText("performanceUpdated",failedReads?("Updated · "+failedReads+" account history read(s) unavailable"):"Updated just now");
+}
+
 async function loadAccounts() {
   const { data, error } = await supabase
     .from("trading_accounts")
@@ -1966,6 +2109,7 @@ async function loadAccounts() {
     ` || `<option value="">No eligible accounts available</option>`;
   }
   updatePayoutPreview();
+  await loadOverviewTradeStatistics();
 }
 
 async function loadChallengeRequests() {
