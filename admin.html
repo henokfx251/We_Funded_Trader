@@ -723,7 +723,7 @@ tr:hover td{background:rgba(85,168,255,.035)}
           <div class="table-wrap" style="margin-bottom:18px">
             <table>
               <thead><tr><th>Trader ID</th><th>Platform</th><th>Screenshot</th><th>Status</th><th>Submitted</th><th>Admin Review</th></tr></thead>
-              <tbody id="giveawaySocialProofsTable"><tr><td colspan="5" class="empty">Loading social proofs...</td></tr></tbody>
+              <tbody id="giveawaySocialProofsTable"><tr><td colspan="6" class="empty">Loading social proofs...</td></tr></tbody>
             </table>
           </div>
           <div class="table-wrap">
@@ -1185,13 +1185,13 @@ async function loadGiveawayEntries() {
   await loadGiveawaySocialProofs();
   const tbody = $("giveawayEntriesTable");
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="9" class="empty">Loading giveaway entries...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="8" class="empty">Loading giveaway entries...</td></tr>';
   const { data, error } = await db
     .from("giveaway_entries")
     .select("*")
     .order("created_at", { ascending: false });
   if (error) {
-    tbody.innerHTML = '<tr><td colspan="9" class="empty">' + escapeHTML(error.message) + '</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">' + escapeHTML(error.message) + '</td></tr>';
     showToast("Could not load giveaway entries.");
     return;
   }
