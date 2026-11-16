@@ -2085,12 +2085,10 @@ async function loadAccounts() {
   const active = accounts.filter(a =>
     ["active","funded"].includes(String(a.status).toLowerCase())
   );
-  const balanceEligible = accounts.filter(a =>
-    !["failed","breached","disabled"].includes(String(a.status || "").toLowerCase())
-  );
-  const totalBalance = balanceEligible.reduce((sum,a) => sum + Number(a.balance || 0), 0);
-  const totalEquity = balanceEligible.reduce((sum,a) => sum + Number(a.equity ?? a.balance ?? 0), 0);
-  const totalProfit = accounts.reduce((sum,a) => sum + Number(a.profit || 0), 0);
+  // Financial overview totals include ACTIVE/FUNDED accounts only.
+  const totalBalance = active.reduce((sum,a) => sum + Number(a.balance || 0), 0);
+  const totalEquity = active.reduce((sum,a) => sum + Number(a.equity ?? a.balance ?? 0), 0);
+  const totalProfit = active.reduce((sum,a) => sum + Number(a.profit || 0), 0);
 
   setText("statAccounts", countedAccounts.length);
   setText("statActive", active.length);
