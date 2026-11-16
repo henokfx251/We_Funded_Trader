@@ -1,118 +1,101 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
-/* WE FUNDED TRADER — LIGHT DESIGN SYSTEM
-   Rule: white surfaces use dark text; blue surfaces use white text.
-   No black/dark page backgrounds. */
+/* WFT LIGHT THEME — shared across every HTML page.
+   White surfaces = dark text. Blue surfaces = white text. */
 :root{
-  color-scheme:light;
-  --wft-blue:#155eef;
-  --wft-blue-hover:#104fc7;
-  --wft-ink:#111827;
-  --wft-muted:#64748b;
-  --wft-border:#dbe3ee;
-  --wft-surface:#ffffff;
-  --wft-soft:#f3f6fb;
+ color-scheme:light;
+ --wft-blue:#155eef;
+ --wft-blue-hover:#104fc7;
+ --wft-ink:#111827;
+ --wft-muted:#64748b;
+ --wft-border:#dbe3ee;
+ --wft-white:#ffffff;
+ --wft-soft:#f3f6fb;
 }
-*{box-sizing:border-box}
-html,body{
-  min-height:100%;
-  margin:0;
-  background:#ffffff!important;
-  color:var(--wft-ink)!important;
-  font-family:Inter,Arial,sans-serif!important;
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
+html{color-scheme:light!important;background:#fff!important}
+body{
+ background:#fff!important;
+ background-color:#fff!important;
+ color:var(--wft-ink)!important;
+ font-family:Inter,Arial,sans-serif;
 }
-body{padding-bottom:0!important}
-
-/* Neutralize legacy dark panels and legacy white-on-dark text. */
-body *{
-  background-color:transparent!important;
-  background-image:none!important;
-  color:var(--wft-ink)!important;
-  text-shadow:none!important;
-  box-shadow:none!important;
+body :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,b,li,td,th,legend,div,summary){
+ text-shadow:none!important;
 }
-body :is(header,nav,main,section,article,aside,footer,form,.container,.wrapper,.content,.card,.panel,.modal,.dropdown-menu,.hero,.hero-section,.challenge-hero,.auth-card,.checkout-card,.dashboard-card,.stat-card,.table-wrap,.table-container,.account-card,.info-card,.feature-card,.price-card,.promo,.promo-banner,.welcome-card,.summary-card,.activity-card,.reward-card,.payout-card){
-  background-color:#ffffff!important;
-  color:var(--wft-ink)!important;
+/* White content and navigation surfaces */
+body :is(header,nav,main,section,article,aside,footer,form,.container,.wrapper,.content,.main,.sidebar,.topbar,.card,.panel,.modal,.dropdown-menu,.challenge-card,.account-card,.stat-card,.table-wrap,.table-container,.info-card,.feature-card,.price-card,.promo,.promo-banner,.welcome-card,.summary-card,.activity-card,.reward-card,.payout-card,.faq-item,.auth-card,.checkout-card){
+ background-color:#fff!important;
+ color:var(--wft-ink)!important;
 }
-body :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,b,li,td,th,legend,div){color:var(--wft-ink)!important}
-body :is(p,small,.muted,.subtitle,.description,.text-muted,.helper-text,.hint,.footer-note){color:var(--wft-muted)!important}
-
-/* Blue navigation bars are the only large blue surfaces. */
 body :is(.sidebar,.topbar,.navbar,.site-header,.admin-header,.dashboard-header){
-  background:#155eef!important;
-  color:#ffffff!important;
-  border-color:#155eef!important;
+ background:#fff!important;
+ color:#111827!important;
+ border-color:#e2e8f0!important;
 }
-body :is(.sidebar,.topbar,.navbar,.site-header,.admin-header,.dashboard-header) :is(a,p,span,small,strong,b,h1,h2,h3,h4,label,button){
-  color:#ffffff!important;
+body :is(.sidebar,.topbar,.navbar,.site-header,.admin-header,.dashboard-header) :is(a,p,span,small,strong,b,h1,h2,h3,h4,label){
+ color:#111827!important;
 }
-body :is(.sidebar,.topbar,.navbar,.site-header,.admin-header,.dashboard-header) :is(.nav-btn,.nav-link,.menu-toggle){
-  background:rgba(255,255,255,.12)!important;
-  color:#ffffff!important;
-  border-color:rgba(255,255,255,.25)!important;
+/* Sidebar links remain white with dark labels; active/hover links are blue with white labels. */
+body .sidebar :is(.nav-btn,.nav-link){
+ background:#fff!important;
+ color:#111827!important;
+ border:1px solid #e2e8f0!important;
 }
-body :is(.sidebar,.topbar,.navbar,.site-header,.admin-header,.dashboard-header) :is(.nav-btn,.nav-link,.menu-toggle).active{
-  background:#ffffff!important;
-  color:#155eef!important;
+body .sidebar :is(.nav-btn,.nav-link) :is(span,small,strong){color:inherit!important}
+body .sidebar :is(.nav-btn,.nav-link):is(:hover,.active){
+ background:#155eef!important;
+ color:#fff!important;
+ border-color:#155eef!important;
 }
-
-/* Primary actions: blue background always has white text. */
-body :is(button,input[type="submit"],input[type="button"],input[type="reset"],.btn,.button,.btn-primary,.primary-btn,.primary-button,.cta-button,.buy-button,.action-primary,[role="button"]){
-  background:#155eef!important;
-  background-color:#155eef!important;
-  background-image:none!important;
-  color:#ffffff!important;
-  border:1px solid #155eef!important;
-  border-radius:8px!important;
-  font:inherit;
-  font-weight:700;
-  cursor:pointer;
+body .sidebar :is(.nav-btn,.nav-link):is(:hover,.active) *{color:#fff!important}
+/* Blue surfaces always carry white text. */
+body :is(.hero,.final-cta,.blue-section,.blue-panel,.blue-card,.primary-banner,.promo-blue,.dashboard-blue){
+ background:#155eef!important;
+ background-image:none!important;
+ color:#fff!important;
 }
-body :is(button,input[type="submit"],input[type="button"],input[type="reset"],.btn,.button,.btn-primary,.primary-btn,.primary-button,.cta-button,.buy-button,.action-primary,[role="button"]) *{
-  color:#ffffff!important;
+body :is(.hero,.final-cta,.blue-section,.blue-panel,.blue-card,.primary-banner,.promo-blue,.dashboard-blue) :is(h1,h2,h3,h4,p,span,small,strong,b,li,label,a){
+ color:#fff!important;
 }
-body :is(button,.btn,.button,.btn-primary,.primary-btn,.primary-button,.cta-button,.buy-button,[role="button"]):hover{
-  background:#104fc7!important;
-  background-color:#104fc7!important;
-  color:#ffffff!important;
+/* Blue primary buttons */
+body :is(button,input[type=submit],input[type=button],input[type=reset],.btn-primary,.primary-btn,.primary-button,.cta-button,.buy-button,.action-primary,[role=button]){
+ background:#155eef!important;
+ background-color:#155eef!important;
+ background-image:none!important;
+ color:#fff!important;
+ border:1px solid #155eef!important;
 }
-body :is(button,input[type="submit"],input[type="button"]):disabled{
-  opacity:.55!important;
-  cursor:not-allowed!important;
-}
+body :is(button,input[type=submit],input[type=button],input[type=reset],.btn-primary,.primary-btn,.primary-button,.cta-button,.buy-button,.action-primary,[role=button]) *{color:#fff!important}
 body :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn,.white-button){
-  background:#ffffff!important;
-  background-color:#ffffff!important;
-  color:#155eef!important;
-  border:1px solid #155eef!important;
+ background:#fff!important;
+ background-color:#fff!important;
+ color:#111827!important;
+ border:1px solid #cbd5e1!important;
 }
-body :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn,.white-button) *{color:#155eef!important}
-
-/* Form controls and content surfaces. */
-body :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){
-  background:#ffffff!important;
-  background-color:#ffffff!important;
-  color:#111827!important;
-  border:1px solid #cbd5e1!important;
-  border-radius:7px!important;
+body :is(.btn-outline,.btn-secondary,.secondary-btn,.button-secondary,.outline-btn,.white-button) *{color:#111827!important}
+/* Fields, cards, and tables */
+body :is(input:not([type=checkbox]):not([type=radio]),select,textarea){
+ background:#fff!important;
+ background-color:#fff!important;
+ color:#111827!important;
+ border:1px solid #cbd5e1!important;
 }
-body :is(input,textarea)::placeholder{color:#94a3b8!important;opacity:1}
-body :is(input[type="checkbox"],input[type="radio"]){accent-color:#155eef}
-body :is(.card,.panel,.stat-card,.feature-card,.price-card,.account-card,.info-card,.auth-card,.checkout-card,.promo,.promo-banner,.summary-card,.activity-card,.reward-card,.payout-card,.route-card){
-  border:1px solid var(--wft-border)!important;
-  border-radius:10px!important;
+body :is(input,textarea)::placeholder{color:#64748b!important;opacity:1}
+body :is(input[type=checkbox],input[type=radio]){accent-color:#155eef}
+body :is(.card,.panel,.challenge-card,.account-card,.stat-card,.info-card,.feature-card,.price-card,.auth-card,.checkout-card,.faq-item,.reward-card,.payout-card){
+ border-color:#dbe3ee!important;
+ box-shadow:0 5px 20px rgba(15,23,42,.05)!important;
 }
-body :is(table,th,td){border-color:var(--wft-border)!important}
+body :is(.card,.panel,.challenge-card,.account-card,.stat-card,.info-card,.feature-card,.price-card,.auth-card,.checkout-card,.faq-item,.reward-card,.payout-card) :is(h1,h2,h3,h4,p,span,small,strong,b,li,label){
+ color:#111827!important;
+}
+body :is(.muted,.small,.description,.subtitle,.helper-text,.hint,.footer-note){color:#64748b!important}
 body :is(th){background:#f3f6fb!important;color:#334155!important}
 body :is(.status,.badge,.pill,.tag){background:#eef2f7!important;color:#334155!important}
 body :is(.status.approved,.status.paid,.status.active,.badge.success){background:#dcfce7!important;color:#166534!important}
 body :is(.status.pending,.badge.warning){background:#fef3c7!important;color:#92400e!important}
 body :is(.status.rejected,.status.failed,.status.breached,.badge.danger){background:#fee2e2!important;color:#991b1b!important}
-body a:not(.btn):not(.button):not([role="button"]){color:#155eef!important;text-decoration:none}
-body a:not(.btn):not(.button):not([role="button"]):hover{text-decoration:underline}
+body a:not(.btn):not(.button):not([role=button]){color:#155eef}
 :focus-visible{outline:2px solid #155eef!important;outline-offset:2px}
 img,video,iframe{max-width:100%}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
