@@ -909,6 +909,17 @@ body .btn-secondary{background:#eff6ff!important;color:#155eef!important;border-
 body .btn-secondary *{color:#155eef!important}
 @media(max-width:760px){.sidebar{background:#fff!important}.topbar{background:#fff!important}}
 </style>
+<style id="wft-active-accounts-overview-fix">
+.active-accounts-panel{background:#fff!important;color:#111827!important}
+.active-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.active-panel-heading h3{margin:0;color:#111827!important}
+.active-panel-heading .muted{margin:5px 0 0;color:#64748b!important}
+.active-panel-heading .btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;background:#155eef!important;color:#fff!important;border:1px solid #155eef!important;border-radius:9px;text-decoration:none;font-weight:800}
+.active-accounts-panel .overview-account-row{background:#fff!important;color:#111827!important;border-bottom:1px solid #e5eaf2!important}
+.active-accounts-panel .overview-account-row strong{color:#111827!important}
+.active-accounts-panel .overview-account-row small{color:#64748b!important}
+@media(max-width:640px){.active-panel-heading{align-items:flex-start}.active-panel-heading .btn{width:100%}}
+</style>
 </head>
 
 <body>
@@ -991,13 +1002,12 @@ body .btn-secondary *{color:#155eef!important}
   </div>
 
   <div class="grid-2 overview-panels">
-    <div class="panel">
-      <h3>Trading Accounts</h3>
-      <div id="overviewAccounts" class="empty">Loading accounts...</div>
-    </div>
-    <div class="panel">
-      <h3>Recent Orders</h3>
-      <div id="overviewOrders" class="empty">Loading orders...</div>
+    <div class="panel active-accounts-panel">
+      <div class="active-panel-heading">
+        <div><h3>Active Accounts</h3><p class="muted small">Only active trading accounts are shown here.</p></div>
+        <a class="btn" href="customer-accounts.html">View My Accounts</a>
+      </div>
+      <div id="overviewActiveAccounts" class="empty">Loading active accounts...</div>
     </div>
   </div>
 </section>
@@ -1878,14 +1888,6 @@ async function loadOrders() {
   }).join('');
 
   setHTML('ordersTable', rows || emptyRow(10, 'No orders found.'));
-  const overviewRows = orders.slice(0, 5).map(o => {
-    const submitted = o.status === 'pending' && o.transaction_hash && o.payment_network;
-    return '<tr><td>' + safe(o.account_size) + ' USD</td>' +
-      '<td>' + safe(o.account_type) + '</td>' +
-      '<td>' + money(o.final_price) + '</td>' +
-      '<td>' + statusBadge(submitted ? 'Payment Submitted' : o.status) + '</td></tr>';
-  }).join('');
-  setHTML('overviewOrders', overviewRows || emptyRow(4, 'No orders yet.'));
 }
 async function loadAccounts() {
   const { data, error } = await supabase
@@ -1940,12 +1942,15 @@ async function loadAccounts() {
   }).join("");
   setHTML("accountsList", cards || '<div class="empty">No trading accounts found.</div>');
 
-  setHTML("overviewAccounts", accounts.slice(0,5).map(a => `
+  const activeOverviewAccounts = accounts.filter(a =>
+    String(a.status || "").toLowerCase() === "active"
+  );
+  setHTML("overviewActiveAccounts", activeOverviewAccounts.slice(0,5).map(a => `
     <div class="overview-account-row">
-      <div><strong>${safe(a.account_name || String(a.id).slice(0,8))}</strong><small>${safe(a.account_type || "Account")}</small></div>
-      <div class="overview-account-values"><strong>${money(a.balance)}</strong><small>${statusBadge(a.status)}</small></div>
+      <div><strong>${safe(a.account_name || String(a.id).slice(0,8))}</strong><small>${safe(a.account_type || "Trading Account")} · ${money(a.account_size)}</small></div>
+      <div class="overview-account-values"><strong>${money(a.balance)}</strong><small>${statusBadge("Active")}</small></div>
     </div>
-  `).join("") || '<div class="empty">No accounts yet.</div>');
+  `).join("") || '<div class="empty">No active trading accounts yet.</div>');
 
   setHTML("challengeAccounts", accounts.map(a => `
     <option value="${safe(a.id)}">${safe(a.account_name || String(a.id).slice(0,8))} — ${safe(a.account_size)} USD</option>
