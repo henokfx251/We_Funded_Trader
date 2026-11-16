@@ -386,6 +386,65 @@ body .metric.gold{color:#155eef!important}
 }
 </style>
 
+
+<style id="wft-open-trade-buy-sell-v3">
+/* Final Open Trade contrast + matching BUY/SELL confirmation states */
+body .trade-screen .trade-ticket .field,
+body .trade-screen .trade-ticket .field label,
+body .trade-screen .trade-ticket .field input,
+body .trade-screen .trade-ticket .field select,
+body .trade-screen .trade-ticket .field textarea,
+body .trade-screen .trade-ticket .field input::placeholder,
+body .trade-screen .trade-ticket .order-est,
+body .trade-screen .trade-ticket .order-est span,
+body .trade-screen .trade-ticket .order-est b{
+  background:#fff!important;background-color:#fff!important;color:#111827!important;
+  border-color:#cbd5e1!important;
+}
+body .trade-screen .trade-ticket .field input,
+body .trade-screen .trade-ticket .field select,
+body .trade-screen .trade-ticket .field textarea{
+  appearance:auto!important;-webkit-appearance:auto!important;
+  min-height:44px!important;padding:11px 12px!important;border:1px solid #cbd5e1!important;
+  border-radius:10px!important;font-size:15px!important;font-weight:600!important;
+  box-shadow:inset 0 1px 2px rgba(15,23,42,.04)!important;color-scheme:light!important;
+}
+body .trade-screen .trade-ticket .field input::placeholder{color:#94a3b8!important;opacity:1!important}
+body .trade-screen .trade-ticket .order-tabs button,
+body .trade-screen .trade-ticket .trade-actions button,
+body .trade-screen .confirm-box .confirm-actions button{
+  min-height:44px!important;border-radius:10px!important;font-weight:800!important;
+  color:#fff!important;text-shadow:none!important;opacity:1!important;
+}
+body .trade-screen .trade-ticket .order-tabs button.buy,
+body .trade-screen .trade-ticket .order-tabs button.buy.active,
+body .trade-screen .trade-ticket .trade-actions button.execute:not(.sell),
+body .trade-screen .trade-ticket .trade-actions button.execute:not(.sell):hover,
+body .confirm-box .confirm-actions button.confirm-accept:not(.sell){
+  background:#16a34a!important;background-color:#16a34a!important;border:1px solid #16a34a!important;color:#fff!important;
+}
+body .trade-screen .trade-ticket .order-tabs button.sell,
+body .trade-screen .trade-ticket .order-tabs button.sell.active,
+body .trade-screen .trade-ticket .trade-actions button.execute.sell,
+body .trade-screen .trade-ticket .trade-actions button.execute.sell:hover,
+body .confirm-box .confirm-actions button.confirm-accept.sell{
+  background:#dc2626!important;background-color:#dc2626!important;border:1px solid #dc2626!important;color:#fff!important;
+}
+body .trade-screen .trade-ticket .order-tabs button:not(.active){opacity:.72!important}
+body .trade-screen .trade-ticket .mode-tabs button,
+body .trade-screen .trade-ticket .tabs button,
+body .trade-screen .trade-ticket .trade-actions button.cancel-trade,
+body .confirm-box .confirm-actions button.confirm-reject{
+  background:#eaf0f8!important;background-color:#eaf0f8!important;color:#1e293b!important;border:1px solid #cbd5e1!important;
+}
+body .confirm-box .confirm-item{background:#f8fafc!important;color:#111827!important}
+body .confirm-box .confirm-item span{color:#64748b!important}
+body .confirm-box .confirm-item b{color:#111827!important}
+body .confirm-box #confirmSide.buy{color:#16a34a!important}
+body .confirm-box #confirmSide.sell{color:#dc2626!important}
+body .confirm-box .confirm-accept.sell{background:#dc2626!important;border-color:#dc2626!important;color:#fff!important}
+body .confirm-box .confirm-accept:not(.sell){background:#16a34a!important;border-color:#16a34a!important;color:#fff!important}
+</style>
 </head>
 <body class="terminal-locked">
 <header class="top">
@@ -452,7 +511,7 @@ const money=n=>"$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,
 const num=(n,d=2)=>Number(n||0).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
 let accounts=[],selectedAccount="",state=null,side="BUY",mode="market",activeTab="positions",tvWidget=null,chartReady=false,chartSymbolSubscriptionBound=false,refreshHandle=null,busy=false,stateLoading=false,tickLoading=false,currentTradeSymbol="XAUUSD",manualTradeSymbol=false;
 function message(s,type=""){const trade=$("tradeView"),monitor=$("monitorView");const el=trade&&!trade.hidden?$("tradeStatus"):monitor&&!monitor.hidden?$("monitorStatus"):$("terminalStatus");if(!el)return;el.textContent=s;el.className="statusline "+type;}
-function setSide(v){side=v;$("buyBtn").classList.toggle("active",v==="BUY");$("sellBtn").classList.toggle("active",v==="SELL");$("executeBtn").classList.toggle("sell",v==="SELL");updateOrderLabel();}
+function setSide(v){side=v;$("buyBtn").classList.toggle("active",v==="BUY");$("sellBtn").classList.toggle("active",v==="SELL");$("executeBtn").classList.toggle("sell",v==="SELL");$("buyBtn").classList.toggle("buy",true);$("sellBtn").classList.toggle("sell",true);updateOrderLabel();}
 function setMode(v){mode=v;document.querySelectorAll("[data-mode]").forEach(b=>b.classList.toggle("active",b.dataset.mode===v));$("pendingField").hidden=v!=="limit";updateOrderLabel();}
 function updateOrderLabel(){const t=side+(mode==="market"?" MARKET":" LIMIT");$("orderType").textContent=t;$("executeBtn").textContent=t;}
 function setChartStatus(text,ok=false){const el=$("chartFeedStatus");if(el){el.textContent=text;el.style.color=ok?"#6ce3b4":"#a9bfd5";}}
@@ -633,6 +692,8 @@ function requestTradeConfirmation(){
  $("confirmSymbol").textContent=symbol;
  $("confirmSide").textContent=side;
  $("confirmSide").className=side.toLowerCase();
+ $("acceptTradeBtn").classList.toggle("sell",side==="SELL");
+ $("acceptTradeBtn").textContent=side==="BUY"?"Confirm BUY & Execute":"Confirm SELL & Execute";
  $("confirmType").textContent=mode==="market"?"Market Execute":"Limit Order";
  $("confirmLots").textContent=num(volume,2)+" lots";
  $("confirmEntryWrap").hidden=mode!=="limit";
