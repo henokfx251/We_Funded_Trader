@@ -845,21 +845,18 @@ body .btn-secondary *{color:#155eef!important}
         <section class="page" id="page-certificates">
           <div class="page-heading"><div><h1>WFT Certificate Center</h1><p>Separate challenge achievements from completed payout records.</p></div><button class="btn" onclick="loadIssuedCertificates()">Refresh Certificates</button></div>
           <div class="cert-auto-note"><strong>Automatic issuing is enabled</strong><span>Challenge certificates are generated after Admin approves a Challenge Pass Request. Payout certificates are generated only when an approved payout is marked Paid.</span></div>
+
           <div class="cert-panels">
-            <div class="panel cert-panel"><div class="cert-panel-heading"><span>🏆</span><div><h3>Challenge Pass Certificate</h3><p>For verified 1-Step challenge completion</p></div></div>
-              <form id="issueChallengeCertificateForm" class="form-grid" onsubmit="issueWftCertificate(event,'challenge')">
-                <div class="field"><label for="challengeCertEmail">Customer Email</label><input id="challengeCertEmail" type="email" required placeholder="customer@example.com"></div>
-                <div class="field"><label for="challengeCertRecipient">Recipient Full Name</label><input id="challengeCertRecipient" required maxlength="120" placeholder="Full name"></div>
-                <div class="field full"><label for="challengeCertDescription">Description</label><textarea id="challengeCertDescription" rows="2" maxlength="1000"></textarea></div>
-                <div class="form-actions"><button class="btn" id="issueChallengeCertificateButton" type="submit">Issue Challenge Certificate</button></div>
-              </form></div>
-            <div class="panel cert-panel cert-payout"><div class="cert-panel-heading"><span>💳</span><div><h3>Payout Certificate</h3><p>For a successfully paid payout</p></div></div>
-              <form id="issuePayoutCertificateForm" class="form-grid" onsubmit="issueWftCertificate(event,'payout')">
-                <div class="field"><label for="payoutCertEmail">Customer Email</label><input id="payoutCertEmail" type="email" required placeholder="customer@example.com"></div>
-                <div class="field"><label for="payoutCertRecipient">Recipient Full Name</label><input id="payoutCertRecipient" required maxlength="120" placeholder="Full name"></div>
-                <div class="field full"><label for="payoutCertDescription">Description</label><textarea id="payoutCertDescription" rows="2" maxlength="1000"></textarea></div>
-                <div class="form-actions"><button class="btn" id="issuePayoutCertificateButton" type="submit">Issue Payout Certificate</button></div>
-              </form></div>
+            <div class="panel cert-panel">
+              <div class="cert-panel-heading"><span>🏆</span><div><h3>Challenge Pass Certificate</h3><p>Official recognition for a verified 1-Step challenge pass</p></div></div>
+              <div class="cert-auto-detail"><strong>Automatic trigger</strong><span>Created when Admin approves the trader's Challenge Pass Request after WFT pass verification.</span></div>
+              <span class="cert-type-pill">CHALLENGE</span>
+            </div>
+            <div class="panel cert-panel cert-payout">
+              <div class="cert-panel-heading"><span>💳</span><div><h3>Payout Certificate</h3><p>Official confirmation of a completed trader payout</p></div></div>
+              <div class="cert-auto-detail"><strong>Automatic trigger</strong><span>Created only when an approved payout request changes to Paid. A transaction hash is required by the payout review process.</span></div>
+              <span class="cert-type-pill payout">PAYOUT</span>
+            </div>
           </div>
           <div class="panel"><div class="panel-head"><h3>Recently Issued Certificates</h3><select id="certificateTypeFilter" onchange="loadIssuedCertificates()"><option value="all">All</option><option value="challenge">Challenge</option><option value="payout">Payout</option><option value="achievement">Other</option></select></div>
             <div class="table-wrap"><table><thead><tr><th>Certificate No.</th><th>Type</th><th>Trader ID</th><th>Recipient</th><th>Title</th><th>Issued</th></tr></thead><tbody id="issuedCertificatesTable"><tr><td colspan="6" class="empty">Loading certificates...</td></tr></tbody></table></div>
