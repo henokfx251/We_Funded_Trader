@@ -3069,6 +3069,26 @@ function updateMobileBottomNav() {
 updateMobileBottomNav();
 
 startDashboard();
+
+// Refresh live WFT Demo Terminal performance (including Floating P/L)
+// while the dashboard is visible. Avoid overlapping RPC requests.
+let wftFloatingRefreshBusy = false;
+async function refreshWftFloatingStats() {
+  if (wftFloatingRefreshBusy || document.hidden || !currentUser || !accounts.length) return;
+  wftFloatingRefreshBusy = true;
+  try {
+    await loadOverviewTradeStatistics();
+  } catch (error) {
+    console.warn("WFT live Floating P/L refresh failed:", error);
+    setText("performanceUpdated", "Live update unavailable — retrying");
+  } finally {
+    wftFloatingRefreshBusy = false;
+  }
+}
+setInterval(refreshWftFloatingStats, 15000);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) refreshWftFloatingStats();
+});
 </script>
 
 </body>
