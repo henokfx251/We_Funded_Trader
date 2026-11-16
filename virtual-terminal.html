@@ -240,6 +240,69 @@ html body .trade-disclaimer,
 html body .chart-footnote{color:#64748b!important}
 </style>
 
+<style id="wft-terminal-no-black-final">
+/* WFT terminal final light interface: no black/dark page panels.
+   TradingView is already configured with theme:"light". */
+:root{color-scheme:light!important;--bg:#f4f7fb;--panel:#fff;--panel2:#f8faff;--line:#dbe3ee;--text:#111827;--muted:#64748b;--gold:#155eef;--gold2:#155eef;--blue:#155eef}
+html,body{min-height:100%;background:#f4f7fb!important;background-image:none!important;color:#111827!important;color-scheme:light!important}
+body{font-family:Inter,Arial,sans-serif!important}
+.top{background:#155eef!important;background-image:none!important;color:#fff!important;border-bottom:1px solid #155eef!important;backdrop-filter:none!important}
+.top *,.brand,.brand small{color:#fff!important}
+.toplink{background:rgba(255,255,255,.12)!important;color:#fff!important;border:1px solid rgba(255,255,255,.6)!important}
+.simtag{background:#fff!important;color:#155eef!important;border:1px solid #fff!important}
+.simtag *{color:#155eef!important}
+main{background:#f4f7fb!important;color:#111827!important}
+body .panel,body .data-panel,body .trade-ticket,body .confirm-box,body #terminalAccessGate .gate-card,
+body .rule,body .disclaimer,body .confirm-item,body .demo-quote,body .trade-symbol-pill,
+body .accountbar .panel,body .chartpanel,body .side,body .chart-screen,body .trade-screen,
+body .terminal-view,body .trade-layout,body .chart-column{
+ background:#fff!important;background-color:#fff!important;background-image:none!important;
+ color:#111827!important;border-color:#dbe3ee!important;box-shadow:0 5px 18px rgba(15,23,42,.05)!important
+}
+body :is(.metric-label,.hint,.muted,.empty,.field label,.order-est,.statusline,.trade-disclaimer,.quote,.quote-note,.chart-live-label,.rule span,.disclaimer,.confirm-sub,.confirm-warning,th){
+ color:#64748b!important
+}
+body :is(.metric,.chart-screen-title,.side h2,.trade-ticket h2,.confirm-title,.confirm-item b,.rule b,.trade-symbol-pill){
+ color:#111827!important
+}
+body .metric.gold,body .brand{color:#fff!important}
+body .metric.green,body .positive{color:#15803d!important}
+body .metric.red,body .negative{color:#b91c1c!important}
+body input,body select,body textarea,body .trade-screen input,body .trade-screen select{
+ background:#fff!important;background-color:#fff!important;color:#111827!important;
+ border:1px solid #cbd5e1!important;box-shadow:none!important;color-scheme:light!important
+}
+body select option,body select optgroup{background:#fff!important;color:#111827!important}
+body button,body .view-tab,body .tab,body .charttools button,body .mode-tabs button,body .order-tabs button,
+body .open-trade,body .execute,body .fullscreen-btn,body .mini,body .cancel-trade,body .back-chart{
+ background:#155eef!important;background-color:#155eef!important;background-image:none!important;
+ color:#fff!important;border:1px solid #155eef!important;box-shadow:none!important
+}
+body button:disabled{opacity:.48!important}
+body .view-tab.active,body .tab.active,body .charttools button.active,body .mode-tabs button.active{
+ background:#104fc7!important;color:#fff!important;border-color:#104fc7!important
+}
+body .order-tabs button.active.buy{background:#15803d!important;color:#fff!important;border-color:#15803d!important}
+body .order-tabs button.active.sell,body .execute.sell{background:#dc2626!important;color:#fff!important;border-color:#dc2626!important}
+body .chartbox,body #chart{background:#fff!important;background-color:#fff!important;border:1px solid #dbe3ee!important}
+body #tv_chart_container{background:#fff!important;background-color:#fff!important}
+body .tabs{background:#fff!important;border-color:#dbe3ee!important}
+body th{background:#f3f6fb!important;color:#334155!important}
+body td{color:#111827!important;border-color:#e5eaf2!important}
+body .confirm-overlay{background:rgba(255,255,255,.94)!important;backdrop-filter:none!important}
+body #terminalAccessGate{background:#f4f7fb!important}
+body #terminalAccessGate .gate-card{background:#fff!important;color:#111827!important}
+body #terminalAccessGate h1{color:#111827!important}
+body #terminalAccessGate p{color:#64748b!important}
+body #terminalAccessGate a{background:#155eef!important;color:#fff!important}
+body .trade-screen .trade-symbol-pill,body .demo-quote,body .confirm-item,body .rule,body .disclaimer{background:#f8faff!important;color:#111827!important}
+body .trade-screen .trade-symbol-pill *,body .demo-quote *,body .confirm-item *,body .rule *,body .disclaimer *{color:#111827!important}
+@media(max-width:700px){
+ main{padding:9px 8px 22px!important}
+ .chartbox{background:#fff!important}
+ .trade-layout{grid-template-columns:minmax(0,1fr)!important}
+}
+</style>
 </head>
 <body class="terminal-locked">
 <header class="top">
