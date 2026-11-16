@@ -1989,6 +1989,7 @@ async function loadOverviewTradeStatistics() {
     .filter(Boolean);
   const totals = {closed:0,wins:0,losses:0,breakeven:0,grossProfit:0,grossLoss:0,net:0,best:null,worst:null,open:0,pending:0,floating:0,dailyDD:0,overallDD:0};
   const accountRows = [];
+  const liveEquityByAccount = new Map();
   let failedReads = 0;
   const moneyText = value => (Number(value || 0) < 0 ? "-$" : "$") + Math.abs(Number(value || 0)).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
   const pctText = value => Number(value || 0).toFixed(2) + "%";
@@ -2021,7 +2022,7 @@ async function loadOverviewTradeStatistics() {
         ? Number(account.highest_equity || initial) : initial;
       const dailyDD = dailyReference > 0 ? Math.max(0,(dailyReference-currentEquity)/dailyReference*100) : 0;
       const overallDD = maxReference > 0 ? Math.max(0,(maxReference-currentEquity)/maxReference*100) : 0;
-      return {account,historyCount:history.length,wins:wins.length,losses:losses.length,breakeven:breakeven.length,grossProfit,grossLoss,net,best:profits.length?Math.max(...profits):null,worst:profits.length?Math.min(...profits):null,open:positions.length,pending:pending.length,floating,dailyDD,overallDD};
+      return {account,currentEquity,historyCount:history.length,wins:wins.length,losses:losses.length,breakeven:breakeven.length,grossProfit,grossLoss,net,best:profits.length?Math.max(...profits):null,worst:profits.length?Math.min(...profits):null,open:positions.length,pending:pending.length,floating,dailyDD,overallDD};
     } catch(error) {
       console.warn("WFT performance stats unavailable for account",id,error);
       failedReads++;
@@ -2030,6 +2031,7 @@ async function loadOverviewTradeStatistics() {
   }));
   results.forEach(row => {
     if(row.unavailable){accountRows.push('<tr><td>'+safeAccountName(row.account)+'</td><td colspan="5">Trade history unavailable</td></tr>');return;}
+    liveEquityByAccount.set(row.account.id, row.currentEquity);
     totals.closed+=row.historyCount;totals.wins+=row.wins;totals.losses+=row.losses;totals.breakeven+=row.breakeven;
     totals.grossProfit+=row.grossProfit;totals.grossLoss+=row.grossLoss;totals.net+=row.net;
     if(row.best!==null)totals.best=totals.best===null?row.best:Math.max(totals.best,row.best);
@@ -2060,6 +2062,9 @@ async function loadOverviewTradeStatistics() {
   const netEl=$("perfNetProfit");if(netEl)netEl.className=totals.net>=0?"positive":"negative";
   const floatEl=$("perfFloatingPL");if(floatEl)floatEl.className=totals.floating>=0?"positive":"negative";
   setHTML("performanceAccountRows",accountRows.join("")||'<tr><td colspan="6">No trading accounts yet.</td></tr>');
+  const equityEligible = accounts.filter(a => !["failed","breached","disabled"].includes(String(a.status || "").toLowerCase()));
+  const liveTotalEquity = equityEligible.reduce((sum,a) => sum + Number(liveEquityByAccount.get(a.id) ?? a.equity ?? a.balance ?? 0), 0);
+  setText("statEquity", money(liveTotalEquity));
   setText("performanceUpdated",failedReads?("Updated · "+failedReads+" account history read(s) unavailable"):"Updated just now");
 }
 
