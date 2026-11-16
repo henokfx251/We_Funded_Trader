@@ -166,6 +166,57 @@ th{font-size:10px!important;font-weight:800!important}
 td{color:#e6edf7!important}
 
 </style>
+
+<style id="wft-light-terminal-override">
+/* Enforce WFT light surfaces without changing demo-trading behavior. */
+html,body{background:#fff!important;color:#111827!important;color-scheme:light!important}
+html body .top{background:#155eef!important;color:#fff!important;border-color:#155eef!important}
+html body .top *{color:#fff!important}
+html body .trade-screen .trade-ticket,
+html body .trade-screen .data-panel,
+html body .trade-screen .confirm-card,
+html body .chart-screen .panel,
+html body .chart-screen .chartbox,
+html body .terminal-view,
+html body .terminal-shell,
+html body .side,
+html body .panel{
+ background:#fff!important;background-color:#fff!important;background-image:none!important;
+ color:#111827!important;border-color:#dbe3ee!important;box-shadow:none!important
+}
+html body .trade-screen .trade-ticket *,
+html body .trade-screen .data-panel *,
+html body .chart-screen *,
+html body .terminal-view :is(h1,h2,h3,h4,p,span,label,b,strong,small,td,th,div){
+ color:#111827!important
+}
+html body .trade-screen input,
+html body .trade-screen select,
+html body .trade-screen textarea{
+ background:#fff!important;background-color:#fff!important;color:#111827!important;
+ border:1px solid #cbd5e1!important;box-shadow:none!important;color-scheme:light!important
+}
+html body .trade-screen select option,
+html body .trade-screen select optgroup{background:#fff!important;color:#111827!important}
+html body .trade-screen button,
+html body .chart-screen button,
+html body .terminal-view button{
+ background:#155eef!important;background-color:#155eef!important;background-image:none!important;
+ color:#fff!important;border:1px solid #155eef!important;box-shadow:none!important
+}
+html body .trade-screen .order-tabs button.active.buy{background:#dcfce7!important;color:#166534!important;border-color:#16a34a!important}
+html body .trade-screen .order-tabs button.active.sell{background:#fee2e2!important;color:#991b1b!important;border-color:#dc2626!important}
+html body .trade-screen .chartbox,
+html body .chart-screen .chartbox,
+html body #chart,
+html body #tv_chart_container{background:#fff!important;background-color:#fff!important}
+html body .confirm-overlay{background:rgba(255,255,255,.94)!important;backdrop-filter:none!important}
+html body .trade-screen .hint,
+html body .chart-screen .hint,
+html body .trade-disclaimer,
+html body .chart-footnote{color:#64748b!important}
+</style>
+
 </head>
 <body class="terminal-locked">
 <header class="top">
@@ -299,7 +350,7 @@ function setupChart(){
     symbol:"OANDA:XAUUSD",
     interval:"15",
     timezone:"Africa/Addis_Ababa",
-    theme:"dark",
+    theme:"light",
     style:"1",
     locale:"en",
     enable_publishing:false,
