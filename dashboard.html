@@ -947,28 +947,34 @@ body .btn-secondary *{color:#155eef!important}
 @media(max-width:600px){#page-overview .wft-performance-panel{padding:13px}#page-overview .wft-performance-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#page-overview .wft-performance-card{padding:11px}#page-overview .wft-performance-card strong{font-size:17px}#page-overview .wft-performance-heading{flex-direction:column}}
 </style>
 
-<style id="wft-certificate-premium">
-#page-certificate{position:relative}
-#page-certificate .welcome{padding:25px 27px;border:1px solid rgba(21,94,239,.3);border-left:5px solid #155eef;border-radius:15px;background:linear-gradient(112deg,#0b2e5b 0%,#155eef 62%,#2875ff 100%);box-shadow:0 14px 32px rgba(8,39,87,.2)}
-#page-certificate .welcome h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(27px,4vw,37px);letter-spacing:.2px;color:#fff}
+<style id="wft-certificate-premium">#page-certificate{position:relative}
+#page-certificate .welcome{padding:23px 26px;margin-bottom:22px;border:1px solid rgba(198,163,84,.4);border-radius:12px;background:linear-gradient(110deg,#0b2e5b,#155eef 72%,#2875ff);box-shadow:0 13px 30px rgba(5,30,70,.2)}
+#page-certificate .welcome h1{font-family:Georgia,"Times New Roman",serif;color:#fff;font-size:clamp(27px,4vw,36px);letter-spacing:.3px}
 #page-certificate .welcome p{color:#e4efff}
-#page-certificate .certificate-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:24px;align-items:stretch}
-#page-certificate .certificate-paper{isolation:isolate;position:relative;min-height:410px;padding:clamp(30px,4vw,48px);border:2px solid #c6a354;border-radius:5px;background:linear-gradient(180deg,#155eef 0 9px,transparent 9px),radial-gradient(ellipse at 50% 0%,#fff 0%,#fbfcff 62%,#edf3fc 100%);box-shadow:0 18px 42px rgba(5,32,75,.18),inset 0 0 0 5px #fff;color:#17365f;font-family:Inter,"Segoe UI",Arial,sans-serif}
-#page-certificate .certificate-paper:before{content:"";position:absolute;inset:12px;border:1px solid rgba(184,143,53,.75);border-radius:2px;pointer-events:none}
-#page-certificate .certificate-paper:after{content:"WFT";position:absolute;z-index:-1;right:24px;top:27px;font-family:Georgia,"Times New Roman",serif;font-size:76px;font-weight:900;letter-spacing:5px;color:rgba(21,94,239,.045);pointer-events:none}
-#page-certificate .certificate-kicker{margin:10px 0;color:#155eef;font-size:10px;font-weight:900;letter-spacing:3px;text-transform:uppercase}
-#page-certificate .certificate-title{margin:23px 0 12px;color:#0b2e5b;font-family:Georgia,"Times New Roman",serif;font-size:clamp(28px,3.6vw,40px);font-weight:700;letter-spacing:.1px;line-height:1.16;text-shadow:0 1px #fff}
-#page-certificate .certificate-copy{max-width:560px;color:#52647e;font-family:Georgia,"Times New Roman",serif;font-size:15px;line-height:1.85}
-#page-certificate .certificate-recipient{margin:22px 0;padding:11px 8px 15px;border-bottom:2px solid #c6a354;color:#155eef;font-family:Georgia,"Times New Roman",serif;font-size:clamp(26px,3vw,35px);font-weight:700;letter-spacing:.4px}
-#page-certificate .certificate-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:25px}
-#page-certificate .certificate-meta div{padding:12px;border:1px solid #d7e3f3;border-top:2px solid #155eef;border-radius:5px;background:rgba(255,255,255,.86)}
-#page-certificate .certificate-meta small{display:block;margin-bottom:5px;color:#71829a;font-size:9px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase}
-#page-certificate .certificate-meta strong{color:#17365f;font-size:12px;overflow-wrap:anywhere}
-#page-certificate .certificate-signoff{margin-top:25px;color:#536781;font-family:Georgia,"Times New Roman",serif;font-size:12px;line-height:1.7}
-#page-certificate .certificate-actions .btn{border:1px solid #c6a354;border-radius:7px;background:linear-gradient(110deg,#0b2e5b,#155eef);color:#fff;box-shadow:0 7px 16px rgba(21,94,239,.2);font-weight:800}
-@media(max-width:600px){#page-certificate .certificate-paper{min-height:0;padding:32px 23px}#page-certificate .certificate-meta{grid-template-columns:1fr}}
-@media print{#page-certificate .certificate-paper{background:linear-gradient(180deg,#155eef 0 9px,transparent 9px),#fff!important;box-shadow:inset 0 0 0 5px #fff!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}}
-</style>
+#page-certificate .certificate-grid{display:grid;grid-template-columns:1fr;gap:28px;max-width:1120px;margin:0 auto}
+#page-certificate .certificate-paper{position:relative;isolation:isolate;overflow:hidden;box-sizing:border-box;width:100%;aspect-ratio:297/210;min-height:0;padding:clamp(24px,4.3vw,58px);border:3px double #bd9848;border-radius:2px;background:radial-gradient(ellipse at 50% 48%,rgba(21,94,239,.035),transparent 54%),linear-gradient(135deg,#fffefa,#fff 48%,#f7f9fd);box-shadow:0 20px 55px rgba(4,26,60,.18);color:#142f55;font-family:Georgia,"Times New Roman",serif;display:flex;flex-direction:column;justify-content:center;text-align:center}
+#page-certificate .certificate-paper:before{content:"";position:absolute;inset:10px;border:1px solid #c6a354;pointer-events:none;z-index:-1}
+#page-certificate .certificate-paper:after{content:"WE FUNDED TRADER";position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);font-family:Arial,sans-serif;font-weight:900;font-size:clamp(28px,7vw,82px);letter-spacing:5px;color:rgba(21,94,239,.035);white-space:nowrap;z-index:-1;pointer-events:none}
+#page-certificate .certificate-brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:clamp(8px,1.5vw,18px);color:#0b2e5b;font-family:Arial,sans-serif;font-size:clamp(12px,1.7vw,18px);font-weight:900;letter-spacing:2.4px}
+#page-certificate .certificate-brand-mark{width:clamp(30px,4vw,44px);height:clamp(30px,4vw,44px);display:grid;place-items:center;border:2px solid #c6a354;outline:1px solid rgba(198,163,84,.5);outline-offset:3px;color:#155eef;font-family:Georgia,serif;font-size:clamp(14px,2vw,21px);font-weight:900}
+#page-certificate .certificate-kicker{margin:3px 0;color:#a17b2e;font-family:Arial,sans-serif;font-size:clamp(8px,.95vw,11px);font-weight:800;letter-spacing:clamp(1px,.3vw,3px);text-transform:uppercase}
+#page-certificate .certificate-title{margin:clamp(8px,1.5vw,18px) 0;color:#0b2e5b;font-family:Georgia,"Times New Roman",serif;font-size:clamp(22px,4vw,43px);font-weight:700;letter-spacing:.4px;line-height:1.08;text-transform:uppercase}
+#page-certificate .certificate-copy{max-width:760px;margin:clamp(5px,1vw,12px) auto;color:#4c5f78;font-family:Georgia,"Times New Roman",serif;font-size:clamp(10px,1.35vw,15px);line-height:1.65;text-align:center}
+#page-certificate .certificate-recipient{display:inline-block;align-self:center;max-width:90%;margin:clamp(5px,1vw,12px) 0;padding:0 16px 7px;border-bottom:2px solid #c6a354;color:#155eef;font-family:Georgia,"Times New Roman",serif;font-size:clamp(21px,3.6vw,38px);font-weight:700;letter-spacing:.4px;text-align:center;overflow-wrap:anywhere}
+#page-certificate .certificate-meta{display:flex;justify-content:center;gap:clamp(12px,3vw,42px);margin:clamp(9px,1.7vw,20px) 0 0}
+#page-certificate .certificate-meta div{min-width:0;padding:4px 12px;border:0;border-left:1px solid #d7c18d;border-radius:0;text-align:center}
+#page-certificate .certificate-meta div:first-child{border-left:0}
+#page-certificate .certificate-meta small{display:block;color:#8b7650;font-family:Arial,sans-serif;font-size:clamp(7px,.8vw,9px);font-weight:800;letter-spacing:1.1px;text-transform:uppercase}
+#page-certificate .certificate-meta strong{display:block;margin-top:4px;color:#183d6b;font-family:Arial,sans-serif;font-size:clamp(9px,1.1vw,12px);overflow-wrap:anywhere}
+#page-certificate .certificate-footer{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-top:clamp(10px,2vw,24px);padding:0 clamp(5px,2vw,24px)}
+#page-certificate .certificate-signature{min-width:0;width:34%;padding-top:7px;border-top:1px solid #9b8659;color:#53647a;font-family:Arial,sans-serif;font-size:clamp(7px,.9vw,10px);line-height:1.5;text-align:center}
+#page-certificate .certificate-seal{width:clamp(52px,8vw,82px);height:clamp(52px,8vw,82px);flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #c6a354;outline:1px solid #c6a354;outline-offset:4px;border-radius:50%;background:rgba(255,255,255,.8);color:#155eef;font-family:Arial,sans-serif;font-size:clamp(7px,.8vw,9px);font-weight:900;letter-spacing:1px;line-height:1.25}
+#page-certificate .certificate-seal strong{font-family:Georgia,serif;font-size:clamp(14px,2vw,20px)}
+#page-certificate .certificate-actions{margin-top:18px}
+#page-certificate .certificate-actions .btn{border:1px solid #c6a354;border-radius:7px;background:linear-gradient(110deg,#0b2e5b,#155eef);color:#fff;font-weight:800}
+@media(max-width:650px){#page-certificate .certificate-paper{aspect-ratio:auto;min-height:470px;padding:35px 24px}#page-certificate .certificate-paper:after{font-size:34px;white-space:normal;text-align:center}#page-certificate .certificate-brand{font-size:12px;letter-spacing:1px}#page-certificate .certificate-title{font-size:26px}#page-certificate .certificate-copy{font-size:12px}#page-certificate .certificate-recipient{font-size:27px}#page-certificate .certificate-meta{gap:4px}#page-certificate .certificate-meta div{padding:4px 7px}#page-certificate .certificate-footer{margin-top:24px;padding:0}#page-certificate .certificate-signature{width:36%;font-size:8px}#page-certificate .certificate-seal{width:58px;height:58px}}
+@page{size:A4 landscape;margin:0}
+@media print{body.printing-certificate *{visibility:hidden!important}body.printing-certificate .certificate-paper.is-printing,body.printing-certificate .certificate-paper.is-printing *{visibility:visible!important}body.printing-certificate .certificate-paper.is-printing{position:fixed!important;left:0!important;top:0!important;width:297mm!important;height:210mm!important;min-height:210mm!important;max-width:none!important;aspect-ratio:auto!important;margin:0!important;padding:16mm 19mm!important;border:3px double #bd9848!important;border-radius:0!important;box-shadow:none!important;background:radial-gradient(ellipse at 50% 48%,rgba(21,94,239,.035),transparent 54%),#fffefa!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}body.printing-certificate .certificate-paper.is-printing:before{inset:4mm!important;border:1px solid #c6a354!important}body.printing-certificate .certificate-paper.is-printing:after{font-size:58pt!important}body.printing-certificate .certificate-paper.is-printing .certificate-actions{display:none!important}}</style>
 
 </head>
 
@@ -2321,26 +2327,23 @@ async function loadCertificates() {
 
     return `
       <article class="certificate-paper" id="certificate-${safe(c.id)}">
-        <div class="certificate-kicker">WE FUNDED TRADER · OFFICIAL RECOGNITION</div>
-        <div class="certificate-kicker">${safe(c.certificate_type === "payout" ? "PAYOUT RECOGNITION" : c.certificate_type === "challenge" ? "CHALLENGE PASS RECOGNITION" : "ACHIEVEMENT")}</div>
+        <div class="certificate-brand"><span class="certificate-brand-mark">W</span><span>WE FUNDED TRADER</span></div>
+        <div class="certificate-kicker">OFFICIAL CERTIFICATE · ${safe(c.certificate_type === "payout" ? "PAYOUT RECOGNITION" : c.certificate_type === "challenge" ? "CHALLENGE PASS RECOGNITION" : "ACHIEVEMENT")}</div>
         <h2 class="certificate-title">${safe(certificateTitle)}</h2>
-        <p class="certificate-copy">
-          This certificate is proudly presented to
-        </p>
+        <p class="certificate-copy">This certificate is proudly presented to</p>
         <div class="certificate-recipient">${safe(recipient)}</div>
         <p class="certificate-copy">${safe(certificateCopy)}</p>
         <div class="certificate-meta">
           <div><small>Certificate Number</small><strong>${safe(c.certificate_number)}</strong></div>
-          <div><small>Date Issued</small><strong>${safe(date(c.issued_at))}</strong></div>
+          <div><small>Date of Issue</small><strong>${safe(date(c.issued_at))}</strong></div>
         </div>
-        <div class="certificate-signoff">
-          Officially issued by WE FUNDED TRADER<br>
-          Verification &amp; Compliance Team
+        <div class="certificate-footer">
+          <div class="certificate-signature">Authorized WFT Representative</div>
+          <div class="certificate-seal"><strong>WFT</strong><span>OFFICIAL SEAL</span></div>
+          <div class="certificate-signature">Verification &amp; Compliance</div>
         </div>
         <div class="certificate-actions">
-          <button class="btn" type="button" onclick="printCertificate('${safe(c.id)}')">
-            Print / Save as PDF
-          </button>
+          <button class="btn" type="button" onclick="printCertificate('${safe(c.id)}')">Print / Save as PDF</button>
         </div>
       </article>
     `;
