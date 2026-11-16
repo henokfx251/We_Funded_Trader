@@ -1862,6 +1862,10 @@ async function loadAccounts() {
   if (error) throw error;
   accounts = data || [];
 
+  // Pending accounts are requests awaiting Admin approval, not created accounts.
+  const countedAccounts = accounts.filter(a =>
+    String(a.status || "").toLowerCase() !== "pending"
+  );
   const active = accounts.filter(a =>
     ["active","funded"].includes(String(a.status).toLowerCase())
   );
@@ -1872,7 +1876,7 @@ async function loadAccounts() {
   const totalEquity = balanceEligible.reduce((sum,a) => sum + Number(a.equity ?? a.balance ?? 0), 0);
   const totalProfit = accounts.reduce((sum,a) => sum + Number(a.profit || 0), 0);
 
-  setText("statAccounts", accounts.length);
+  setText("statAccounts", countedAccounts.length);
   setText("statActive", active.length);
   setText("statBalance", money(totalBalance));
   setText("statEquity", money(totalEquity));
