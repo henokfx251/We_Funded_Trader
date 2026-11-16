@@ -266,6 +266,34 @@ footer{background:#050d18!important;border-top:1px solid #20324a!important;color
  .card{padding:20px!important}
 }
 @media(prefers-reduced-motion:reduce){.card,.btn{transition:none!important}}
+
+/* FINAL PREMIUM OVERRIDE: remove legacy white surfaces across the entire homepage. */
+html,body{background:#07111f!important;color:#e8eef7!important}
+header{background:rgba(7,17,31,.97)!important;color:#e8eef7!important}
+header .nav-links{background:#091728!important;color:#e8eef7!important}
+header .nav-links a{color:#d6e0ed!important;border-color:#26384f!important}
+header .nav-actions .btn-outline{background:#101f34!important;color:#eaf1fb!important;border-color:#344b68!important}
+main,.section,.section> .container,.reward-section{background-color:#07111f!important;color:#e8eef7!important}
+.section:nth-of-type(even){background-color:#091728!important}
+.card,.challenge-card,.account-card,.rule-card,.step-card,.faq-item,.promo,.reward-box,.platform-item,.reward-highlight{
+ background:linear-gradient(145deg,#102139,#0c192b)!important;
+ color:#e8eef7!important;border-color:#293e59!important
+}
+.card :is(h1,h2,h3,h4,p,span,li,strong,small),
+.challenge-card :is(h1,h2,h3,h4,p,span,li,strong,small),
+.account-card :is(h1,h2,h3,h4,p,span,li,strong,small),
+.rule-card :is(h1,h2,h3,h4,p,span,li,strong,small),
+.step-card :is(h1,h2,h3,h4,p,span,li,strong,small),
+.faq-item :is(h1,h2,h3,h4,p,span,li,strong,small),
+.platform-item :is(h1,h2,h3,h4,p,span,li,strong,small){color:inherit!important}
+.card p,.challenge-card p,.account-card p,.rule-card p,.step-card p,.faq-item p,.platform-item span{color:#aebed2!important}
+.btn-outline,.btn-outline:hover{background:#101f34!important;color:#eaf1fb!important;border-color:#344b68!important}
+.btn-outline *{color:#eaf1fb!important}
+.promo h2,.reward-box h2,.final-cta h2{color:#f4f7fb!important}
+.promo p,.reward-box p,.reward-points li{color:#b6c5d8!important}
+footer{background:#050d18!important;color:#e6edf7!important;border-color:#20324a!important}
+footer .footer-col a,footer .footer-brand p,footer .footer-bottom{color:#9eafc5!important}
+@media(max-width:700px){header .nav-links{background:#091728!important}}
 </style>
 
 </head>
