@@ -1206,7 +1206,7 @@ async function loadGiveawayEntries() {
 async function loadGiveawaySocialProofs(){
  const tbody=$("giveawaySocialProofsTable");if(!tbody)return;
  tbody.innerHTML='<tr><td colspan="6" class="empty">Loading social proofs...</td></tr>';
- const {data,error}=await db.from("giveaway_social_task_proofs").select("id,user_id,platform,proof_path,review_status,admin_note,submitted_at").order("submitted_at",{ascending:false});
+ const {data,error}=await db.from("giveaway_social_task_proofs").select("id,user_id,platform,proof_path,review_status,admin_note,submitted_at").in("platform",["discord","telegram"]).order("submitted_at",{ascending:false});
  if(error){tbody.innerHTML='<tr><td colspan="6" class="empty">'+escapeHTML(error.message)+'</td></tr>';return;}
  if(!data?.length){tbody.innerHTML='<tr><td colspan="6" class="empty">No individual social proofs submitted yet.</td></tr>';return;}
  const rows=await Promise.all(data.map(async row=>{
