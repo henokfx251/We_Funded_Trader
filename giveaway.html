@@ -41,11 +41,11 @@ input[type=file]{display:block;width:100%;margin:8px 0}
   <h2>Step 1. Follow WFT</h2>
   <p class="muted">Only these two follow tasks are required for this Giveaway.</p>
   <div class="grid" id="socialLinksGrid"><div class="tile">Loading official follow links...</div></div>
-  <p class="small">Follow both official accounts and upload one screenshot for each. Screenshots are reviewed before you can continue. JPG, PNG or WEBP · maximum 5MB each.</p>
-  <div class="status" id="proofSummary">0 / 2 follow proofs approved.</div>
+  <p class="small">Follow both official accounts and upload one screenshot for each. Once both screenshots are submitted, you can continue. JPG, PNG or WEBP · maximum 5MB each.</p>
+  <div class="status" id="proofSummary">0 / 2 screenshots submitted.</div>
   <label class="check"><input type="checkbox" id="socialConfirm"><span>I confirm that I followed both official WFT accounts and the screenshots are genuine.</span></label>
   <button class="btn" id="confirmSocial" type="button">Confirm Both Follow Tasks</button>
-  <p class="small" id="proofStatus">Both screenshots must be approved before account selection is unlocked.</p>
+  <p class="small" id="proofStatus">Submit both screenshots to unlock account selection.</p>
 </section>
 
 <section class="card hidden" id="entryCreate">
@@ -77,7 +77,7 @@ input[type=file]{display:block;width:100%;margin:8px 0}
   <label class="check"><input type="checkbox" id="giveawayTerms"><span>I have read and agree to the Giveaway Terms and the selected One-Step program rules.</span></label>
   <button class="btn" id="createEntry" type="button" disabled>Accept Terms & Continue to Checkout</button>
   <p class="small">Already have a WFT account? <a href="Login.html?next=giveaway.html">Log in here</a>. New traders can <a href="register.html">create an account</a>.</p>
-  <div class="status" id="createStatus">Complete both follow tasks to unlock account selection.</div>
+  <div class="status" id="createStatus">Submit both screenshots to unlock account selection.</div>
 </section>
 
 <section class="card hidden" id="entryStatusPanel"><h2>Giveaway Entry Status</h2><div class="status" id="entryStatusSummary"></div><p class="small">After Admin approval, check your Wallet Balance and Wallet Activity.</p><a class="btn" href="wallet.html">Open WFT Wallet</a></section>
@@ -167,16 +167,16 @@ async function loadSocialProofRows(){
  socialProofRows=data||[];
  platforms.forEach(platform=>{
   const row=socialProofRows.find(x=>x.platform===platform),state=$("state-"+platform);
-  if(state)state.textContent=row?"Proof "+row.review_status:"Not submitted";
+  if(state)state.textContent=row?"Screenshot submitted":"Not submitted";
  });
- socialProofCount=platforms.filter(p=>socialProofRows.some(x=>x.platform===p&&x.review_status==="approved")).length;
- $("proofSummary").textContent=socialProofCount+" / 2 follow proofs approved.";
+ socialProofCount=platforms.filter(p=>socialProofRows.some(x=>x.platform===p)).length;
+ $("proofSummary").textContent=socialProofCount+" / 2 screenshots submitted.";
  updateEligibility();
 }
 function updateEligibility(){
  const ready=socialProofCount===2&&socialFollowConfirmed&&!entry;
  $("entryCreate").classList.toggle("hidden",!ready);
- $("proofStatus").textContent=socialProofCount+"/2 proofs approved. "+(socialFollowConfirmed?"Follow confirmation complete.": "Confirm both follows after approval.")+(ready?" Choose your One-Step account below.":"");
+ $("proofStatus").textContent=socialProofCount+"/2 screenshots submitted. "+(socialFollowConfirmed?"Follow confirmation complete.":"Confirm your two follows to continue.")+(ready?" Choose your One-Step account below.":"");
 }
 async function submitSocialProof(platform){
  if(!session){location.href="Login.html?next=giveaway.html";return;}
@@ -189,24 +189,21 @@ async function submitSocialProof(platform){
   const {error:upErr}=await db.storage.from("giveaway-proofs").upload(path,file,{contentType:file.type,upsert:false});if(upErr)throw upErr;
   const {error:saveErr}=await db.rpc("submit_giveaway_social_task_proof",{p_platform:platform,p_path:path});if(saveErr)throw saveErr;
   const {data:proofRow}=await db.from("giveaway_social_task_proofs").select("id").eq("user_id",session.user.id).eq("platform",platform).eq("proof_path",path).maybeSingle();
-  if(proofRow?.id){
-   const ai=await db.functions.invoke("wft-ai-admin-bot",{body:{submission_id:proofRow.id,submission_type:"giveaway_social"}});
-   $("state-"+platform).textContent=ai.error?"Submitted · waiting for review":ai.data?.decision==="approved"?"AI approved · awaiting Admin review":ai.data?.decision==="rejected"?"AI rejected · upload a new screenshot":"Submitted · review pending";
-  }else $("state-"+platform).textContent="Submitted · review queued";
+  $("state-"+platform).textContent=proofRow?.id?"Screenshot submitted":"Screenshot received · status syncing";
   await loadSocialProofRows();
  }catch(e){$("state-"+platform).textContent="Submit failed. Try again.";message("proofSummary",e.message||"Could not submit proof.","error");}
  finally{btn.disabled=false;}
 }
 $("confirmSocial").addEventListener("click",async()=>{
  if(!session){location.href="Login.html?next=giveaway.html";return;}
- if(socialProofCount<2){message("proofSummary","Both Discord and Telegram screenshots must be approved first.","error");return;}
+ if(socialProofCount<2){message("proofSummary","Submit both Discord and Telegram screenshots first.","error");return;}
  if(!$("socialConfirm").checked){message("proofSummary","Please confirm that both follow tasks are genuine.","error");return;}
  $("confirmSocial").disabled=true;
  try{
   const {data,error}=await db.rpc("confirm_giveaway_social_follows");if(error)throw error;
   socialFollowConfirmed=true;
   $("followPanel").classList.add("hidden");$("entryCreate").classList.remove("hidden");
-  message("proofSummary","Both follow tasks confirmed. You can now choose your Giveaway account.","success");
+  message("proofSummary","Both screenshots received. You can now choose your Giveaway account.","success");
   updateEligibility();
  }catch(e){message("proofSummary",e.message||"Could not confirm follow tasks.","error");$("confirmSocial").disabled=false;}
 });
