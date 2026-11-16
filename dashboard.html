@@ -2153,10 +2153,11 @@ async function loadKYC() {
   if (error) throw error;
   const item = data?.[0];
 
-  setText("kycStatus", item?.status || "Not submitted");
+  const kycState = String(item?.status || "not_submitted").toLowerCase();
+  if ($("kycStatus")) $("kycStatus").dataset.status = kycState;
   setText("kycStatusText", item
-    ? `Submitted ${date(item.submitted_at)}. ${item.admin_note || ""}`
-    : "Please complete the form and upload your documents.");
+    ? (kycState === "approved" ? "✓ KYC APPROVED — Your identity has been verified. Instant and Giveaway Terminal access is enabled." : kycState === "pending" ? "KYC UNDER REVIEW — Your documents were submitted successfully. Terminal access will unlock after Admin approval." : kycState === "rejected" ? "KYC REJECTED — " + (item.admin_note || "Please review the Admin note and submit your documents again.") : "KYC STATUS: " + kycState.toUpperCase())
+    : "KYC NOT SUBMITTED — Complete your identity details and upload genuine documents to unlock Instant and Giveaway account access.");
 
   if (item) {
     const fields = {
