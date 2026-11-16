@@ -2260,9 +2260,11 @@ async function loadAffiliate() {
   if (refError) throw refError;
 
   referralCode = ref?.referral_code || null;
+  // Use the official WFT Cloudflare Pages domain for every affiliate link.
+  // The referral code is WFT; no personal name is exposed in the URL.
   const link = referralCode
-    ? new URL("register.html", window.location.href).href +
-      "?ref=" + encodeURIComponent(referralCode)
+    ? "https://we-funded-trader.pages.dev/register.html?ref=" +
+      encodeURIComponent(referralCode)
     : "";
 
   if ($("referralLink")) $("referralLink").value = link;
