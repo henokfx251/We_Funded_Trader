@@ -30,12 +30,12 @@ jobs:
 
       - name: Build release APK
         working-directory: android-admin
-        run: gradle --no-daemon :app:assembleRelease
+        run: gradle --no-daemon :app:assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: WFT-Admin-APK
-          path: android-admin/app/build/outputs/apk/release/app-release-unsigned.apk
+          path: android-admin/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
