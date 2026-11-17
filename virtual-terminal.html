@@ -529,9 +529,27 @@ function setSide(v){side=v;$("buyBtn").classList.toggle("active",v==="BUY");$("s
 function setMode(v){mode=v;document.querySelectorAll("[data-mode]").forEach(b=>b.classList.toggle("active",b.dataset.mode===v));$("pendingField").hidden=v!=="limit";updateOrderLabel();}
 function updateOrderLabel(){const t=side+(mode==="market"?" MARKET":" LIMIT");$("orderType").textContent=t;$("executeBtn").textContent=t;}
 function setChartStatus(text,ok=false){const el=$("chartFeedStatus");if(el){el.textContent=text;el.style.color=ok?"#6ce3b4":"#a9bfd5";}}
-function readChartSymbol(){return currentTradeSymbol||"XAUUSD";}
+function readChartSymbol(){try{const raw=tvWidget?.activeChart?.()?.symbol?.();return String(raw||currentTradeSymbol||"XAUUSD").toUpperCase().split(":").pop().replace(/[^A-Z0-9]/g,"");}catch(e){return currentTradeSymbol||"XAUUSD";}}
 function syncTradeSymbol(){if(manualTradeSymbol)return currentTradeSymbol;const chartSymbol=readChartSymbol();const symbol=SUPPORTED_MARKETS.includes(chartSymbol)?chartSymbol:currentTradeSymbol;currentTradeSymbol=symbol;const pill=$("tradeSymbol");if(pill)pill.textContent=symbol;const picker=$("tradeSymbolSelect");if(picker)picker.value=symbol;return symbol;}
-function bindChartSymbolEvents(){syncTradeSymbol();}
+function bindChartSymbolEvents(){
+  if(!tvWidget||typeof tvWidget.activeChart!=="function")return;
+  const chart=tvWidget.activeChart();
+  if(!chart||typeof chart.onSymbolChanged!=="function")return;
+  if(!chartSymbolSubscriptionBound){
+   chart.onSymbolChanged().subscribe(null,()=>{
+    const rawSymbol=readChartSymbol();
+    const symbol=rawSymbol==="BTCUSDT"?"BTCUSD":rawSymbol;
+    if(!SUPPORTED_MARKETS.includes(symbol))return;
+    manualTradeSymbol=false;currentTradeSymbol=symbol;
+    const pill=$("tradeSymbol"),picker=$("tradeSymbolSelect");
+    if(pill)pill.textContent=symbol;
+    if(picker)picker.value=symbol;
+    renderDemoQuote();
+   });
+   chartSymbolSubscriptionBound=true;
+  }
+  syncTradeSymbol();
+ }
 const SUPPORTED_MARKETS=["EURUSD","GBPUSD","USDJPY","AUDUSD","USDCAD","USDCHF","NZDUSD","XAUUSD","XAGUSD","XPTUSD","XPDUSD","BTCUSD"];
 function pipSize(symbol){symbol=String(symbol||"").toUpperCase();if(symbol==="BTCUSD")return 1;if(symbol==="USDJPY")return 0.01;if(symbol==="XAGUSD")return 0.001;if(symbol.startsWith("XAU")||symbol.startsWith("XPT")||symbol.startsWith("XPD"))return 0.01;return 0.0001;}
 function positionPips(p){const diff=Number(p.current_price)-Number(p.entry_price);return (p.side==="BUY"?diff:-diff)/pipSize(p.symbol);}
@@ -609,6 +627,7 @@ function setupChart(){
     studies:["Volume@tv-basicstudies"],
     container_id:"tv_chart_container"
    });
+   if(typeof tvWidget.onChartReady==="function")tvWidget.onChartReady(()=>{chartReady=true;bindChartSymbolEvents();});
    if(!host.querySelector("iframe")){
     setChartStatus("TradingView is starting…");
    }
