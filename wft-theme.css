@@ -1,0 +1,28 @@
+/* WE FUNDED TRADER — Signature Theme: Matte Black / Luxury Gold / Emerald Green */
+:root{
+  color-scheme:dark;
+  --bg:#050505;--background:#050505;--page-bg:#050505;
+  --panel:#101010;--panel2:#171717;--card:#101010;--surface:#111111;
+  --line:#302719;--border:#302719;
+  --gold:#D6A52D;--gold2:#F2C75C;--primary:#D6A52D;--accent:#D6A52D;
+  --blue:#00B879;--green:#00B879;--success:#00B879;
+  --text:#F5F3ED;--muted:#A7A29A;
+}
+html,body{background-color:#050505!important;color:#F5F3ED}
+body{background-image:radial-gradient(ellipse at 50% -25%,rgba(214,165,45,.10),transparent 58%)!important}
+a{color:#E7BD55}
+button,.btn,.button,[role="button"],input[type="submit"]{
+  accent-color:#00B879;
+}
+button:not(.plain):not(.icon-btn),.btn,.button,input[type="submit"]{
+  border-color:#80601F;
+}
+button:hover,.btn:hover,.button:hover,input[type="submit"]:hover{
+  filter:brightness(1.12);
+}
+:focus-visible{outline:2px solid #00B879!important;outline-offset:2px}
+input,select,textarea{
+  color:#F5F3ED;
+  accent-color:#00B879;
+}
+::selection{background:rgba(214,165,45,.32);color:#fff}
