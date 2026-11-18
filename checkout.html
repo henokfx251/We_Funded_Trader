@@ -838,7 +838,7 @@ button.addEventListener("click",async()=>{
     if(platform !== "WFT TRADINGVIEW") throw new Error("Invalid WFT trading platform.");
 
     if(
-      couponCode &&
+      !restartMode && couponCode &&
       !["WFT10","WFT20","NEW50"].includes(couponCode)
     ){
 
