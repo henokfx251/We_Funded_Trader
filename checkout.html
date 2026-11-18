@@ -716,8 +716,8 @@ async function initialize(){
         .eq("user_id", session.user.id)
         .single();
       if (sourceError || !sourceAccount) throw new Error("Restart account was not found.");
-      if (!["failed","breached"].includes(String(sourceAccount.status || "").toLowerCase()) || !/drawdown/i.test(String(sourceAccount.failure_reason || ""))) {
-        throw new Error("Restart is available only after a drawdown breach closes the account.");
+      if (!["failed","breached"].includes(String(sourceAccount.status || "").toLowerCase()) || !/max(?:imum)?\s+drawdown|overall\s+drawdown/i.test(String(sourceAccount.failure_reason || ""))) {
+        throw new Error("Restart is available only after a maximum drawdown breach closes the account.");
       }
       size = Number(sourceAccount.account_size);
       programCode = String(sourceAccount.program_code || "").toLowerCase();
