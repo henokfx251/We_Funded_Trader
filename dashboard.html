@@ -605,6 +605,10 @@ hr {
 .failure-explanation strong{font-size:12px;color:#fca5a5}
 .failure-explanation p{font-size:12px;line-height:1.65;color:#e2c4c4;margin:7px 0}
 .failure-explanation small{color:#aeb9c8;font-size:10px}
+.restart-offer{margin-top:14px;padding:13px;border:1px solid rgba(232,184,75,.35);border-radius:11px;background:rgba(232,184,75,.07)}
+.restart-offer strong{display:block;color:var(--gold);font-size:13px;margin-bottom:6px}
+.restart-offer p{margin:0 0 11px;color:#cbd5e1;font-size:11px;line-height:1.6}
+.restart-offer .btn{display:inline-block;text-align:center}
 .overview-account-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--line)}
 .overview-account-row:last-child{border-bottom:0}
 .overview-account-row strong{display:block;font-size:12px}
@@ -2099,6 +2103,7 @@ async function loadAccounts() {
   const cards = accounts.map(a => {
     const status = String(a.status || "").toLowerCase();
     const failed = ["failed","breached"].includes(status);
+    const drawdownFailed = failed && /drawdown/i.test(String(a.failure_reason || ""));
     const label = safe(a.account_name || String(a.id).slice(0,8));
     return `
       <article class="account-card client-account-card ${failed ? "is-failed" : ""}">
@@ -2114,6 +2119,7 @@ async function loadAccounts() {
           <div><div class="detail-label">Profit</div><div class="detail-value ${Number(a.profit || 0) >= 0 ? "positive-value" : "negative-value"}">${money(a.profit)}</div></div>
         </div>
         ${failed ? `<div class="failure-explanation"><strong>Account failed — excluded from Total Balance</strong><p>${safe(a.failure_reason || "Failure reason unavailable — contact WFT support.")}</p>${a.failed_at ? `<small>Failed on ${date(a.failed_at)}</small>` : ""}</div>` : ""}
+        ${drawdownFailed ? `<div class="restart-offer"><strong>Restart this account · 60% OFF</strong><p>Restart your ${money(a.account_size)} ${safe(a.account_type || "trading")} program after this drawdown breach. Pay only 40% of the current program price.</p><a class="btn" href="checkout.html?restart=${encodeURIComponent(a.id)}">Restart at 60% Discount</a></div>` : ""}
       </article>
     `;
   }).join("");
