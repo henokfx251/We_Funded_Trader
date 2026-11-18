@@ -677,11 +677,11 @@ body .btn-secondary *{color:#155eef!important}
                   <tr>
                     <th>User ID</th><th>Account</th><th>Size</th>
                     <th>Type</th><th>Phase</th><th>Platform</th>
-                    <th>Status</th><th>Profit</th><th>Failure Reason</th>
+                    <th>Status</th><th>Profit</th><th>Failure Reason</th><th>Restarted From</th>
                   </tr>
                 </thead>
                 <tbody id="accountsTable">
-                  <tr><td colspan="9" class="empty">Loading accounts...</td></tr>
+                  <tr><td colspan="10" class="empty">Loading accounts...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1724,7 +1724,7 @@ async function loadTradingAccounts() {
   if (error) {
     console.error("Trading accounts:", error);
     if (tbody) tbody.innerHTML =
-      `<tr><td colspan="9" class="empty">${escapeHTML(error.message)}</td></tr>`;
+      `<tr><td colspan="10" class="empty">${escapeHTML(error.message)}</td></tr>`;
     return;
   }
 
@@ -1804,7 +1804,7 @@ function renderAccounts() {
   );
 
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="9" class="empty">No accounts found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" class="empty">No accounts found.</td></tr>';
     return;
   }
 
@@ -1819,6 +1819,7 @@ function renderAccounts() {
       <td>${statusBadge(account.status)}</td>
       <td>${money(account.profit)}</td>
       <td>${String(account.status || "").toLowerCase() === "failed" ? escapeHTML(account.failure_reason || "Failure reason unavailable — contact WFT support.") : "—"}</td>
+      <td>${account.restarted_from_account_id ? escapeHTML(String(account.restarted_from_account_id).slice(0, 8)) : "—"}</td>
     </tr>
   `).join("");
 }
