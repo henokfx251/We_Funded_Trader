@@ -13,6 +13,13 @@
 .wft-restart-countdown span{min-width:53px;padding:8px 7px;border:1px solid rgba(232,184,75,.25);border-radius:8px;background:#091525;text-align:center;color:#fff;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
 .wft-restart-countdown small{display:block;margin-top:3px;color:#aebbd0;font-size:9px;font-weight:500;text-transform:uppercase}
 .wft-restart-campaign .btn{white-space:nowrap}
+.wft-restart-campaign-copy{min-width:0;flex:1}
+.wft-restart-eligible-details{display:grid;gap:9px;margin-top:14px}
+.wft-restart-eligible-item{padding:12px 13px;border:1px solid rgba(248,113,113,.28);border-radius:10px;background:rgba(127,29,29,.15)}
+.wft-restart-eligible-item strong{display:block;color:#fca5a5;font-size:12px;margin-bottom:5px}
+.wft-restart-eligible-item p{margin:4px 0;color:#e2c4c4;font-size:11px;line-height:1.55;overflow-wrap:anywhere}
+.wft-restart-eligible-item small{color:#aeb9c8;font-size:10px}
+.wft-restart-eligible-item .restart-summary{color:var(--gold);font-weight:700;margin-top:7px}
 @media(max-width:760px){.wft-restart-campaign.is-visible{align-items:flex-start;flex-direction:column}.wft-restart-campaign .btn{width:100%;text-align:center}.wft-restart-countdown span{min-width:48px}}
 
 </style>
@@ -1054,14 +1061,15 @@ body .btn-secondary *{color:#155eef!important}
   </div>
 
   <section class="wft-restart-campaign" id="wftRestartCampaign" aria-live="polite">
-    <div>
+    <div class="wft-restart-campaign-copy">
       <h3>♻️ Restart Your Failed Challenge · 60% OFF</h3>
       <p>Eligible failed accounts can be restarted at 60% off. This limited offer ends in:</p>
       <div class="wft-restart-countdown" id="wftRestartCountdown">
         <span>--<small>Days</small></span><span>--<small>Hours</small></span><span>--<small>Minutes</small></span><span>--<small>Seconds</small></span>
       </div>
+      <div id="wftRestartEligibleDetails" class="wft-restart-eligible-details"></div>
     </div>
-    <a class="btn" href="dashboard.html?page=accounts">View Eligible Account</a>
+    <a class="btn" id="wftViewEligibleAccount" href="dashboard.html?page=accounts">View Eligible Account</a>
   </section>
 
   <div class="stats-grid overview-stats">
@@ -2106,12 +2114,38 @@ async function loadAccounts() {
   accounts = data || [];
 
   // Show the six-day 60% restart campaign only to users with an eligible failed account.
-  const hasRestartEligibleAccount = accounts.some(a =>
+  const restartEligibleAccounts = accounts.filter(a =>
     ["failed","breached"].includes(String(a.status || "").toLowerCase()) &&
     /max(?:imum)?\s+drawdown|overall\s+drawdown/i.test(String(a.failure_reason || ""))
   );
   const restartCampaign = $("wftRestartCampaign");
-  if (restartCampaign) restartCampaign.classList.toggle("is-visible", hasRestartEligibleAccount);
+  if (restartCampaign) restartCampaign.classList.toggle("is-visible", restartEligibleAccounts.length > 0);
+  const restartDetails = $("wftRestartEligibleDetails");
+  if (restartDetails) restartDetails.innerHTML = restartEligibleAccounts.map(a => {
+    const program = safe(a.program_name || a.program_code || (String(a.account_type || "Trading") + " program"));
+    const reason = safe(a.failure_reason || "Maximum drawdown breached.");
+    const failedOn = a.failed_at ? date(a.failed_at) : "Date unavailable";
+    return `<article class="wft-restart-eligible-item">
+      <strong>Account failed — excluded from Total Balance</strong>
+      <p>${reason}</p>
+      <small>Failed on ${failedOn}</small>
+      <p class="restart-summary">Restart this account · 60% OFF</p>
+      <p>Restart your ${money(a.account_size)} ${program} program after this drawdown breach. Pay only 40% of the current program price.</p>
+    </article>`;
+  }).join("");
+  const viewEligibleButton = $("wftViewEligibleAccount");
+  if (viewEligibleButton) {
+    viewEligibleButton.href = "dashboard.html?page=accounts";
+    viewEligibleButton.onclick = event => {
+      event.preventDefault();
+      showPage("accounts");
+      const nextUrl = new URL(window.location.href);
+      nextUrl.searchParams.set("page","accounts");
+      window.history.pushState({page:"accounts"},"",nextUrl);
+      const firstEligibleCard = $("accountsList")?.querySelector(".client-account-card.is-failed");
+      firstEligibleCard?.scrollIntoView({behavior:"smooth",block:"center"});
+    };
+  }
 
   // Pending accounts are requests awaiting Admin approval, not created accounts.
   const countedAccounts = accounts.filter(a =>
