@@ -3,7 +3,19 @@
 <html lang="en">
 <head>
 <script>document.documentElement.classList.add("wft-auth-checking");</script>
-<style>html.wft-auth-checking body{visibility:hidden!important}</style>
+<style>html.wft-auth-checking body{visibility:hidden!important}
+/* Six-day restart campaign banner on Overview */
+.wft-restart-campaign{display:none;margin:0 0 20px;padding:19px 21px;border:1px solid rgba(232,184,75,.55);border-radius:15px;background:radial-gradient(ellipse at 90% 0%,rgba(232,184,75,.16),transparent 42%),linear-gradient(120deg,#182b43,#101d30);box-shadow:0 12px 28px rgba(0,0,0,.18)}
+.wft-restart-campaign.is-visible{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.wft-restart-campaign h3{margin:0 0 6px;color:var(--gold);font-size:16px}
+.wft-restart-campaign p{margin:0;color:#d4deeb;font-size:12px;line-height:1.6}
+.wft-restart-countdown{display:flex;gap:7px;margin-top:12px}
+.wft-restart-countdown span{min-width:53px;padding:8px 7px;border:1px solid rgba(232,184,75,.25);border-radius:8px;background:#091525;text-align:center;color:#fff;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.wft-restart-countdown small{display:block;margin-top:3px;color:#aebbd0;font-size:9px;font-weight:500;text-transform:uppercase}
+.wft-restart-campaign .btn{white-space:nowrap}
+@media(max-width:760px){.wft-restart-campaign.is-visible{align-items:flex-start;flex-direction:column}.wft-restart-campaign .btn{width:100%;text-align:center}.wft-restart-countdown span{min-width:48px}}
+
+</style>
 <script type="module" src="auth-guard.js"></script>
 
 <meta charset="UTF-8">
@@ -1040,6 +1052,17 @@ body .btn-secondary *{color:#155eef!important}
       <a class="btn" href="challenges.html">Buy Challenge</a>
     </div>
   </div>
+
+  <section class="wft-restart-campaign" id="wftRestartCampaign" aria-live="polite">
+    <div>
+      <h3>♻️ Restart Your Failed Challenge · 60% OFF</h3>
+      <p>Eligible failed accounts can be restarted at 60% off. This limited offer ends in:</p>
+      <div class="wft-restart-countdown" id="wftRestartCountdown">
+        <span>--<small>Days</small></span><span>--<small>Hours</small></span><span>--<small>Minutes</small></span><span>--<small>Seconds</small></span>
+      </div>
+    </div>
+    <a class="btn" href="dashboard.html?page=accounts">View Eligible Account</a>
+  </section>
 
   <div class="stats-grid overview-stats">
     <div class="stat-card">
@@ -2082,6 +2105,14 @@ async function loadAccounts() {
   if (error) throw error;
   accounts = data || [];
 
+  // Show the six-day 60% restart campaign only to users with an eligible failed account.
+  const hasRestartEligibleAccount = accounts.some(a =>
+    ["failed","breached"].includes(String(a.status || "").toLowerCase()) &&
+    /max(?:imum)?\\s+drawdown|overall\\s+drawdown/i.test(String(a.failure_reason || ""))
+  );
+  const restartCampaign = $("wftRestartCampaign");
+  if (restartCampaign) restartCampaign.classList.toggle("is-visible", hasRestartEligibleAccount);
+
   // Pending accounts are requests awaiting Admin approval, not created accounts.
   const countedAccounts = accounts.filter(a =>
     String(a.status || "").toLowerCase() !== "pending"
@@ -3078,6 +3109,30 @@ function updateMobileBottomNav() {
 updateMobileBottomNav();
 
 startDashboard();
+
+// Six-day restart campaign countdown (Ethiopia time, UTC+3).
+(function initWftRestartCountdown() {
+  const deadline = new Date("2026-11-24T13:35:00+03:00").getTime();
+  const target = $("wftRestartCountdown");
+  if (!target) return;
+  const tick = () => {
+    const remaining = Math.max(0, deadline - Date.now());
+    const days = Math.floor(remaining / 86400000);
+    const hours = Math.floor((remaining % 86400000) / 3600000);
+    const minutes = Math.floor((remaining % 3600000) / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+    target.innerHTML = [days,hours,minutes,seconds].map((value,index) =>
+      `<span>${String(value).padStart(2,"0")}<small>${["Days","Hours","Minutes","Seconds"][index]}</small></span>`
+    ).join("");
+    if (remaining <= 0) {
+      const campaign = $("wftRestartCampaign");
+      if (campaign) campaign.remove();
+      clearInterval(timer);
+    }
+  };
+  tick();
+  const timer = setInterval(tick,1000);
+})();
 
 // Refresh live WFT Demo Terminal performance (including Floating P/L)
 // while the dashboard is visible. Avoid overlapping RPC requests.
