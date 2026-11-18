@@ -1501,7 +1501,7 @@ function renderOrders() {
       '<td>' + escapeHTML(String(order.id).slice(0, 8)) + '</td>' +
       '<td>' + escapeHTML(String(order.user_id || '').slice(0, 12)) + '</td>' +
       '<td>' + escapeHTML(String(order.account_size || '—')) + '</td>' +
-      '<td>' + escapeHTML(order.account_type || order.challenge_type || '—') + '</td>' +
+      '<td>' + escapeHTML(order.account_type || order.challenge_type || '—') + (order.coupon_code === "RESTART60" ? '<br><span class="status pending">RESTART · 60% OFF</span>' : '') + '</td>' +
       '<td>' + money(order.final_price ?? order.amount) + '</td>' +
       '<td>' + escapeHTML(order.payment_network || '—') + '</td>' +
       '<td>' + tx + '</td>' +
