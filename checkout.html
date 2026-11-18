@@ -741,7 +741,7 @@ async function initialize(){
       throw new Error("Invalid account size.");
     }
 
-    if(!["2-step","1-step","instant"].includes(type) || ![
+    if((!restartMode && !["2-step","1-step","instant"].includes(type)) || ![
       "2step_standard","2step_pro","1step_standard","1step_pro",
       "instant_standard","instant_plus","instant_pro"
     ].includes(programCode)){
