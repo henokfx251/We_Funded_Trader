@@ -2108,7 +2108,7 @@ async function loadAccounts() {
   // Show the six-day 60% restart campaign only to users with an eligible failed account.
   const hasRestartEligibleAccount = accounts.some(a =>
     ["failed","breached"].includes(String(a.status || "").toLowerCase()) &&
-    /max(?:imum)?\\s+drawdown|overall\\s+drawdown/i.test(String(a.failure_reason || ""))
+    /max(?:imum)?\s+drawdown|overall\s+drawdown/i.test(String(a.failure_reason || ""))
   );
   const restartCampaign = $("wftRestartCampaign");
   if (restartCampaign) restartCampaign.classList.toggle("is-visible", hasRestartEligibleAccount);
