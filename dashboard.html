@@ -2103,7 +2103,7 @@ async function loadAccounts() {
   const cards = accounts.map(a => {
     const status = String(a.status || "").toLowerCase();
     const failed = ["failed","breached"].includes(status);
-    const drawdownFailed = failed && /drawdown/i.test(String(a.failure_reason || ""));
+    const drawdownFailed = failed && /max(?:imum)?\s+drawdown|overall\s+drawdown/i.test(String(a.failure_reason || ""));
     const label = safe(a.account_name || String(a.id).slice(0,8));
     return `
       <article class="account-card client-account-card ${failed ? "is-failed" : ""}">
