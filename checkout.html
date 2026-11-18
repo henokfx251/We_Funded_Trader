@@ -455,9 +455,11 @@ const db = createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const params = new URLSearchParams(location.search);
 
-const size = Number(params.get("size"));
-const type = (params.get("type") || "").toLowerCase();
-const programCode = (params.get("program") || "").toLowerCase();
+let size = Number(params.get("size"));
+let type = (params.get("type") || "").toLowerCase();
+let programCode = (params.get("program") || "").toLowerCase();
+const restartAccountId = (params.get("restart") || "").trim();
+let restartMode = Boolean(restartAccountId);
 
 const couponInput = document.getElementById("coupon");
 const platformInput = document.getElementById("platform");
@@ -528,6 +530,17 @@ function getDiscountPercent(){
 }
 
 function calculatePrice(){
+
+  if (restartMode) {
+    const restartDiscount = basePrice * 0.60;
+    document.getElementById("discount").textContent = "$" + restartDiscount.toFixed(2);
+    document.getElementById("rewardCredit").textContent = "$0.00";
+    document.getElementById("walletCredit").textContent = "$0.00";
+    document.getElementById("final").textContent = "$" + (basePrice * 0.40).toFixed(2);
+    document.getElementById("discountNote").textContent = "RESTART60 · 60% restart discount confirmed by WFT. Wallet and coupon stacking are disabled for restart orders.";
+    document.getElementById("walletBalanceInfo").textContent = "Restart orders already include the 60% discount.";
+    return;
+  }
 
   const code = couponInput.value.trim().toUpperCase();
   const validCodes = ["NEW50","WFT20","WFT10"];
@@ -695,14 +708,30 @@ async function initialize(){
 
     rewardBalance = 0; // Legacy Reward Balance is retired; use wallet_ledger only.
 
-    const { data: walletRows, error: walletError } = await db
-      .from("wallet_ledger")
-      .select("amount")
-      .eq("user_id", session.user.id);
-    if (walletError) throw walletError;
-    walletBalance = Math.max(0, (walletRows || []).reduce(
-      (sum, row) => sum + Number(row.amount || 0), 0
-    ));
+    if (restartMode) {
+      const { data: sourceAccount, error: sourceError } = await db
+        .from("trading_accounts")
+        .select("id,account_size,account_type,status,failure_reason,program_code")
+        .eq("id", restartAccountId)
+        .eq("user_id", session.user.id)
+        .single();
+      if (sourceError || !sourceAccount) throw new Error("Restart account was not found.");
+      if (!["failed","breached"].includes(String(sourceAccount.status || "").toLowerCase()) || !/drawdown/i.test(String(sourceAccount.failure_reason || ""))) {
+        throw new Error("Restart is available only after a drawdown breach closes the account.");
+      }
+      size = Number(sourceAccount.account_size);
+      programCode = String(sourceAccount.program_code || "").toLowerCase();
+      if (!programCode) throw new Error("This account has no funding program code. Please contact WFT support.");
+    } else {
+      const { data: walletRows, error: walletError } = await db
+        .from("wallet_ledger")
+        .select("amount")
+        .eq("user_id", session.user.id);
+      if (walletError) throw walletError;
+      walletBalance = Math.max(0, (walletRows || []).reduce(
+        (sum, row) => sum + Number(row.amount || 0), 0
+      ));
+    }
 
     applyRewardBalanceInput.checked = false;
     applyWalletBalanceInput.checked = false;
@@ -730,6 +759,7 @@ async function initialize(){
       .eq("enabled", true)
       .single();
     if (programError || !program) throw new Error("Selected funding program is unavailable.");
+    type = program.family === "instant" ? "instant" : (program.family === "2-step" ? "2-step" : "1-step");
     document.getElementById("type").textContent = program.name;
 
     platformInput.value = "WFT TRADINGVIEW";
@@ -742,17 +772,23 @@ async function initialize(){
     document.getElementById("base").textContent =
       "$" + basePrice.toFixed(2);
 
-    couponInput.value =
-      (params.get("coupon") || "")
-        .trim()
-        .toUpperCase();
+    couponInput.value = restartMode ? "RESTART60" : (params.get("coupon") || "").trim().toUpperCase();
+    if (restartMode) {
+      couponInput.disabled = true;
+      applyWalletBalanceInput.checked = false;
+      applyWalletBalanceInput.disabled = true;
+      applyWalletBalanceInput.closest(".reward-credit-box").classList.add("hidden");
+      button.textContent = "Create Restart Order";
+      document.querySelector(".container > h2").textContent = "Restart Account Checkout";
+      document.querySelector(".container > p").textContent = "Your failed account qualifies for a 60% restart discount. Pay the remaining 40% to receive a fresh account under the same program rules.";
+    }
 
     calculatePrice();
     updateWallet();
 
     button.disabled = false;
 
-    showMessage("Ready to place your order.");
+    showMessage(restartMode ? "Restart price confirmed. Create your restart order to continue." : "Ready to place your order.");
 
   }catch(error){
 
@@ -815,7 +851,9 @@ button.addEventListener("click",async()=>{
     } = await db.functions.invoke(
       "smart-handler",
       {
-        body:{
+        body: restartMode ? {
+          restart_account_id: restartAccountId
+        } : {
           account_size:size,
           account_type:type === "instant" ? "instant" : "evaluation",
           program_code:programCode,
