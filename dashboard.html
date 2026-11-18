@@ -2122,7 +2122,9 @@ async function loadAccounts() {
   if (restartCampaign) restartCampaign.classList.toggle("is-visible", restartEligibleAccounts.length > 0);
   const restartDetails = $("wftRestartEligibleDetails");
   if (restartDetails) restartDetails.innerHTML = restartEligibleAccounts.map(a => {
-    const program = safe(a.program_name || a.program_code || (String(a.account_type || "Trading") + " program"));
+    const programLabels = {instant_standard:"Instant Standard",instant_pro:"Instant Pro",instant_plus:"Instant Plus",one_step_standard:"1-Step Standard",one_step_pro:"1-Step Pro",two_step_standard:"2-Step Standard",two_step_pro:"2-Step Pro"};
+    const programKey = String(a.program_code || "").toLowerCase();
+    const program = safe(a.program_name || programLabels[programKey] || (String(a.account_type || "Trading") + " program"));
     const reason = safe(a.failure_reason || "Maximum drawdown breached.");
     const failedOn = a.failed_at ? date(a.failed_at) : "Date unavailable";
     return `<article class="wft-restart-eligible-item">
@@ -2142,8 +2144,11 @@ async function loadAccounts() {
       const nextUrl = new URL(window.location.href);
       nextUrl.searchParams.set("page","accounts");
       window.history.pushState({page:"accounts"},"",nextUrl);
-      const firstEligibleCard = $("accountsList")?.querySelector(".client-account-card.is-failed");
-      firstEligibleCard?.scrollIntoView({behavior:"smooth",block:"center"});
+      const firstEligibleId = restartEligibleAccounts[0]?.id;
+      const eligibleCard = firstEligibleId
+        ? $("accountsList")?.querySelector(`.client-account-card[data-account-id="${CSS.escape(String(firstEligibleId))}"]`)
+        : null;
+      eligibleCard?.scrollIntoView({behavior:"smooth",block:"center"});
     };
   }
 
@@ -2171,7 +2176,7 @@ async function loadAccounts() {
     const drawdownFailed = failed && /max(?:imum)?\s+drawdown|overall\s+drawdown/i.test(String(a.failure_reason || ""));
     const label = safe(a.account_name || String(a.id).slice(0,8));
     return `
-      <article class="account-card client-account-card ${failed ? "is-failed" : ""}">
+      <article class="account-card client-account-card ${failed ? "is-failed" : ""}" data-account-id="${safe(a.id)}">
         <div class="account-card-top">
           <div><div class="account-overline">WFT TRADING ACCOUNT</div><h3>${label}</h3>
           <div class="muted small">${safe(a.account_type || "Trading Account")} · ${safe(a.phase || "—")}</div></div>
