@@ -553,7 +553,7 @@ function bindChartSymbolEvents(){
 const SUPPORTED_MARKETS=["EURUSD","GBPUSD","USDJPY","AUDUSD","USDCAD","USDCHF","NZDUSD","XAUUSD","XAGUSD","XPTUSD","XPDUSD","BTCUSD"];
 function pipSize(symbol){symbol=String(symbol||"").toUpperCase();if(symbol==="BTCUSD")return 1;if(symbol==="USDJPY")return 0.01;if(symbol==="XAGUSD")return 0.001;if(symbol.startsWith("XAU")||symbol.startsWith("XPT")||symbol.startsWith("XPD"))return 0.01;return 0.0001;}
 function positionPips(p){const diff=Number(p.current_price)-Number(p.entry_price);return (p.side==="BUY"?diff:-diff)/pipSize(p.symbol);}
-function selectedQuoteIsFresh(symbol=currentTradeSymbol){const m=(state?.markets||[]).find(x=>x.symbol===symbol);if(!m||m.quote_fresh!==true)return false;const updated=Date.parse(m.updated_at||"");const age=Date.now()-updated;return Number.isFinite(updated)&&age>=-30000&&age<=120000;}
+function selectedQuoteIsFresh(symbol=currentTradeSymbol){const m=(state?.markets||[]).find(x=>x.symbol===symbol);return !!m&&m.quote_fresh===true;}
 function renderDemoQuote(){const m=(state?.markets||[]).find(x=>x.symbol===currentTradeSymbol);$("demoBid").textContent=m?num(m.bid,Number(m.digits??2)):"—";$("demoAsk").textContent=m?num(m.ask,Number(m.digits??2)):"—";$("demoSpread").textContent=m?num(m.spread,Number(m.digits??2)):"—";const freshness=$("quoteFreshness");if(freshness){const fresh=selectedQuoteIsFresh(currentTradeSymbol);freshness.textContent=!m?"QUOTE UNAVAILABLE · Trading disabled":fresh?"QUOTE FRESH · Updated "+new Date(m.updated_at).toLocaleTimeString():"QUOTE STALE · Trading disabled";freshness.style.color=fresh?"#16a34a":"#dc2626";}}
 function isCryptoMarketSymbol(symbol){return ["BTCUSD","BTCUSDT"].includes(String(symbol||"").toUpperCase());}
 function isWeekendMarketClosed(){
