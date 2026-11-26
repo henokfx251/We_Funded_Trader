@@ -457,6 +457,130 @@ td.negative,.negative { color:#dc2626!important; }
 .trade-screen table td.floating-pl-cell.negative,
 #monitorPositionsTable td.floating-pl-cell.negative {color:#dc2626!important;font-weight:900!important}
 </style>
+
+<style id="wft-terminal-layout-refresh-v1">
+/* Layout and interaction polish only — existing WFT palette is preserved. */
+*{scroll-margin-top:84px}
+html{scroll-behavior:smooth}
+body{letter-spacing:.005em;-webkit-font-smoothing:antialiased}
+.top{height:72px;padding-inline:clamp(14px,3vw,36px)}
+.brand{font-size:15px;line-height:1.15}
+.brand small{font-size:9px;line-height:1.3}
+.topright{gap:12px}
+.toplink,.simtag{min-height:36px;display:inline-flex;align-items:center;justify-content:center;padding-inline:14px}
+main{width:min(100%,1720px);padding:20px clamp(12px,2vw,28px) 42px}
+.view-tabs{position:sticky;top:72px;z-index:15;align-items:center;padding:8px;margin:0 0 18px;border:1px solid var(--line);border-radius:12px;backdrop-filter:blur(14px)}
+.view-tab{min-height:42px;padding:0 18px;border-radius:8px;font-size:11px;letter-spacing:.015em;transition:transform .16s ease,box-shadow .16s ease}
+.view-tab:active,.charttools button:active,.tab:active{transform:translateY(1px)}
+.accountbar{gap:12px;margin-bottom:18px}
+.accountbar .panel{min-height:112px;display:flex;flex-direction:column;justify-content:center;padding:16px}
+.accountbar .account-select{justify-content:center}
+.metric-label{font-size:10px;letter-spacing:1px}
+.metric{font-size:clamp(20px,2vw,26px);letter-spacing:-.035em}
+.hint{font-size:11px;line-height:1.45}
+.panel,.data-panel{border-radius:12px}
+.chart-screen-head{align-items:flex-end;margin:6px 2px 16px}
+.chart-screen-title{font-size:21px;letter-spacing:-.025em}
+.chart-screen-head .hint{margin-top:5px}
+.open-trade{min-height:42px;padding:0 18px;border-radius:9px}
+.full-chart-panel{padding:14px}
+.chart-live-label{min-height:34px;padding:2px 4px 12px;gap:10px}
+.wft-timeframe-bar{padding:9px 2px 12px;gap:7px}
+.wft-timeframe-bar button{min-width:40px;min-height:34px;padding:7px 11px}
+.chartbox{margin-top:4px;min-height:580px}
+.chart-footnote{padding:9px 4px;font-size:10px;line-height:1.5}
+.trade-layout{grid-template-columns:minmax(330px,420px) minmax(0,1fr);gap:16px}
+.trade-ticket{padding:20px!important;border-radius:12px!important}
+.trade-ticket-head{align-items:flex-start;padding-bottom:16px!important;margin-bottom:16px!important}
+.trade-ticket h2{font-size:18px!important;letter-spacing:-.02em}
+.trade-ticket-head .hint{max-width:270px;margin-top:5px}
+.trade-symbol-pill{min-height:34px;display:inline-flex;align-items:center;justify-content:center}
+.order-tabs{gap:9px;margin-bottom:14px}
+.order-tabs button{min-height:46px;font-size:12px;border-radius:9px}
+.mode-tabs{gap:7px;margin-bottom:15px}
+.mode-tabs button{min-height:39px;border-radius:8px;font-size:10px}
+.field{margin-top:13px}
+.field label{margin-bottom:7px!important;font-size:10px!important;letter-spacing:.07em}
+.field input,.trade-screen select{min-height:44px;padding:11px 12px!important;border-radius:9px!important}
+.row2{gap:10px}
+.order-est{padding-top:5px;font-size:11px}
+.demo-quote{gap:12px;margin-top:16px;padding:14px;border-radius:10px}
+.demo-quote b{font-size:14px}
+.trade-actions{gap:10px}
+.trade-actions .execute,.cancel-trade{min-height:48px;border-radius:9px}
+.trade-screen .data-panel{border-radius:12px!important;min-height:220px}
+.trade-screen .tabs{gap:7px;padding:12px}
+.trade-screen .tab{min-height:36px;padding-inline:13px;border-radius:8px}
+.tablewrap{border-radius:0 0 12px 12px}
+table{font-size:11px}
+th,td{padding:13px 12px}
+.mini{min-height:30px;padding:6px 10px}
+#monitorView{padding:20px!important;border-radius:12px!important}
+#monitorView>h2{font-size:18px!important;letter-spacing:-.02em}
+#monitorView>.panel{padding:16px}
+#monitorView .rules{gap:12px}
+#monitorView .rule{min-height:92px;padding:14px;border-radius:10px}
+#monitorView .rule b{font-size:17px;letter-spacing:-.02em}
+#monitorView .rule span{line-height:1.45}
+#monitorView h3{margin-top:20px!important}
+.disclaimer{padding:13px 16px;border-radius:10px;font-size:10px}
+.statusline{min-height:18px;line-height:1.5}
+button,select,input{transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+#terminalAccessGate .gate-card{padding:36px}
+@media(min-width:1200px){
+ .accountbar{grid-template-columns:minmax(260px,1.55fr) repeat(4,minmax(135px,1fr))}
+ .chartbox{min-height:640px}
+}
+@media(max-width:900px){
+ .trade-layout{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:10px}
+ .trade-ticket{padding:15px!important}
+ .trade-ticket-head{flex-direction:column}
+ .trade-ticket-head>div:last-child{max-width:100%!important;width:100%}
+ .trade-ticket-head select{max-width:100%!important;flex:1}
+}
+@media(max-width:760px){
+ .top{height:60px;padding-inline:12px}
+ .topright{gap:6px}
+ .toplink,.simtag{min-height:32px;padding-inline:9px}
+ main{padding:10px 9px 28px}
+ .view-tabs{top:60px;margin-bottom:12px;padding:5px;border-radius:10px;gap:5px}
+ .view-tab{min-height:39px;padding:0 5px;font-size:10px}
+ .accountbar{gap:8px;margin-bottom:12px}
+ .accountbar .panel{min-height:94px;padding:12px}
+ .metric{font-size:19px}
+ .chart-screen-head{align-items:flex-start;gap:10px}
+ .chart-screen-title{font-size:18px}
+ .open-trade{min-height:39px;padding-inline:12px}
+ .full-chart-panel{padding:8px}
+ .chart-live-label{flex-wrap:wrap}
+ .wft-timeframe-bar{gap:5px}
+ .wft-timeframe-bar button{min-width:35px;min-height:32px;padding:6px 8px}
+ .chartbox{min-height:540px}
+ .trade-layout{grid-template-columns:1fr;gap:10px}
+ .trade-ticket{padding:15px!important}
+ .trade-ticket-head{flex-direction:row;align-items:flex-start}
+ .trade-ticket-head>div:last-child{width:auto;max-width:68%!important}
+ .trade-ticket-head select{min-width:0!important;width:100%!important}
+ .trade-screen .data-panel{min-height:180px}
+ #monitorView{padding:13px!important}
+ #monitorView .rules{gap:8px}
+ #monitorView .rule{min-height:82px;padding:11px}
+ #monitorView .rule b{font-size:15px}
+}
+@media(max-width:390px){
+ .brand{font-size:12px}
+ .brand small{font-size:8px;letter-spacing:1.3px}
+ .simtag{font-size:7px;padding-inline:6px}
+ .toplink{font-size:9px;padding-inline:7px}
+ .view-tab{font-size:9px}
+ .trade-ticket-head{flex-direction:column}
+ .trade-ticket-head>div:last-child{max-width:100%!important;width:100%}
+ .row2{gap:7px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+</style>
+
 </head>
 <body class="terminal-locked">
 <header class="top">
