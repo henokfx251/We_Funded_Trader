@@ -1,0 +1,116 @@
+/* WFT PROFESSIONAL PROP-FIRM LAYOUT REFRESH
+   Layout, spacing, sizing, typography and responsive behavior only.
+   Intentionally does not set color, background, border-color, fill or stroke.
+*/
+:where(button,a,.btn,input,select,textarea){-webkit-tap-highlight-color:transparent}
+:where(button,.btn,a){transition:transform .18s ease,box-shadow .18s ease}
+:where(button,.btn):active{transform:translateY(1px)}
+:where(input,select,textarea){min-width:0;max-width:100%;font:inherit}
+:where(img,svg,video,iframe){max-width:100%}
+:where(table){border-collapse:separate;border-spacing:0}
+:where(th,td){vertical-align:middle}
+:where(.container,.wrap,main){width:min(100% - 32px,1200px);margin-inline:auto}
+:where(.card,.panel,.challenge-card,.account-card,.rule-card,.step-card,.faq-item){border-radius:16px}
+:where(.btn,button){min-height:42px}
+:where(.field,input,select,textarea){scroll-margin-top:90px}
+:where(.section,.page){scroll-margin-top:90px}
+:where(.section-heading){max-width:760px;margin-inline:auto}
+:where(.section-heading p,.subtitle,.hero-description){line-height:1.7}
+:where(.grid,.account-grid,.challenge-types,.rules-grid,.steps,.footer-grid){min-width:0}
+:where(.card,.panel,.stat-card,.account-card,.challenge-card,.program,.rule-card,.step-card){min-width:0}
+:where(.table-wrap,.tablewrap){max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+:where(.table-wrap table,.tablewrap table){min-width:620px}
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{outline-offset:3px}
+:where(.hero-buttons,.actions,.btn-row,.form-actions){display:flex;flex-wrap:wrap;gap:12px}
+:where(.hero-buttons .btn,.actions .btn){align-items:center;justify-content:center}
+:where(.footer-grid){align-items:start}
+:where(.footer-bottom){gap:12px;flex-wrap:wrap}
+:where(.nav-links,nav){align-items:center}
+:where(.promo,.reward-box,.dashboard-welcome,.page-heading){gap:20px}
+:where(.stats-grid,.grid-2,.overview-panels,.accounts-grid){align-items:stretch}
+:where(.stat-card,.wft-performance-card){display:flex;flex-direction:column;justify-content:space-between;gap:8px}
+:where(.stat-card h2,.stat-card strong,.wft-performance-card strong){overflow-wrap:anywhere}
+:where(.field){min-width:0}
+:where(.field input,.field select,.field textarea){width:100%}
+:where(.message,.status,.notice,.warning-box){overflow-wrap:anywhere}
+:where(.auth-shell){width:min(100% - 28px,460px)}
+:where(.auth-shell .card){padding:clamp(22px,4vw,34px);border-radius:20px}
+:where(.auth-shell form){display:grid;gap:14px}
+:where(.auth-shell .field){margin:0}
+:where(.auth-shell .submit){width:100%;min-height:48px}
+:where(.auth-shell .brand){margin-bottom:20px}
+:where(.auth-shell .brand-name){letter-spacing:.04em}
+:where(.challenge-hero){padding:clamp(26px,5vw,54px);border-radius:22px}
+:where(.programs){align-items:stretch}
+:where(.program){display:flex;flex-direction:column;gap:14px}
+:where(.program .primary){margin-top:auto}
+:where(.size-options){display:flex;flex-wrap:wrap;gap:10px}
+:where(.agreement-area){border-radius:14px;padding:18px}
+:where(.item){display:flex;align-items:center;justify-content:space-between;gap:18px}
+:where(.item strong){text-align:right;overflow-wrap:anywhere}
+:where(.payment-box,.wallet-card,.reward-credit-box){border-radius:14px;padding:18px}
+:where(.wallet-address){overflow-wrap:anywhere}
+:where(header .nav-links){gap:clamp(8px,1.5vw,20px)}
+:where(.sidebar){overscroll-behavior:contain}
+:where(.content){min-width:0}
+:where(.page-heading){display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap}
+:where(.page-heading h1){line-height:1.2}
+:where(.topbar){gap:14px}
+:where(.topbar-search){min-width:0}
+:where(.modal,.modal-content,.confirm-box){max-width:min(100% - 24px,680px);max-height:min(90dvh,900px);overflow:auto}
+:where(.trade-layout){align-items:start}
+:where(.trade-ticket,.chartpanel,.data-panel){min-width:0}
+:where(.trade-ticket){border-radius:16px}
+:where(.chartbox){overflow:hidden;border-radius:14px}
+:where(.chart-screen-head,.trade-ticket-head,.risk-alert-head){gap:12px;flex-wrap:wrap}
+:where(.demo-quote){align-items:stretch}
+:where(.trade-actions){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+:where(.trade-actions button){width:100%;min-height:46px}
+:where(.rules){align-items:stretch}
+:where(.rule){min-width:0}
+:where(.confirm-grid){gap:10px}
+:where(.confirm-actions){display:flex;gap:10px;flex-wrap:wrap}
+:where(.confirm-actions button){flex:1 1 140px;min-height:44px}
+@media(max-width:900px){
+ :where(.container,.wrap,main){width:min(100% - 28px,100%)}
+ :where(.account-grid,.rules-grid,.steps){grid-template-columns:repeat(2,minmax(0,1fr))}
+ :where(.grid-2,.overview-panels){grid-template-columns:1fr}
+ :where(.content){padding-inline:clamp(14px,3vw,24px)}
+ :where(.sidebar){z-index:130}
+}
+@media(max-width:640px){
+ :where(.container,.wrap,main){width:calc(100% - 24px)}
+ :where(.section){padding-block:clamp(42px,10vw,60px)}
+ :where(.navbar){gap:12px}
+ :where(.nav-actions){gap:8px}
+ :where(.hero){padding-block:clamp(42px,11vw,66px)}
+ :where(.hero h1){line-height:1.08;text-wrap:balance}
+ :where(.hero-description,.sub){font-size:14px;line-height:1.7}
+ :where(.hero-buttons){width:100%}
+ :where(.hero-buttons .btn){flex:1 1 100%;width:100%}
+ :where(.account-grid,.challenge-types,.rules-grid,.steps,.programs,.footer-grid){grid-template-columns:1fr}
+ :where(.promo){grid-template-columns:1fr;text-align:center}
+ :where(.promo-side){justify-content:center}
+ :where(.item){align-items:flex-start;flex-direction:column;gap:5px}
+ :where(.item strong){text-align:left}
+ :where(.actions,.form-actions,.btn-row){width:100%}
+ :where(.actions .btn,.form-actions button,.btn-row .btn){flex:1 1 100%;width:100%}
+ :where(.topbar){align-items:flex-start}
+ :where(.page-heading){align-items:flex-start;flex-direction:column}
+ :where(.page-heading .btn){width:100%}
+ :where(.stats-grid){grid-template-columns:repeat(2,minmax(0,1fr))}
+ :where(.stat-card){padding:14px}
+ :where(.table-wrap,.tablewrap){margin-inline:-2px}
+ :where(.trade-layout){grid-template-columns:minmax(0,1fr)!important}
+ :where(.trade-ticket){width:100%}
+ :where(.chartbox){min-height:420px}
+ :where(.confirm-grid){grid-template-columns:1fr}
+}
+@media(max-width:390px){
+ :where(.stats-grid){grid-template-columns:1fr}
+ :where(.auth-shell .card){padding:20px 16px}
+ :where(.trade-actions){grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+ :where(*,*::before,*::after){scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
